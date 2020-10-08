@@ -11,19 +11,17 @@ import (
 
 var _ = Describe("delimited blocks", func() {
 
-	Context("normal block", func() {
+	Context("example blocks", func() {
 
-		Context("example blocks", func() {
-
-			It("example block with multiple elements - case 1", func() {
-				source := `====
+		It("example block with multiple elements - case 1", func() {
+			source := `====
 some listing code
 with *bold content*
 
 * and a list item
 
 ====`
-				expected := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>some listing code
@@ -39,16 +37,16 @@ with <strong>bold content</strong></p>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("example block with multiple elements - case 2", func() {
-				source := `====
+		It("example block with multiple elements - case 2", func() {
+			source := `====
 *bold content*
 
 and more content
 ====`
-				expected := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p><strong>bold content</strong></p>
@@ -59,16 +57,16 @@ and more content
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("example block with multiple elements - case 3", func() {
-				source := `====
+		It("example block with multiple elements - case 3", func() {
+			source := `====
 *bold content*
 
 and "more" content
 ====`
-				expected := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p><strong>bold content</strong></p>
@@ -79,17 +77,17 @@ and "more" content
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("example block with ID and title", func() {
-				source := `[#id-for-example-block]
+		It("example block with ID and title", func() {
+			source := `[#id-for-example-block]
 .example block title
 ====
 foo
 
 ====`
-				expected := `<div id="id-for-example-block" class="exampleblock">
+			expected := `<div id="id-for-example-block" class="exampleblock">
 <div class="title">Example 1. example block title</div>
 <div class="content">
 <div class="paragraph">
@@ -98,17 +96,17 @@ foo
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("example block with custom caption and title", func() {
-				source := `[caption="Caption A. "]
+		It("example block with custom caption and title", func() {
+			source := `[caption="Caption A. "]
 .example block title
 ====
 foo
 
 ====`
-				expected := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="title">Caption A. example block title</div>
 <div class="content">
 <div class="paragraph">
@@ -117,18 +115,18 @@ foo
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("example block with custom global caption and title", func() {
-				source := `:example-caption: Caption
+		It("example block with custom global caption and title", func() {
+			source := `:example-caption: Caption
 
 .example block title
 ====
 foo
 
 ====`
-				expected := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="title">Caption 1. example block title</div>
 <div class="content">
 <div class="paragraph">
@@ -137,18 +135,18 @@ foo
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("example block with suppressed caption and title", func() {
-				source := `:example-caption!:
+		It("example block with suppressed caption and title", func() {
+			source := `:example-caption!:
 
 .example block title
 ====
 foo
 
 ====`
-				expected := `<div class="exampleblock">
+			expected := `<div class="exampleblock">
 <div class="title">example block title</div>
 <div class="content">
 <div class="paragraph">
@@ -157,19 +155,19 @@ foo
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
+	})
 
-		Context("quote blocks", func() {
+	Context("quote blocks", func() {
 
-			It("single-line quote with author and title ", func() {
-				source := `[quote, john doe, quote title]
+		It("single-line quote with author and title ", func() {
+			source := `[quote, john doe, quote title]
 ____
 some *quote* content
 
 ____`
-				expected := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>some <strong>quote</strong> content</p>
@@ -181,17 +179,17 @@ ____`
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("single-line quote with author and title, and ID and title ", func() {
-				source := `[#id-for-quote-block]
+		It("single-line quote with author and title, and ID and title ", func() {
+			source := `[#id-for-quote-block]
 [quote, john doe, quote title]
 .title for quote block
 ____
 some *quote* content
 ____`
-				expected := `<div id="id-for-quote-block" class="quoteblock">
+			expected := `<div id="id-for-quote-block" class="quoteblock">
 <div class="title">title for quote block</div>
 <blockquote>
 <div class="paragraph">
@@ -204,11 +202,11 @@ ____`
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("multi-line quote with author and title", func() {
-				source := `[quote, john doe, quote title]
+		It("multi-line quote with author and title", func() {
+			source := `[quote, john doe, quote title]
 ____
 
 - some 
@@ -216,7 +214,7 @@ ____
 - content
 
 ____`
-				expected := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="ulist">
 <ul>
@@ -238,11 +236,11 @@ ____`
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("multi-line quote with author only and nested listing", func() {
-				source := `[quote, john doe]
+		It("multi-line quote with author only and nested listing", func() {
+			source := `[quote, john doe]
 ____
 * some
 ----
@@ -250,7 +248,7 @@ ____
 ----
 * content
 ____`
-				expected := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="ulist">
 <ul>
@@ -277,15 +275,15 @@ ____`
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("single-line quote with title only", func() {
-				source := `[quote, , quote title]
+		It("single-line quote with title only", func() {
+			source := `[quote, , quote title]
 ____
 some quote content
 ____`
-				expected := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>some quote content</p>
@@ -296,11 +294,11 @@ ____`
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("multi-line quote without author and title", func() {
-				source := `[quote]
+		It("multi-line quote without author and title", func() {
+			source := `[quote]
 ____
 lines 
 	and tabs 
@@ -308,7 +306,7 @@ are preserved, but not trailing spaces
 
 ____`
 
-				expected := `<div class="quoteblock">
+			expected := `<div class="quoteblock">
 <blockquote>
 <div class="paragraph">
 <p>lines
@@ -318,32 +316,32 @@ are preserved, but not trailing spaces</p>
 </blockquote>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("empty quote without author and title", func() {
-				source := `[quote]
+		It("empty quote without author and title", func() {
+			source := `[quote]
 ____
 ____`
-				// asciidoctor will include an empty line in the `blockquote` element, I'm not sure why.
-				expected := `<div class="quoteblock">
+			// asciidoctor will include an empty line in the `blockquote` element, I'm not sure why.
+			expected := `<div class="quoteblock">
 <blockquote>
 </blockquote>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 
-			})
 		})
+	})
 
-		Context("sidebar blocks", func() {
+	Context("sidebar blocks", func() {
 
-			It("sidebar block with paragraph", func() {
-				source := `****
+		It("sidebar block with paragraph", func() {
+			source := `****
 some *verse* content
 
 ****`
-				expected := `<div class="sidebarblock">
+			expected := `<div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
 <p>some <strong>verse</strong> content</p>
@@ -351,11 +349,11 @@ some *verse* content
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("sidebar block with id, title, paragraph and sourcecode block", func() {
-				source := `[#id-for-sidebar]
+		It("sidebar block with id, title, paragraph and sourcecode block", func() {
+			source := `[#id-for-sidebar]
 .title for sidebar
 ****
 some *verse* content
@@ -365,7 +363,7 @@ foo
 bar
 ----
 ****`
-				expected := `<div id="id-for-sidebar" class="sidebarblock">
+			expected := `<div id="id-for-sidebar" class="sidebarblock">
 <div class="content">
 <div class="title">title for sidebar</div>
 <div class="paragraph">
@@ -380,17 +378,17 @@ bar</pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
+	})
 
-		Context("with custom substitutions", func() {
+	Context("with custom substitutions", func() {
 
-			// testing custom substitutions on example blocks only, as
-			// other verbatim blocks (fenced, literal, source, passthrough)
-			// share the same implementation
+		// testing custom substitutions on example blocks only, as
+		// other verbatim blocks (fenced, literal, source, passthrough)
+		// share the same implementation
 
-			source := `:github-url: https://github.com
+		source := `:github-url: https://github.com
 			
 [subs="$SUBS"]
 ====
@@ -404,9 +402,9 @@ and <more text> on the +
 <1> a callout
 `
 
-			It("should apply the default substitution", func() {
-				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
-				expected := `<div class="exampleblock">
+		It("should apply the default substitution", func() {
+			s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
@@ -430,12 +428,12 @@ and &lt;more text&gt; on the<br/>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'normal' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "normal")
-				expected := `<div class="exampleblock">
+		It("should apply the 'normal' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "normal")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
@@ -459,12 +457,12 @@ and &lt;more text&gt; on the<br/>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'quotes' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "quotes")
-				expected := `<div class="exampleblock">
+		It("should apply the 'quotes' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "quotes")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to https://example.com[] <1>
@@ -488,12 +486,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'macros' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "macros")
-				expected := `<div class="exampleblock">
+		It("should apply the 'macros' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "macros")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
@@ -517,12 +515,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'attributes' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "attributes")
-				expected := `<div class="exampleblock">
+		It("should apply the 'attributes' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "attributes")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to https://example.com[] <1>
@@ -546,12 +544,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'attributes,macros' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
-				expected := `<div class="exampleblock">
+		It("should apply the 'attributes,macros' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
@@ -575,12 +573,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'specialchars' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "specialchars")
-				expected := `<div class="exampleblock">
+		It("should apply the 'specialchars' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "specialchars")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to https://example.com[] &lt;1&gt;
@@ -604,12 +602,12 @@ and &lt;more text&gt; on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'replacements' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "replacements")
-				expected := `<div class="exampleblock">
+		It("should apply the 'replacements' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "replacements")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to https://example.com[] <1>
@@ -633,12 +631,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'post_replacements' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "post_replacements")
-				expected := `<div class="exampleblock">
+		It("should apply the 'post_replacements' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "post_replacements")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to https://example.com[] <1>
@@ -662,12 +660,12 @@ and <more text> on the<br/>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'quotes,macros' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
-				expected := `<div class="exampleblock">
+		It("should apply the 'quotes,macros' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
@@ -691,12 +689,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'macros,quotes' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
-				expected := `<div class="exampleblock">
+		It("should apply the 'macros,quotes' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
@@ -720,12 +718,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'none' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "none")
-				expected := `<div class="exampleblock">
+		It("should apply the 'none' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "none")
+			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
 <p>a link to https://example.com[] <1>
@@ -749,19 +747,15 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
 		})
-
 	})
 
-	Context("verbatim block", func() {
+	Context("fenced blocks", func() {
 
-		Context("fenced blocks", func() {
-
-			It("fenced block with surrounding empty lines", func() {
-				source := "```\n\nsome source code \n\nhere  \n\n\n\n```"
-				expected := `<div class="listingblock">
+		It("fenced block with surrounding empty lines", func() {
+			source := "```\n\nsome source code \n\nhere  \n\n\n\n```"
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>some source code
 
@@ -769,23 +763,23 @@ here</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("fenced block with empty lines", func() {
-				source := "```\n\n\n\n```"
-				expected := `<div class="listingblock">
+		It("fenced block with empty lines", func() {
+			source := "```\n\n\n\n```"
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code></code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("fenced block with id and title", func() {
-				source := "[#id-for-fences]\n.fenced block title\n```\nsome source code\n\nhere\n\n\n\n```"
-				expected := `<div id="id-for-fences" class="listingblock">
+		It("fenced block with id and title", func() {
+			source := "[#id-for-fences]\n.fenced block title\n```\nsome source code\n\nhere\n\n\n\n```"
+			expected := `<div id="id-for-fences" class="listingblock">
 <div class="title">fenced block title</div>
 <div class="content">
 <pre class="highlight"><code>some source code
@@ -794,16 +788,16 @@ here</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("fenced block with external link inside", func() {
-				source := "```" + "\n" +
-					"a http://website.com" + "\n" +
-					"and more text on the" + "\n" +
-					"next lines" + "\n\n" +
-					"```"
-				expected := `<div class="listingblock">
+		It("fenced block with external link inside", func() {
+			source := "```" + "\n" +
+				"a http://website.com" + "\n" +
+				"and more text on the" + "\n" +
+				"next lines" + "\n\n" +
+				"```"
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>a http://website.com
 and more text on the
@@ -811,20 +805,20 @@ next lines</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
+	})
 
-		Context("listing blocks", func() {
+	Context("listing blocks", func() {
 
-			It("with multiple lines", func() {
-				source := `----
+		It("with multiple lines", func() {
+			source := `----
 some source code
 
 here
 
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>some source code
 
@@ -832,61 +826,61 @@ here</pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with ID and title", func() {
-				source := `[#id-for-listing-block]
+		It("with ID and title", func() {
+			source := `[#id-for-listing-block]
 .listing block title
 ----
 some source code
 ----`
-				expected := `<div id="id-for-listing-block" class="listingblock">
+			expected := `<div id="id-for-listing-block" class="listingblock">
 <div class="title">listing block title</div>
 <div class="content">
 <pre>some source code</pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with ID and title and empty trailing line", func() {
-				source := `[#id-for-listing-block]
+		It("with ID and title and empty trailing line", func() {
+			source := `[#id-for-listing-block]
 .listing block title
 ----
 some source code
 
 ----`
-				expected := `<div id="id-for-listing-block" class="listingblock">
+			expected := `<div id="id-for-listing-block" class="listingblock">
 <div class="title">listing block title</div>
 <div class="content">
 <pre>some source code</pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with html content", func() {
-				source := `----
+		It("with html content", func() {
+			source := `----
 <a>link</a>
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>&lt;a&gt;link&lt;/a&gt;</pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with single callout", func() {
-				source := `----
+		It("with single callout", func() {
+			source := `----
 import <1>
 ----
 <1> an import`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>import <b class="conum">(1)</b></pre>
 </div>
@@ -899,11 +893,11 @@ import <1>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with multiple callouts and blankline between calloutitems", func() {
-				source := `----
+		It("with multiple callouts and blankline between calloutitems", func() {
+			source := `----
 import <1>
 
 func foo() {} <2>
@@ -911,7 +905,7 @@ func foo() {} <2>
 <1> an import
 
 <2> a func`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>import <b class="conum">(1)</b>
 
@@ -929,11 +923,11 @@ func foo() {} <b class="conum">(2)</b></pre>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with multiple callouts on same line", func() {
-				source := `----
+		It("with multiple callouts on same line", func() {
+			source := `----
 import <1> <2><3>
 
 func foo() {} <4>
@@ -942,7 +936,7 @@ func foo() {} <4>
 <2> a single import
 <3> a single basic import
 <4> a func`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>import <b class="conum">(1)</b><b class="conum">(2)</b><b class="conum">(3)</b>
 
@@ -966,15 +960,15 @@ func foo() {} <b class="conum">(4)</b></pre>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with invalid callout", func() {
-				source := `----
+		It("with invalid callout", func() {
+			source := `----
 import <a>
 ----
 <a> an import`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>import &lt;a&gt;</pre>
 </div>
@@ -983,14 +977,14 @@ import <a>
 <p>&lt;a&gt; an import</p>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
+	})
 
-		Context("source blocks", func() {
+	Context("source blocks", func() {
 
-			It("with source attribute only", func() {
-				source := `[source]
+		It("with source attribute only", func() {
+			source := `[source]
 ----
 require 'sinatra'
 
@@ -998,7 +992,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>require 'sinatra'
 
@@ -1008,11 +1002,11 @@ end</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with title, source and languages attributes", func() {
-				source := `[source,ruby]
+		It("with title, source and languages attributes", func() {
+			source := `[source,ruby]
 .Source block title
 ----
 require 'sinatra'
@@ -1022,7 +1016,7 @@ get '/hi' do
 end
 
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
 <pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
@@ -1033,11 +1027,11 @@ end</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with title, source and languages attributes and empty trailing line", func() {
-				source := `[source,ruby]
+		It("with title, source and languages attributes and empty trailing line", func() {
+			source := `[source,ruby]
 .Source block title
 ----
 require 'sinatra'
@@ -1047,7 +1041,7 @@ get '/hi' do
 end
 
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
 <pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
@@ -1058,27 +1052,27 @@ end</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with title, source and unknown languages attributes", func() {
-				source := `[source,brainfart]
+		It("with title, source and unknown languages attributes", func() {
+			source := `[source,brainfart]
 .Source block title
 ----
 int main(int argc, char **argv);
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="title">Source block title</div>
 <div class="content">
 <pre class="highlight"><code class="language-brainfart" data-lang="brainfart">int main(int argc, char **argv);</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with id, title, source and languages attributes", func() {
-				source := `[#id-for-source-block]
+		It("with id, title, source and languages attributes", func() {
+			source := `[#id-for-source-block]
 [source,ruby]
 .app.rb
 ----
@@ -1088,7 +1082,7 @@ get '/hi' do
   "Hello World!"
 end
 ----`
-				expected := `<div id="id-for-source-block" class="listingblock">
+			expected := `<div id="id-for-source-block" class="listingblock">
 <div class="title">app.rb</div>
 <div class="content">
 <pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'sinatra'
@@ -1099,25 +1093,25 @@ end</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with html content", func() {
-				source := `[source]
+		It("with html content", func() {
+			source := `[source]
 ----
 <a>link</a>
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>&lt;a&gt;link&lt;/a&gt;</code></pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with highlighter and callouts", func() {
-				source := `:source-highlighter: chroma
+		It("with highlighter and callouts", func() {
+			source := `:source-highlighter: chroma
 [source, c]
 ----
 #include <stdio.h>
@@ -1127,7 +1121,7 @@ printf("Hello world!\n"); // <1>
 ----
 <1> A greeting
 `
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="chroma highlight"><code data-lang="c"><span class="tok-cp">#include</span> <span class="tok-cpf">&lt;stdio.h&gt;</span>
 
@@ -1143,23 +1137,23 @@ printf("Hello world!\n"); // <1>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with other content", func() {
-				source := `----
+		It("with other content", func() {
+			source := `----
   a<<b
 ----`
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>  a&lt;&lt;b</pre>
 </div>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
-			It("with callouts and syntax highlighting", func() {
-				source := `[source,java]
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+		It("with callouts and syntax highlighting", func() {
+			source := `[source,java]
 ----
 @QuarkusTest
 public class GreetingResourceTest {
@@ -1183,7 +1177,7 @@ public class GreetingResourceTest {
 ----
 <1> We need to use the @RestClient CDI qualifier, since Quarkus creates the GreetingService bean with this qualifier.
 `
-				expected := `<div class="listingblock">
+			expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@QuarkusTest
 public class GreetingResourceTest {
@@ -1214,66 +1208,195 @@ public class GreetingResourceTest {
 </ol>
 </div>
 `
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
+		Context("with syntax highlighting", func() {
+
+			It("should render source block with go syntax only", func() {
+				source := `:source-highlighter: pygments
+		
+[source,go]
+----
+type Foo struct{
+    Field string
+}
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+`
+				Expect(RenderXHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should render source block without highlighter when language is not set", func() {
+				source := `:source-highlighter: pygments
+		
+[source]
+----
+type Foo struct{
+    Field string
+}
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code>type Foo struct{
+    Field string
+}</code></pre>
+</div>
+</div>
+`
+				Expect(RenderXHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should render source block without highlighter when language is not set", func() {
+				source := `:source-highlighter: pygments
+		
+[source]
+----
+type Foo struct{
+    Field string
+}
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code>type Foo struct{
+    Field string
+}</code></pre>
+</div>
+</div>
+`
+				Expect(RenderXHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should render source block with go syntax and custom style", func() {
+				source := `:source-highlighter: pygments
+:pygments-style: manni
+
+[source,go]
+----
+type Foo struct{
+    Field string
+}
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-p">}</span></code></pre>
+</div>
+</div>
+`
+				Expect(RenderXHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should render source block with go syntax, custom style and line numbers", func() {
+				source := `:source-highlighter: pygments
+:pygments-style: manni
+:pygments-linenums-mode: inline
+
+[source,go,linenums]
+----
+type Foo struct{
+    Field string
+}
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-ln">1</span><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+<span class="tok-ln">2</span>    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-ln">3</span><span class="tok-p">}</span></code></pre>
+</div>
+</div>
+` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
+				Expect(RenderXHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should render source block with go syntax, custom style, inline css and line numbers", func() {
+				source := `:source-highlighter: pygments
+:pygments-style: manni
+:pygments-css: style
+:pygments-linenums-mode: inline
+
+[source,go,linenums]
+----
+type Foo struct{
+    Field string
+}
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="go"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span style="color:#069;font-weight:bold">type</span> Foo <span style="color:#069;font-weight:bold">struct</span>{
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>    Field <span style="color:#078;font-weight:bold">string</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span>}</code></pre>
+</div>
+</div>
+` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))
 			})
 		})
+	})
 
-		Context("passthrough blocks", func() {
+	Context("passthrough blocks", func() {
 
-			It("with title", func() {
-				source := `.a title
+		It("with title", func() {
+			source := `.a title
 ++++
 _foo_
 
 *bar*
 ++++`
-				expected := `_foo_
+			expected := `_foo_
 
 *bar*
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
 
-			It("with special characters", func() {
-				source := `++++
+		It("with special characters", func() {
+			source := `++++
 <input>
 
 <input>
 ++++`
-				expected := `<input>
+			expected := `<input>
 
 <input>
 `
-				Expect(RenderHTML(source)).To(MatchHTML(expected))
-			})
-
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		Context("passthrough open block", func() {
+	})
 
-			It("2-line paragraph followed by another paragraph", func() {
-				source := `[pass]
+	Context("passthrough open block", func() {
+
+		It("2-line paragraph followed by another paragraph", func() {
+			source := `[pass]
 _foo_
 *bar*
 
 another paragraph`
-				expected := `_foo_
+			expected := `_foo_
 *bar*
 <div class="paragraph">
 <p>another paragraph</p>
 </div>
 `
-				Expect(RenderXHTML(source)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
+	})
 
-		Context("with custom substitutions", func() {
+	Context("with custom substitutions", func() {
 
-			// testing custom substitutions on listing blocks only, as
-			// other verbatim blocks (fenced, literal, source, passthrough)
-			// share the same implementation
+		// testing custom substitutions on listing blocks only, as
+		// other verbatim blocks (fenced, literal, source, passthrough)
+		// share the same implementation
 
-			source := `:github-url: https://github.com
+		source := `:github-url: https://github.com
 			
 [subs="$SUBS"]
 ----
@@ -1287,9 +1410,9 @@ and <more text> on the +
 <1> a callout
 `
 
-			It("should apply the default substitution", func() {
-				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
-				expected := `<div class="listingblock">
+		It("should apply the default substitution", func() {
+			s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to https://example.com[] <b class="conum">(1)</b>
 and &lt;more text&gt; on the +
@@ -1306,12 +1429,12 @@ and &lt;more text&gt; on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'normal' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "normal")
-				expected := `<div class="listingblock">
+		It("should apply the 'normal' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "normal")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
 and &lt;more text&gt; on the<br/>
@@ -1328,12 +1451,12 @@ and &lt;more text&gt; on the<br/>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'quotes' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "quotes")
-				expected := `<div class="listingblock">
+		It("should apply the 'quotes' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "quotes")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to https://example.com[] <1>
 and <more text> on the +
@@ -1350,12 +1473,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'macros' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "macros")
-				expected := `<div class="listingblock">
+		It("should apply the 'macros' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "macros")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
 and <more text> on the +
@@ -1372,12 +1495,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'attributes' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "attributes")
-				expected := `<div class="listingblock">
+		It("should apply the 'attributes' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "attributes")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to https://example.com[] <1>
 and <more text> on the +
@@ -1394,12 +1517,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'attributes,macros' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
-				expected := `<div class="listingblock">
+		It("should apply the 'attributes,macros' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
 and <more text> on the +
@@ -1416,12 +1539,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'specialchars' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "specialchars")
-				expected := `<div class="listingblock">
+		It("should apply the 'specialchars' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "specialchars")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to https://example.com[] &lt;1&gt;
 and &lt;more text&gt; on the +
@@ -1438,12 +1561,12 @@ and &lt;more text&gt; on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'replacements' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "replacements")
-				expected := `<div class="listingblock">
+		It("should apply the 'replacements' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "replacements")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to https://example.com[] <1>
 and <more text> on the +
@@ -1460,12 +1583,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'post_replacements' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "post_replacements")
-				expected := `<div class="listingblock">
+		It("should apply the 'post_replacements' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "post_replacements")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to https://example.com[] <1>
 and <more text> on the<br/>
@@ -1482,12 +1605,12 @@ and <more text> on the<br/>
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'quotes,macros' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
-				expected := `<div class="listingblock">
+		It("should apply the 'quotes,macros' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
 and <more text> on the +
@@ -1504,12 +1627,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'macros,quotes' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
-				expected := `<div class="listingblock">
+		It("should apply the 'macros,quotes' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
 and <more text> on the +
@@ -1526,12 +1649,12 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
+		})
 
-			It("should apply the 'none' substitution", func() {
-				s := strings.ReplaceAll(source, "$SUBS", "none")
-				expected := `<div class="listingblock">
+		It("should apply the 'none' substitution", func() {
+			s := strings.ReplaceAll(source, "$SUBS", "none")
+			expected := `<div class="listingblock">
 <div class="content">
 <pre>a link to https://example.com[] <1>
 and <more text> on the +
@@ -1548,8 +1671,7 @@ and <more text> on the +
 </ol>
 </div>
 `
-				Expect(RenderXHTML(s)).To(MatchHTML(expected))
-			})
+			Expect(RenderXHTML(s)).To(MatchHTML(expected))
 		})
 	})
 
@@ -2315,135 +2437,6 @@ and <more text> on the +
 `
 				Expect(RenderXHTML(s)).To(MatchHTML(expected))
 			})
-		})
-	})
-
-	Context("syntax highlighting with pygments", func() {
-
-		It("should render source block with go syntax only", func() {
-			source := `:source-highlighter: pygments
-	
-[source,go]
-----
-type Foo struct{
-	Field string
-}
-----`
-			expected := `<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
-	<span class="tok-nx">Field</span> <span class="tok-kt">string</span>
-<span class="tok-p">}</span></code></pre>
-</div>
-</div>
-`
-			Expect(RenderXHTML(source)).To(MatchHTML(expected))
-		})
-
-		It("should render source block without highlighter when language is not set", func() {
-			source := `:source-highlighter: pygments
-	
-[source]
-----
-type Foo struct{
-	Field string
-}
-----`
-			expected := `<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code>type Foo struct{
-	Field string
-}</code></pre>
-</div>
-</div>
-`
-			Expect(RenderXHTML(source)).To(MatchHTML(expected))
-		})
-
-		It("should render source block without highlighter when language is not set", func() {
-			source := `:source-highlighter: pygments
-	
-[source]
-----
-type Foo struct{
-	Field string
-}
-----`
-			expected := `<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code>type Foo struct{
-	Field string
-}</code></pre>
-</div>
-</div>
-`
-			Expect(RenderXHTML(source)).To(MatchHTML(expected))
-		})
-
-		It("should render source block with go syntax and custom style", func() {
-			source := `:source-highlighter: pygments
-:pygments-style: manni
-
-[source,go]
-----
-type Foo struct{
-	Field string
-}
-----`
-			expected := `<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
-	<span class="tok-nx">Field</span> <span class="tok-kt">string</span>
-<span class="tok-p">}</span></code></pre>
-</div>
-</div>
-`
-			Expect(RenderXHTML(source)).To(MatchHTML(expected))
-		})
-
-		It("should render source block with go syntax, custom style and line numbers", func() {
-			source := `:source-highlighter: pygments
-:pygments-style: manni
-:pygments-linenums-mode: inline
-
-[source,go,linenums]
-----
-type Foo struct{
-    Field string
-}
-----`
-			expected := `<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span class="tok-ln">1</span><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
-<span class="tok-ln">2</span>    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
-<span class="tok-ln">3</span><span class="tok-p">}</span></code></pre>
-</div>
-</div>
-` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
-			Expect(RenderXHTML(source)).To(MatchHTML(expected))
-		})
-
-		It("should render source block with go syntax, custom style, inline css and line numbers", func() {
-			source := `:source-highlighter: pygments
-:pygments-style: manni
-:pygments-css: style
-:pygments-linenums-mode: inline
-
-[source,go,linenums]
-----
-type Foo struct{
-    Field string
-}
-----`
-			expected := `<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span style="color:#069;font-weight:bold">type</span> Foo <span style="color:#069;font-weight:bold">struct</span>{
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>    Field <span style="color:#078;font-weight:bold">string</span>
-<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span>}</code></pre>
-</div>
-</div>
-` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
-			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
 

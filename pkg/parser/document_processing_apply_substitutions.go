@@ -19,7 +19,7 @@ import (
 
 // ApplySubstitutions applies all the substitutions on delimited blocks, standalone paragraphs and paragraphs
 // in continued list items, and then attribute substitutions, and as a result returns a `DraftDocument`.
-func ApplySubstitutions(rawDoc types.RawDocument, config configuration.Configuration, options ...Option) (types.DraftDocument, error) {
+func ApplySubstitutions(rawDoc types.RawDocument, config configuration.Configuration) (types.DraftDocument, error) {
 	attrs := types.AttributesWithOverrides{
 		Content:   types.Attributes{},
 		Overrides: config.AttributeOverrides,
@@ -30,64 +30,76 @@ func ApplySubstitutions(rawDoc types.RawDocument, config configuration.Configura
 	// also, add all AttributeDeclaration at the top of the document
 	attrs.Add(rawDoc.Attributes())
 
-	blocks, err := applySubstitutions(rawDoc.Blocks, attrs, options...)
+	elements, err := applySubstitutions(rawDoc.Elements, attrs)
 	if err != nil {
 		return types.DraftDocument{}, err
 	}
-	if len(blocks) == 0 {
-		blocks = nil // avoid carrying empty slice
+	if len(elements) == 0 {
+		elements = nil // avoid carrying empty slice
 	}
 	return types.DraftDocument{
 		Attributes:  attrs.All(),
 		FrontMatter: rawDoc.FrontMatter,
-		Blocks:      blocks,
+		Elements:    elements,
 	}, nil
 }
 
 // applySubstitutions applies the substitutions on paragraphs and delimited blocks (including when in continued list elements)
-func applySubstitutions(elements []interface{}, attrs types.AttributesWithOverrides, options ...Option) ([]interface{}, error) {
+func applySubstitutions(elements []interface{}, attrs types.AttributesWithOverrides) ([]interface{}, error) {
 	if len(elements) == 0 {
 		return nil, nil
 	}
-	result := []interface{}{}
+	result := make([]interface{}, 0, len(elements))
 	for _, e := range elements {
+		var err error
 		switch e := e.(type) {
+		case types.BlockWithElementSubstitution:
+			subs, err := substitutionsFor(e)
+			if err != nil {
+				return nil, err
+			}
+			elements, err := applySubstitutionsOnElements(e.ElementsToSubstitute(), subs, attrs)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, e.ReplaceElements(elements))
+		case types.BlockWithLineSubstitution:
+			subs, err := substitutionsFor(e)
+			if err != nil {
+				return nil, err
+			}
+			elements, err := applySubstitutionsOnLines(e.LinesToSubstitute(), subs, attrs)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, e.ReplaceLines(elements))
+		case types.MarkdownQuoteBlock: // slightly different since there is an extraction for the author attributions
+			e, err := applySubstitutionsOnMarkdownQuoteBlock(e, attrs)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, e)
 		case types.ContinuedListItemElement:
-			r, err := applySubstitutions([]interface{}{e.Element}, attrs, options...)
+			r, err := applySubstitutions([]interface{}{e.Element}, attrs)
 			if err != nil {
 				return nil, err
 			}
 			e.Element = r[0]
 			result = append(result, e)
-		case types.Paragraph:
-			p, err := applySubstitutionsOnParagraph(e, attrs, options...)
-			if err != nil {
-				return nil, err
-			}
-			result = append(result, p)
 		case types.ImageBlock:
-			i, err := applySubstitutionsOnImageBlock(e, attrs, options...)
-			if err != nil {
+			if e, err = applySubstitutionsOnImageBlock(e, attrs); err != nil {
 				return nil, err
 			}
-			result = append(result, i)
+			result = append(result, e)
 		case types.Section:
-			s, err := applySubstitutionsOnSection(e, attrs, options...)
-			if err != nil {
+			if e, err = applySubstitutionsOnSection(e, attrs); err != nil {
 				return nil, err
 			}
-			result = append(result, s)
-		case types.DelimitedBlock:
-			b, err := applySubstitutionsOnDelimitedBlock(e, attrs, options...)
-			if err != nil {
-				return nil, err
-			}
-			result = append(result, b)
+			result = append(result, e)
 		default:
 			// no support for element substitution here
 			// so let's proceed with attribute substitutions
-			e, err := applyAttributeSubstitutionsOnElement(e, attrs)
-			if err != nil {
+			if e, err = applyAttributeSubstitutionsOnElement(e, attrs); err != nil {
 				return nil, err
 			}
 			result = append(result, e)
@@ -104,97 +116,109 @@ func applySubstitutions(elements []interface{}, attrs types.AttributesWithOverri
 // Delimited Block substitutions
 // ----------------------------------------------------------------------------
 
-// applySubstitutionsOnDelimitedBlock parses the given raw elements, depending on the given substitutions to apply
-// May return the elements unchanged, or convert the elements to a source doc and parse with a custom entrypoint
-func applySubstitutionsOnDelimitedBlock(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
-	switch b.Kind {
-	case types.Example, types.Quote, types.Sidebar:
-		return applyNormalBlockSubstitutions(b, attrs, options...)
-	case types.Fenced, types.Listing, types.Literal, types.Source:
-		return applyVerbatimBlockSubstitutions(b, attrs, options...)
-	case types.Passthrough:
-		return applyPassthroughBlockSubstitutions(b, attrs, options...)
-	case types.Verse:
-		return applyVerseBlockSubstitutions(b, attrs, options...)
-	case types.MarkdownQuote:
-		return applyMarkdownQuoteBlockSubstitutions(b, attrs, options...)
-	case types.Comment:
-		return applyCommentBlockSubstitutions(b, attrs, options...)
-	}
-	return b, fmt.Errorf("unsupported block type: '%s", string(b.Kind))
+var defaultSubstitutionsForBlockElements = []elementsSubstitution{
+	substituteInlinePassthrough,
+	substituteSpecialCharacters,
+	substituteQuotedTexts,
+	substituteAttributes,
+	substituteReplacements,
+	substituteInlineMacros,
+	substitutePostReplacements,
+}
+var defaultExampleBlockSubstitutions = defaultSubstitutionsForBlockElements
+var defaultQuoteBlockSubstitutions = defaultSubstitutionsForBlockElements
+var defaultSidebarBlockSubstitutions = defaultSubstitutionsForBlockElements
+
+var defaultSubstitutionsForBlockLines = []elementsSubstitution{
+	substituteCallouts,
+	substituteSpecialCharacters,
+}
+var defaultFencedBlockSubstitutions = defaultSubstitutionsForBlockLines
+var defaultListingBlockSubstitutions = defaultSubstitutionsForBlockLines
+
+var defaultCommentBlockSubstitutions = []elementsSubstitution{substituteNone}
+
+var defaultVerseBlockSubstitutions = []elementsSubstitution{
+	substituteInlinePassthrough,
+	substituteSpecialCharacters,
+	substituteQuotedTexts,
+	substituteAttributes,
+	substituteReplacements,
+	substituteInlineMacros, // substituteVerseMacros
+	substitutePostReplacements,
+}
+var defaultParagraphSubstitutions = []elementsSubstitution{
+	substituteInlinePassthrough,
+	substituteSpecialCharacters,
+	substituteQuotedTexts,
+	substituteAttributes,
+	substituteReplacements,
+	substituteInlineMacros,
+	substitutePostReplacements,
 }
 
-func applyNormalBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
-	funcs := []elementsSubstitution{}
-	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
-	for _, s := range strings.Split(subs, ",") {
-		switch s {
-		case "", "normal":
-			funcs = append(funcs,
-				substituteInlinePassthrough,
-				substituteSpecialCharacters,
-				substituteQuotedTexts,
-				substituteAttributes,
-				substituteReplacements,
-				substituteInlineMacros,
-				substitutePostReplacements)
-		case "specialcharacters", "specialchars":
-			funcs = append(funcs, substituteSpecialCharacters)
-		case "quotes":
-			funcs = append(funcs, substituteQuotedTexts)
-		case "attributes":
-			funcs = append(funcs, substituteAttributes)
-		case "macros":
-			funcs = append(funcs, substituteInlineMacros)
-		case "replacements":
-			funcs = append(funcs, substituteReplacements)
-		case "post_replacements":
-			funcs = append(funcs, substitutePostReplacements)
-		case "none":
-			funcs = append(funcs, substituteNone)
-		default:
-			return types.DelimitedBlock{}, fmt.Errorf("unsupported substitution: '%s", s)
+func applySubstitutionsOnMarkdownQuoteBlock(b types.MarkdownQuoteBlock, attrs types.AttributesWithOverrides) (types.MarkdownQuoteBlock, error) {
+	funcs := []elementsSubstitution{
+		substituteInlinePassthrough,
+		substituteSpecialCharacters,
+		substituteQuotedTexts,
+		substituteAttributes,
+		substituteReplacements,
+		substituteInlineMacros,
+		substitutePostReplacements,
+		splitLines}
+	// attempt to extract the block attributions
+	var author string
+	if b.Lines, author = extractMarkdownQuoteAttribution(b.Lines); author != "" {
+		if b.Attributes == nil {
+			b.Attributes = types.Attributes{}
+		}
+		b.Attributes.Set(types.AttrQuoteAuthor, author)
+	}
+	if len(b.Lines) == 0 { // no more line to parse after extracting the author
+		b.Lines = nil
+		return b, nil
+	}
+	// apply all the substitutions
+	var err error
+	for _, sub := range funcs {
+		if b.Lines, err = sub(b.Lines, attrs); err != nil {
+			return types.MarkdownQuoteBlock{}, err
 		}
 	}
-	funcs = append(funcs, splitLines)
-
-	// first, parse the raw lines to extract "sub blocks"
-	blocks, err := substituteNormalBlocks(b.Elements, attrs, options...)
-	if err != nil {
-		return types.DelimitedBlock{}, err
-	}
-	// apply all the substitutions on blocks that need to be processed
-	for i, block := range blocks {
-		switch block := block.(type) {
-		case types.Paragraph:
-			for _, sub := range funcs {
-				if block.Lines, err = sub(block.Lines, attrs, options...); err != nil {
-					return types.DelimitedBlock{}, err
-				}
-			}
-			blocks[i] = block
-		case types.DelimitedBlock:
-			for _, sub := range funcs {
-				if block.Elements, err = sub(block.Elements, attrs, options...); err != nil {
-					return types.DelimitedBlock{}, err
-				}
-			}
-			blocks[i] = block
-		default:
-			// do nothing
-		}
-	}
-	b.Elements = blocks
 	return b, nil
 }
 
-func applyVerbatimBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
+func extractMarkdownQuoteAttribution(lines [][]interface{}) ([][]interface{}, string) {
+	log.Debug("extracting attribution on markdown block quote")
+	// first, check if last line is an attribution (author)
+	if len(lines) == 0 {
+		return lines, ""
+	}
+	if l, ok := lines[len(lines)-1][0].(types.StringElement); ok {
+		a, err := ParseReader("", strings.NewReader(l.Content), Entrypoint("MarkdownQuoteAttribution"))
+		// assume that the last line is not an author attribution if an error occurred
+		if err != nil {
+			return lines, ""
+		}
+		if a, ok := a.(string); ok {
+			log.Debugf("found attribution in markdown block: '%s'", a)
+			return lines[:len(lines)-1], a
+		}
+	}
+	return lines, ""
+}
+
+func substitutionsFor(block types.BlockWithSubstitution) ([]elementsSubstitution, error) {
 	funcs := []elementsSubstitution{}
-	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
-	for _, s := range strings.Split(subs, ",") {
+	for _, s := range strings.Split(block.SubstitutionsToApply(), ",") {
 		switch s {
 		case "":
-			funcs = append(funcs, substituteCallouts, substituteSpecialCharacters)
+			defaultSubs, err := defaultSubstitutionsFor(block)
+			if err != nil {
+				return nil, err
+			}
+			funcs = append(funcs, defaultSubs...)
 		case "normal":
 			funcs = append(funcs,
 				substituteInlinePassthrough,
@@ -203,94 +227,6 @@ func applyVerbatimBlockSubstitutions(b types.DelimitedBlock, attrs types.Attribu
 				substituteAttributes,
 				substituteReplacements,
 				substituteInlineMacros,
-				substitutePostReplacements)
-		case "specialcharacters", "specialchars":
-			funcs = append(funcs, substituteSpecialCharacters)
-		case "quotes":
-			funcs = append(funcs, substituteQuotedTexts)
-		case "attributes":
-			funcs = append(funcs, substituteAttributes)
-		case "macros":
-			funcs = append(funcs, substituteInlineMacros)
-		case "replacements":
-			funcs = append(funcs, substituteReplacements)
-		case "post_replacements":
-			funcs = append(funcs, substitutePostReplacements)
-		case "none":
-			funcs = append(funcs, substituteNone)
-		default:
-			return types.DelimitedBlock{}, fmt.Errorf("unsupported substitution: '%s", s)
-		}
-	}
-	funcs = append(funcs, splitLines)
-	// apply all the substitutions
-	var err error
-	for _, sub := range funcs {
-		if b.Elements, err = sub(b.Elements, attrs, options...); err != nil {
-			return types.DelimitedBlock{}, err
-		}
-	}
-	return b, nil
-}
-
-func applyPassthroughBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
-	funcs := []elementsSubstitution{}
-	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
-	for _, s := range strings.Split(subs, ",") {
-		switch s {
-		case "":
-			funcs = append(funcs, substituteCallouts)
-		case "normal":
-			funcs = append(funcs,
-				substituteInlinePassthrough,
-				substituteSpecialCharacters,
-				substituteQuotedTexts,
-				substituteAttributes,
-				substituteReplacements,
-				substituteInlineMacros,
-				substitutePostReplacements)
-		case "specialcharacters", "specialchars":
-			funcs = append(funcs, substituteSpecialCharacters)
-		case "quotes":
-			funcs = append(funcs, substituteQuotedTexts)
-		case "attributes":
-			funcs = append(funcs, substituteAttributes)
-		case "macros":
-			funcs = append(funcs, substituteInlineMacros)
-		case "replacements":
-			funcs = append(funcs, substituteReplacements)
-		case "post_replacements":
-			funcs = append(funcs, substitutePostReplacements)
-		case "none":
-			funcs = append(funcs, substituteNone)
-		default:
-			return types.DelimitedBlock{}, fmt.Errorf("unsupported substitution: '%s", s)
-		}
-	}
-	funcs = append(funcs, splitLines)
-	// apply all the substitutions
-	var err error
-	for _, sub := range funcs {
-		if b.Elements, err = sub(b.Elements, attrs, options...); err != nil {
-			return types.DelimitedBlock{}, err
-		}
-	}
-	return b, nil
-}
-
-func applyVerseBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
-	funcs := []elementsSubstitution{}
-	subs, _ := b.Attributes.GetAsString(types.AttrSubstitutions)
-	for _, s := range strings.Split(subs, ",") {
-		switch s {
-		case "", "normal":
-			funcs = append(funcs,
-				substituteInlinePassthrough,
-				substituteSpecialCharacters,
-				substituteQuotedTexts,
-				substituteAttributes,
-				substituteReplacements,
-				substituteVerseMacros,
 				substitutePostReplacements,
 			)
 		case "specialcharacters", "specialchars":
@@ -300,7 +236,7 @@ func applyVerseBlockSubstitutions(b types.DelimitedBlock, attrs types.Attributes
 		case "attributes":
 			funcs = append(funcs, substituteAttributes)
 		case "macros":
-			funcs = append(funcs, substituteVerseMacros)
+			funcs = append(funcs, substituteInlineMacros)
 		case "replacements":
 			funcs = append(funcs, substituteReplacements)
 		case "post_replacements":
@@ -308,79 +244,73 @@ func applyVerseBlockSubstitutions(b types.DelimitedBlock, attrs types.Attributes
 		case "none":
 			funcs = append(funcs, substituteNone)
 		default:
-			return types.DelimitedBlock{}, fmt.Errorf("unsupported substitution: '%s", s)
+			return nil, fmt.Errorf("unsupported substitution: '%s", s)
 		}
 	}
 	funcs = append(funcs, splitLines)
-	// apply all the substitutions
-	var err error
-	for _, sub := range funcs {
-		if b.Elements, err = sub(b.Elements, attrs, options...); err != nil {
-			return types.DelimitedBlock{}, err
-		}
-	}
-	return b, nil
+	return funcs, nil
 }
 
-func applyMarkdownQuoteBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
-	funcs := []elementsSubstitution{
-		substituteInlinePassthrough,
-		substituteSpecialCharacters,
-		substituteQuotedTexts,
-		substituteAttributes,
-		substituteReplacements,
-		substituteMarkdownQuoteMacros,
-		substitutePostReplacements}
-	// attempt to extract the block attributions
-	var author string
-	if b.Elements, author = extractMarkdownQuoteAttribution(b.Elements); author != "" {
-		if b.Attributes == nil {
-			b.Attributes = types.Attributes{}
-		}
-		b.Attributes.Set(types.AttrQuoteAuthor, author)
+func defaultSubstitutionsFor(block interface{}) ([]elementsSubstitution, error) {
+	switch block.(type) {
+	case types.ExampleBlock:
+		return defaultExampleBlockSubstitutions, nil
+	case types.QuoteBlock:
+		return defaultQuoteBlockSubstitutions, nil
+	case types.SidebarBlock:
+		return defaultSidebarBlockSubstitutions, nil
+	case types.FencedBlock:
+		return defaultFencedBlockSubstitutions, nil
+	case types.ListingBlock:
+		return defaultListingBlockSubstitutions, nil
+	case types.VerseBlock:
+		return defaultVerseBlockSubstitutions, nil
+	// case types.MarkdownQuoteBlock:
+	// 	return defaultMarkdownQuoteSubstitutions, nil
+	case types.CommentBlock:
+		return defaultCommentBlockSubstitutions, nil
+	case types.Paragraph:
+		return defaultParagraphSubstitutions, nil
+	default:
+		return nil, fmt.Errorf("unsupported type of block: '%T'", block)
 	}
-	if len(b.Elements) == 0 { // no more line to parse after extracting the author
-		return b, nil
-	}
-	// apply all the substitutions
-	var err error
-	for _, sub := range funcs {
-		if b.Elements, err = sub(b.Elements, attrs, options...); err != nil {
-			return types.DelimitedBlock{}, err
-		}
-	}
-	return b, nil
 }
 
-func applyCommentBlockSubstitutions(b types.DelimitedBlock, attrs types.AttributesWithOverrides, options ...Option) (types.DelimitedBlock, error) {
-	funcs := []elementsSubstitution{substituteNone, splitLines}
-	var err error
-	for _, sub := range funcs {
-		if b.Elements, err = sub(b.Elements, attrs, options...); err != nil {
-			return types.DelimitedBlock{}, err
+func applySubstitutionsOnElements(elements []interface{}, subs []elementsSubstitution, attrs types.AttributesWithOverrides) ([]interface{}, error) {
+	// var err error
+	// apply all the substitutions on blocks that need to be processed
+	for i, element := range elements {
+		log.Debugf("applying substitution on element of type '%T'", element)
+		switch e := element.(type) {
+		// if the block contains a block...
+		case types.BlockWithElementSubstitution:
+			lines, err := applySubstitutionsOnElements(e.ElementsToSubstitute(), subs, attrs)
+			if err != nil {
+				return nil, err
+			}
+			elements[i] = e.ReplaceElements(lines)
+		case types.BlockWithLineSubstitution:
+			lines, err := applySubstitutionsOnLines(e.LinesToSubstitute(), subs, attrs)
+			if err != nil {
+				return nil, err
+			}
+			elements[i] = e.ReplaceLines(lines)
+		default:
+			log.Debugf("nothing to substitute on element of type '%T'", element)
+			// do nothing
 		}
 	}
-	return b, nil
+	return elements, nil
 }
 
-func extractMarkdownQuoteAttribution(elements []interface{}) ([]interface{}, string) {
-	log.Debug("extracting attribution on markdown block quote")
-	// first, check if last line is an attribution (author)
-	if len(elements) == 0 {
-		return elements, ""
-	}
-	if l, ok := elements[len(elements)-1].(types.RawLine); ok {
-		a, err := ParseReader("", strings.NewReader(l.Content), Entrypoint("MarkdownQuoteAttribution"))
-		// assume that the last line is not an author attribution if an error occurred
-		if err != nil {
-			return elements, ""
-		}
-		if a, ok := a.(string); ok {
-			log.Debugf("found attribution in markdown block: '%s'", a)
-			return elements[:len(elements)-1], a
+func applySubstitutionsOnLines(lines [][]interface{}, subs []elementsSubstitution, attrs types.AttributesWithOverrides) ([][]interface{}, error) {
+	var err error
+	for _, sub := range subs {
+		if lines, err = sub(lines, attrs); err != nil {
+			return nil, err
 		}
 	}
-	return elements, ""
+	return lines, nil
 }
 
 // ----------------------------------------------------------------------------
@@ -388,8 +318,8 @@ func extractMarkdownQuoteAttribution(elements []interface{}) ([]interface{}, str
 // ----------------------------------------------------------------------------
 
 // applies the elements and attributes substitutions on the given section title.
-func applySubstitutionsOnSection(s types.Section, attrs types.AttributesWithOverrides, options ...Option) (types.Section, error) {
-	elements := s.Title
+func applySubstitutionsOnSection(s types.Section, attrs types.AttributesWithOverrides) (types.Section, error) {
+	elements := [][]interface{}{s.Title} // wrap to match the `elementsSubstitution` arg type
 	subs := []elementsSubstitution{
 		substituteInlinePassthrough,
 		substituteSpecialCharacters,
@@ -401,11 +331,11 @@ func applySubstitutionsOnSection(s types.Section, attrs types.AttributesWithOver
 	}
 	var err error
 	for _, sub := range subs {
-		if elements, err = sub(elements, attrs, options...); err != nil {
+		if elements, err = sub(elements, attrs); err != nil {
 			return types.Section{}, err
 		}
 	}
-	s.Title = elements
+	s.Title = elements[0]
 	if s, err = s.ResolveID(attrs); err != nil {
 		return types.Section{}, err
 	}
@@ -421,16 +351,16 @@ func applySubstitutionsOnSection(s types.Section, attrs types.AttributesWithOver
 // ----------------------------------------------------------------------------
 
 // applies the elements and attributes substitutions on the given image block.
-func applySubstitutionsOnImageBlock(b types.ImageBlock, attrs types.AttributesWithOverrides, options ...Option) (types.ImageBlock, error) {
-	elements := b.Location.Path
+func applySubstitutionsOnImageBlock(b types.ImageBlock, attrs types.AttributesWithOverrides) (types.ImageBlock, error) {
+	elements := [][]interface{}{b.Location.Path} // wrap to match the `elementsSubstitution` arg type
 	subs := []elementsSubstitution{substituteAttributes}
 	var err error
 	for _, sub := range subs {
-		if elements, err = sub(elements, attrs, options...); err != nil {
+		if elements, err = sub(elements, attrs); err != nil {
 			return types.ImageBlock{}, err
 		}
 	}
-	b.Location.Path = elements
+	b.Location.Path = elements[0]
 	b.Location = b.Location.WithPathPrefix(attrs.GetAsStringWithDefault("imagesdir", ""))
 	if !b.Attributes.Has(types.AttrImageAlt) {
 		alt := filepath.Base(b.Location.Stringify())
@@ -447,137 +377,72 @@ func applySubstitutionsOnImageBlock(b types.ImageBlock, attrs types.AttributesWi
 }
 
 // ----------------------------------------------------------------------------
-// Paragraph substitutions
-// ----------------------------------------------------------------------------
-
-// applies the elements and attributes substitutions on the given paragraph.
-// Attributes substitution is triggered only if there is no specific substitution or if the `attributes` substitution is explicitly set.
-func applySubstitutionsOnParagraph(p types.Paragraph, attrs types.AttributesWithOverrides, options ...Option) (types.Paragraph, error) {
-	subs, err := paragraphSubstitutions(p)
-	if err != nil {
-		return types.Paragraph{}, err
-	}
-	// apply all the configured substitutions
-	for _, sub := range subs {
-		var err error
-		if p.Lines, err = sub(p.Lines, attrs, options...); err != nil {
-			return types.Paragraph{}, err
-		}
-	}
-	return p, nil
-}
-
-// paragraphSubstitutions returns the substitution funcs to apply on the given paragraph `p`
-// otherwise, returns a default substitution which will ultemately fail
-func paragraphSubstitutions(p types.Paragraph) ([]elementsSubstitution, error) {
-	subs, _ := p.Attributes.GetAsString(types.AttrSubstitutions)
-	// log.Debugf("determining substitutions for '%s' on a paragraph", subs)
-	funcs := []elementsSubstitution{}
-	for _, s := range strings.Split(subs, ",") {
-		switch s {
-		case "specialcharacters", "specialchars":
-			funcs = append(funcs, substituteSpecialCharacters)
-		case "quotes":
-			funcs = append(funcs, substituteQuotedTexts)
-		case "attributes":
-			funcs = append(funcs, substituteAttributes)
-		case "macros":
-			funcs = append(funcs, substituteInlineMacros)
-		case "replacements":
-			funcs = append(funcs, substituteReplacements)
-		case "post_replacements":
-			funcs = append(funcs, substitutePostReplacements)
-		case "", "normal":
-			funcs = append(funcs,
-				substituteInlinePassthrough,
-				substituteSpecialCharacters,
-				substituteQuotedTexts,
-				substituteAttributes,
-				substituteReplacements,
-				substituteInlineMacros,
-				substitutePostReplacements,
-			)
-		case "none":
-			funcs = append(funcs, substituteNone)
-		default:
-			return nil, fmt.Errorf("unsupported substitution: '%s", s)
-		}
-	}
-	funcs = append(funcs, splitLines)
-	return funcs, nil
-}
-
-// ----------------------------------------------------------------------------
 // Individual substitution funcs
 // ----------------------------------------------------------------------------
 
 // includes a call to `elementsSubstitution` with some post-processing on the result
-var substituteAttributes = func(elements []interface{}, attrs types.AttributesWithOverrides, options ...Option) ([]interface{}, error) {
-	elements, err := newElementsSubstitution("AttributeSubs", "AttributeSubs")(elements, attrs, options...)
+var substituteAttributes = func(lines [][]interface{}, attrs types.AttributesWithOverrides) ([][]interface{}, error) {
+	lines, err := newElementsSubstitution("AttributeSubs", "AttributeSubs")(lines, attrs)
 	if err != nil {
 		return nil, err
 	}
-	for i, element := range elements {
-		element, err := applyAttributeSubstitutionsOnElement(element, attrs)
+	for i, line := range lines {
+		line, err := applyAttributeSubstitutionsOnElements(line, attrs)
 		if err != nil {
 			return nil, err
 		}
-		elements[i] = element
+		lines[i] = types.Merge(line)
 	}
-	elements = types.Merge(elements)
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("applied the 'attributes' substitution")
-		spew.Fdump(log.StandardLogger().Out, elements)
+		spew.Fdump(log.StandardLogger().Out, lines)
 	}
-	return elements, nil
+	return lines, nil
 }
 
 var (
-	substituteInlinePassthrough   = newElementsSubstitution("InlinePassthroughSubs", "InlinePassthroughSubs")
-	substituteSpecialCharacters   = newElementsSubstitution("SpecialCharacterSubs", "SpecialCharacterSubs")
-	substituteQuotedTexts         = newElementsSubstitution("QuotedTextSubs", "QuotedTextSubs")
-	substituteReplacements        = newElementsSubstitution("ReplacementSubs", "ReplacementSubs")
-	substituteInlineMacros        = newElementsSubstitution("InlineMacroSubs", "InlineMacroSubs")
-	substituteNormalBlocks        = newElementsSubstitution("NormalBlocks", "NormalBlocks")
-	substituteVerseMacros         = newElementsSubstitution("VerseMacroSubs", "VerseMacroSubs")
-	substituteMarkdownQuoteMacros = newElementsSubstitution("MarkdownQuoteMacroSubs", "MarkdownQuoteLine")
-	substitutePostReplacements    = newElementsSubstitution("PostReplacementSubs", "PostReplacementSubs")
-	substituteNone                = newElementsSubstitution("NoneSubs", "NoneSubs") // TODO: no need for placeholder support here?
-	substituteCallouts            = newElementsSubstitution("CalloutSubs", "CalloutSubs")
+	substituteInlinePassthrough = newElementsSubstitution("InlinePassthroughSubs", "InlinePassthroughSubs")
+	substituteSpecialCharacters = newElementsSubstitution("SpecialCharacterSubs", "SpecialCharacterSubs")
+	substituteQuotedTexts       = newElementsSubstitution("QuotedTextSubs", "QuotedTextSubs")
+	substituteReplacements      = newElementsSubstitution("ReplacementSubs", "ReplacementSubs")
+	substituteInlineMacros      = newElementsSubstitution("InlineMacroSubs", "InlineMacroSubs")
+	substitutePostReplacements  = newElementsSubstitution("PostReplacementSubs", "PostReplacementSubs")
+	substituteNone              = newElementsSubstitution("NoneSubs", "NoneSubs") // TODO: no need for placeholder support here?
+	substituteCallouts          = newElementsSubstitution("CalloutSubs", "CalloutSubs")
 )
 
-type elementsSubstitution func(elements []interface{}, attrs types.AttributesWithOverrides, options ...Option) ([]interface{}, error)
+type elementsSubstitution func(lines [][]interface{}, attrs types.AttributesWithOverrides) ([][]interface{}, error)
 
 func newElementsSubstitution(contentRuleName, placeholderRuleName string) elementsSubstitution {
-	return func(elements []interface{}, attrs types.AttributesWithOverrides, options ...Option) ([]interface{}, error) {
+	return func(lines [][]interface{}, attrs types.AttributesWithOverrides) ([][]interface{}, error) {
 		log.Debugf("applying the '%s' rule on elements", contentRuleName)
 		placeholders := newPlaceHolders()
-		s := serializeElementsWithPlaceHolders(elements, placeholders)
-		options = append(options, GlobalStore("imagesdir", attrs.GetAsStringWithDefault("imagesdir", ""))) // TODO: define a const for "imagesdir"
+		s := serializeLines(lines, placeholders)
+		imagesdirOption := GlobalStore("imagesdir", attrs.GetAsStringWithDefault("imagesdir", ""))
 		// process placeholder content (eg: quoted text may contain an inline link)
 		for ref, placeholder := range placeholders.elements {
 			switch placeholder := placeholder.(type) { // TODO: create `PlaceHolder` interface?
 			case types.QuotedString:
 				var err error
-				if placeholder.Elements, err = parserPlaceHolderElements(placeholder.Elements, append(options, Entrypoint(placeholderRuleName))...); err != nil {
+				if placeholder.Elements, err = parserPlaceHolderElements(placeholder.Elements, imagesdirOption, Entrypoint(placeholderRuleName)); err != nil {
 					return nil, err
 				}
 				placeholders.elements[ref] = placeholder
 			case types.QuotedText:
 				var err error
-				if placeholder.Elements, err = parserPlaceHolderElements(placeholder.Elements, append(options, Entrypoint(placeholderRuleName))...); err != nil {
+				if placeholder.Elements, err = parserPlaceHolderElements(placeholder.Elements, imagesdirOption, Entrypoint(placeholderRuleName)); err != nil {
 					return nil, err
 				}
 				placeholders.elements[ref] = placeholder
 			}
 		}
-		result := make([]interface{}, 0, len(elements))
-		elmts, err := parseContent("", s, append(options, Entrypoint(contentRuleName))...)
+		result := make([][]interface{}, 0, len(lines))
+		elmts, err := parseContent("", s, imagesdirOption, Entrypoint(contentRuleName))
 		if err != nil {
 			return nil, err
 		}
 		elmts = restoreElements(elmts, placeholders)
-		result = append(result, elmts...)
+		result = append(result, elmts)
 		if log.IsLevelEnabled(log.DebugLevel) {
 			log.Debugf("applied the '%s' rule:", contentRuleName)
 			spew.Fdump(log.StandardLogger().Out, result)
@@ -626,7 +491,9 @@ func restoreElements(elmts []interface{}, placeholders *placeholders) []interfac
 		case types.ElementPlaceHolder:
 			elmts[i] = placeholders.elements[elmt.Ref]
 		case types.Paragraph:
-			elmt.Lines = restoreElements(elmt.Lines, placeholders)
+			for i, line := range elmt.Lines {
+				elmt.Lines[i] = restoreElements(line, placeholders)
+			}
 			elmts[i] = elmt
 		case types.InlineLink: // TODO: use an interface and implement the `restoreElements` func on these types, instead
 			elmt.Location.Path = restoreElements(elmt.Location.Path, placeholders)
@@ -656,10 +523,6 @@ func restoreElements(elmts []interface{}, placeholders *placeholders) []interfac
 			// do nothing, keep elmt as-is
 		}
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("restored elements")
-		spew.Fdump(log.StandardLogger().Out, elmts)
-	}
 	return elmts
 }
 
@@ -676,43 +539,6 @@ func restoreAttributes(attrs types.Attributes, placeholders *placeholders) types
 		}
 	}
 	return attrs
-}
-
-func splitLines(elements []interface{}, _ types.AttributesWithOverrides, _ ...Option) ([]interface{}, error) {
-	// after processing all the elements, we want to split them in separate lines again, to retain the initial input format
-	lines := []interface{}{}
-	line := []interface{}{}
-	for _, element := range types.Merge(elements) {
-		switch element := element.(type) {
-		case types.StringElement:
-			// if content has line breaks, then split in multiple lines
-			if split := strings.Split(element.Content, "\n"); len(split) > 1 {
-				for i, s := range split {
-					if len(s) > 0 { // no need to insert empty StringElements
-						line = append(line, types.StringElement{Content: s})
-					}
-					if i < len(split)-1 {
-						lines = append(lines, line)
-						line = []interface{}{} // reset for the next line, except for the last item
-					}
-				}
-			} else {
-				line = append(line, element)
-			}
-		case types.SingleLineComment: // single-line comments are on their own lines
-			if len(line) > 0 {
-				lines = append(lines, line)
-			}
-			lines = append(lines, []interface{}{element})
-			line = []interface{}{} // reset for the next line
-		default:
-			line = append(line, element)
-		}
-	}
-	if len(line) > 0 { // don't forget the last line (if applicable)
-		lines = append(lines, line)
-	}
-	return lines, nil
 }
 
 type placeholders struct {
@@ -735,34 +561,68 @@ func (p *placeholders) add(element interface{}) types.ElementPlaceHolder {
 
 }
 
-func serializeElementsWithPlaceHolders(elements []interface{}, placeholders *placeholders) string {
+func serializeLines(lines [][]interface{}, placeholders *placeholders) string {
 	result := strings.Builder{}
-	for i, e := range elements {
-		// log.Debugf("serializing element of type '%T'", e)
-		switch e := e.(type) {
-		case []interface{}:
-			r := serializeElementsWithPlaceHolders(e, placeholders)
-			result.WriteString(r)
-			if i < len(elements)-1 {
-				result.WriteString("\n")
+	for i, line := range lines {
+		for _, e := range line {
+			switch e := e.(type) {
+			case types.StringElement:
+				result.WriteString(e.Content)
+			case types.SingleLineComment:
+				// replace with placeholder
+				p := placeholders.add(e)
+				result.WriteString(p.String())
+			default:
+				// replace with placeholder
+				p := placeholders.add(e)
+				result.WriteString(p.String())
 			}
-		case types.RawLine:
-			result.WriteString(e.Content)
-			if i < len(elements)-1 {
-				result.WriteString("\n")
-			}
-		case types.StringElement:
-			result.WriteString(e.Content)
-		default:
-			// replace with placeholder
-			p := placeholders.add(e)
-			result.WriteString(p.String())
+		}
+		if i < len(lines)-1 {
+			result.WriteString("\n")
 		}
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
 		spew.Fdump(log.StandardLogger().Out, result.String())
 	}
 	return result.String()
+}
+
+func splitLines(lines [][]interface{}, _ types.AttributesWithOverrides) ([][]interface{}, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("splitting lines on")
+		spew.Fdump(log.StandardLogger().Out, lines)
+	}
+	result := [][]interface{}{}
+	pendingLine := []interface{}{}
+	for _, line := range lines {
+		for _, element := range line {
+			switch element := element.(type) {
+			case types.StringElement:
+				// if content has line feeds, then split in multiple lines
+				split := strings.Split(element.Content, "\n")
+				for i, s := range split {
+					if len(s) > 0 { // no need to append an empty StringElement
+						pendingLine = append(pendingLine, types.StringElement{Content: s})
+					}
+					if i < len(split)-1 {
+						result = append(result, pendingLine)
+						pendingLine = []interface{}{} // reset for the next line, except for the last item
+					}
+				}
+			default:
+				pendingLine = append(pendingLine, element)
+			}
+		}
+	}
+	if len(pendingLine) > 0 { // don't forget the last line (if applicable)
+		result = append(result, pendingLine)
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("result")
+		spew.Fdump(log.StandardLogger().Out, result)
+	}
+	return result, nil
 }
 
 // ----------------------------------------------------------------------------
@@ -782,27 +642,79 @@ func applyAttributeSubstitutionsOnElements(elements []interface{}, attrs types.A
 	return result, nil
 }
 
+func applyAttributeSubstitutionsOnLines(lines [][]interface{}, attrs types.AttributesWithOverrides) ([][]interface{}, error) {
+	for i, line := range lines {
+		line, err := applyAttributeSubstitutionsOnElements(line, attrs)
+		if err != nil {
+			return nil, err
+		}
+		lines[i] = line
+	}
+	return lines, nil
+}
+
 func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.AttributesWithOverrides) (interface{}, error) {
-	// log.Debugf("applying attribute substitution on element of type '%T'", element)
 	var err error
 	switch e := element.(type) {
 	case types.Paragraph:
-		for i, l := range e.Lines {
-			l, err := applyAttributeSubstitutionsOnElement(l, attrs)
-			if err != nil {
-				return nil, err
-			}
-			e.Lines[i] = l
-		}
-		return e, nil
-	case []interface{}:
-		return applyAttributeSubstitutionsOnElements(e, attrs)
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
+	// case []interface{}:
+	// 	return applyAttributeSubstitutionsOnElements(e, attrs)
 	case types.AttributeDeclaration:
 		attrs.Set(e.Name, e.Value)
 		return e, nil
 	case types.AttributeReset:
 		attrs.Set(e.Name, nil) // This allows us to test for a reset vs. undefined.
 		return e, nil
+	case types.ImageBlock:
+		e.Location.Path, err = applyAttributeSubstitutionsOnElements(e.Location.Path, attrs)
+		return e, err
+	case types.Section:
+		e.Title, err = applyAttributeSubstitutionsOnElements(e.Title, attrs)
+		return e, err
+	case types.OrderedListItem:
+		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
+		return e, err
+	case types.UnorderedListItem:
+		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
+		return e, err
+	case types.LabeledListItem:
+		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
+		return e, err
+	case types.ContinuedListItemElement:
+		e.Element, err = applyAttributeSubstitutionsOnElement(e.Element, attrs)
+		return e, err
+	case types.ExampleBlock:
+		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
+		return e, err
+	case types.QuoteBlock:
+		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
+		return e, err
+	case types.SidebarBlock:
+		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
+		return e, err
+	case types.FencedBlock:
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
+	case types.ListingBlock:
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
+	case types.VerseBlock:
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
+	case types.MarkdownQuoteBlock:
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
+	case types.PassthroughBlock:
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
+	case types.CommentBlock:
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
+	case types.LiteralBlock:
+		e.Lines, err = applyAttributeSubstitutionsOnLines(e.Lines, attrs)
+		return e, err
 	case types.AttributeSubstitution:
 		if value, ok := attrs.GetAsString(e.Name); ok {
 			return types.StringElement{
@@ -815,9 +727,6 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 		}, nil
 	case types.CounterSubstitution:
 		return applyCounterSubstitution(e, attrs)
-	case types.ImageBlock:
-		e.Location.Path, err = applyAttributeSubstitutionsOnElements(e.Location.Path, attrs)
-		return e, err
 	case types.InlineImage:
 		e.Location.Path, err = applyAttributeSubstitutionsOnElements(e.Location.Path, attrs)
 		return e, err
@@ -827,29 +736,7 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 	case types.ExternalCrossReference:
 		e.Location.Path, err = applyAttributeSubstitutionsOnElements(e.Location.Path, attrs)
 		return e, err
-	case types.Section:
-		title, err := applyAttributeSubstitutionsOnElements(e.Title, attrs)
-		if err != nil {
-			return nil, err
-		}
-		e.Title = title
-		return e.ResolveID(attrs)
-	case types.OrderedListItem:
-		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
-		return e, err
-	case types.UnorderedListItem:
-		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
-		return e, err
-	case types.LabeledListItem:
-		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
-		return e, err
 	case types.QuotedText:
-		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
-		return e, err
-	case types.ContinuedListItemElement:
-		e.Element, err = applyAttributeSubstitutionsOnElement(e.Element, attrs)
-		return e, err
-	case types.DelimitedBlock:
 		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
 		return e, err
 	default:

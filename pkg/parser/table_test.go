@@ -16,7 +16,7 @@ var _ = Describe("tables", func() {
 |===
 `
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Columns: []types.TableColumn{
 						{Width: "50", VAlign: "top", HAlign: "left"},
@@ -65,7 +65,7 @@ var _ = Describe("tables", func() {
 | *foo* foo  | _bar_  | baz
 |===`
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Columns: []types.TableColumn{
 						{Width: "33.3333", VAlign: "top", HAlign: "left"},
@@ -127,7 +127,7 @@ var _ = Describe("tables", func() {
 |row 2, column 2
 |===`
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
 						types.AttrTitle: "table title",
@@ -201,7 +201,7 @@ var _ = Describe("tables", func() {
 |row 2, column 2
 |===`
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
 						types.AttrTitle:    "table title",
@@ -269,7 +269,7 @@ var _ = Describe("tables", func() {
 		source := `|===
 |===`
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Columns: []types.TableColumn{},
 					Lines:   []types.TableLine{},
@@ -282,7 +282,7 @@ var _ = Describe("tables", func() {
 	It("empty table with cols attr", func() {
 		source := "[cols=\"3,2,5\"]\n|===\n|==="
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
 						types.AttrCols: "3,2,5",
@@ -302,7 +302,7 @@ var _ = Describe("tables", func() {
 	It("autowidth overrides column widths", func() {
 		source := "[%autowidth,cols=\"3,2,5\"]\n|===\n|==="
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
 						types.AttrOptions: map[string]bool{"autowidth": true},
@@ -323,7 +323,7 @@ var _ = Describe("tables", func() {
 	It("column autowidth", func() {
 		source := "[cols=\"30,~,~\"]\n|===\n|==="
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
 						types.AttrCols: "30,~,~",
@@ -343,7 +343,7 @@ var _ = Describe("tables", func() {
 	It("columns with repeat", func() {
 		source := "[cols=\"3*10,2*~\"]\n|===\n|==="
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
 						types.AttrCols: "3*10,2*~",
@@ -363,7 +363,7 @@ var _ = Describe("tables", func() {
 	})
 	It("columns with alignment changes", func() {
 		source := "[cols=\"2*^.^,<,.>\"]\n|===\n|==="
-		expected := types.DraftDocument{Blocks: []interface{}{
+		expected := types.DraftDocument{Elements: []interface{}{
 			types.Table{
 				Attributes: types.Attributes{
 					types.AttrCols: "2*^.^,<,.>",
@@ -386,7 +386,7 @@ var _ = Describe("tables", func() {
 		source := "[cols=\"2*^.^d,<e,.>s\"]\n|===\n|==="
 		expected := types.DraftDocument{
 			FrontMatter: types.FrontMatter{Content: nil},
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
 						types.AttrCols: "2*^.^d,<e,.>s",

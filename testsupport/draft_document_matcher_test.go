@@ -16,10 +16,10 @@ var _ = Describe("draft document matcher", func() {
 
 	// given
 	expected := types.DraftDocument{
-		Blocks: []interface{}{
+		Elements: []interface{}{
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{
 							Content: "a paragraph.",
 						},
@@ -33,10 +33,10 @@ var _ = Describe("draft document matcher", func() {
 	It("should match", func() {
 		// given
 		actual := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						[]interface{}{
+					Lines: [][]interface{}{
+						{
 							types.StringElement{
 								Content: "a paragraph.",
 							},
@@ -55,10 +55,10 @@ var _ = Describe("draft document matcher", func() {
 	It("should not match", func() {
 		// given
 		actual := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						[]interface{}{
+					Lines: [][]interface{}{
+						{
 							types.StringElement{
 								Content: "another paragraph.",
 							},

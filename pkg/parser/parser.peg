@@ -36,26 +36,23 @@ RawSectionTitle <- [^\r\n]* {
     return string(c.text), nil 
 }
 
-RawLine <- !EOF content:(RawLineContent) EOL { // line MAY have content
-    return types.NewRawLine(content.(string))
-}
-
-RawLineContent <- [^\r\n]* { 
-    return string(c.text), nil 
-}
-
+RawLine <- !EOF content:([^\r\n]* { 
+        return string(c.text), nil 
+    }) EOL { // line MAY have content
+        return types.NewRawLine(content.(string))
+    }
 
 // ----------------------------------------------------------------
 // RawDocument - fully parsed document with raw blocks
 // ----------------------------------------------------------------
-RawDocument <- frontmatter:(FrontMatter?) blocks:(RawDocumentBlocks) EOF {
+RawDocument <- frontmatter:(FrontMatter?) blocks:(RawBlocks) EOF {
     return types.NewRawDocument(frontmatter, blocks.([]interface{}))
 }
 
 // ------------------------------------------
 // Document blocks
 // ------------------------------------------
-RawDocumentBlocks <- Newline* header:(DocumentHeader?) blocks:(DocumentRawBlock*) {
+RawBlocks <- Newline* header:(DocumentHeader?) blocks:(DocumentRawBlock*) {
     if header != nil && blocks != nil {
         return append([]interface{}{header}, blocks.([]interface{})...), nil
     } else if blocks != nil {
@@ -71,7 +68,8 @@ DocumentRawBlock <-
         / BlankLine // must be before LiteralBlock 
         / Section
         / DelimitedBlock
-        / RawVerseParagraph
+        / SingleLineComment
+        / Table
         / ThematicBreak
         / OrderedListItem
         / UnorderedListItem 
@@ -82,8 +80,8 @@ DocumentRawBlock <-
         / AttributeReset 
         / TableOfContentsPlaceHolder
         / UserMacroBlock
-        / StandaloneAttributes
         / RawParagraph
+        / StandaloneAttributes
 
 // ------------------------------------------
 // Front Matter
@@ -357,7 +355,7 @@ QuotedTextAttrRole <- role:PositionalValue {
     return types.NewElementRole(role)
 }
 
-StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* EOF { // standalone attributes, i.e., with nothing afterwards
+StandaloneAttributes <- attributes:(ElementAttribute)+ BlankLine* { // standalone attributes, i.e., with nothing afterwards
     return types.NewAttributes(attributes)
 }
 
@@ -662,8 +660,9 @@ ContinuedListItemElement <- ListItemContinuation element:ContinuedListItemConten
 
 ContinuedListItemContent <- !EOF 
     content:(DelimitedBlock
+        / SingleLineComment
+        / Table
         / ImageBlock
-        / RawVerseParagraph
         / ThematicBreak
         / OrderedListItem 
         / UnorderedListItem 
@@ -839,15 +838,15 @@ LabeledListItemDescription <- elements:(ListParagraph)+ {
 // Admonitions
 // ------------------------------------------
 AdmonitionKind <- "TIP" {
-        return types.Tip, nil
-    } / "NOTE" {
-        return types.Note, nil
-    } / "IMPORTANT" {
-        return types.Important, nil
-    } / "WARNING" {
-        return types.Warning, nil
-    } / "CAUTION" {
-        return types.Caution, nil
+    return types.Tip, nil
+} / "NOTE" {
+    return types.Note, nil
+} / "IMPORTANT" {
+    return types.Important, nil
+} / "WARNING" {
+    return types.Warning, nil
+} / "CAUTION" {
+    return types.Caution, nil
 }
 
 // ------------------------------------------
@@ -863,8 +862,9 @@ RawParagraph <-
         return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes)
     } / 
     // markdown-style blockquote paragraph
+    // TODO: move with other Delimited block rules?
     attributes:(Attributes)? "> " content:(MarkdownQuoteBlockRawContent) {
-        return types.NewDelimitedBlock(types.MarkdownQuote, content.([]interface{}), attributes)
+        return types.NewMarkdownQuoteBlock(content.([]interface{}), attributes)
     } /
     // passthrough open block: requires `[pass]`
     attributes:(Attributes)? &{  
@@ -874,19 +874,19 @@ RawParagraph <-
             return exists && kind == types.Passthrough, nil
         }
         return false, nil
-    } !BlockDelimiter content:(RawParagraphLine)+ { 
-        return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}), attributes)
+    } content:(RawParagraphLine)+ { 
+        return types.NewPassthroughBlock(content.([]interface{}), attributes)
     } /
     // other kind of paragraph (verse, regular, etc.)
-    attributes:(Attributes)? !BlockDelimiter lines:(SingleLineComment / RawParagraphLine)+ { 
+    attributes:(Attributes)?  lines:(SingleLineComment / RawParagraphLine)+ { 
         return types.NewParagraph(lines.([]interface{}), attributes)
     }
 
-MarkdownQuoteBlockRawContent <- (!BlankLine "> "? content:(RawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
+MarkdownQuoteBlockRawContent <- (!BlankLine "> "? content:(RawLine) { 
     return content, nil
 })+
 
-RawParagraphLine <- 
+RawParagraphLine <- !BlockDelimiter 
     content:(RawParagraphLineContent) EOL &{
         // exclude line if it is a blankline
         if strings.Trim(content.(string), " \t") == "" {
@@ -921,30 +921,7 @@ FirstParagraphRawLine <-
     return types.NewRawLine(content.(string))
 }
 
-// a paragraph is a group of line ending with a blank line (or end of file)
-// a paragraph cannot start with the `section` sequence (`= `, `== `, etc.)
-Paragraph <- 
-    // admonition paragraph 
-    attributes:(Attributes)? t:(AdmonitionKind) ": " lines:(ParagraphLine)+ { 
-        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(types.AdmonitionKind), attributes)
-    } / 
-    // passthrough open block: requires `[pass]`
-    attributes:(Attributes)? &{  
-        // verify that one of the attributes is `passthrough`
-        if attrs, ok := attributes.(types.Attributes); ok {
-            kind, exists := attrs[types.AttrKind]
-            return exists && kind == types.Passthrough, nil
-        }
-        return false, nil
-    } !BlockDelimiter content:(ParagraphLine)+ { 
-        return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}), attributes)
-    } /
-    // other kind of paragraph (verse, regular, etc.)
-    attributes:(Attributes)? !BlockDelimiter lines:(ParagraphLine)+ { 
-        return types.NewParagraph(lines.([]interface{}), attributes)
-    }
 
-ParagraphLine <- InlineElements
 
 // ------------------------------------------
 // Continued Paragraphs
@@ -964,23 +941,6 @@ ContinuedRawParagraph <-
 ContinuedRawParagraphLines <- firstLine:(FirstParagraphRawLine) otherLines:(!ListItemContinuation line:(SingleLineComment / RawParagraphLine) { return line, nil })* {
     return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
 }
-
-// ------------------------------------------
-// Verse Paragraphs
-// ------------------------------------------
-
-RawVerseParagraph <- 
-    attributes:(Attributes)?
-    &{
-        if attrs, ok := attributes.(types.Attributes); ok {
-            kind, ok := attrs[types.AttrKind]
-            return ok && kind == types.Verse, nil
-        }
-        return false, nil
-    }
-    lines:(RawLine)+ { 
-        return types.NewParagraph(lines.([]interface{}), attributes)
-    } 
 
 // ------------------------------------------
 // Inline Elements
@@ -1552,17 +1512,6 @@ UnquotedAttributeChar <- [^\r\n"=\],] { // excludes comma
     return types.NewStringElement(string(c.text))
 }
 
-// rule used after document attribute substitution, to discover links
-InlineLinks <-
-    elements:(Word
-        / SpecialCharacter
-        / Space+ 
-        / ResolvedLink 
-        / AnyChar
-        / Newline)+ EOF {
-    return types.NewInlineElements(elements.([]interface{}))
-}
-
 ResolvedLink <- ResolvedRelativeLink / ResolvedExternalLink // links without AttributeSubstitution
 
 // url preceeding with `link:` MUST be followed by square brackets
@@ -1658,17 +1607,44 @@ FootnoteContent <- elements:(!"]" InlineElement)+  { // footnote content may spa
 }
 
 // ------------------------------------------------------------------------------------
-// Delimited Blocks 
+// Callouts
 // ------------------------------------------------------------------------------------
+
+Callout <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
+    return types.NewCallout(ref.(int))
+}
+
+CalloutListItem <- ref:(CalloutListItemPrefix) description:(ListParagraph+) {
+    return types.NewCalloutListItem(ref.(int), description.([]interface{}))
+}
+
+CalloutListItemPrefix <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space+ {
+    return ref, nil
+}
+
+// -------------------------------------------------------------------------------------
+// Thematic break
+// -------------------------------------------------------------------------------------
+
+// Thematic break
+ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOL {
+    return types.NewThematicBreak()
+}
+
+// -------------------------------------------------------------------------------------
+//
+// Delimited blocks
+//
+// -------------------------------------------------------------------------------------
+
 DelimitedBlock <- !Alphanum // delimited blocks, even without attributes, never start with an alphanum
     block:(FencedBlock 
         / ListingBlock 
         / ExampleBlock 
+        / VerseBlock
         / QuoteBlock
         / SidebarBlock
-        / SingleLineComment
         / PassthroughBlock
-        / Table
         / CommentBlock) {
     return block, nil
 }
@@ -1682,123 +1658,223 @@ BlockDelimiter <- !(Alphanum) LiteralBlockDelimiter //TODO: use "start" delimite
                 / SidebarBlockDelimiter
                 / PassthroughBlockDelimiter
 
-DelimitedBlockRawLine <- RawLine
-
-CalloutListItem <- ref:(CalloutListItemPrefix) description:(ListParagraph+) {
-    return types.NewCalloutListItem(ref.(int), description.([]interface{}))
-}
-
-CalloutListItemPrefix <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space+ {
-    return ref, nil
-}
-
-// -------------------------------------------------------------------------------------
-// Fenced Blocks
-// -------------------------------------------------------------------------------------
-FencedBlockDelimiter <- "```" Space* EOL // Deprecated: use 'FencedBlockStartDelimiter' instead
-
-FencedBlockStartDelimiter <- "```" Space* EOL
-
-FencedBlockEndDelimiter <- ("```" Space* EOL) / EOF
-
-FencedBlock <- attributes:(Attributes)? FencedBlockStartDelimiter content:(FencedBlockRawContent) FencedBlockEndDelimiter {
-    return types.NewDelimitedBlock(types.Fenced, content.([]interface{}), attributes)
-}
-
-FencedBlockRawContent <- (!FencedBlockEndDelimiter line:(DelimitedBlockRawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
-    return line, nil
-})*
-
-// -------------------------------------------------------------------------------------
-// Listing blocks
-// -------------------------------------------------------------------------------------
-ListingBlockDelimiter <- "----" Space* EOL
-
-ListingBlockStartDelimiter <- "----" Space* EOL
-
-ListingBlockEndDelimiter <- ("----" Space* EOL) / EOF
-
-ListingBlock <- attributes:(Attributes)? ListingBlockStartDelimiter content:(ListingBlockRawContent) ListingBlockEndDelimiter {
-    return types.NewDelimitedBlock(types.Listing, content.([]interface{}), attributes)
-}
-
-ListingBlockRawContent <- (!ListingBlockEndDelimiter line:(DelimitedBlockRawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
-    return line, nil
-})*
-
 // -------------------------------------------------------------------------------------
 // Example blocks
 // -------------------------------------------------------------------------------------
+ExampleBlock <- attributes:(Attributes)? ExampleBlockStartDelimiter blocks:(ExampleBlockRawContent) ExampleBlockEndDelimiter {
+    return types.NewExampleBlock(blocks.([]interface{}), attributes)
+}
+
 ExampleBlockDelimiter <- "====" Space* EOL
 
 ExampleBlockStartDelimiter <- "====" Space* EOL
 
 ExampleBlockEndDelimiter <- ("====" Space* EOL) / EOF
 
-ExampleBlock <- attributes:(Attributes)? ExampleBlockStartDelimiter content:(ExampleBlockRawContent) ExampleBlockEndDelimiter {
-    return types.NewDelimitedBlock(types.Example, content.([]interface{}), attributes)
-}
-
-ExampleBlockRawContent <- (!ExampleBlockEndDelimiter line:(DelimitedBlockRawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
-    return line, nil
-})*
+ExampleBlockRawContent <- (
+       !ExampleBlockEndDelimiter 
+       element:(BlankLine 
+            / ImageBlock
+            / ThematicBreak
+            / OrderedListItem 
+            / UnorderedListItem 
+            / LabeledListItem 
+            / ContinuedListItemElement
+            / FencedBlock 
+            / ListingBlock 
+            / VerseBlock
+            / QuoteBlock
+            / SidebarBlock
+            / SingleLineComment
+            / PassthroughBlock
+            / Table
+            / CommentBlock
+            / LiteralBlock 
+            / RawParagraph
+            / StandaloneAttributes) {
+        return element, nil
+    })* 
 
 // -------------------------------------------------------------------------------------
 // Quote blocks
 // -------------------------------------------------------------------------------------
+QuoteBlock <- attributes:(Attributes)? 
+    &{
+        if attributes == nil {
+            return true, nil
+        }
+        if attrs, ok := attributes.(types.Attributes); ok {
+            kind, ok := attrs[types.AttrKind]
+            // if AttrKind is missing, then accept as a QuoteBlock
+            return !ok || kind == types.Quote, nil
+        }
+        return false, nil
+    }
+    QuoteBlockStartDelimiter content:(QuoteBlockRawContent) QuoteBlockEndDelimiter {
+        return types.NewQuoteBlock(content.([]interface{}), attributes)
+    }
+
 QuoteBlockDelimiter <- "____" Space* EOL // same for verse blocks
 
 QuoteBlockStartDelimiter <- "____" Space* EOL // same for verse blocks
 
 QuoteBlockEndDelimiter <- ("____" Space* EOL) / EOF // same for verse blocks
 
-QuoteBlock <- attributes:(Attributes)? QuoteBlockStartDelimiter content:(QuoteBlockVerbatimElement) QuoteBlockEndDelimiter {
-    return types.NewDelimitedBlock(types.Quote, content.([]interface{}), attributes)
-}
-
-QuoteBlockVerbatimElement <- (!QuoteBlockEndDelimiter line:(DelimitedBlockRawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
-    return line, nil
-})*
+QuoteBlockRawContent <- (
+       !QuoteBlockEndDelimiter 
+       element:(BlankLine 
+            / ImageBlock
+            / ThematicBreak
+            / OrderedListItem 
+            / UnorderedListItem 
+            / LabeledListItem 
+            / ContinuedListItemElement
+            / FencedBlock 
+            / ListingBlock 
+            / VerseBlock
+            / ExampleBlock
+            / SidebarBlock
+            / SingleLineComment
+            / PassthroughBlock
+            / Table
+            / CommentBlock
+            / LiteralBlock 
+            / RawParagraph
+            / StandaloneAttributes) {
+        return element, nil
+    })* 
 
 // -------------------------------------------------------------------------------------
 // Sidebar blocks
 // -------------------------------------------------------------------------------------
+SidebarBlock <- attributes:(Attributes)? SidebarBlockStartDelimiter content:(SidebarBlockRawContent) SidebarBlockEndDelimiter {
+    return types.NewSidebarBlock(content.([]interface{}), attributes)
+}
+
 SidebarBlockDelimiter <- "****" Space* EOL
 
 SidebarBlockStartDelimiter <- "****" Space* EOL
 
 SidebarBlockEndDelimiter <- ("****" Space* EOL) / EOF
 
-SidebarBlock <- attributes:(Attributes)? SidebarBlockStartDelimiter content:(SidebarBlockRawContent) SidebarBlockEndDelimiter {
-    return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}), attributes)
+SidebarBlockRawContent <- (
+       !SidebarBlockEndDelimiter 
+       element:(BlankLine 
+            / ImageBlock
+            / ThematicBreak
+            / OrderedListItem 
+            / UnorderedListItem 
+            / LabeledListItem 
+            / ContinuedListItemElement
+            / FencedBlock 
+            / ListingBlock
+            / VerseBlock 
+            / ExampleBlock
+            / QuoteBlock
+            / SingleLineComment
+            / PassthroughBlock
+            / Table
+            / CommentBlock
+            / LiteralBlock 
+            / RawParagraph
+            / StandaloneAttributes) {
+        return element, nil
+    })* 
+
+// -------------------------------------------------------------------------------------
+// Fenced blocks
+// -------------------------------------------------------------------------------------
+FencedBlock <- attributes:(Attributes)? FencedBlockStartDelimiter content:(FencedBlockRawContent) FencedBlockEndDelimiter {
+    return types.NewFencedBlock(content.([]interface{}), attributes)
 }
 
-SidebarBlockRawContent <- (!SidebarBlockEndDelimiter line:(DelimitedBlockRawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
+FencedBlockDelimiter <- "```" Space* EOL // Deprecated: use 'FencedBlockStartDelimiter' instead
+
+FencedBlockStartDelimiter <- "```" Space* EOL
+
+FencedBlockEndDelimiter <- ("```" Space* EOL) / EOF
+
+FencedBlockRawContent <- (!FencedBlockEndDelimiter line:(RawLine) { 
+    return line, nil
+})*
+
+// -------------------------------------------------------------------------------------
+// Listing blocks
+// -------------------------------------------------------------------------------------
+ListingBlock <- attributes:(Attributes)? ListingBlockStartDelimiter content:(ListingBlockRawContent) ListingBlockEndDelimiter {
+    return types.NewListingBlock(content.([]interface{}), attributes)
+}
+
+ListingBlockDelimiter <- "----" Space* EOL
+
+ListingBlockStartDelimiter <- "----" Space* EOL
+
+ListingBlockEndDelimiter <- ("----" Space* EOL) / EOF
+
+ListingBlockRawContent <- (!ListingBlockEndDelimiter line:(RawLine) { 
+    return line, nil
+})*
+
+// -------------------------------------------------------------------------------------
+// Verse blocks
+// -------------------------------------------------------------------------------------
+VerseBlock <- attributes:(Attributes)? 
+    &{
+        if attrs, ok := attributes.(types.Attributes); ok {
+            kind, ok := attrs[types.AttrKind]
+            return ok && kind == types.Verse, nil
+        }
+        return false, nil
+    }
+    QuoteBlockStartDelimiter content:(VerseBlockRawContent) QuoteBlockEndDelimiter {
+        return types.NewVerseBlock(content.([]interface{}), attributes)
+    }
+
+VerseBlockRawContent <- (!QuoteBlockEndDelimiter line:(RawLine) { 
     return line, nil
 })*
 
 // -------------------------------------------------------------------------------------
 // Passthrough blocks
 // -------------------------------------------------------------------------------------
+PassthroughBlock <- attributes:(Attributes)? PassthroughBlockStartDelimiter content:(PassthroughBlockRawContent) PassthroughBlockEndDelimiter {
+    return types.NewPassthroughBlock(content.([]interface{}), attributes)
+}
+
 PassthroughBlockDelimiter <- "++++" Space* EOL
 
 PassthroughBlockStartDelimiter <- "++++" Space* EOL
 
 PassthroughBlockEndDelimiter <- ("++++" Space* EOL) / EOF
 
-PassthroughBlock <- attributes:(Attributes)? PassthroughBlockStartDelimiter content:(PassthroughBlockRawContent) PassthroughBlockEndDelimiter {
-    return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}), attributes)
-}
-
-PassthroughBlockRawContent <- (!PassthroughBlockEndDelimiter line:(DelimitedBlockRawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
+PassthroughBlockRawContent <- (!PassthroughBlockEndDelimiter line:(RawLine) { 
     return line, nil
 })*
 
-// Thematic break
-ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOL {
-    return types.NewThematicBreak()
+// -------------------------------------------------------------------------------------
+// Comment blocks
+// -------------------------------------------------------------------------------------
+CommentBlockDelimiter <- "////" Space* EOL
+
+CommentBlockStartDelimiter <- "////" Space* EOL
+
+CommentBlockEndDelimiter <- ("////" Space* EOL) / EOF
+
+CommentBlock <- CommentBlockStartDelimiter content:(CommentBlockRawContent)  CommentBlockEndDelimiter {
+    return types.NewCommentBlock(content.([]interface{}), nil)
 }
 
+CommentBlockRawContent <- (!CommentBlockEndDelimiter line:(RawLine) { 
+    return line, nil
+})*
+
+SingleLineComment <- !CommentBlockDelimiter "//" content:(SingleLineCommentContent) EOL {
+    return types.NewSingleLineComment(content.(string))
+}
+
+SingleLineCommentContent <- [^\r\n]* {
+    return string(c.text), nil
+}
 
 // -------------------------------------------------------------------------------------
 // DelimitedBlock and Paragraph Substitutions (standalone rules)
@@ -1865,29 +1941,6 @@ InlineMacroSubs <-
         / AnyChar
         / Newline)* EOF
 
-NormalBlocks <- elements:(BlankLine 
-            / ImageBlock
-            / ThematicBreak
-            / OrderedListItem 
-            / UnorderedListItem 
-            / LabeledListItem 
-            / ContinuedListItemElement
-            / DelimitedBlock
-            / LiteralBlock 
-            / StandaloneAttributes
-            / RawParagraph)* EOF {
-        return elements, nil
-    } 
-
-// standalone rule for the "macros" substitution for Verse blocks
-VerseMacroSubs <- (
-        InlineWord // more permissive than the 'Word' rule
-        / InlineMacros
-        / Space+ 
-        / ElementPlaceHolder
-        / AnyChar
-        / Newline)* EOF 
-
 // standalone rule for the "macros" substitution for Markdown Quote blocks
 MarkdownQuoteMacroSubs <- lines:(MarkdownQuoteLine)* EOF {
     return types.NewParagraph(lines.([]interface{}), nil)
@@ -1936,10 +1989,6 @@ CalloutSubs <-
         / AnyChar
         / Newline)* EOF
 
-Callout <- "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
-    return types.NewCallout(ref.(int))
-}
-
 // standalone rule for the "none" substitution
 NoneSubs <- (
     ElementPlaceHolder 
@@ -1975,32 +2024,6 @@ TableCell <- TableCellSeparator elements:(!TableCellSeparator !EOL Space* Inline
 }
 
 // -------------------------------------------------------------------------------------
-// Comments
-// -------------------------------------------------------------------------------------
-CommentBlockDelimiter <- "////" Space* EOL
-
-CommentBlockStartDelimiter <- "////" Space* EOL
-
-CommentBlockEndDelimiter <- ("////" Space* EOL) / EOF
-
-CommentBlock <- CommentBlockStartDelimiter content:(CommentBlockRawContent)  CommentBlockEndDelimiter {
-    return types.NewDelimitedBlock(types.Comment, content.([]interface{}), nil)
-}
-
-CommentBlockRawContent <- (!CommentBlockEndDelimiter line:(DelimitedBlockRawLine) { // at this stage, content is a mix of FileInclusions and lines of text (i.e., StringElement)
-    return line, nil
-})*
-
-SingleLineComment <- !CommentBlockDelimiter "//" content:(SingleLineCommentContent) EOL {
-    return types.NewSingleLineComment(content.(string))
-}
-
-SingleLineCommentContent <- [^\r\n]* {
-    return string(c.text), nil
-}
-
-
-// -------------------------------------------------------------------------------------
 // Literal Blocks (see http://asciidoctor.org/docs/user-manual/#literal-text-and-blocks)
 // -------------------------------------------------------------------------------------
 LiteralBlock <- ParagraphWithLiteralAttribute / ParagraphWithHeadingSpaces / ParagraphWithLiteralBlockDelimiter
@@ -2014,13 +2037,13 @@ ParagraphWithHeadingSpaces <- attributes:(Attributes)? lines:(ParagraphWithHeadi
 
 // first line MUST start with one (or more) space. Stop when reaching a blank line
 ParagraphWithHeadingSpacesLines <- 
-    firstLine:(Space+ [^\r\n]+ {
-        return string(c.text), nil
+    firstLine:(Space+ [^\r\n]+ { // TODO: use ParagraphWithLiteralBlockDelimiterLine
+        return types.NewRawLine(string(c.text))
     }) EOL // do not include the trailing 'EOL' on the first line
     otherLines:(
         !BlankLine 
-        otherLine:([^\r\n]+ {
-            return string(c.text), nil
+        otherLine:([^\r\n]+ { // TODO: use ParagraphWithLiteralBlockDelimiterLine
+            return types.NewRawLine(string(c.text))
         }) EOL {
             return otherLine, nil // do not include the trailing 'EOL'
         })* { 
@@ -2040,7 +2063,7 @@ ParagraphWithLiteralBlockDelimiterLines <- lines:(ParagraphWithLiteralBlockDelim
 
 ParagraphWithLiteralBlockDelimiterLine <-         
     line:(!LiteralBlockDelimiter [^\r\n]* {
-        return string(c.text), nil
+        return types.NewRawLine(string(c.text))
     }) EOL { 
         return line, nil // do not include the trailing 'EOL'
 }
@@ -2069,9 +2092,9 @@ ParagraphWithLiteralAttributeLines <- lines:(ParagraphWithLiteralAttributeLine)+
 }
 
 ParagraphWithLiteralAttributeLine <- !BlankLine content:([^\r\n]+ {
-    return string(c.text), nil
+    return types.NewRawLine(string(c.text))
 }) EOL {
-    return content.(string), nil // do not include the trailing 'EOL'
+    return content, nil // do not include the trailing 'EOL'
 }
 
 // ------------------------------------------

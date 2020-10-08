@@ -101,8 +101,22 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderInlineIcon(ctx, e)
 	case types.InlineImage:
 		return r.renderInlineImage(ctx, e)
-	case types.DelimitedBlock:
-		return r.renderDelimitedBlock(ctx, e)
+	case types.ExampleBlock:
+		return r.renderExampleBlock(ctx, e)
+	case types.QuoteBlock:
+		return r.renderQuoteBlock(ctx, e)
+	case types.SidebarBlock:
+		return r.renderSidebarBlock(ctx, e)
+	case types.FencedBlock:
+		return r.renderFencedBlock(ctx, e)
+	case types.ListingBlock:
+		return r.renderListingBlock(ctx, e)
+	case types.PassthroughBlock:
+		return r.renderPassthroughBlock(ctx, e)
+	case types.MarkdownQuoteBlock:
+		return r.renderMarkdownQuoteBlock(ctx, e)
+	case types.VerseBlock:
+		return r.renderVerseBlock(ctx, e)
 	case types.Table:
 		return r.renderTable(ctx, e)
 	case types.LiteralBlock:

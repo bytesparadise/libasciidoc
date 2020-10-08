@@ -43,7 +43,7 @@ Garrett D'Amore
 						Revremark: "",
 					},
 				},
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Section{
 						Level: 0,
 						Attributes: types.Attributes{
@@ -87,7 +87,7 @@ Garrett D'Amore
 						Revremark: "",
 					},
 				},
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Section{
 						Level: 0,
 						Attributes: types.Attributes{

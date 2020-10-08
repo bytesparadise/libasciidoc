@@ -30,8 +30,8 @@ var _ = Describe("footnotes - document", func() {
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "foo ",
 								},
@@ -92,8 +92,8 @@ var _ = Describe("footnotes - document", func() {
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "foo ",
 								},
@@ -123,8 +123,8 @@ var _ = Describe("footnotes - document", func() {
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "This is another paragraph.",
 								},
@@ -167,8 +167,8 @@ Another outrageous statement.footnote:disclaimer[]`
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "A statement.",
 								},
@@ -176,7 +176,7 @@ Another outrageous statement.footnote:disclaimer[]`
 									ID: 1,
 								},
 							},
-							[]interface{}{
+							{
 								types.StringElement{
 									Content: "A bold statement!",
 								},
@@ -188,8 +188,8 @@ Another outrageous statement.footnote:disclaimer[]`
 						},
 					},
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "Another outrageous statement.",
 								},
@@ -275,8 +275,8 @@ a paragraph with another footnote.footnote:[baz]`
 							types.Preamble{ // preamble is inserted
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{
 													Content: "a premable with a ",
 												},
@@ -296,8 +296,8 @@ a paragraph with another footnote.footnote:[baz]`
 								Title: section1Title,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{
 													Content: "a paragraph with another footnote.",
 												},

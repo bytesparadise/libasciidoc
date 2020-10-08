@@ -16,11 +16,13 @@ var _ = Describe("raw document matcher", func() {
 
 	// given
 	expected := types.RawDocument{
-		Blocks: []interface{}{
+		Elements: []interface{}{
 			types.Paragraph{
-				Lines: []interface{}{
-					types.RawLine{
-						Content: "a paragraph.",
+				Lines: [][]interface{}{
+					{
+						types.StringElement{
+							Content: "a paragraph.",
+						},
 					},
 				},
 			},
@@ -31,11 +33,13 @@ var _ = Describe("raw document matcher", func() {
 	It("should match", func() {
 		// given
 		actual := types.RawDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						types.RawLine{
-							Content: "a paragraph.",
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "a paragraph.",
+							},
 						},
 					},
 				},
@@ -51,11 +55,13 @@ var _ = Describe("raw document matcher", func() {
 	It("should not match", func() {
 		// given
 		actual := types.RawDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						types.RawLine{
-							Content: "another paragraph.", // different content
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "another paragraph.", // different content
+							},
 						},
 					},
 				},

@@ -48,8 +48,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -64,8 +64,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -80,8 +80,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -112,8 +112,8 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a paragraph"},
 										},
 									},
@@ -126,8 +126,8 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -144,8 +144,8 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionBTitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a paragraph"},
 										},
 									},
@@ -199,8 +199,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -215,8 +215,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -231,8 +231,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -263,8 +263,8 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a paragraph"},
 										},
 									},
@@ -277,8 +277,8 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -293,8 +293,8 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionBTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -350,8 +350,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionATitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -366,8 +366,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionAaTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -382,8 +382,8 @@ var _ = Describe("rearrange sections", func() {
 				Title: sectionBTitle,
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -414,8 +414,8 @@ var _ = Describe("rearrange sections", func() {
 							Title: sectionATitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a paragraph"},
 										},
 									},
@@ -428,8 +428,8 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionAaTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -444,8 +444,8 @@ var _ = Describe("rearrange sections", func() {
 									Title: sectionBTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},

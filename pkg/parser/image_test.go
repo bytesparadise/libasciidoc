@@ -15,7 +15,7 @@ var _ = Describe("block images", func() {
 		It("with empty alt", func() {
 			source := "image::images/foo.png[]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
 							types.AttrImageAlt: "foo",
@@ -34,7 +34,7 @@ var _ = Describe("block images", func() {
 		It("with empty alt and trailing spaces", func() {
 			source := "image::images/foo.png[]  \t\t  "
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
 							types.AttrImageAlt: "foo",
@@ -53,7 +53,7 @@ var _ = Describe("block images", func() {
 		It("with alt", func() {
 			source := `image::images/foo.png[the foo.png image]`
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
 							types.AttrImageAlt: "the foo.png image",
@@ -75,7 +75,7 @@ var _ = Describe("block images", func() {
 [link=http://foo.bar]
 image::images/foo.png[the foo.png image, 600, 400]`
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
 							types.AttrID:          "img-foobar",
@@ -100,7 +100,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 			source := `[.role1.role2]
 image::images/foo.png[the foo.png image, 600, 400]`
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
 							types.AttrImageAlt:    "the foo.png image",
@@ -283,15 +283,15 @@ image::images/bar.png[]`
 		It("appending inline content", func() {
 			source := "a paragraph\nimage::images/foo.png[]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "a paragraph",
 								},
 							},
-							[]interface{}{
+							{
 								types.StringElement{
 									Content: "image::images/foo.png[]",
 								},
@@ -306,10 +306,10 @@ image::images/bar.png[]`
 		It("paragraph with block image with alt and dimensions", func() {
 			source := "a foo image::foo.png[foo image, 600, 400] bar"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a foo image::foo.png[foo image, 600, 400] bar"},
 							},
 						},
@@ -328,10 +328,10 @@ var _ = Describe("inline images", func() {
 		It("with empty alt only", func() {
 			source := "image:images/foo.png[]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "foo",
@@ -353,10 +353,10 @@ var _ = Describe("inline images", func() {
 		It("with empty alt and trailing spaces", func() {
 			source := "image:images/foo.png[]  \t\t  "
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "foo",
@@ -381,10 +381,10 @@ var _ = Describe("inline images", func() {
 		It("inline image surrounded with test", func() {
 			source := "a foo image:images/foo.png[] bar..."
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "a foo ",
 								},
@@ -412,10 +412,10 @@ var _ = Describe("inline images", func() {
 		It("with alt alone", func() {
 			source := "image:images/foo.png[the foo.png image]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "the foo.png image",
@@ -437,10 +437,10 @@ var _ = Describe("inline images", func() {
 		It("with alt and width", func() {
 			source := "image:images/foo.png[the foo.png image, 600]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "the foo.png image",
@@ -463,10 +463,10 @@ var _ = Describe("inline images", func() {
 		It("with alt, width and height", func() {
 			source := "image:images/foo.png[the foo.png image, 600, 400]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt:    "the foo.png image",
@@ -490,10 +490,10 @@ var _ = Describe("inline images", func() {
 		It("with alt, but empty width and height", func() {
 			source := "image:images/foo.png[the foo.png image, , ]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "the foo.png image",
@@ -515,10 +515,10 @@ var _ = Describe("inline images", func() {
 		It("with single other attribute only", func() {
 			source := "image:images/foo.png[id=myid]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "foo",
@@ -542,10 +542,10 @@ var _ = Describe("inline images", func() {
 		It("with multiple other attributes only", func() {
 			source := "image:images/foo.png[id=myid, title= mytitle, role = myrole ]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "foo",
@@ -571,10 +571,10 @@ var _ = Describe("inline images", func() {
 		It("with alt, width, height and other attributes", func() {
 			source := "image:images/foo.png[ foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt:    "foo",
@@ -602,10 +602,10 @@ var _ = Describe("inline images", func() {
 		It("inline image in a paragraph with space after colon", func() {
 			source := "this is an image: image:images/foo.png[]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "this is an image: ",
 								},
@@ -630,10 +630,10 @@ var _ = Describe("inline images", func() {
 		It("inline image in a paragraph without space separator", func() {
 			source := "this is an inline.image:images/foo.png[]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "this is an inline.",
 								},
@@ -664,8 +664,8 @@ var _ = Describe("inline images", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineImage{
 									Attributes: types.Attributes{
 										types.AttrImageAlt: "foo",
@@ -695,8 +695,8 @@ an image:{dir}/foo.png[].`
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "an "},
 								types.InlineImage{
 									Attributes: types.Attributes{
@@ -728,8 +728,8 @@ an image:foo.png[].`
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "an "},
 								types.InlineImage{
 									Attributes: types.Attributes{
@@ -762,8 +762,8 @@ an image:{imagesdir}/foo.png[].`
 				},
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "an "},
 								types.InlineImage{
 									Attributes: types.Attributes{
@@ -817,11 +817,11 @@ image::{path}/foo.png[]`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
-							[]interface{}{
+							{
 								types.StringElement{Content: "image::images/foo.png[]"},
 							},
 						},

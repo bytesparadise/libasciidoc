@@ -21,17 +21,17 @@ var _ = Describe("paragraphs", func() {
 bar
 baz`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "foo"},
 									types.LineBreak{},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "bar"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -49,19 +49,19 @@ foo
 bar
 baz`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrOptions: map[string]bool{"hardbreaks": true},
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "foo"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "bar"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -76,16 +76,16 @@ baz`
 foo
 baz`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrTitle: "My Title",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "foo"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -101,7 +101,7 @@ baz`
 foo
 baz`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrCustomID: true,
@@ -109,11 +109,11 @@ baz`
 								types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
 								types.AttrOptions:  map[string]bool{"hardbreaks": true},
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "foo"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -129,20 +129,20 @@ foo
 bar
 baz`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrOptions: map[string]bool{"hardbreaks": true},
 								types.AttrRole:    []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "foo"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "bar"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "baz"},
 								},
 							},
@@ -156,13 +156,13 @@ baz`
 				source := `C++
 foo`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "C++"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "foo"},
 								},
 							},
@@ -175,10 +175,10 @@ foo`
 			It("with counters", func() {
 				source := `foo{counter:foo} bar{counter2:foo} baz{counter:foo} bob{counter:bob}`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "foo1 bar baz3 bob1"},
 								},
 							},
@@ -205,7 +205,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -213,8 +213,8 @@ another one using attribute substitution: {github-url}[]...
 							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -249,7 +249,7 @@ another one using attribute substitution: {github-url}[]...
 											Name: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "another one using attribute substitution: ",
 										},
@@ -267,7 +267,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: "\u2026\u200b", // symbol for ellipsis, applied by the 'replacements' substitution
 										},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -286,7 +286,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -296,8 +296,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "normal",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -332,7 +332,7 @@ another one using attribute substitution: {github-url}[]...
 											Name: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "another one using attribute substitution: ",
 										},
@@ -350,7 +350,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: "\u2026\u200b", // symbol for ellipsis, applied by the 'replacements' substitution
 										},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -369,7 +369,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -379,8 +379,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "quotes",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to https://github.com[] <using the ",
 										},
@@ -396,12 +396,12 @@ another one using attribute substitution: {github-url}[]...
 											Content: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "another one using attribute substitution: {github-url}[]...",
 										},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -420,7 +420,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -430,8 +430,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "macros",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -449,12 +449,12 @@ another one using attribute substitution: {github-url}[]...
 											Content: " <using the *inline link macro*>",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "another one using attribute substitution: {github-url}[]...",
 										},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -473,7 +473,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -483,14 +483,14 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "attributes",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: https://github.com[]..."},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -509,7 +509,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -519,8 +519,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "attributes,macros",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to "},
 										types.InlineLink{
 											Location: types.Location{
@@ -534,7 +534,7 @@ another one using attribute substitution: {github-url}[]...
 										},
 										types.StringElement{Content: " <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: "},
 										types.InlineLink{
 											Location: types.Location{
@@ -548,7 +548,7 @@ another one using attribute substitution: {github-url}[]...
 										},
 										types.StringElement{Content: "..."},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -567,7 +567,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -577,17 +577,17 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "specialchars",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] "},
 										types.SpecialCharacter{Name: "<"},
 										types.StringElement{Content: "using the *inline link macro*"},
 										types.SpecialCharacter{Name: ">"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -606,7 +606,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -616,14 +616,14 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "replacements",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]\u2026\u200b"},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -642,7 +642,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -652,8 +652,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "quotes,macros",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -682,10 +682,10 @@ another one using attribute substitution: {github-url}[]...
 											Content: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -705,7 +705,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -715,8 +715,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "macros,quotes",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -745,10 +745,10 @@ another one using attribute substitution: {github-url}[]...
 											Content: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -766,7 +766,7 @@ another one using attribute substitution: {github-url}[]...
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
 						},
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "github-url",
 								Value: "https://github.com",
@@ -776,14 +776,14 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "none",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
-									[]interface{}{
+									{
 										types.SingleLineComment{
 											Content: " a single-line comment.",
 										},
@@ -802,13 +802,13 @@ another one using attribute substitution: {github-url}[]...
 			It("note admonition paragraph", func() {
 				source := `NOTE: this is a note.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this is a note."},
 								},
 							},
@@ -822,16 +822,16 @@ another one using attribute substitution: {github-url}[]...
 				source := `WARNING: this is a multiline
 warning!`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Warning,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this is a multiline"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "warning!"},
 								},
 							},
@@ -846,7 +846,7 @@ warning!`
 .bar
 NOTE: this is a note.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
@@ -854,8 +854,8 @@ NOTE: this is a note.`
 								types.AttrCustomID:       true,
 								types.AttrTitle:          "bar",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this is a note."},
 								},
 							},
@@ -869,13 +869,13 @@ NOTE: this is a note.`
 				source := `[CAUTION]
 this is a caution!`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this is a caution!"},
 								},
 							},
@@ -892,7 +892,7 @@ this is a caution!`
 this is a 
 *caution*!`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
@@ -900,11 +900,11 @@ this is a
 								types.AttrCustomID:       true,
 								types.AttrTitle:          "bar",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this is a "},
 								},
-								[]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -931,13 +931,13 @@ No space after the [NOTE]!
 [CAUTION]
 And no space after [CAUTION] either.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Note,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "No space after the [NOTE]!"},
 								},
 							},
@@ -947,8 +947,8 @@ And no space after [CAUTION] either.`
 							Attributes: types.Attributes{
 								types.AttrAdmonitionKind: types.Caution,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "And no space after [CAUTION] either."},
 								},
 							},
@@ -967,15 +967,15 @@ And no space after [CAUTION] either.`
 				source := `[verse, john doe, verse title]
 I am a verse paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
@@ -991,7 +991,7 @@ I am a verse paragraph.`
 .universe
 I am a verse paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
@@ -1001,8 +1001,8 @@ I am a verse paragraph.`
 								types.AttrCustomID:    true,
 								types.AttrTitle:       "universe",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
@@ -1016,14 +1016,14 @@ I am a verse paragraph.`
 				source := `[verse, john doe, ]
 I am a verse paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
@@ -1037,14 +1037,14 @@ I am a verse paragraph.`
 				source := `[verse, john doe ]
 I am a verse paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
@@ -1058,13 +1058,13 @@ I am a verse paragraph.`
 				source := `[verse,  ]
 I am a verse paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
@@ -1078,13 +1078,13 @@ I am a verse paragraph.`
 				source := `[verse]
 I am a verse paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a verse paragraph."},
 								},
 							},
@@ -1099,7 +1099,7 @@ I am a verse paragraph.`
 				source := `[verse, john doe, verse title]
 image::foo.png[]`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ImageBlock{
 							Attributes: types.Attributes{
 								types.AttrImageAlt:    "verse",
@@ -1124,15 +1124,15 @@ image::foo.png[]`
 				source := `[quote, john doe, quote title]
 I am a quote paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
@@ -1148,7 +1148,7 @@ I am a quote paragraph.`
 .universe
 I am a quote paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
@@ -1158,8 +1158,8 @@ I am a quote paragraph.`
 								types.AttrCustomID:    true,
 								types.AttrTitle:       "universe",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
@@ -1173,14 +1173,14 @@ I am a quote paragraph.`
 				source := `[quote, john doe, ]
 I am a quote paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
@@ -1194,14 +1194,14 @@ I am a quote paragraph.`
 				source := `[quote, john doe ]
 I am a quote paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind:        types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
@@ -1215,13 +1215,13 @@ I am a quote paragraph.`
 				source := `[quote,  ]
 I am a quote paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
@@ -1235,13 +1235,13 @@ I am a quote paragraph.`
 				source := `[quote]
 I am a quote paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrKind: types.Quote,
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "I am a quote paragraph."},
 								},
 							},
@@ -1255,7 +1255,7 @@ I am a quote paragraph.`
 				source := `[quote, john doe, quote title]
 image::foo.png[]`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ImageBlock{
 							Location: types.Location{
 								Scheme: "",
@@ -1278,7 +1278,7 @@ image::foo.png[]`
 			It("thematic break form1 by itself", func() {
 				source := "***"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ThematicBreak{},
 					},
 				}
@@ -1288,7 +1288,7 @@ image::foo.png[]`
 			It("thematic break form2 by itself", func() {
 				source := "* * *"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ThematicBreak{},
 					},
 				}
@@ -1298,7 +1298,7 @@ image::foo.png[]`
 			It("thematic break form3 by itself", func() {
 				source := "---"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ThematicBreak{},
 					},
 				}
@@ -1308,7 +1308,7 @@ image::foo.png[]`
 			It("thematic break form4 by itself", func() {
 				source := "- - -"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ThematicBreak{},
 					},
 				}
@@ -1318,7 +1318,7 @@ image::foo.png[]`
 			It("thematic break form5 by itself", func() {
 				source := "___"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ThematicBreak{},
 					},
 				}
@@ -1328,7 +1328,7 @@ image::foo.png[]`
 			It("thematic break form4 by itself", func() {
 				source := "_ _ _"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.ThematicBreak{},
 					},
 				}
@@ -1338,10 +1338,10 @@ image::foo.png[]`
 			It("thematic break with leading text", func() {
 				source := "text ***"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "text ***"},
 								},
 							},
@@ -1355,10 +1355,10 @@ image::foo.png[]`
 			It("thematic break with trailing text", func() {
 				source := "* * * text"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "* * * text"},
 								},
 							},
@@ -1388,8 +1388,8 @@ a paragraph`
 							Attributes: types.Attributes{
 								types.AttrTitle: "a title", // there is no default ID. Only custom IDs
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph"},
 								},
 							},
@@ -1404,8 +1404,8 @@ a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.PredefinedAttribute{
 										Name: "blank",
 									},
@@ -1422,8 +1422,8 @@ a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "hello "},
 									types.PredefinedAttribute{Name: "plus"},
 									types.StringElement{Content: " world"},
@@ -1456,11 +1456,11 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "none",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
 								},
@@ -1482,8 +1482,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "quotes",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to https://github.com[] <using the ",
 										},
@@ -1499,7 +1499,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "another one using attribute substitution: {github-url}[]...",
 										},
@@ -1523,8 +1523,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "macros",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -1542,7 +1542,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: " <using the *inline link macro*>",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "another one using attribute substitution: {github-url}[]...",
 										},
@@ -1566,11 +1566,11 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "attributes",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: https://github.com[]..."},
 									},
 								},
@@ -1592,8 +1592,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "attributes,macros",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to "},
 										types.InlineLink{
 											Location: types.Location{
@@ -1607,7 +1607,7 @@ another one using attribute substitution: {github-url}[]...
 										},
 										types.StringElement{Content: " <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: "},
 										types.InlineLink{
 											Location: types.Location{
@@ -1640,14 +1640,14 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "specialchars",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] "},
 										types.SpecialCharacter{Name: "<"},
 										types.StringElement{Content: "using the *inline link macro*"},
 										types.SpecialCharacter{Name: ">"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
 								},
@@ -1669,11 +1669,11 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "replacements",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a link to https://github.com[] <using the *inline link macro*>"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]\u2026\u200b"},
 									},
 								},
@@ -1695,8 +1695,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "quotes,macros",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -1725,7 +1725,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
 								},
@@ -1748,8 +1748,8 @@ another one using attribute substitution: {github-url}[]...
 								Attributes: types.Attributes{
 									types.AttrSubstitutions: "macros,quotes",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a link to ",
 										},
@@ -1778,7 +1778,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: ">",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another one using attribute substitution: {github-url}[]..."},
 									},
 								},
@@ -1803,8 +1803,8 @@ a foo image:foo.png[]`
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a foo ",
 									},

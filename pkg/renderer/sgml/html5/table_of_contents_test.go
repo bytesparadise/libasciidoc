@@ -204,8 +204,8 @@ var _ = Describe("table of contents initialization", func() {
 				Elements: []interface{}{
 					types.Paragraph{
 						Attributes: types.Attributes{},
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "a paragraph"},
 							},
 						},
@@ -281,8 +281,8 @@ var _ = Describe("table of contents initialization", func() {
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.Attributes{},
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a paragraph"},
 										},
 									},
@@ -296,8 +296,8 @@ var _ = Describe("table of contents initialization", func() {
 									Elements: []interface{}{
 										types.Paragraph{
 											Attributes: types.Attributes{},
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -311,8 +311,8 @@ var _ = Describe("table of contents initialization", func() {
 											Elements: []interface{}{
 												types.Paragraph{
 													Attributes: types.Attributes{},
-													Lines: []interface{}{
-														[]interface{}{types.StringElement{Content: "a paragraph"}},
+													Lines: [][]interface{}{
+														{types.StringElement{Content: "a paragraph"}},
 													},
 												},
 											},
@@ -330,8 +330,8 @@ var _ = Describe("table of contents initialization", func() {
 							Elements: []interface{}{
 								types.Paragraph{
 									Attributes: types.Attributes{},
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a paragraph"},
 										},
 									},

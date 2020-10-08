@@ -46,8 +46,14 @@ func processFileInclusions(lines []interface{}, globalAttrs types.AttributesWith
 	result := bytes.NewBuffer(nil)
 	for _, line := range lines {
 		switch l := line.(type) {
-		case types.RawLine:
-			result.WriteString(l.Stringify())
+		case []interface{}:
+			for _, e := range l {
+				if s, ok := e.(types.StringElement); ok {
+					result.WriteString(s.Content)
+					continue
+				}
+				return nil, fmt.Errorf("unexpected type of element in raw line: '%T'", e)
+			}
 			// append linefeed
 			result.WriteString("\n")
 		case types.RawSection:
@@ -112,16 +118,13 @@ func absoluteOffset(offset int) levelOffset {
 }
 
 // applies the elements and attributes substitutions on the given image block.
-func applySubstitutionsOnFileInclusion(f types.FileInclusion, attrs types.AttributesWithOverrides, options ...Option) (types.FileInclusion, error) {
-	elements := f.Location.Path
-	subs := []elementsSubstitution{substituteAttributes} // TODO: no need for an array here
-	var err error
-	for _, sub := range subs {
-		if elements, err = sub(elements, attrs, options...); err != nil {
-			return types.FileInclusion{}, err
-		}
+func applySubstitutionsOnFileInclusion(f types.FileInclusion, attrs types.AttributesWithOverrides) (types.FileInclusion, error) {
+	elements := [][]interface{}{f.Location.Path} // wrap to
+	elements, err := substituteAttributes(elements, attrs)
+	if err != nil {
+		return types.FileInclusion{}, err
 	}
-	f.Location.Path = elements
+	f.Location.Path = elements[0]
 	return f, nil
 }
 

@@ -17,8 +17,8 @@ var _ = Describe("index terms", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "a paragraph with an ",
 								},
@@ -45,8 +45,8 @@ a paragraph with an index term.`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.IndexTerm{
 									Term: []interface{}{
 										types.StringElement{
@@ -66,7 +66,7 @@ a paragraph with an index term.`
 									},
 								},
 							},
-							[]interface{}{
+							{
 								types.StringElement{
 									Content: "a paragraph with an index term.",
 								},
@@ -89,8 +89,8 @@ var _ = Describe("concealed index terms", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "a paragraph with an index term ",
 								},
@@ -116,14 +116,14 @@ a paragraph with an index term.`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.ConcealedIndexTerm{
 									Term1: "index",
 									Term2: "term",
 								},
 							},
-							[]interface{}{
+							{
 								types.StringElement{
 									Content: "a paragraph with an index term.",
 								},

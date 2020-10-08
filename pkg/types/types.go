@@ -18,14 +18,14 @@ import (
 // RawDocument document with a front-matter and raw blocks (will be refined in subsequent processing phases)
 type RawDocument struct {
 	FrontMatter FrontMatter
-	Blocks      []interface{}
+	Elements    []interface{}
 }
 
 // NewRawDocument initializes a new `RawDocument` from the given lines
-func NewRawDocument(frontMatter interface{}, blocks []interface{}) (RawDocument, error) {
-	log.Debugf("initializing a new RawDocument with %d block element(s)", len(blocks))
+func NewRawDocument(frontMatter interface{}, elements []interface{}) (RawDocument, error) {
+	log.Debugf("initializing a new RawDocument with %d block element(s)", len(elements))
 	result := RawDocument{
-		Blocks: blocks,
+		Elements: elements,
 	}
 	if fm, ok := frontMatter.(FrontMatter); ok {
 		result.FrontMatter = fm
@@ -37,8 +37,8 @@ func NewRawDocument(frontMatter interface{}, blocks []interface{}) (RawDocument,
 // and all the document attribute declarations at the top of the document only.
 func (d RawDocument) Attributes() Attributes {
 	result := Attributes{}
-blocks:
-	for _, b := range d.Blocks {
+elements:
+	for _, b := range d.Elements {
 		switch b := b.(type) {
 		case Section:
 			if b.Level == 0 {
@@ -56,11 +56,11 @@ blocks:
 				}
 				continue // allow to continue if the section is level 0
 			}
-			break blocks // otherwise, just stop
+			break elements // otherwise, just stop
 		case AttributeDeclaration:
 			result.Set(b.Name, b.Value)
 		default:
-			break blocks
+			break elements
 		}
 	}
 	log.Debugf("document attributes: %+v", result)
@@ -92,27 +92,17 @@ func (s RawSection) Stringify() string {
 }
 
 // ------------------------------------------
-// Raw lines
+// Lines
 // ------------------------------------------
 
-// RawLine a line with raw content, read as-is by the parser (before further processing)
-type RawLine struct {
-	Content string
-}
-
 // NewRawLine returns a new slice containing a single StringElement with the given content
-func NewRawLine(content string) (RawLine, error) {
-	log.Debugf("new rawline: '%v'", content)
-	return RawLine{
-		Content: content,
+func NewRawLine(content string) ([]interface{}, error) {
+	log.Debugf("new line: '%v'", content)
+	return []interface{}{
+		StringElement{
+			Content: content,
+		},
 	}, nil
-}
-
-var _ Stringer = RawLine{}
-
-// Stringify return the string content of this RawLine
-func (r RawLine) Stringify() string {
-	return r.Content
 }
 
 // ------------------------------------------
@@ -133,7 +123,7 @@ type Stringer interface {
 type DraftDocument struct {
 	Attributes  Attributes
 	FrontMatter FrontMatter
-	Blocks      []interface{}
+	Elements    []interface{}
 }
 
 // ------------------------------------------
@@ -1141,7 +1131,7 @@ func (i *LabeledListItem) AddElement(element interface{}) {
 // Paragraph the structure for the paragraphs
 type Paragraph struct {
 	Attributes Attributes
-	Lines      []interface{}
+	Lines      [][]interface{}
 }
 
 // AttrHardBreaks the attribute to set on a paragraph to render with hard breaks on each line
@@ -1154,13 +1144,47 @@ const DocumentAttrHardBreaks = "hardbreaks"
 func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error) {
 	attrs, err := NewAttributes(attributes)
 	if err != nil {
-		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph element")
+		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph")
 	}
-	// log.Debugf("generated a paragraph with %d line(s): %v", len(elements), elements)
+	l, err := toLines(lines)
+	if err != nil {
+		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph")
+	}
 	return Paragraph{
 		Attributes: attrs,
-		Lines:      lines,
+		Lines:      l,
 	}, nil
+}
+
+func toLines(lines []interface{}) ([][]interface{}, error) {
+	result := make([][]interface{}, len(lines))
+	for i, line := range lines {
+		switch line := line.(type) {
+		case []interface{}:
+			result[i] = line
+		case SingleLineComment:
+			result[i] = []interface{}{line}
+		default:
+			return nil, fmt.Errorf("unexpected type of line: '%T'", line)
+		}
+	}
+	return result, nil
+}
+
+var _ BlockWithLineSubstitution = Paragraph{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (p Paragraph) SubstitutionsToApply() string {
+	return p.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+func (p Paragraph) LinesToSubstitute() [][]interface{} {
+	return p.Lines
+}
+
+func (p Paragraph) ReplaceLines(lines [][]interface{}) interface{} {
+	p.Lines = lines
+	return p
 }
 
 var _ FootnotesContainer = Paragraph{}
@@ -1169,14 +1193,12 @@ var _ FootnotesContainer = Paragraph{}
 // with footnote references. The footnotes are stored in the given 'notes' param
 func (p Paragraph) ReplaceFootnotes(notes *Footnotes) interface{} {
 	for i, line := range p.Lines {
-		if line, ok := line.([]interface{}); ok {
-			for j, element := range line {
-				if note, ok := element.(Footnote); ok {
-					line[j] = notes.Reference(note)
-				}
+		for j, element := range line {
+			if note, ok := element.(Footnote); ok {
+				line[j] = notes.Reference(note)
 			}
-			p.Lines[i] = line
 		}
+		p.Lines[i] = line
 	}
 	return p
 }
@@ -1440,36 +1462,377 @@ func (s *sequence) nextVal() int {
 }
 
 // ------------------------------------------
+// Substitution support
+// ------------------------------------------
+
+// BlockWithSubstitution a block on which substitutions apply
+type BlockWithSubstitution interface {
+	SubstitutionsToApply() string
+}
+
+// BlockWithElementSubstitution a block in which elements can be substituted
+type BlockWithElementSubstitution interface {
+	BlockWithSubstitution
+	ElementsToSubstitute() []interface{}
+	ReplaceElements([]interface{}) interface{}
+}
+
+// BlockWithLineSubstitution a block in which lines can be substituted
+type BlockWithLineSubstitution interface {
+	BlockWithSubstitution
+	LinesToSubstitute() [][]interface{}
+	ReplaceLines([][]interface{}) interface{}
+}
+
+// ------------------------------------------
 // Delimited blocks
 // ------------------------------------------
 
-// DelimitedBlock the structure for the delimited blocks
-type DelimitedBlock struct {
-	Kind       BlockKind
+// ExampleBlock the structure for the example blocks
+type ExampleBlock struct {
 	Attributes Attributes
-	Elements   []interface{} // TODO: rename to `Blocks`?
+	Elements   []interface{}
 }
 
-// NewDelimitedBlock initializes a new `DelimitedBlock` of the given kind with the given elements
-func NewDelimitedBlock(kind BlockKind, elements []interface{}, attributes interface{}) (DelimitedBlock, error) {
-	log.Debugf("initializing a new DelimitedBlock of kind '%v' with %d elements", kind, len(elements))
+// NewExampleBlock initializes a new `ExampleBlock` with the given elements
+func NewExampleBlock(elements []interface{}, attributes interface{}) (ExampleBlock, error) {
+	log.Debugf("initializing a new ExampleBlock with %d blocks", len(elements))
 	attrs, err := NewAttributes(attributes)
 	if err != nil {
-		return DelimitedBlock{}, errors.Wrap(err, "failed to initialize a delimited block")
+		return ExampleBlock{}, errors.Wrap(err, "failed to initialize a new example block")
 	}
-	if k, found := attrs[AttrKind].(BlockKind); found { // override default kind
-		log.Debugf("overriding kind '%s' to '%s'", kind, k)
-		kind = k
-	}
-	if k, ok := attrs.GetAsString(AttrStyle); ok {
-		kind = BlockKind(k)
-	}
-	return DelimitedBlock{
+	return ExampleBlock{
 		Attributes: attrs,
-		Kind:       kind,
 		Elements:   elements,
 	}, nil
 }
+
+var _ BlockWithElementSubstitution = ExampleBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b ExampleBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// ElementsToSubstitute returns the elements of this ExampleBlock so that substitutions can be applied onto them
+func (b ExampleBlock) ElementsToSubstitute() []interface{} {
+	return b.Elements
+}
+
+// ReplaceElements replaces the elements in this example block
+func (b ExampleBlock) ReplaceElements(elements []interface{}) interface{} {
+	b.Elements = elements
+	return b
+}
+
+// QuoteBlock the structure for the quote blocks
+type QuoteBlock struct {
+	Attributes Attributes
+	Elements   []interface{}
+}
+
+// NewQuoteBlock initializes a new `QuoteBlock` with the given elements
+func NewQuoteBlock(elements []interface{}, attributes interface{}) (QuoteBlock, error) {
+	log.Debugf("initializing a new QuoteBlock with %d blocks", len(elements))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return QuoteBlock{}, errors.Wrap(err, "failed to initialize a new quote block")
+	}
+	return QuoteBlock{
+		Attributes: attrs,
+		Elements:   elements,
+	}, nil
+}
+
+var _ BlockWithElementSubstitution = QuoteBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b QuoteBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// ElementsToSubstitute returns the elements of this ExampleBlock so that substitutions can be applied onto them
+func (b QuoteBlock) ElementsToSubstitute() []interface{} {
+	return b.Elements
+}
+
+// ReplaceElements replaces the elements in this example block
+func (b QuoteBlock) ReplaceElements(elements []interface{}) interface{} {
+	b.Elements = elements
+	return b
+}
+
+// SidebarBlock the structure for the example blocks
+type SidebarBlock struct {
+	Attributes Attributes
+	Elements   []interface{}
+}
+
+// NewSidebarBlock initializes a new `SidebarBlock` with the given elements
+func NewSidebarBlock(elements []interface{}, attributes interface{}) (SidebarBlock, error) {
+	log.Debugf("initializing a new SidebarBlock with %d blocks", len(elements))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return SidebarBlock{}, errors.Wrap(err, "failed to initialize a new sidebar block")
+	}
+	return SidebarBlock{
+		Attributes: attrs,
+		Elements:   elements,
+	}, nil
+}
+
+var _ BlockWithElementSubstitution = SidebarBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b SidebarBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// ElementsToSubstitute returns the elements of this ExampleBlock so that substitutions can be applied onto them
+func (b SidebarBlock) ElementsToSubstitute() []interface{} {
+	return b.Elements
+}
+
+// ReplaceElements replaces the elements in this example block
+func (b SidebarBlock) ReplaceElements(elements []interface{}) interface{} {
+	b.Elements = elements
+	return b
+}
+
+// FencedBlock the structure for the fenced blocks
+type FencedBlock struct {
+	Attributes Attributes
+	Lines      [][]interface{}
+}
+
+// NewFencedBlock initializes a new `FencedBlock` with the given lines
+func NewFencedBlock(lines []interface{}, attributes interface{}) (FencedBlock, error) {
+	log.Debugf("initializing a new FencedBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return FencedBlock{}, errors.Wrap(err, "failed to initialize a new fenced block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return FencedBlock{}, errors.Wrapf(err, "failed to initialize a new fenced block")
+	}
+	return FencedBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
+var _ BlockWithLineSubstitution = FencedBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b FencedBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// LinesToSubstitute returns the lines of this ExampleBlock so that substitutions can be applied onto them
+func (b FencedBlock) LinesToSubstitute() [][]interface{} {
+	return b.Lines
+}
+
+// ReplaceLines replaces the elements in this example block
+func (b FencedBlock) ReplaceLines(lines [][]interface{}) interface{} {
+	b.Lines = lines
+	return b
+}
+
+// ListingBlock the structure for the Listing blocks
+type ListingBlock struct {
+	Attributes Attributes
+	Lines      [][]interface{}
+}
+
+// NewListingBlock initializes a new `ListingBlock` with the given lines
+func NewListingBlock(lines []interface{}, attributes interface{}) (ListingBlock, error) {
+	log.Debugf("initializing a new ListingBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return ListingBlock{}, errors.Wrap(err, "failed to initialize a new listing block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return ListingBlock{}, errors.Wrapf(err, "failed to initialize a new listing block")
+	}
+	return ListingBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
+var _ BlockWithLineSubstitution = ListingBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b ListingBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// LinesToSubstitute returns the lines of this ExampleBlock so that substitutions can be applied onto them
+func (b ListingBlock) LinesToSubstitute() [][]interface{} {
+	return b.Lines
+}
+
+// ReplaceLines replaces the elements in this example block
+func (b ListingBlock) ReplaceLines(lines [][]interface{}) interface{} {
+	b.Lines = lines
+	return b
+}
+
+// VerseBlock the structure for the Listing blocks
+type VerseBlock struct {
+	Attributes Attributes
+	Lines      [][]interface{}
+}
+
+// NewVerseBlock initializes a new `VerseBlock` with the given lines
+func NewVerseBlock(lines []interface{}, attributes interface{}) (VerseBlock, error) {
+	log.Debugf("initializing a new VerseBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return VerseBlock{}, errors.Wrap(err, "failed to initialize a new verse block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return VerseBlock{}, errors.Wrapf(err, "failed to initialize a new verse block")
+	}
+	return VerseBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
+var _ BlockWithLineSubstitution = VerseBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b VerseBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// LinesToSubstitute returns the lines of this ExampleBlock so that substitutions can be applied onto them
+func (b VerseBlock) LinesToSubstitute() [][]interface{} {
+	return b.Lines
+}
+
+// ReplaceLines replaces the elements in this example block
+func (b VerseBlock) ReplaceLines(lines [][]interface{}) interface{} {
+	b.Lines = lines
+	return b
+}
+
+// MarkdownQuoteBlock the structure for the markdown quote blocks
+type MarkdownQuoteBlock struct {
+	Attributes Attributes
+	Lines      [][]interface{}
+}
+
+// NewMarkdownQuoteBlock initializes a new `MarkdownQuoteBlock` with the given lines
+func NewMarkdownQuoteBlock(lines []interface{}, attributes interface{}) (MarkdownQuoteBlock, error) {
+	log.Debugf("initializing a new MarkdownQuoteBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return MarkdownQuoteBlock{}, errors.Wrap(err, "failed to initialize a new markdown quote block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return MarkdownQuoteBlock{}, errors.Wrapf(err, "failed to initialize a new markdown quote block")
+	}
+	return MarkdownQuoteBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
+// PassthroughBlock the structure for the comment blocks
+type PassthroughBlock struct {
+	Attributes Attributes
+	Lines      [][]interface{}
+}
+
+// NewPassthroughBlock initializes a new `PassthroughBlock` with the given lines
+func NewPassthroughBlock(lines []interface{}, attributes interface{}) (PassthroughBlock, error) {
+	log.Debugf("initializing a new PassthroughBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return PassthroughBlock{}, errors.Wrap(err, "failed to initialize a new passthrough block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return PassthroughBlock{}, errors.Wrapf(err, "failed to initialize a new passthrough block")
+	}
+	return PassthroughBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
+// CommentBlock the structure for the comment blocks
+type CommentBlock struct {
+	Attributes Attributes
+	Lines      [][]interface{}
+}
+
+// NewCommentBlock initializes a new `CommentBlock` with the given lines
+func NewCommentBlock(lines []interface{}, attributes interface{}) (CommentBlock, error) {
+	log.Debugf("initializing a new CommentBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes)
+	if err != nil {
+		return CommentBlock{}, errors.Wrap(err, "failed to initialize a new comment block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return CommentBlock{}, errors.Wrapf(err, "failed to initialize a new comment block")
+	}
+	return CommentBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
+// LiteralBlock the structure for the literal blocks
+type LiteralBlock struct {
+	Attributes Attributes
+	Lines      [][]interface{}
+}
+
+const (
+	// AttrLiteralBlockType the type of literal block, ie, how it was parsed
+	AttrLiteralBlockType = "literalBlockType"
+	// LiteralBlockWithDelimiter a literal block parsed with a delimiter
+	LiteralBlockWithDelimiter = "literalBlockWithDelimiter"
+	// LiteralBlockWithSpacesOnFirstLine a literal block parsed with one or more spaces on the first line
+	LiteralBlockWithSpacesOnFirstLine = "literalBlockWithSpacesOnFirstLine"
+	// LiteralBlockWithAttribute a literal block parsed with a `[literal]` attribute`
+	LiteralBlockWithAttribute = "literalBlockWithAttribute"
+)
+
+// NewLiteralBlock initializes a new `LiteralBlock` of the given kind with the given content,
+// along with the given sectionTitle spaces
+func NewLiteralBlock(origin string, lines []interface{}, attributes interface{}) (LiteralBlock, error) {
+	// log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(Attributes{
+		AttrKind:             Literal,
+		AttrLiteralBlockType: origin,
+	})
+	attrs.Add(attributes)
+	if err != nil {
+		return LiteralBlock{}, errors.Wrapf(err, "failed to initialize a literal block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return LiteralBlock{}, errors.Wrapf(err, "failed to initialize a new literal block")
+	}
+	return LiteralBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
+// ------------------------------------------
+// Thematic breaks
+// ------------------------------------------
 
 // ThematicBreak a thematic break
 type ThematicBreak struct{}
@@ -1553,49 +1916,6 @@ func (l *CalloutList) AddItem(item CalloutListItem) {
 // LastItem returns the last item in the list
 func (l *CalloutList) LastItem() ListItem {
 	return &(l.Items[len(l.Items)-1])
-}
-
-// ------------------------------------------
-// Literal blocks
-// ------------------------------------------
-
-// LiteralBlock the structure for the literal blocks
-type LiteralBlock struct {
-	Attributes Attributes
-	Lines      []string
-}
-
-const (
-	// AttrLiteralBlockType the type of literal block, ie, how it was parsed
-	AttrLiteralBlockType = "literalBlockType"
-	// LiteralBlockWithDelimiter a literal block parsed with a delimiter
-	LiteralBlockWithDelimiter = "literalBlockWithDelimiter"
-	// LiteralBlockWithSpacesOnFirstLine a literal block parsed with one or more spaces on the first line
-	LiteralBlockWithSpacesOnFirstLine = "literalBlockWithSpacesOnFirstLine"
-	// LiteralBlockWithAttribute a literal block parsed with a `[literal]` attribute`
-	LiteralBlockWithAttribute = "literalBlockWithAttribute"
-)
-
-// NewLiteralBlock initializes a new `DelimitedBlock` of the given kind with the given content,
-// along with the given sectionTitle spaces
-func NewLiteralBlock(origin string, lines []interface{}, attributes interface{}) (LiteralBlock, error) {
-	l, err := toString(lines)
-	if err != nil {
-		return LiteralBlock{}, errors.Wrapf(err, "failed to initialize a new LiteralBlock")
-	}
-	// log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(Attributes{
-		AttrKind:             Literal,
-		AttrLiteralBlockType: origin,
-	})
-	attrs.Add(attributes)
-	if err != nil {
-		return LiteralBlock{}, errors.Wrapf(err, "failed to initialize a Literal block")
-	}
-	return LiteralBlock{
-		Attributes: attrs,
-		Lines:      l,
-	}, nil
 }
 
 // ------------------------------------------

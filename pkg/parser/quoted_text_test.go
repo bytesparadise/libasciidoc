@@ -17,10 +17,10 @@ var _ = Describe("quoted texts", func() {
 			It("bold text with newline", func() {
 				source := "*some bold\ncontent*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -40,10 +40,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic text with 3 words in single quote", func() {
 				source := "_some italic content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -63,10 +63,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic text with newline", func() {
 				source := "_some italic\ncontent_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -86,10 +86,10 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text with 3 words", func() {
 				source := "`some monospace content`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -109,10 +109,10 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text with newline", func() {
 				source := "`some monospace\ncontent`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -132,10 +132,10 @@ var _ = Describe("quoted texts", func() {
 			It("invalid subscript text with 3 words", func() {
 				source := "~some subscript content~"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "~some subscript content~",
 									},
@@ -150,10 +150,10 @@ var _ = Describe("quoted texts", func() {
 			It("invalid superscript text with 3 words", func() {
 				source := "^some superscript content^"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "^some superscript content^",
 									},
@@ -168,10 +168,10 @@ var _ = Describe("quoted texts", func() {
 			It("bold text within italic text", func() {
 				source := "_some *bold* content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -196,10 +196,10 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text within bold text within italic quote", func() {
 				source := "*some _italic and `monospaced content`_*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -231,10 +231,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic text within italic text", func() {
 				source := "_some _very italic_ content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -253,10 +253,10 @@ var _ = Describe("quoted texts", func() {
 			It("bold delimiter text within bold text", func() {
 				source := "*bold*content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -274,10 +274,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic delimiter text within italic text", func() {
 				source := "_italic_content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -295,10 +295,10 @@ var _ = Describe("quoted texts", func() {
 			It("monospace delimiter text within monospace text", func() {
 				source := "`monospace`content`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -316,10 +316,10 @@ var _ = Describe("quoted texts", func() {
 			It("non-bold text then bold text", func() {
 				source := "non*bold*content *bold content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "non*bold*content ",
 									},
@@ -339,10 +339,10 @@ var _ = Describe("quoted texts", func() {
 			It("non-italic text then italic text", func() {
 				source := "non_italic_content _italic content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "non_italic_content ",
 									},
@@ -363,10 +363,10 @@ var _ = Describe("quoted texts", func() {
 			It("non-monospace text then monospace text", func() {
 				source := "non`monospace`content `monospace content`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "non`monospace`content ",
 									},
@@ -387,10 +387,10 @@ var _ = Describe("quoted texts", func() {
 			It("subscript text attached", func() {
 				source := "O~2~ is a molecule"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "O"},
 									types.QuotedText{
 										Kind: types.Subscript,
@@ -410,10 +410,10 @@ var _ = Describe("quoted texts", func() {
 			It("superscript text attached", func() {
 				source := "M^me^ White"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "M"},
 									types.QuotedText{
 										Kind: types.Superscript,
@@ -433,10 +433,10 @@ var _ = Describe("quoted texts", func() {
 			It("invalid subscript text with 3 words", func() {
 				source := "~some subscript content~"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "~some subscript content~"},
 								},
 							},
@@ -452,10 +452,10 @@ var _ = Describe("quoted texts", func() {
 			It("bold text of 1 word in double quote", func() {
 				source := "**hello**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -473,10 +473,10 @@ var _ = Describe("quoted texts", func() {
 			It("bold text with newline", func() {
 				source := "**some bold\ncontent**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -494,10 +494,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic text with 3 words in double quote", func() {
 				source := "__some italic content__"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -515,10 +515,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic text with newline", func() {
 				source := "__some italic\ncontent__"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -536,10 +536,10 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text with 3 words in double quote", func() {
 				source := "`` some monospace content ``"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -557,10 +557,10 @@ var _ = Describe("quoted texts", func() {
 			It("monospace text with newline", func() {
 				source := "``some monospace\ncontent``"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -578,10 +578,10 @@ var _ = Describe("quoted texts", func() {
 			It("superscript text within italic text", func() {
 				source := "__some ^superscript^ content__"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -606,10 +606,10 @@ var _ = Describe("quoted texts", func() {
 			It("superscript text within italic text within bold quote", func() {
 				source := "**some _italic and ^superscriptcontent^_**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -642,10 +642,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with bold text", func() {
 				source := "a paragraph with *some bold content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -664,10 +664,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid bold text - use case 1", func() {
 				source := "a paragraph with *some bold content"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with *some bold content"},
 								},
 							},
@@ -680,10 +680,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid bold text - use case 2", func() {
 				source := "a paragraph with *some bold content *"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with *some bold content *"},
 								},
 							},
@@ -696,10 +696,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid bold text - use case 3", func() {
 				source := "a paragraph with * some bold content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with * some bold content*"},
 								},
 							},
@@ -712,10 +712,10 @@ var _ = Describe("quoted texts", func() {
 			It("invalid italic text within bold text", func() {
 				source := "some *bold and _italic content _ together*."
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "some "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -735,10 +735,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic text within invalid bold text", func() {
 				source := "some *bold and _italic content_ together *."
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "some *bold and "},
 									types.QuotedText{
 										Kind: types.Italic,
@@ -758,10 +758,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid subscript text - use case 1", func() {
 				source := "a paragraph with ~some subscript content"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ~some subscript content"},
 								},
 							},
@@ -774,10 +774,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid subscript text - use case 2", func() {
 				source := "a paragraph with ~some subscript content ~"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ~some subscript content ~"},
 								},
 							},
@@ -790,10 +790,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid subscript text - use case 3", func() {
 				source := "a paragraph with ~ some subscript content~"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ~ some subscript content~"},
 								},
 							},
@@ -806,10 +806,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid superscript text - use case 1", func() {
 				source := "a paragraph with ^some superscript content"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ^some superscript content"},
 								},
 							},
@@ -822,10 +822,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid superscript text - use case 2", func() {
 				source := "a paragraph with ^some superscript content ^"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ^some superscript content ^"},
 								},
 							},
@@ -838,10 +838,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with invalid superscript text - use case 3", func() {
 				source := "a paragraph with ^ some superscript content^"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ^ some superscript content^"},
 								},
 							},
@@ -854,10 +854,10 @@ var _ = Describe("quoted texts", func() {
 			It("marked text with newline", func() {
 				source := "#some marked\ncontent#"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Marked,
 										Elements: []interface{}{
@@ -875,10 +875,10 @@ var _ = Describe("quoted texts", func() {
 			It("double marked text with newline", func() {
 				source := "##some marked\ncontent##"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Marked,
 										Elements: []interface{}{
@@ -900,10 +900,10 @@ var _ = Describe("quoted texts", func() {
 			It("simple role italics", func() {
 				source := "[myrole]_italics_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -924,10 +924,10 @@ var _ = Describe("quoted texts", func() {
 			It("simple role italics unconstrained", func() {
 				source := "it[uncle]__al__ic"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "it",
 									},
@@ -954,10 +954,10 @@ var _ = Describe("quoted texts", func() {
 			It("simple role bold", func() {
 				source := "[myrole]*bold*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -978,10 +978,10 @@ var _ = Describe("quoted texts", func() {
 			It("simple role bold unconstrained", func() {
 				source := "it[uncle]**al**ic"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "it",
 									},
@@ -1008,10 +1008,10 @@ var _ = Describe("quoted texts", func() {
 			It("simple role mono", func() {
 				source := "[myrole]`true`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1032,10 +1032,10 @@ var _ = Describe("quoted texts", func() {
 			It("simple role mono unconstrained", func() {
 				source := "int[uncle]``eg``rate"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "int",
 									},
@@ -1062,10 +1062,10 @@ var _ = Describe("quoted texts", func() {
 			It("role with comma truncates", func() {
 				source := "[myrole,and=nothing]_italics_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -1087,10 +1087,10 @@ var _ = Describe("quoted texts", func() {
 			It("short-hand ID only", func() {
 				source := "[#here]*bold*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1112,10 +1112,10 @@ var _ = Describe("quoted texts", func() {
 			It("short-hand role only", func() {
 				source := "[.bob]**bold**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1136,10 +1136,10 @@ var _ = Describe("quoted texts", func() {
 			It("short-hand role with special characters", func() {
 				source := "[\"a <role>\"]**bold**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Attributes: types.Attributes{
@@ -1174,10 +1174,10 @@ var _ = Describe("quoted texts", func() {
 			It("marked short-hand role only", func() {
 				source := "[.bob]##the builder##"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Marked,
 										Elements: []interface{}{
@@ -1198,10 +1198,10 @@ var _ = Describe("quoted texts", func() {
 			It("short-hand multiple roles and id", func() {
 				source := "[.role1#anchor.role2.role3]**bold**[#here.second.class]_text_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1235,10 +1235,10 @@ var _ = Describe("quoted texts", func() {
 			It("empty role", func() {
 				source := "[]**bold**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1256,10 +1256,10 @@ var _ = Describe("quoted texts", func() {
 			It("quoted role", func() {
 				source := "['here, again']**bold**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1281,10 +1281,10 @@ var _ = Describe("quoted texts", func() {
 			It("quoted role with special chars", func() {
 				source := "[\"something <wicked>\"]**bold**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1321,10 +1321,10 @@ var _ = Describe("quoted texts", func() {
 			It("bad syntax", func() {
 				source := "[.<something \"wicked>]**bold**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "[.",
 									},
@@ -1361,10 +1361,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic text within bold text", func() {
 				source := "some *bold and _italic content_ together*."
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "some "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -1392,10 +1392,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "*some *nested bold* content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1415,10 +1415,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "**some **nested bold** content**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1444,10 +1444,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "**some *nested bold* content**"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1473,10 +1473,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "*some **nested bold** content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -1502,10 +1502,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some _nested italic_ content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -1525,10 +1525,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "__some __nested italic__ content__"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -1554,10 +1554,10 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some __nested italic__ content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -1583,10 +1583,10 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for italic text within italic text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "_some __nested italic__ content_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -1612,10 +1612,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some `nested monospace` content`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1635,10 +1635,10 @@ var _ = Describe("quoted texts", func() {
 				// here we don't allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "``some ``nested monospace`` content``"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1664,10 +1664,10 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some ``nested monospace`` content`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1693,10 +1693,10 @@ var _ = Describe("quoted texts", func() {
 				// here we allow for monospace text within monospace text, to comply with the existing implementations (asciidoc and asciidoctor)
 				source := "`some ``nested monospace`` content`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1721,10 +1721,10 @@ var _ = Describe("quoted texts", func() {
 			It("quoted text within marked text", func() {
 				source := "some #marked and _italic_ and *bold* and `monospaced` content together#."
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "some "},
 									types.QuotedText{
 										Kind: types.Marked,
@@ -1765,10 +1765,10 @@ var _ = Describe("quoted texts", func() {
 			It("unbalanced bold in monospace - case 1", func() {
 				source := "`*a`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1786,10 +1786,10 @@ var _ = Describe("quoted texts", func() {
 			It("unbalanced bold in monospace - case 2", func() {
 				source := "`a*b`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1807,10 +1807,10 @@ var _ = Describe("quoted texts", func() {
 			It("italic in monospace", func() {
 				source := "`_a_`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1833,10 +1833,10 @@ var _ = Describe("quoted texts", func() {
 			It("unbalanced italic in monospace", func() {
 				source := "`a_b`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1854,10 +1854,10 @@ var _ = Describe("quoted texts", func() {
 			It("unparsed bold in monospace", func() {
 				source := "`a*b*`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1875,10 +1875,10 @@ var _ = Describe("quoted texts", func() {
 			It("parsed subscript in monospace", func() {
 				source := "`a~b~`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1902,10 +1902,10 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in single quoted monospace - case 1", func() {
 				source := "`a\nb`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1923,10 +1923,10 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in double quoted monospace - case 1", func() {
 				source := "`a\nb`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1944,10 +1944,10 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in single quoted  monospace - case 2", func() {
 				source := "`a\n*b*`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1971,10 +1971,10 @@ var _ = Describe("quoted texts", func() {
 			It("multiline in double quoted  monospace - case 2", func() {
 				source := "`a\n*b*`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -1998,10 +1998,10 @@ var _ = Describe("quoted texts", func() {
 			It("link in bold", func() {
 				source := "*a link:/[b]*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -2035,10 +2035,10 @@ var _ = Describe("quoted texts", func() {
 			It("image in bold", func() {
 				source := "*a image:foo.png[]*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -2068,10 +2068,10 @@ var _ = Describe("quoted texts", func() {
 			It("singleplus passthrough in bold", func() {
 				source := "*a +image:foo.png[]+*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -2095,10 +2095,10 @@ var _ = Describe("quoted texts", func() {
 			It("tripleplus passthrough in bold", func() {
 				source := "*a +++image:foo.png[]+++*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -2122,10 +2122,10 @@ var _ = Describe("quoted texts", func() {
 			It("link in italic", func() {
 				source := "_a link:/[b]_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -2159,10 +2159,10 @@ var _ = Describe("quoted texts", func() {
 			It("image in italic", func() {
 				source := "_a image:foo.png[]_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -2192,10 +2192,10 @@ var _ = Describe("quoted texts", func() {
 			It("singleplus passthrough in italic", func() {
 				source := "_a +image:foo.png[]+_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -2219,10 +2219,10 @@ var _ = Describe("quoted texts", func() {
 			It("tripleplus passthrough in italic", func() {
 				source := "_a +++image:foo.png[]+++_"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -2246,10 +2246,10 @@ var _ = Describe("quoted texts", func() {
 			It("link in monospace", func() {
 				source := "`a link:/[b]`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -2283,10 +2283,10 @@ var _ = Describe("quoted texts", func() {
 			It("image in monospace", func() {
 				source := "`a image:foo.png[]`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -2316,10 +2316,10 @@ var _ = Describe("quoted texts", func() {
 			It("singleplus passthrough in monospace", func() {
 				source := "`a +image:foo.png[]+`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -2343,10 +2343,10 @@ var _ = Describe("quoted texts", func() {
 			It("tripleplus passthrough in monospace", func() {
 				source := "`a +++image:foo.png[]+++`"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -2376,10 +2376,10 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced bold text - extra on left", func() {
 					source := "**some bold content*"
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Bold,
 											Elements: []interface{}{
@@ -2397,10 +2397,10 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced bold text - extra on right", func() {
 					source := "*some bold content**"
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Bold,
 											Elements: []interface{}{
@@ -2422,10 +2422,10 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced italic text - extra on left", func() {
 					source := "__some italic content_"
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Italic,
 											Elements: []interface{}{
@@ -2443,10 +2443,10 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced italic text - extra on right", func() {
 					source := "_some italic content__"
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Italic,
 											Elements: []interface{}{
@@ -2468,10 +2468,10 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced monospace text - extra on left", func() {
 					source := "``some monospace content`"
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Monospace,
 											Elements: []interface{}{
@@ -2489,10 +2489,10 @@ var _ = Describe("quoted texts", func() {
 				It("unbalanced monospace text - extra on right", func() {
 					source := "`some monospace content``"
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Monospace,
 											Elements: []interface{}{
@@ -2512,10 +2512,10 @@ var _ = Describe("quoted texts", func() {
 			It("inline content with unbalanced bold text", func() {
 				source := "a paragraph with *some bold content"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with *some bold content"},
 								},
 							},
@@ -2536,10 +2536,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with single backslash", func() {
 						source := `\*bold content*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "*bold content*"},
 										},
 									},
@@ -2552,10 +2552,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with multiple backslashes", func() {
 						source := `\\*bold content*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\*bold content*`},
 										},
 									},
@@ -2568,10 +2568,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with double quote", func() {
 						source := `\\**bold content**`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `**bold content**`},
 										},
 									},
@@ -2584,10 +2584,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with double quote and more backslashes", func() {
 						source := `\\\**bold content**`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\**bold content**`},
 										},
 									},
@@ -2600,10 +2600,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with unbalanced double quote", func() {
 						source := `\**bold content*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `**bold content*`},
 										},
 									},
@@ -2616,10 +2616,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with unbalanced double quote and more backslashes", func() {
 						source := `\\\**bold content*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\\**bold content*`},
 										},
 									},
@@ -2635,10 +2635,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with nested italic text", func() {
 						source := `\*_italic content_*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "*"},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -2658,10 +2658,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with unbalanced double quote and nested italic test", func() {
 						source := `\**_italic content_*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "**"},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -2681,10 +2681,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped bold text with nested italic", func() {
 						source := `\*bold _and italic_ content*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "*bold "},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -2711,10 +2711,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with single quote", func() {
 						source := `\_italic content_`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "_italic content_"},
 										},
 									},
@@ -2727,10 +2727,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with single quote and more backslashes", func() {
 						source := `\\_italic content_`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\_italic content_`},
 										},
 									},
@@ -2743,10 +2743,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with double quote with 2 backslashes", func() {
 						source := `\\__italic content__`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `__italic content__`},
 										},
 									},
@@ -2759,10 +2759,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with double quote with 3 backslashes", func() {
 						source := `\\\__italic content__`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\__italic content__`},
 										},
 									},
@@ -2775,10 +2775,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with unbalanced double quote", func() {
 						source := `\__italic content_`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `__italic content_`},
 										},
 									},
@@ -2791,10 +2791,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with unbalanced double quote and more backslashes", func() {
 						source := `\\\__italic content_`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
 										},
 									},
@@ -2810,10 +2810,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with nested monospace text", func() {
 						source := `\` + "_`monospace content`_" // gives: \_`monospace content`_
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "_"},
 											types.QuotedText{
 												Kind: types.Monospace,
@@ -2833,10 +2833,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with unbalanced double quote and nested bold test", func() {
 						source := `\__*bold content*_`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "__"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -2856,10 +2856,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped italic text with nested bold text", func() {
 						source := `\_italic *and bold* content_`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "_italic "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -2885,10 +2885,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with single quote", func() {
 						source := `\` + "`monospace content`"
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "`monospace content`"}, // backslash removed
 										},
 									},
@@ -2901,10 +2901,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with single quote and more backslashes", func() {
 						source := `\\` + "`monospace content`"
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\` + "`monospace content`"}, // only 1 backslash removed
 										},
 									},
@@ -2917,10 +2917,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with double quote", func() {
 						source := `\\` + "`monospace content``"
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\` + "`monospace content``"}, // 2 back slashes "consumed"
 										},
 									},
@@ -2933,10 +2933,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with double quote and more backslashes", func() {
 						source := `\\\` + "``monospace content``" // 3 backslashes
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\` + "``monospace content``"}, // 2 back slashes "consumed"
 										},
 									},
@@ -2949,10 +2949,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with unbalanced double quote", func() {
 						source := `\` + "``monospace content`"
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "``monospace content`"},
 										},
 									},
@@ -2965,10 +2965,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with unbalanced double quote and more backslashes", func() {
 						source := `\\\` + "``monospace content`" // 3 backslashes
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\\` + "``monospace content`"}, // 2 backslashes removed
 										},
 									},
@@ -2984,10 +2984,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with nested bold text", func() {
 						source := `\` + "`*bold content*`" // gives: \`*bold content*`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "`"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3007,10 +3007,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with unbalanced double backquote and nested bold test", func() {
 						source := `\` + "``*bold content*`"
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "``"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3030,10 +3030,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped monospace text with nested bold text", func() {
 						source := `\` + "`monospace *and bold* content`"
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "`monospace "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3059,10 +3059,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with single quote", func() {
 						source := `\~subscriptcontent~`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "~subscriptcontent~"},
 										},
 									},
@@ -3075,10 +3075,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with single quote and more backslashes", func() {
 						source := `\\~subscriptcontent~`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\~subscriptcontent~`}, // only 1 backslash removed
 										},
 									},
@@ -3095,10 +3095,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with nested bold text", func() {
 						source := `\~*boldcontent*~`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "~"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3118,10 +3118,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped subscript text with nested bold text", func() {
 						source := `\~subscript *and bold* content~`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\~subscript `},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3147,10 +3147,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with single quote", func() {
 						source := `\^superscriptcontent^`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "^superscriptcontent^"},
 										},
 									},
@@ -3163,10 +3163,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with single quote and more backslashes", func() {
 						source := `\\^superscriptcontent^`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\^superscriptcontent^`}, // only 1 backslash removed
 										},
 									},
@@ -3183,10 +3183,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with nested bold text - case 1", func() {
 						source := `\^*bold content*^` // valid escaped superscript since it has no space within
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `^`},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3206,10 +3206,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with unbalanced double backquote and nested bold test", func() {
 						source := `\^*bold content*^`
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "^"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3229,10 +3229,10 @@ var _ = Describe("quoted texts", func() {
 					It("escaped superscript text with nested bold text - case 2", func() {
 						source := `\^superscript *and bold* content^` // invalid superscript text since it has spaces within
 						expected := types.DraftDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\^superscript `},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -3257,10 +3257,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in single bold", func() {
 				source := "this *mother's mothers' mothers`'*\n"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -3281,10 +3281,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in double bold", func() {
 				source := "this **mother's mothers' mothers`'**\n"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -3305,10 +3305,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in single italic", func() {
 				source := "this _mother's mothers' mothers`'_\n"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Italic,
@@ -3329,10 +3329,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in double italic", func() {
 				source := "this __mother's mothers' mothers`'__\n"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Italic,
@@ -3353,10 +3353,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in single mono", func() {
 				source := "this `mother's mothers`' day`\n" // no typographic quotes here
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Monospace,
@@ -3377,10 +3377,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in double mono", func() {
 				source := "this ``mother's mothers`' day``\n"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Monospace,
@@ -3401,10 +3401,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in single marked", func() {
 				source := "this #mother's mothers' mothers`'#\n"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Marked,
@@ -3425,10 +3425,10 @@ var _ = Describe("quoted texts", func() {
 			It("apostrophes in double marked", func() {
 				source := "this ##mother's mothers' mothers`'##\n"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "this "},
 									types.QuotedText{
 										Kind: types.Marked,
@@ -3457,8 +3457,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3478,8 +3478,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3499,8 +3499,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3520,8 +3520,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3541,8 +3541,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -3562,8 +3562,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "~some subscript content~"},
 								},
 							},
@@ -3578,8 +3578,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "^some superscript content^"},
 								},
 							},
@@ -3594,8 +3594,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3622,8 +3622,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3655,8 +3655,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3677,8 +3677,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "O"},
 									types.QuotedText{
 										Kind: types.Subscript,
@@ -3700,8 +3700,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "M"},
 									types.QuotedText{
 										Kind: types.Superscript,
@@ -3723,8 +3723,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "~some subscript content~"},
 								},
 							},
@@ -3739,15 +3739,15 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "*some bold"},
 								},
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "content*"},
 								},
 							},
@@ -3762,15 +3762,15 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "_some italic"},
 								},
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "content_"},
 								},
 							},
@@ -3785,15 +3785,15 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "`some monospace"},
 								},
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "content`"},
 								},
 							},
@@ -3808,8 +3808,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "#some marked",
 									},
@@ -3817,8 +3817,8 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "content#",
 									},
@@ -3839,8 +3839,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3860,8 +3860,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3881,8 +3881,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -3902,8 +3902,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -3930,8 +3930,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -3963,8 +3963,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "**some bold",
 									},
@@ -3972,8 +3972,8 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "content**"},
 								},
 							},
@@ -3988,8 +3988,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "__some italic",
 									},
@@ -3997,8 +3997,8 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "content__"},
 								},
 							},
@@ -4013,8 +4013,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "``some monospace",
 									},
@@ -4022,8 +4022,8 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "content``"},
 								},
 							},
@@ -4038,8 +4038,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "##some marked",
 									},
@@ -4047,8 +4047,8 @@ var _ = Describe("quoted texts", func() {
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "content##"},
 								},
 							},
@@ -4067,8 +4067,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -4089,8 +4089,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with *some bold content"},
 								},
 							},
@@ -4105,8 +4105,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with *some bold content *"},
 								},
 							},
@@ -4121,8 +4121,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with * some bold content*"},
 								},
 							},
@@ -4137,8 +4137,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "some "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -4160,8 +4160,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "some *bold and "},
 									types.QuotedText{
 										Kind: types.Italic,
@@ -4183,8 +4183,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ~some subscript content"},
 								},
 							},
@@ -4199,8 +4199,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ~some subscript content ~"},
 								},
 							},
@@ -4215,8 +4215,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ~ some subscript content~"},
 								},
 							},
@@ -4231,8 +4231,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ^some superscript content"},
 								},
 							},
@@ -4247,8 +4247,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ^some superscript content ^"},
 								},
 							},
@@ -4263,8 +4263,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with ^ some superscript content^"},
 								},
 							},
@@ -4282,8 +4282,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "some "},
 									types.QuotedText{
 										Kind: types.Bold,
@@ -4313,8 +4313,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4336,8 +4336,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4365,8 +4365,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4394,8 +4394,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4423,8 +4423,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4446,8 +4446,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4475,8 +4475,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4504,8 +4504,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -4533,8 +4533,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4556,8 +4556,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4585,8 +4585,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4614,8 +4614,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4642,8 +4642,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4663,8 +4663,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4684,8 +4684,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4710,8 +4710,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4731,8 +4731,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4752,8 +4752,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4779,8 +4779,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4800,8 +4800,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4821,8 +4821,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4848,8 +4848,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -4875,8 +4875,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4912,8 +4912,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4945,8 +4945,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4972,8 +4972,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -4999,8 +4999,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -5036,8 +5036,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -5069,8 +5069,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -5096,8 +5096,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -5123,8 +5123,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -5160,8 +5160,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -5193,8 +5193,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -5220,8 +5220,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{
@@ -5253,8 +5253,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Bold,
 											Elements: []interface{}{
@@ -5274,8 +5274,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 
 										types.QuotedText{
 											Kind: types.Bold,
@@ -5300,8 +5300,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 
 										types.QuotedText{
 											Kind: types.Italic,
@@ -5322,8 +5322,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Italic,
 											Elements: []interface{}{
@@ -5347,8 +5347,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Monospace,
 											Elements: []interface{}{
@@ -5368,8 +5368,8 @@ var _ = Describe("quoted texts", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.QuotedText{
 											Kind: types.Monospace,
 											Elements: []interface{}{
@@ -5391,8 +5391,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph with *some bold content"},
 								},
 							},
@@ -5415,8 +5415,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "*bold content*"},
 										},
 									},
@@ -5431,8 +5431,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\*bold content*`},
 										},
 									},
@@ -5447,8 +5447,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `**bold content**`},
 										},
 									},
@@ -5463,8 +5463,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\**bold content**`},
 										},
 									},
@@ -5479,8 +5479,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `**bold content*`},
 										},
 									},
@@ -5495,8 +5495,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\\**bold content*`},
 										},
 									},
@@ -5514,8 +5514,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "*"},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -5537,8 +5537,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "**"},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -5560,8 +5560,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "*bold "},
 											types.QuotedText{
 												Kind: types.Italic,
@@ -5590,8 +5590,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "_italic content_"},
 										},
 									},
@@ -5606,8 +5606,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\_italic content_`},
 										},
 									},
@@ -5622,8 +5622,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `__italic content__`},
 										},
 									},
@@ -5638,8 +5638,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\__italic content__`},
 										},
 									},
@@ -5654,8 +5654,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `__italic content_`},
 										},
 									},
@@ -5670,8 +5670,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\\__italic content_`}, // only 1 backslash remove
 										},
 									},
@@ -5689,8 +5689,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "_"},
 											types.QuotedText{
 												Kind: types.Monospace,
@@ -5712,8 +5712,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "__"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5735,8 +5735,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "_italic "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5764,8 +5764,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "`monospace content`"}, // backslash removed
 										},
 									},
@@ -5780,8 +5780,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\` + "`monospace content`"}, // only 1 backslash removed
 										},
 									},
@@ -5796,8 +5796,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\` + "`monospace content``"}, // 2 back slashes "consumed"
 										},
 									},
@@ -5812,8 +5812,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\` + "``monospace content``"}, // 2 back slashes "consumed"
 										},
 									},
@@ -5828,8 +5828,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "``monospace content`"},
 										},
 									},
@@ -5844,8 +5844,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\\` + "``monospace content`"}, // 2 backslashes removed
 										},
 									},
@@ -5863,8 +5863,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "`"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5886,8 +5886,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "``"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5909,8 +5909,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "`monospace "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5938,8 +5938,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "~subscriptcontent~"},
 										},
 									},
@@ -5954,8 +5954,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\~subscriptcontent~`}, // only 1 backslash removed
 										},
 									},
@@ -5974,8 +5974,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "~"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -5997,8 +5997,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\~subscript `},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -6026,8 +6026,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "^superscriptcontent^"},
 										},
 									},
@@ -6042,8 +6042,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\^superscriptcontent^`}, // only 1 backslash removed
 										},
 									},
@@ -6062,8 +6062,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `^`},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -6085,8 +6085,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "^"},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -6108,8 +6108,8 @@ var _ = Describe("quoted texts", func() {
 						expected := types.Document{
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: `\^superscript `},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -6136,8 +6136,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
@@ -6169,8 +6169,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Italic,
 										Elements: []interface{}{
@@ -6202,8 +6202,8 @@ var _ = Describe("quoted texts", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.QuotedText{
 										Kind: types.Monospace,
 										Elements: []interface{}{

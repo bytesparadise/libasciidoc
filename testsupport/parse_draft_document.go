@@ -28,7 +28,7 @@ func ParseDraftDocument(actual string, options ...interface{}) (types.DraftDocum
 	if err != nil {
 		return types.DraftDocument{}, err
 	}
-	return parser.ApplySubstitutions(rawDoc, config, parserOptions...)
+	return parser.ApplySubstitutions(rawDoc, config)
 }
 
 type draftDocumentParserConfig struct {

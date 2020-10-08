@@ -56,10 +56,11 @@ lines.</pre>
 			source := ` literal content
    on many lines  
      has some heading spaces preserved.`
+			// note: trailing spaces are removed
 			expected := `<div class="literalblock">
 <div class="content">
 <pre>literal content
-  on many lines  
+  on many lines
     has some heading spaces preserved.</pre>
 </div>
 </div>
@@ -120,10 +121,11 @@ a normal paragraph.`
  has its heading spaces preserved.
 
 a normal paragraph.`
+			// note: trailing spaces are removed
 			expected := `<div class="literalblock">
 <div class="content">
 <pre> literal content
- on many lines 
+ on many lines
  has its heading spaces preserved.</pre>
 </div>
 </div>

@@ -19,8 +19,8 @@ var _ = Describe("user macros", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "AAA ",
 								},
 									types.UserMacro{
@@ -42,8 +42,8 @@ var _ = Describe("user macros", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "AAA ",
 								},
 									types.UserMacro{
@@ -68,8 +68,8 @@ var _ = Describe("user macros", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "AAA ",
 								},
 									types.UserMacro{
@@ -91,8 +91,8 @@ var _ = Describe("user macros", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "repository: ",
 								},
 									types.UserMacro{

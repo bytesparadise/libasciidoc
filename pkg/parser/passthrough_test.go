@@ -19,8 +19,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.TriplePlusPassthrough,
 										Elements: []interface{}{
@@ -42,8 +42,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind:     types.TriplePlusPassthrough,
 										Elements: []interface{}{},
@@ -66,8 +66,8 @@ var _ = Describe("passthroughs", func() {
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.TriplePlusPassthrough,
 										Elements: []interface{}{
@@ -89,8 +89,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.TriplePlusPassthrough,
 										Elements: []interface{}{
@@ -112,8 +112,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.TriplePlusPassthrough,
 										Elements: []interface{}{
@@ -135,8 +135,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.TriplePlusPassthrough,
 										Elements: []interface{}{
@@ -158,8 +158,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "The text "},
 									types.InlinePassthrough{
 										Kind: types.TriplePlusPassthrough,
@@ -183,8 +183,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.TriplePlusPassthrough,
 										Elements: []interface{}{
@@ -210,8 +210,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.SinglePlusPassthrough,
 										Elements: []interface{}{
@@ -233,8 +233,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "++",
 									},
@@ -251,8 +251,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.InlinePassthrough{
 										Kind: types.SinglePlusPassthrough,
 										Elements: []interface{}{
@@ -274,8 +274,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "+",
 									},
@@ -304,8 +304,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "+ ",
 									},
@@ -333,8 +333,8 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "+ ",
 									},
@@ -363,13 +363,13 @@ var _ = Describe("passthroughs", func() {
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "+hello,",
 									},
 								},
-								[]interface{}{
+								{
 									types.StringElement{
 										Content: "world+",
 									},
@@ -387,8 +387,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "The text + ",
 										},
@@ -425,8 +425,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{types.InlinePassthrough{
+								Lines: [][]interface{}{
+									{types.InlinePassthrough{
 										Kind: types.PassthroughMacro,
 										Elements: []interface{}{
 											types.StringElement{
@@ -447,8 +447,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{types.InlinePassthrough{
+								Lines: [][]interface{}{
+									{types.InlinePassthrough{
 										Kind: types.PassthroughMacro,
 										Elements: []interface{}{
 											types.StringElement{
@@ -469,8 +469,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{types.InlinePassthrough{
+								Lines: [][]interface{}{
+									{types.InlinePassthrough{
 										Kind:     types.PassthroughMacro,
 										Elements: []interface{}{},
 									},
@@ -487,8 +487,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{types.InlinePassthrough{
+								Lines: [][]interface{}{
+									{types.InlinePassthrough{
 										Kind: types.PassthroughMacro,
 										Elements: []interface{}{
 											types.StringElement{
@@ -509,8 +509,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{types.InlinePassthrough{
+								Lines: [][]interface{}{
+									{types.InlinePassthrough{
 										Kind: types.PassthroughMacro,
 										Elements: []interface{}{
 											types.StringElement{
@@ -534,8 +534,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{types.InlinePassthrough{
+								Lines: [][]interface{}{
+									{types.InlinePassthrough{
 										Kind: types.PassthroughMacro,
 										Elements: []interface{}{
 											types.QuotedText{
@@ -561,8 +561,8 @@ var _ = Describe("passthroughs", func() {
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{types.InlinePassthrough{
+								Lines: [][]interface{}{
+									{types.InlinePassthrough{
 										Kind: types.PassthroughMacro,
 										Elements: []interface{}{
 											types.StringElement{

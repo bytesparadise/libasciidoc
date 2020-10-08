@@ -20,7 +20,7 @@ var _ = Describe("sections", func() {
 					types.StringElement{Content: "a header"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_header",
@@ -40,7 +40,7 @@ var _ = Describe("sections", func() {
 					types.StringElement{Content: "a header   "},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_header",
@@ -63,7 +63,7 @@ and a paragraph`
 					types.StringElement{Content: "a header"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_header",
@@ -74,8 +74,8 @@ and a paragraph`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "and a paragraph",
 									},
@@ -99,7 +99,7 @@ and a paragraph`
 				}
 
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_first_header",
@@ -128,7 +128,7 @@ and a paragraph`
 					types.StringElement{Content: "section 1"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_section_1",
@@ -153,7 +153,7 @@ and a paragraph`
 					},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_2_spaces_and_bold_content",
@@ -178,7 +178,7 @@ and a paragraph`
 					types.StringElement{Content: "section 1"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_header",
@@ -212,7 +212,7 @@ and a paragraph`
 					types.StringElement{Content: "section 2"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_header",
@@ -242,7 +242,7 @@ and a paragraph`
 					types.StringElement{Content: "a title"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_title",
@@ -252,8 +252,8 @@ and a paragraph`
 							Elements: []interface{}{},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "and a paragraph"},
 								},
 							},
@@ -271,7 +271,7 @@ and a paragraph`
 					types.StringElement{Content: "a title"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_title",
@@ -282,8 +282,8 @@ and a paragraph`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "and a paragraph"},
 								},
 							},
@@ -299,7 +299,7 @@ and a paragraph`
 					types.StringElement{Content: "a title"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_title",
@@ -310,8 +310,8 @@ and a paragraph`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "and a paragraph"},
 								},
 							},
@@ -333,7 +333,7 @@ a paragraph
 == Section B
 a paragraph`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_header",
@@ -356,8 +356,8 @@ a paragraph`
 							Elements: []interface{}{},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph"},
 								},
 							},
@@ -374,8 +374,8 @@ a paragraph`
 							Elements: []interface{}{},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph"},
 								},
 							},
@@ -392,8 +392,8 @@ a paragraph`
 							Elements: []interface{}{},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph"},
 								},
 							},
@@ -410,7 +410,7 @@ a paragraph`
 					types.StringElement{Content: "a header"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID:       "custom_header",
@@ -444,7 +444,7 @@ a paragraph`
 					types.StringElement{Content: "Section B"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID:       "custom_header",
@@ -475,8 +475,8 @@ a paragraph`
 							Elements: []interface{}{},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a paragraph"},
 								},
 							},
@@ -497,7 +497,7 @@ a paragraph`
 					types.StringElement{Content: "section 1"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_section_1",
@@ -535,7 +535,7 @@ a paragraph`
 					},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_link_to_httpsfoo_bar",
@@ -584,8 +584,8 @@ a paragraph with *bold content*`
 									},
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph with "},
 													types.QuotedText{
 														Kind: types.Bold,
@@ -612,7 +612,7 @@ a short preamble
 
 == section 1`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_title",
@@ -625,8 +625,8 @@ a short preamble
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a short preamble"},
 								},
 							},
@@ -658,7 +658,7 @@ a short preamble
 					Attributes: types.Attributes{
 						types.AttrTableOfContents: "",
 					},
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_title",
@@ -674,8 +674,8 @@ a short preamble
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a short preamble"},
 								},
 							},
@@ -699,7 +699,7 @@ a short preamble
 			It("header with 2 paragraphs and CRLFs", func() {
 				source := "= a title\r\n\r\na first paragraph\r\n\r\na second paragraph"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_title",
@@ -712,16 +712,16 @@ a short preamble
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a first paragraph"},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a second paragraph"},
 								},
 							},
@@ -737,10 +737,10 @@ a short preamble
 			It("header invalid - missing space", func() {
 				source := "=a header"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "=a header"},
 								},
 							},
@@ -752,14 +752,18 @@ a short preamble
 			It("header invalid - header space", func() {
 				source := " = a header with a prefix space"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
-							Lines: []string{
-								" = a header with a prefix space",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: " = a header with a prefix space",
+									},
+								},
 							},
 						},
 					},
@@ -775,7 +779,7 @@ a short preamble
 					types.StringElement{Content: "a header"},
 				}
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "_a_header",
@@ -790,8 +794,12 @@ a short preamble
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
-							Lines: []string{
-								"   == section with prefix space",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "   == section with prefix space",
+									},
+								},
 							},
 						},
 					},
@@ -808,16 +816,16 @@ a short preamble
 ==============
 Doc Writer <thedoc@asciidoctor.org>`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "Document Title"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "=============="},
 								},
-								[]interface{}{
+								{
 									types.StringElement{
 										Content: "Doc Writer ",
 									},
@@ -911,8 +919,8 @@ and a paragraph`
 							Title: doctitle,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "and a paragraph"},
 										},
 									},
@@ -1108,8 +1116,8 @@ and a paragraph`
 							Title: section1Title,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "and a paragraph"},
 										},
 									},
@@ -1141,8 +1149,8 @@ and a paragraph`
 							Title: section1Title,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "and a paragraph"},
 										},
 									},
@@ -1172,8 +1180,8 @@ and a paragraph`
 							Title: section1Title,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "and a paragraph"},
 										},
 									},
@@ -1231,8 +1239,8 @@ a paragraph`
 									Title: sectionATitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -1245,8 +1253,8 @@ a paragraph`
 											Title: sectionAaTitle,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: []interface{}{
-														[]interface{}{
+													Lines: [][]interface{}{
+														{
 															types.StringElement{Content: "a paragraph"},
 														},
 													},
@@ -1263,8 +1271,8 @@ a paragraph`
 									Title: sectionBTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -1324,8 +1332,8 @@ a paragraph`
 									Title: sectionATitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -1338,8 +1346,8 @@ a paragraph`
 											Title: sectionAaTitle,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: []interface{}{
-														[]interface{}{
+													Lines: [][]interface{}{
+														{
 															types.StringElement{Content: "a paragraph"},
 														},
 													},
@@ -1354,8 +1362,8 @@ a paragraph`
 											Title: sectionBTitle,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: []interface{}{
-														[]interface{}{
+													Lines: [][]interface{}{
+														{
 															types.StringElement{Content: "a paragraph"},
 														},
 													},
@@ -1417,8 +1425,8 @@ a paragraph`
 									Title: sectionATitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -1431,8 +1439,8 @@ a paragraph`
 											Title: sectionAaTitle,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: []interface{}{
-														[]interface{}{
+													Lines: [][]interface{}{
+														{
 															types.StringElement{Content: "a paragraph"},
 														},
 													},
@@ -1447,8 +1455,8 @@ a paragraph`
 											Title: sectionBTitle,
 											Elements: []interface{}{
 												types.Paragraph{
-													Lines: []interface{}{
-														[]interface{}{
+													Lines: [][]interface{}{
+														{
 															types.StringElement{Content: "a paragraph"},
 														},
 													},
@@ -1540,8 +1548,8 @@ a paragraph`
 									Title: barTitle,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a paragraph"},
 												},
 											},
@@ -1780,8 +1788,8 @@ a short preamble
 								types.Preamble{
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a short preamble"},
 												},
 											},
@@ -1838,8 +1846,8 @@ a short preamble
 								types.Preamble{
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a short preamble"},
 												},
 											},
@@ -1871,8 +1879,8 @@ a short preamble
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "======= a header"},
 								},
 							},
@@ -1886,8 +1894,8 @@ a short preamble
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "=a header"},
 								},
 							},
@@ -1905,8 +1913,12 @@ a short preamble
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
-							Lines: []string{
-								" = a header with a prefix space",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: " = a header with a prefix space",
+									},
+								},
 							},
 						},
 					},
@@ -1938,8 +1950,12 @@ a short preamble
 										types.AttrKind:             types.Literal,
 										types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 									},
-									Lines: []string{
-										" == section with prefix space",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: " == section with prefix space",
+											},
+										},
 									},
 								},
 							},
@@ -1960,18 +1976,18 @@ Doc Writer <thedoc@asciidoctor.org>`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "Document Title",
 									},
 								},
-								[]interface{}{
+								{
 									types.StringElement{
 										Content: "==============",
 									},
 								},
-								[]interface{}{
+								{
 									types.StringElement{
 										Content: "Doc Writer ",
 									},
