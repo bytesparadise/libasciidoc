@@ -17,8 +17,8 @@ var _ = Describe("include table of contents", func() {
 		Elements: []interface{}{
 			types.BlankLine{},
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{Content: "A short preamble"},
 					},
 				},

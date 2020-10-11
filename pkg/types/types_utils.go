@@ -3,8 +3,6 @@ package types
 import (
 	"bytes"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 // Merge merge string elements together
@@ -79,16 +77,4 @@ func Apply(source string, fs ...applyFunc) string {
 	}
 	// log.Debugf("applied '%s' -> '%s' (%v characters)", source, result, len(result))
 	return result
-}
-
-func toString(lines []interface{}) ([]string, error) {
-	result := make([]string, len(lines))
-	for i, line := range lines {
-		l, ok := line.(string)
-		if !ok {
-			return []string{}, errors.Errorf("expected a string, but got a %T", line)
-		}
-		result[i] = l
-	}
-	return result, nil
 }

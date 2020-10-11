@@ -48,6 +48,7 @@ var templates = sgml.Templates{
 	LiteralBlock:              literalBlockTmpl,
 	ManpageHeader:             manpageHeaderTmpl,
 	ManpageNameParagraph:      manpageNameParagraphTmpl,
+	MarkdownQuoteBlock:        markdownQuoteBlockTmpl,
 	MarkedText:                markedTextTmpl,
 	MonospaceText:             monospaceTextTmpl,
 	OrderedList:               orderedListTmpl,

@@ -18,8 +18,8 @@ var _ = Describe("document matcher", func() {
 	expected := types.Document{
 		Elements: []interface{}{
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{
 							Content: "a paragraph.",
 						},
@@ -35,8 +35,8 @@ var _ = Describe("document matcher", func() {
 		actual := types.Document{
 			Elements: []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						[]interface{}{
+					Lines: [][]interface{}{
+						{
 							types.StringElement{
 								Content: "a paragraph.",
 							},
@@ -57,8 +57,8 @@ var _ = Describe("document matcher", func() {
 		actual := types.Document{
 			Elements: []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						[]interface{}{
+					Lines: [][]interface{}{
+						{
 							types.StringElement{
 								Content: "another paragraph.",
 							},

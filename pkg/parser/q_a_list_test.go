@@ -34,8 +34,8 @@ What is the answer to the Ultimate Question?:: 42`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "An implementation of the AsciiDoc processor in Golang.",
 											},
@@ -53,8 +53,8 @@ What is the answer to the Ultimate Question?:: 42`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "42",
 											},
@@ -98,8 +98,8 @@ What is the answer to the Ultimate Question?:: 42`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "An implementation of the AsciiDoc processor in Golang.",
 											},
@@ -117,8 +117,8 @@ What is the answer to the Ultimate Question?:: 42`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "42",
 											},

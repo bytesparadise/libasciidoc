@@ -412,7 +412,9 @@ ____`
 </blockquote>
 </div>
 `
-				Expect(RenderHTML(source)).To(MatchHTML(expected))
+				result, err := RenderHTML(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchHTML(expected))
 			})
 
 			It("should include adoc file within verse block", func() {

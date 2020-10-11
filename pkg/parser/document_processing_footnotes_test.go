@@ -13,8 +13,8 @@ var _ = Describe("footnotes", func() {
 
 		source := []interface{}{
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{
 							Content: "A statement.",
 						},
@@ -26,7 +26,7 @@ var _ = Describe("footnotes", func() {
 							},
 						},
 					},
-					[]interface{}{
+					{
 						types.StringElement{
 							Content: "A bold statement!",
 						},
@@ -43,8 +43,8 @@ var _ = Describe("footnotes", func() {
 			},
 			types.BlankLine{},
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{
 							Content: "Another outrageous statement.",
 						},
@@ -58,8 +58,8 @@ var _ = Describe("footnotes", func() {
 		}
 		expectedDraftDoc := []interface{}{
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{
 							Content: "A statement.",
 						},
@@ -67,7 +67,7 @@ var _ = Describe("footnotes", func() {
 							ID: 1,
 						},
 					},
-					[]interface{}{
+					{
 						types.StringElement{
 							Content: "A bold statement!",
 						},
@@ -80,8 +80,8 @@ var _ = Describe("footnotes", func() {
 			},
 			types.BlankLine{},
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{
 							Content: "Another outrageous statement.",
 						},

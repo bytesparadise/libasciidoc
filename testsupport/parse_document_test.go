@@ -13,8 +13,8 @@ var _ = Describe("parse document", func() {
 	expected := types.Document{
 		Elements: []interface{}{
 			types.Paragraph{
-				Lines: []interface{}{
-					[]interface{}{
+				Lines: [][]interface{}{
+					{
 						types.StringElement{
 							Content: "hello, world!",
 						},

@@ -8,15 +8,27 @@ type Attribution struct { // TODO: unexport this type?
 	Second string
 }
 
-// newParagraphAttribution return a new attribution for the given paragraph.
+// paragraphAttribution return a new attribution for the given Paragraph.
 // Can be empty if no attribution was specified.
-func newParagraphAttribution(p types.Paragraph) Attribution {
+func paragraphAttribution(p types.Paragraph) Attribution {
 	return newAttribution(p.Attributes)
 }
 
-// newDelimitedBlockAttribution return a new attribution for the given delimited block.
+// quoteBlockAttribution return a new attribution for the given QuoteBlock.
 // Can be empty if no attribution was specified.
-func newDelimitedBlockAttribution(b types.DelimitedBlock) Attribution {
+func quoteBlockAttribution(b types.QuoteBlock) Attribution {
+	return newAttribution(b.Attributes)
+}
+
+// verseBlockAttribution return a new attribution for the given VerseBlock.
+// Can be empty if no attribution was specified.
+func verseBlockAttribution(b types.VerseBlock) Attribution {
+	return newAttribution(b.Attributes)
+}
+
+// markdownQuoteBlockAttribution return a new attribution for the given MarkdownQuoteBlock.
+// Can be empty if no attribution was specified.
+func markdownQuoteBlockAttribution(b types.MarkdownQuoteBlock) Attribution {
 	return newAttribution(b.Attributes)
 }
 

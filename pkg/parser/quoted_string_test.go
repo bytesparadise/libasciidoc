@@ -15,10 +15,10 @@ var _ = Describe("quoted strings", func() {
 		It("simple single quoted string", func() {
 			source := "'`curly was single`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -35,10 +35,10 @@ var _ = Describe("quoted strings", func() {
 		It("interior spaces with single quoted string", func() {
 			source := "'` curly was single `'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "'` curly was single \u2019"},
 							},
 						},
@@ -51,10 +51,10 @@ var _ = Describe("quoted strings", func() {
 		It("interior ending space with single quoted string", func() {
 			source := "'`curly was single `'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "'`curly was single \u2019"},
 							},
 						},
@@ -67,10 +67,10 @@ var _ = Describe("quoted strings", func() {
 		It("interior leading space with single quoted string", func() {
 			source := "'` curly was single`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "'` curly was single\u2019"},
 							},
 						},
@@ -83,10 +83,10 @@ var _ = Describe("quoted strings", func() {
 		It("bold in single quoted string", func() {
 			source := "'`curly *was* single`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -111,10 +111,10 @@ var _ = Describe("quoted strings", func() {
 		It("italics in single quoted string", func() {
 			source := "'`curly _was_ single`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -138,10 +138,10 @@ var _ = Describe("quoted strings", func() {
 		It("span in single quoted string", func() {
 			source := "'`curly [strikeout]#was#_is_ single`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -173,10 +173,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly in monospace  string", func() {
 			source := "'`curly `is` single`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -200,10 +200,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly as monospace string", func() {
 			source := "'``curly``'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -226,10 +226,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly with nested double curly", func() {
 			source := "'`single\"`double`\"`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -253,10 +253,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly in monospace string", func() {
 			source := "`'`curly`'`"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Monospace,
 									Elements: []interface{}{
@@ -278,10 +278,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly in italics", func() {
 			source := "_'`curly`'_"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Italic,
 									Elements: []interface{}{
@@ -303,10 +303,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly in bold", func() {
 			source := "*'`curly`'*"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Bold,
 									Elements: []interface{}{
@@ -329,10 +329,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly in link", func() {
 			source := "https://www.example.com/a['`example`']"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineLink{
 									Location: types.Location{
 										Scheme: "https://",
@@ -363,10 +363,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly in quoted link", func() {
 			source := "https://www.example.com/a[\"an '`example`'\"]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineLink{
 									Location: types.Location{
 										Scheme: "https://",
@@ -401,10 +401,10 @@ var _ = Describe("quoted strings", func() {
 		It("image in curly", func() {
 			source := "'`a image:foo.png[]`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -434,10 +434,10 @@ var _ = Describe("quoted strings", func() {
 		It("icon in curly", func() {
 			source := "'`a icon:note[]`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
@@ -458,10 +458,10 @@ var _ = Describe("quoted strings", func() {
 		It("simple double quoted string", func() {
 			source := "\"`curly was single`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -479,10 +479,10 @@ var _ = Describe("quoted strings", func() {
 		It("interior spaces with double quoted string", func() {
 			source := "\"` curly was single `\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "\"` curly was single `\""},
 							},
 						},
@@ -494,10 +494,10 @@ var _ = Describe("quoted strings", func() {
 		It("interior ending space with double quoted string", func() {
 			source := "\"`curly was single `\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "\"`curly was single `\""},
 							},
 						},
@@ -509,10 +509,10 @@ var _ = Describe("quoted strings", func() {
 		It("interior leading space with double quoted string", func() {
 			source := "\"` curly was single`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "\"` curly was single`\""},
 							},
 						},
@@ -525,10 +525,10 @@ var _ = Describe("quoted strings", func() {
 		It("bold in double quoted string", func() {
 			source := "\"`curly *was* single`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -552,10 +552,10 @@ var _ = Describe("quoted strings", func() {
 		It("italics in double quoted string", func() {
 			source := "\"`curly _was_ single`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -580,10 +580,10 @@ var _ = Describe("quoted strings", func() {
 		It("span in double quoted string", func() {
 			source := "\"`curly [strikeout]#was#_is_ single`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -616,10 +616,10 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in monospace string", func() {
 			source := "\"`curly `is` single`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -643,10 +643,10 @@ var _ = Describe("quoted strings", func() {
 		It("double curly as monospace string", func() {
 			source := "\"``curly``\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -668,10 +668,10 @@ var _ = Describe("quoted strings", func() {
 		It("double curly with nested single curly", func() {
 			source := "\"`double'`single`'`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -694,10 +694,10 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in monospace string", func() {
 			source := "`\"`curly`\"`"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Monospace,
 									Elements: []interface{}{
@@ -719,10 +719,10 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in italics", func() {
 			source := "_\"`curly`\"_"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Italic,
 									Elements: []interface{}{
@@ -744,10 +744,10 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in bold", func() {
 			source := "*\"`curly`\"*"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Bold,
 									Elements: []interface{}{
@@ -772,10 +772,10 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in link (becomes mono)", func() {
 			source := "https://www.example.com/a[\"`example`\"]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineLink{
 									Location: types.Location{
 										Scheme: "https://",
@@ -808,10 +808,10 @@ var _ = Describe("quoted strings", func() {
 		It("curly in quoted link", func() {
 			source := "https://www.example.com/a[\"\"`example`\"\"]"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.InlineLink{
 									Location: types.Location{
 										Scheme: "https://",
@@ -842,10 +842,10 @@ var _ = Describe("quoted strings", func() {
 		It("image in double curly", func() {
 			source := "\"`a image:foo.png[]`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -874,10 +874,10 @@ var _ = Describe("quoted strings", func() {
 		It("icon in double curly", func() {
 			source := "\"`a icon:note[]`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
@@ -901,7 +901,7 @@ var _ = Describe("quoted strings", func() {
 		It("curly in title", func() {
 			source := "== a '`curly`' episode"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Section{
 						Attributes: types.Attributes{
 							types.AttrID: "_a_episode",
@@ -927,15 +927,15 @@ var _ = Describe("quoted strings", func() {
 		It("curly in list element", func() {
 			source := "* a '`curly`' episode"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.UnorderedListItem{
 						Level:       1,
 						CheckStyle:  types.NoCheck,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a "},
 										types.QuotedString{
 											Kind: types.SingleQuote,
@@ -957,7 +957,7 @@ var _ = Describe("quoted strings", func() {
 		It("curly in labeled list", func() {
 			source := "'`term`':: something '`quoted`'"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.LabeledListItem{
 						Level: 1,
 						Term: []interface{}{
@@ -965,8 +965,8 @@ var _ = Describe("quoted strings", func() {
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "something "},
 										types.QuotedString{
 											Kind: types.SingleQuote,
@@ -987,7 +987,7 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in title", func() {
 			source := "== a \"`curly`\" episode"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Section{
 						Attributes: types.Attributes{
 							types.AttrID: "_a_episode",
@@ -1013,7 +1013,7 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in labeled list", func() {
 			source := "\"`term`\":: something \"`quoted`\""
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.LabeledListItem{
 						Level: 1,
 						Term: []interface{}{
@@ -1021,8 +1021,8 @@ var _ = Describe("quoted strings", func() {
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "something "},
 										types.QuotedString{
 											Kind: types.DoubleQuote,
@@ -1043,15 +1043,15 @@ var _ = Describe("quoted strings", func() {
 		It("double in list element", func() {
 			source := "* a \"`curly`\" episode"
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.UnorderedListItem{
 						Level:       1,
 						CheckStyle:  types.NoCheck,
 						BulletStyle: types.OneAsterisk,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a "},
 										types.QuotedString{
 											Kind: types.DoubleQuote,

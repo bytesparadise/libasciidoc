@@ -11,9 +11,11 @@ import (
 var _ = Describe("parse document block", func() {
 
 	expected := types.Paragraph{
-		Lines: []interface{}{
-			types.RawLine{ // `ParseDocumentBlock` uses the `AsciidocRawDocument` grammar rule
-				Content: "hello, world!",
+		Lines: [][]interface{}{
+			{
+				types.StringElement{ // `ParseDocumentBlock` uses the `AsciidocRawDocument` grammar rule
+					Content: "hello, world!",
+				},
 			},
 		},
 	}

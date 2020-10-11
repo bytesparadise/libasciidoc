@@ -17,10 +17,10 @@ var _ = Describe("blank lines", func() {
  
 second paragraph`
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "first paragraph",
 								},
@@ -29,8 +29,8 @@ second paragraph`
 					},
 					types.BlankLine{},
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "second paragraph",
 								},
@@ -49,10 +49,10 @@ second paragraph`
 second paragraph
 `
 			expected := types.DraftDocument{
-				Blocks: []interface{}{
+				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "first paragraph",
 								},
@@ -63,8 +63,8 @@ second paragraph
 					types.BlankLine{},
 					types.BlankLine{},
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "second paragraph",
 								},
@@ -86,15 +86,15 @@ second paragraph`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "second paragraph"},
 							},
 						},
@@ -113,15 +113,15 @@ second paragraph
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "second paragraph"},
 							},
 						},

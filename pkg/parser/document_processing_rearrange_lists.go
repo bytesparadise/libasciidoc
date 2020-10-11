@@ -18,28 +18,22 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 	// track if the previous block was a blank line.
 	// also, count the blanklines to determine the level of parent attachment when reaching a `ContinuedListItemElement`
 	blanklineCount := 0
+	var err error
 	for _, block := range blocks {
 		switch block := block.(type) {
-		case types.DelimitedBlock:
-			// process and replace the elements within this delimited block
-			elements, err := rearrangeListItems(block.Elements, true)
-			if err != nil {
-				return nil, errors.Wrapf(err, "unable to rearrange list items in delimited block")
+		case types.ExampleBlock:
+			if block.Elements, err = rearrangeListItemsInBlocks(block.Elements); err != nil {
+				return nil, err
 			}
-			block.Elements = elements
-			if len(lists) > 0 {
-				switch list := lists[0].(type) { // just add the top-level list
-				case *types.OrderedList:
-					result = append(result, *list)
-				case *types.UnorderedList:
-					result = append(result, *list)
-				case *types.LabeledList:
-					result = append(result, *list)
-				case *types.CalloutList:
-					result = append(result, *list)
-				}
-				// reset the list for further usage while processing the rest of the document
-				lists = []types.List{}
+			result = append(result, block)
+		case types.QuoteBlock:
+			if block.Elements, err = rearrangeListItemsInBlocks(block.Elements); err != nil {
+				return nil, err
+			}
+			result = append(result, block)
+		case types.SidebarBlock:
+			if block.Elements, err = rearrangeListItemsInBlocks(block.Elements); err != nil {
+				return nil, err
 			}
 			result = append(result, block)
 		case types.OrderedListItem, types.UnorderedListItem, types.LabeledListItem, types.CalloutListItem:
@@ -96,6 +90,29 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 		}
 	}
 	return result, nil
+}
+
+func rearrangeListItemsInBlocks(blocks []interface{}) ([]interface{}, error) {
+	// process and replace the elements within this delimited block
+	blocks, err := rearrangeListItems(blocks, true)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to rearrange list items in delimited block")
+	}
+	// if len(lists) > 0 {
+	// 	switch list := lists[0].(type) { // just add the top-level list
+	// 	case *types.OrderedList:
+	// 		result = append(result, *list)
+	// 	case *types.UnorderedList:
+	// 		result = append(result, *list)
+	// 	case *types.LabeledList:
+	// 		result = append(result, *list)
+	// 	case *types.CalloutList:
+	// 		result = append(result, *list)
+	// 	}
+	// 	// reset the list for further usage while processing the rest of the document
+	// 	lists = []types.List{}
+	// }
+	return blocks, nil
 }
 
 func unPtr(value interface{}) interface{} {

@@ -17,14 +17,18 @@ var _ = Describe("literal blocks", func() {
 			It("literal block from 1-line paragraph with single space", func() {
 				source := ` some literal content`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
-							Lines: []string{
-								" some literal content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: " some literal content",
+									},
+								},
 							},
 						},
 					},
@@ -37,16 +41,28 @@ var _ = Describe("literal blocks", func() {
 on 3
 lines.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
-							Lines: []string{
-								" some literal content",
-								"on 3",
-								"lines.",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: " some literal content",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "on 3",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "lines.",
+									},
+								},
 							},
 						},
 					},
@@ -61,7 +77,7 @@ lines.`
 
 a normal paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
@@ -70,14 +86,18 @@ a normal paragraph.`
 								types.AttrCustomID:         true,
 								types.AttrTitle:            "title",
 							},
-							Lines: []string{
-								"  some literal content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "  some literal content",
+									},
+								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
@@ -97,20 +117,26 @@ a normal paragraph.`
 some content
 ....`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 							},
-							Lines: []string{
-								"",
-								"some content",
+							Lines: [][]interface{}{
+								{},
+								{
+									types.StringElement{
+										Content: "some content",
+									},
+								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("literal block with delimited and attributes followed by 1-line paragraph", func() {
@@ -121,7 +147,7 @@ some literal content
 ....
 a normal paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
@@ -130,13 +156,17 @@ a normal paragraph.`
 								types.AttrCustomID:         true,
 								types.AttrTitle:            "title",
 							},
-							Lines: []string{
-								"some literal content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "some literal content",
+									},
+								},
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
@@ -155,20 +185,24 @@ some literal content
 
 a normal paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 							},
-							Lines: []string{
-								"some literal content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "some literal content",
+									},
+								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
@@ -187,7 +221,7 @@ on two lines.
 
 a normal paragraph.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
 								types.AttrKind:             types.Literal,
@@ -196,22 +230,32 @@ a normal paragraph.`
 								types.AttrTitle:            "title",
 								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 							},
-							Lines: []string{
-								"some literal content",
-								"on two lines.",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "some literal content",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "on two lines.",
+									},
+								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a normal paragraph."},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 		})
 	})

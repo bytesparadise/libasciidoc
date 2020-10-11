@@ -17,8 +17,8 @@ var _ = Describe("ordered lists", func() {
 			// same single item in the list for each test in this context
 			elements := []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						[]interface{}{
+					Lines: [][]interface{}{
+						{
 							types.StringElement{Content: "item"},
 						},
 					},
@@ -28,7 +28,7 @@ var _ = Describe("ordered lists", func() {
 			It("ordered list item with implicit numbering style", func() {
 				source := `.. item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level:    2,
 							Style:    types.LowerAlpha,
@@ -42,7 +42,7 @@ var _ = Describe("ordered lists", func() {
 			It("ordered list item with arabic numbering style", func() {
 				source := `1. item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level:    1,
 							Style:    types.Arabic,
@@ -56,7 +56,7 @@ var _ = Describe("ordered lists", func() {
 			It("ordered list item with lower alpha numbering style", func() {
 				source := `b. item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level:    1,
 							Style:    types.LowerAlpha,
@@ -70,7 +70,7 @@ var _ = Describe("ordered lists", func() {
 			It("ordered list item with upper alpha numbering style", func() {
 				source := `B. item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level:    1,
 							Style:    types.UpperAlpha,
@@ -84,7 +84,7 @@ var _ = Describe("ordered lists", func() {
 			It("ordered list item with lower roman numbering style", func() {
 				source := `i) item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level:    1,
 							Style:    types.LowerRoman,
@@ -98,7 +98,7 @@ var _ = Describe("ordered lists", func() {
 			It("ordered list item with upper roman numbering style", func() {
 				source := `I) item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level:    1,
 							Style:    types.UpperRoman,
@@ -114,7 +114,7 @@ var _ = Describe("ordered lists", func() {
 . item
 . item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Attributes: types.Attributes{
 								"style": "lowerroman",
@@ -137,7 +137,7 @@ var _ = Describe("ordered lists", func() {
 				source := `[start=5]
 . item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
@@ -155,7 +155,7 @@ var _ = Describe("ordered lists", func() {
 				source := `["lowerroman", start="5"]
 . item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
@@ -179,7 +179,7 @@ var _ = Describe("ordered lists", func() {
 ..... level 5
 . level 1`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
@@ -188,8 +188,8 @@ var _ = Describe("ordered lists", func() {
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 1",
 											},
@@ -203,8 +203,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 2",
 											},
@@ -218,8 +218,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerRoman,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 3",
 											},
@@ -233,8 +233,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.UpperAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 4",
 											},
@@ -248,8 +248,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.UpperRoman,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 5",
 											},
@@ -263,8 +263,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 1",
 											},
@@ -287,7 +287,7 @@ var _ = Describe("ordered lists", func() {
 ..... level 5
 .. level 2b`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
@@ -296,8 +296,8 @@ var _ = Describe("ordered lists", func() {
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 1",
 											},
@@ -311,8 +311,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 2",
 											},
@@ -326,8 +326,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerRoman,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 3",
 											},
@@ -341,8 +341,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.UpperAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 4",
 											},
@@ -356,8 +356,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.UpperRoman,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 5",
 											},
@@ -371,8 +371,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 2b",
 											},
@@ -394,14 +394,14 @@ var _ = Describe("ordered lists", func() {
 . b`
 
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a"},
 										},
 									},
@@ -413,8 +413,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "b"},
 										},
 									},
@@ -431,14 +431,14 @@ var _ = Describe("ordered lists", func() {
 . item 2`
 
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1"},
 										},
 									},
@@ -450,8 +450,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2"},
 										},
 									},
@@ -475,14 +475,14 @@ var _ = Describe("ordered lists", func() {
 			.. item 2.1`
 
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1"},
 										},
 									},
@@ -494,8 +494,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.1"},
 										},
 									},
@@ -510,8 +510,8 @@ var _ = Describe("ordered lists", func() {
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.1.1"},
 										},
 									},
@@ -523,8 +523,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerRoman,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.1.2"},
 										},
 									},
@@ -536,8 +536,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.2"},
 										},
 									},
@@ -549,8 +549,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2"},
 										},
 									},
@@ -562,8 +562,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2.1"},
 										},
 									},
@@ -591,14 +591,14 @@ var _ = Describe("ordered lists", func() {
 
 `
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "level 1"},
 										},
 									},
@@ -611,8 +611,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "level 2"},
 										},
 									},
@@ -626,8 +626,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.LowerRoman,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "level 3"},
 										},
 									},
@@ -642,8 +642,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.UpperAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "level 4"},
 										},
 									},
@@ -655,8 +655,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.UpperRoman,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "level 5."},
 										},
 									},
@@ -677,14 +677,14 @@ var _ = Describe("ordered lists", func() {
 				source := `1. a
 2. b`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a"},
 										},
 									},
@@ -696,8 +696,8 @@ var _ = Describe("ordered lists", func() {
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "b"},
 										},
 									},
@@ -715,14 +715,14 @@ a. item 1.a
 2. item 2
 b. item 2.a`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1"},
 										},
 									},
@@ -734,8 +734,8 @@ b. item 2.a`
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.a"},
 										},
 									},
@@ -747,8 +747,8 @@ b. item 2.a`
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2"},
 										},
 									},
@@ -760,8 +760,8 @@ b. item 2.a`
 							Style: types.LowerAlpha,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2.a"},
 										},
 									},
@@ -789,14 +789,14 @@ another delimited block
 . bar
 `
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "foo",
 											},
@@ -807,10 +807,9 @@ another delimited block
 						},
 						types.ContinuedListItemElement{
 							Offset: 0,
-							Element: types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									[]interface{}{
+							Element: types.ListingBlock{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a delimited block",
 										},
@@ -820,10 +819,9 @@ another delimited block
 						},
 						types.ContinuedListItemElement{
 							Offset: 0,
-							Element: types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									[]interface{}{
+							Element: types.ListingBlock{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "another delimited block",
 										},
@@ -836,8 +834,8 @@ another delimited block
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "bar",
 											},
@@ -863,14 +861,14 @@ print("one")
 print("two")
 ----`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.OrderedListItem{
 							Level: 1,
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.PredefinedAttribute{Name: "blank"},
 										},
 									},
@@ -879,10 +877,9 @@ print("two")
 						},
 						types.ContinuedListItemElement{
 							Offset: 0,
-							Element: types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									[]interface{}{
+							Element: types.ListingBlock{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "print(\"one\")",
 										},
@@ -895,8 +892,8 @@ print("two")
 							Style: types.Arabic,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.PredefinedAttribute{Name: "blank"},
 										},
 									},
@@ -905,10 +902,9 @@ print("two")
 						},
 						types.ContinuedListItemElement{
 							Offset: 0,
-							Element: types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									[]interface{}{
+							Element: types.ListingBlock{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "print(\"two\")",
 										},
@@ -930,8 +926,8 @@ print("two")
 			// same single item in the list for each test in this context
 			elements := []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						[]interface{}{
+					Lines: [][]interface{}{
+						{
 							types.StringElement{Content: "item"},
 						},
 					},
@@ -1058,8 +1054,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.PredefinedAttribute{Name: "amp"},
 												},
 											},
@@ -1166,8 +1162,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "level 1",
 													},
@@ -1181,8 +1177,8 @@ print("two")
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{
 																		Content: "level 2",
 																	},
@@ -1196,8 +1192,8 @@ print("two")
 																	Style: types.LowerRoman,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "level 3",
 																					},
@@ -1211,8 +1207,8 @@ print("two")
 																					Style: types.UpperAlpha,
 																					Elements: []interface{}{
 																						types.Paragraph{
-																							Lines: []interface{}{
-																								[]interface{}{
+																							Lines: [][]interface{}{
+																								{
 																									types.StringElement{
 																										Content: "level 4",
 																									},
@@ -1226,8 +1222,8 @@ print("two")
 																									Style: types.UpperRoman,
 																									Elements: []interface{}{
 																										types.Paragraph{
-																											Lines: []interface{}{
-																												[]interface{}{
+																											Lines: [][]interface{}{
+																												{
 																													types.StringElement{
 																														Content: "level 5",
 																													},
@@ -1257,8 +1253,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "level 1",
 													},
@@ -1294,8 +1290,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "level 1",
 													},
@@ -1309,8 +1305,8 @@ print("two")
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{
 																		Content: "level 2",
 																	},
@@ -1324,8 +1320,8 @@ print("two")
 																	Style: types.LowerRoman,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "level 3",
 																					},
@@ -1339,8 +1335,8 @@ print("two")
 																					Style: types.UpperAlpha,
 																					Elements: []interface{}{
 																						types.Paragraph{
-																							Lines: []interface{}{
-																								[]interface{}{
+																							Lines: [][]interface{}{
+																								{
 																									types.StringElement{
 																										Content: "level 4",
 																									},
@@ -1354,8 +1350,8 @@ print("two")
 																									Style: types.UpperRoman,
 																									Elements: []interface{}{
 																										types.Paragraph{
-																											Lines: []interface{}{
-																												[]interface{}{
+																											Lines: [][]interface{}{
+																												{
 																													types.StringElement{
 																														Content: "level 5",
 																													},
@@ -1381,8 +1377,8 @@ print("two")
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{
 																		Content: "level 2b",
 																	},
@@ -1418,8 +1414,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a"},
 												},
 											},
@@ -1431,8 +1427,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "b"},
 												},
 											},
@@ -1459,8 +1455,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 1"},
 												},
 											},
@@ -1472,8 +1468,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 2"},
 												},
 											},
@@ -1507,8 +1503,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 1"},
 												},
 											},
@@ -1520,8 +1516,8 @@ print("two")
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.1"},
 																},
 															},
@@ -1536,8 +1532,8 @@ print("two")
 																	Style: types.LowerRoman, // will be overridden during rendering
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "item 1.1.1"},
 																				},
 																			},
@@ -1549,8 +1545,8 @@ print("two")
 																	Style: types.LowerRoman, // will be overridden during rendering
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "item 1.1.2"},
 																				},
 																			},
@@ -1566,8 +1562,8 @@ print("two")
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.2"},
 																},
 															},
@@ -1583,8 +1579,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 2"},
 												},
 											},
@@ -1596,8 +1592,8 @@ print("two")
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 2.1"},
 																},
 															},
@@ -1639,8 +1635,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "level 1"},
 												},
 											},
@@ -1652,8 +1648,8 @@ print("two")
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "level 2"},
 																},
 															},
@@ -1665,8 +1661,8 @@ print("two")
 																	Style: types.LowerRoman,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "level 3"},
 																				},
 																			},
@@ -1678,8 +1674,8 @@ print("two")
 																					Style: types.UpperAlpha,
 																					Elements: []interface{}{
 																						types.Paragraph{
-																							Lines: []interface{}{
-																								[]interface{}{
+																							Lines: [][]interface{}{
+																								{
 																									types.StringElement{Content: "level 4"},
 																								},
 																							},
@@ -1691,8 +1687,8 @@ print("two")
 																									Style: types.UpperRoman,
 																									Elements: []interface{}{
 																										types.Paragraph{
-																											Lines: []interface{}{
-																												[]interface{}{
+																											Lines: [][]interface{}{
+																												{
 																													types.StringElement{Content: "level 5."},
 																												},
 																											},
@@ -1737,8 +1733,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a"},
 												},
 											},
@@ -1750,8 +1746,8 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "b"},
 												},
 											},
@@ -1779,8 +1775,8 @@ b. item 2.a`
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 1"},
 												},
 											},
@@ -1792,8 +1788,8 @@ b. item 2.a`
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.a"},
 																},
 															},
@@ -1809,8 +1805,8 @@ b. item 2.a`
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 2"},
 												},
 											},
@@ -1822,8 +1818,8 @@ b. item 2.a`
 													Style: types.LowerAlpha,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 2.a"},
 																},
 															},
@@ -1865,26 +1861,24 @@ another delimited block
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "foo"},
 												},
 											},
 										},
-										types.DelimitedBlock{
-											Kind: types.Listing,
-											Elements: []interface{}{
-												[]interface{}{
+										types.ListingBlock{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "a delimited block",
 													},
 												},
 											},
 										},
-										types.DelimitedBlock{
-											Kind: types.Listing,
-											Elements: []interface{}{
-												[]interface{}{
+										types.ListingBlock{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "another delimited block",
 													},
@@ -1898,8 +1892,8 @@ another delimited block
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "bar"},
 												},
 											},
@@ -1933,16 +1927,15 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.PredefinedAttribute{Name: "blank"},
 												},
 											},
 										},
-										types.DelimitedBlock{
-											Kind: types.Listing,
-											Elements: []interface{}{
-												[]interface{}{
+										types.ListingBlock{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "print(\"one\")",
 													},
@@ -1956,16 +1949,15 @@ print("two")
 									Style: types.Arabic,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.PredefinedAttribute{Name: "blank"},
 												},
 											},
 										},
-										types.DelimitedBlock{
-											Kind: types.Listing,
-											Elements: []interface{}{
-												[]interface{}{
+										types.ListingBlock{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "print(\"two\")",
 													},

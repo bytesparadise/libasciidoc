@@ -84,7 +84,7 @@ var _ = Describe("file inclusions", func() {
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[]"
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 0,
 							Title: []interface{}{
@@ -96,9 +96,11 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "content",
+									},
 								},
 							},
 						},
@@ -116,7 +118,7 @@ var _ = Describe("file inclusions", func() {
 				defer reset()
 				source := "include::../../../test/includes/chapter-a.adoc[]"
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 0,
 							Title: []interface{}{
@@ -128,9 +130,11 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "content",
+									},
 								},
 							},
 						},
@@ -146,7 +150,7 @@ var _ = Describe("file inclusions", func() {
 				defer reset()
 				source := "include::../../test/includes/chapter-a.adoc[leveloffset=+1]"
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 1,
 							Title: []interface{}{
@@ -158,9 +162,11 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "content",
+									},
 								},
 							},
 						},
@@ -175,7 +181,7 @@ var _ = Describe("file inclusions", func() {
 				source := "include::../../test/includes/chapter-a.adoc[]"
 				// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 0,
 							Title: []interface{}{
@@ -187,9 +193,11 @@ var _ = Describe("file inclusions", func() {
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "content",
+									},
 								},
 							},
 						},
@@ -204,7 +212,7 @@ var _ = Describe("file inclusions", func() {
 include::{includedir}/chapter-a.adoc[]`
 				// at this level (parsing), it is expected that the Section 0 is part of the Prefligh document
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.AttributeDeclaration{
 							Name:  "includedir",
 							Value: "../../test/includes",
@@ -221,9 +229,11 @@ include::{includedir}/chapter-a.adoc[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "content",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "content",
+									},
 								},
 							},
 						},
@@ -239,24 +249,28 @@ include::{includedir}/chapter-a.adoc[]`
 
 include::{includedir}/include.foo[]`
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.AttributeDeclaration{
 							Name:  "includedir",
 							Value: "../../test/includes",
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "*some strong content*",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "*some strong content*",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "include::hello_world.go.txt[]",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "include::hello_world.go.txt[]",
+									},
 								},
 							},
 						},
@@ -268,7 +282,7 @@ include::{includedir}/include.foo[]`
 			It("should include grandchild content without offset", func() {
 				source := `include::../../test/includes/grandchild-include.adoc[]`
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 1,
 							Title: []interface{}{
@@ -280,17 +294,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of grandchild",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of grandchild",
+									},
 								},
 							},
 						},
@@ -302,7 +320,7 @@ include::{includedir}/include.foo[]`
 			It("should include grandchild content with relative offset", func() {
 				source := `include::../../test/includes/grandchild-include.adoc[leveloffset=+1]`
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 2,
 							Title: []interface{}{
@@ -314,17 +332,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of grandchild",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of grandchild",
+									},
 								},
 							},
 						},
@@ -336,7 +358,7 @@ include::{includedir}/include.foo[]`
 			It("should include grandchild content with absolute offset", func() {
 				source := `include::../../test/includes/grandchild-include.adoc[leveloffset=0]`
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 0,
 							Title: []interface{}{
@@ -348,17 +370,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of grandchild",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of grandchild",
+									},
 								},
 							},
 						},
@@ -370,7 +396,7 @@ include::{includedir}/include.foo[]`
 			It("should include child and grandchild content with relative level offset", func() {
 				source := `include::../../test/includes/parent-include-relative-offset.adoc[leveloffset=+1]`
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 1, // here the level is changed from `0` to `1` since `root` doc has a `leveloffset=+1` during its inclusion
 							Title: []interface{}{
@@ -382,17 +408,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of parent",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of parent",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "child preamble",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "child preamble",
+									},
 								},
 							},
 						},
@@ -408,9 +438,11 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of child",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of child",
+									},
 								},
 							},
 						},
@@ -426,17 +458,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of grandchild",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of grandchild",
+									},
 								},
 							},
 						},
@@ -452,17 +488,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of child",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of child",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of parent",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of parent",
+									},
 								},
 							},
 						},
@@ -474,7 +514,7 @@ include::{includedir}/include.foo[]`
 			It("should include child and grandchild content with relative then absolute level offset", func() {
 				source := `include::../../test/includes/parent-include-absolute-offset.adoc[leveloffset=+1]`
 				expected := types.RawDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Section{
 							Level: 1, // here the level is offset by `+1` as per root doc attribute in the `include` macro
 							Title: []interface{}{
@@ -486,17 +526,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of parent",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of parent",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "child preamble",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "child preamble",
+									},
 								},
 							},
 						},
@@ -512,9 +556,11 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of child",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of child",
+									},
 								},
 							},
 						},
@@ -530,17 +576,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "first line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "first line of grandchild",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of grandchild",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of grandchild",
+									},
 								},
 							},
 						},
@@ -556,17 +606,21 @@ include::{includedir}/include.foo[]`
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of child",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of child",
+									},
 								},
 							},
 						},
 						types.BlankLine{},
 						types.Paragraph{
-							Lines: []interface{}{
-								types.RawLine{
-									Content: "last line of parent",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "last line of parent",
+									},
 								},
 							},
 						},
@@ -580,66 +634,205 @@ include::{includedir}/include.foo[]`
 					"include::../../test/includes/parent-include.adoc[]\n" +
 					"```"
 				expected := types.RawDocument{
-					Blocks: []interface{}{
-						types.DelimitedBlock{
-							Kind: types.Fenced,
-							Elements: []interface{}{
-								types.RawLine{
-									Content: "= parent title",
+					Elements: []interface{}{
+						types.FencedBlock{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "= parent title",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "first line of parent",
+								{
+									types.StringElement{
+										Content: "first line of parent",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "= child title",
+								{
+									types.StringElement{
+										Content: "= child title",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "first line of child",
+								{
+									types.StringElement{
+										Content: "first line of child",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "== grandchild title",
+								{
+									types.StringElement{
+										Content: "== grandchild title",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "first line of grandchild",
+								{
+									types.StringElement{
+										Content: "first line of grandchild",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "last line of grandchild",
+								{
+									types.StringElement{
+										Content: "last line of grandchild",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "last line of child",
+								{
+									types.StringElement{
+										Content: "last line of child",
+									},
 								},
-								types.RawLine{
-									Content: "",
+								{
+									types.StringElement{
+										Content: "",
+									},
 								},
-								types.RawLine{
-									Content: "last line of parent",
+								{
+									types.StringElement{
+										Content: "last line of parent",
+									},
 								},
 							},
 						},
 					},
 				}
 				Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
+			})
+
+			It("should include adoc file within quote block", func() {
+				source := "____\n" +
+					"include::../../test/includes/parent-include.adoc[]\n" +
+					"____"
+				expected := types.RawDocument{
+					Elements: []interface{}{
+						types.QuoteBlock{
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "= parent title",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "first line of parent",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "= child title",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "first line of child",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "== grandchild title",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "first line of grandchild",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "last line of grandchild",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "last line of child",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "last line of parent",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				result, err := ParseRawDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchRawDocument(expected))
 			})
 
 			Context("with line ranges", func() {
@@ -649,7 +842,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with single unquoted line", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1]`
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -667,7 +860,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with multiple unquoted lines", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1..2]`
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -686,7 +879,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with multiple unquoted ranges", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..-1]` // paragraph becomes the author since the in-between blank line is stripped out
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Attributes: types.Attributes{
@@ -711,7 +904,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with invalid unquoted range - case 1", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -723,9 +916,11 @@ include::{includedir}/include.foo[]`
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "content",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "content",
+											},
 										},
 									},
 								},
@@ -737,7 +932,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with invalid unquoted range - case 2", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines=1,3..4,6..-1]` // using commas instead of semi-colons
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -760,7 +955,7 @@ include::{includedir}/include.foo[]`
 						defer reset()
 						source := `include::../../test/includes/chapter-a.adoc[lines="1"]`
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -780,7 +975,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with multiple quoted lines", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1..2"]`
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -800,7 +995,7 @@ include::{includedir}/include.foo[]`
 						// here, the `content` paragraph gets attached to the header and becomes the author
 						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Attributes: types.Attributes{
@@ -825,7 +1020,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with invalid quoted range - case 1", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -837,9 +1032,11 @@ include::{includedir}/include.foo[]`
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "content",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "content",
+											},
 										},
 									},
 								},
@@ -851,7 +1048,7 @@ include::{includedir}/include.foo[]`
 					It("file inclusion with invalid quoted range - case 2", func() {
 						source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 0,
 									Title: []interface{}{
@@ -863,9 +1060,11 @@ include::{includedir}/include.foo[]`
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "content",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "content",
+											},
 										},
 									},
 								},
@@ -878,7 +1077,7 @@ include::{includedir}/include.foo[]`
 						// include using a line range a file having tags
 						source := `include::../../test/includes/tag-include.adoc[lines=3]`
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 1,
 									Title: []interface{}{
@@ -902,7 +1101,7 @@ include::{includedir}/include.foo[]`
 					defer reset()
 					source := `include::../../test/includes/tag-include.adoc[tag=section]`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Section{
 								Level: 1,
 								Title: []interface{}{
@@ -924,7 +1123,7 @@ include::{includedir}/include.foo[]`
 					defer reset()
 					source := `include::../../test/includes/tag-include.adoc[tag=doc]`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Section{
 								Level: 1,
 								Title: []interface{}{
@@ -936,9 +1135,11 @@ include::{includedir}/include.foo[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "content",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "content",
+										},
 									},
 								},
 							},
@@ -956,21 +1157,25 @@ include::{includedir}/include.foo[]`
 					defer reset()
 					source := `include::../../test/includes/tag-include-unclosed.adoc[tag=unclosed]`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							// leading blanklines are ignored
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "content",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "content",
+										},
 									},
 								},
 							},
 							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "end",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "end",
+										},
 									},
 								},
 							},
@@ -995,7 +1200,7 @@ include::{includedir}/include.foo[]`
 				It("file inclusion with no tag", func() {
 					source := `include::../../test/includes/tag-include.adoc[]`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Section{
 								Level: 1,
 								Title: []interface{}{
@@ -1007,18 +1212,22 @@ include::{includedir}/include.foo[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "content",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "content",
+										},
 									},
 								},
 							},
 							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "end",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "end",
+										},
 									},
 								},
 							},
@@ -1032,7 +1241,7 @@ include::{includedir}/include.foo[]`
 					It("all lines", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**]` // includes all content except lines with tags
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 1,
 									Title: []interface{}{
@@ -1044,18 +1253,22 @@ include::{includedir}/include.foo[]`
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "content",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "content",
+											},
 										},
 									},
 								},
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "end",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "end",
+											},
 										},
 									},
 								},
@@ -1067,7 +1280,7 @@ include::{includedir}/include.foo[]`
 					It("all tagged regions", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=*]` // includes all sections
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 1,
 									Title: []interface{}{
@@ -1079,9 +1292,11 @@ include::{includedir}/include.foo[]`
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "content",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "content",
+											},
 										},
 									},
 								},
@@ -1094,7 +1309,7 @@ include::{includedir}/include.foo[]`
 					It("all the lines outside and inside of tagged regions", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**;*]` // includes all sections
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 1,
 									Title: []interface{}{
@@ -1106,18 +1321,22 @@ include::{includedir}/include.foo[]`
 								},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "content",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "content",
+											},
 										},
 									},
 								},
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "end",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "end",
+											},
 										},
 									},
 								},
@@ -1129,7 +1348,7 @@ include::{includedir}/include.foo[]`
 					It("regions tagged doc, but not nested regions tagged content", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=doc;!content]` // includes all sections
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 1,
 									Title: []interface{}{
@@ -1148,7 +1367,7 @@ include::{includedir}/include.foo[]`
 					It("all tagged regions, but excludes any regions tagged content", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=*;!content]` // includes all sections
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 1,
 									Title: []interface{}{
@@ -1167,7 +1386,7 @@ include::{includedir}/include.foo[]`
 					It("all tagged regions, but excludes any regions tagged content", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**;!content]` // includes all sections
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								types.Section{
 									Level: 1,
 									Title: []interface{}{
@@ -1180,9 +1399,11 @@ include::{includedir}/include.foo[]`
 								types.BlankLine{},
 								types.BlankLine{},
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "end",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "end",
+											},
 										},
 									},
 								},
@@ -1194,12 +1415,14 @@ include::{includedir}/include.foo[]`
 					It("**;!* — selects only the regions of the document outside of tags", func() {
 						source := `include::../../test/includes/tag-include.adoc[tag=**;!*]` // includes all sections
 						expected := types.RawDocument{
-							Blocks: []interface{}{
+							Elements: []interface{}{
 								// leading blanklines are ignored
 								types.Paragraph{
-									Lines: []interface{}{
-										types.RawLine{
-											Content: "end",
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "end",
+											},
 										},
 									},
 								},
@@ -1255,7 +1478,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 			
 include::{includedir}/grandchild-include.adoc[]`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "includedir",
 								Value: "../../test/includes",
@@ -1272,17 +1495,21 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "first line of grandchild",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "first line of grandchild",
+										},
 									},
 								},
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "last line of grandchild",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "last line of grandchild",
+										},
 									},
 								},
 							},
@@ -1296,7 +1523,7 @@ include::{includedir}/grandchild-include.adoc[]`
 			
 include::{includedir}/grandchild-include.adoc[]`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "includedir",
 								Value: "../../../test/includes",
@@ -1313,17 +1540,21 @@ include::{includedir}/grandchild-include.adoc[]`
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "first line of grandchild",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "first line of grandchild",
+										},
 									},
 								},
 							},
 							types.BlankLine{},
 							types.Paragraph{
-								Lines: []interface{}{
-									types.RawLine{
-										Content: "last line of grandchild",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "last line of grandchild",
+										},
 									},
 								},
 							},
@@ -1339,25 +1570,34 @@ include::{includedir}/grandchild-include.adoc[]`
 include::{includedir}/grandchild-include.adoc[]
 ----`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.AttributeDeclaration{
 								Name:  "includedir",
 								Value: "../../test/includes",
 							},
 							types.BlankLine{},
-							types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									types.RawLine{
-										Content: "== grandchild title",
+							types.ListingBlock{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "== grandchild title",
+										},
 									},
-									types.RawLine{},
-									types.RawLine{
-										Content: "first line of grandchild",
+									{
+										types.StringElement{},
 									},
-									types.RawLine{},
-									types.RawLine{
-										Content: "last line of grandchild",
+									{
+										types.StringElement{
+											Content: "first line of grandchild",
+										},
+									},
+									{
+										types.StringElement{},
+									},
+									{
+										types.StringElement{
+											Content: "last line of grandchild",
+										},
 									},
 								},
 							},
@@ -1375,30 +1615,44 @@ include::{includedir}/grandchild-include.adoc[]
 include::../../test/includes/hello_world.go.txt[] 
 ----`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
-							types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									types.RawLine{
-										Content: `package includes`,
+						Elements: []interface{}{
+							types.ListingBlock{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: `package includes`,
+										},
 									},
-									types.RawLine{
-										Content: "",
+									{
+										// TODO: why do we need such an empty StringElement?
+										types.StringElement{
+											Content: ``,
+										},
 									},
-									types.RawLine{
-										Content: `import "fmt"`,
+									{
+										types.StringElement{
+											Content: `import "fmt"`,
+										},
 									},
-									types.RawLine{
-										Content: "",
+									{
+										types.StringElement{
+											Content: ``,
+										},
 									},
-									types.RawLine{
-										Content: `func helloworld() {`,
+									{
+										types.StringElement{
+											Content: `func helloworld() {`,
+										},
 									},
-									types.RawLine{
-										Content: `	fmt.Println("hello, world!")`,
+									{
+										types.StringElement{
+											Content: `	fmt.Println("hello, world!")`,
+										},
 									},
-									types.RawLine{
-										Content: `}`,
+									{
+										types.StringElement{
+											Content: `}`,
+										},
 									},
 								},
 							},
@@ -1413,12 +1667,13 @@ include::../../test/includes/hello_world.go.txt[]
 include::../../test/includes/hello_world.go.txt[lines=1] 
 ----`
 					expected := types.RawDocument{
-						Blocks: []interface{}{
-							types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									types.RawLine{
-										Content: `package includes`,
+						Elements: []interface{}{
+							types.ListingBlock{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: `package includes`,
+										},
 									},
 								},
 							},
@@ -1471,8 +1726,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "first line of parent",
 										},
@@ -1480,8 +1735,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "child preamble",
 										},
@@ -1500,8 +1755,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{
 													Content: "first line of child",
 												},
@@ -1520,8 +1775,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "first line of grandchild",
 														},
@@ -1529,8 +1784,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "last line of grandchild",
 														},
@@ -1551,8 +1806,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "last line of child",
 														},
@@ -1560,8 +1815,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "last line of parent",
 														},
@@ -1617,8 +1872,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "first line of parent",
 										},
@@ -1626,8 +1881,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 							},
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "child preamble",
 										},
@@ -1646,8 +1901,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 								},
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{
 													Content: "first line of child",
 												},
@@ -1666,8 +1921,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "first line of grandchild",
 														},
@@ -1675,8 +1930,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "last line of grandchild",
 														},
@@ -1697,8 +1952,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 										},
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "last line of child",
 														},
@@ -1706,8 +1961,8 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 												},
 											},
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "last line of parent",
 														},

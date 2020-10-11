@@ -17,7 +17,7 @@ var _ = Describe("comments", func() {
 			It("single line comment alone", func() {
 				source := `// A single-line comment.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.SingleLineComment{
 							Content: " A single-line comment.",
 						},
@@ -29,10 +29,10 @@ var _ = Describe("comments", func() {
 			It("single line comment at end of line", func() {
 				source := `foo // A single-line comment.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "foo // A single-line comment.",
 									},
@@ -49,20 +49,20 @@ var _ = Describe("comments", func() {
 // A single-line comment.
 another line // not a comment`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a first line",
 									},
 								},
-								[]interface{}{
+								{
 									types.SingleLineComment{
 										Content: " A single-line comment.",
 									},
 								},
-								[]interface{}{
+								{
 									types.StringElement{
 										Content: "another line // not a comment",
 									},
@@ -81,32 +81,42 @@ another line // not a comment`
 				It("single line comment with prefixing spaces alone", func() {
 					source := `  // A single-line comment.`
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.LiteralBlock{
 								Attributes: types.Attributes{
 									types.AttrKind:             types.Literal,
 									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								},
-								Lines: []string{
-									"  // A single-line comment.",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "  // A single-line comment.",
+										},
+									},
 								},
 							},
 						},
 					}
-					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					result, err := ParseDraftDocument(source)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result).To(MatchDraftDocument(expected))
 				})
 
 				It("single line comment with prefixing tabs alone", func() {
 					source := "\t\t// A single-line comment."
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.LiteralBlock{
 								Attributes: types.Attributes{
 									types.AttrKind:             types.Literal,
 									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								},
-								Lines: []string{
-									"\t\t// A single-line comment.",
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "\t\t// A single-line comment.",
+										},
+									},
 								},
 							},
 						},
@@ -119,20 +129,20 @@ another line // not a comment`
 	// A single-line comment.
 another line`
 					expected := types.DraftDocument{
-						Blocks: []interface{}{
+						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a first line",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "\t// A single-line comment.",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "another line",
 										},
@@ -154,16 +164,15 @@ a *comment* block
 with multiple lines
 ////`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
-						types.DelimitedBlock{
-							Kind: types.Comment,
-							Elements: []interface{}{
-								[]interface{}{
+					Elements: []interface{}{
+						types.CommentBlock{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a *comment* block",
 									},
 								},
-								[]interface{}{
+								{
 									types.StringElement{
 										Content: "with multiple lines",
 									},
@@ -172,7 +181,9 @@ with multiple lines
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("comment block with paragraphs around", func() {
@@ -184,10 +195,10 @@ with multiple lines
 ////
 a second paragraph`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a first paragraph",
 									},
@@ -195,15 +206,14 @@ a second paragraph`
 							},
 						},
 						types.BlankLine{}, // blankline is required between a paragraph and the next block
-						types.DelimitedBlock{
-							Kind: types.Comment,
-							Elements: []interface{}{
-								[]interface{}{
+						types.CommentBlock{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a *comment* block",
 									},
 								},
-								[]interface{}{
+								{
 									types.StringElement{
 										Content: "with multiple lines",
 									},
@@ -211,8 +221,8 @@ a second paragraph`
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a second paragraph",
 									},
@@ -247,8 +257,12 @@ a second paragraph`
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
-							Lines: []string{
-								"  // A single-line comment.",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "  // A single-line comment.",
+									},
+								},
 							},
 						},
 					},
@@ -265,8 +279,12 @@ a second paragraph`
 								types.AttrKind:             types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
-							Lines: []string{
-								"\t\t// A single-line comment.",
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "\t\t// A single-line comment.",
+									},
+								},
 							},
 						},
 					},
@@ -279,8 +297,8 @@ a second paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "foo // A single-line comment."},
 								},
 							},
@@ -297,11 +315,11 @@ another line`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a first line"},
 								},
-								[]interface{}{
+								{
 									types.StringElement{Content: "another line"},
 								},
 							},
@@ -320,14 +338,14 @@ another line`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a first line"},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "\t// A single-line comment."},
 									},
-									[]interface{}{
+									{
 										types.StringElement{Content: "another line"},
 									},
 								},
@@ -363,15 +381,15 @@ a second paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a first paragraph"},
 								},
 							},
 						},
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "a second paragraph"},
 								},
 							},
@@ -410,15 +428,15 @@ a second paragraph`
 						Title: section1Title,
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a first paragraph"},
 									},
 								},
 							},
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "a second paragraph"},
 									},
 								},
@@ -474,15 +492,15 @@ a second paragraph`
 								Title: section1Title,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{Content: "a first paragraph"},
 											},
 										},
 									},
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{Content: "a second paragraph"},
 											},
 										},

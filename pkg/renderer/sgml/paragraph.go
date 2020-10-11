@@ -81,7 +81,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 		Icon    string
 		Kind    string
 		Content string
-		Lines   []interface{}
+		Lines   [][]interface{}
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
@@ -97,10 +97,13 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 }
 
 func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	return r.renderSourceBlock(ctx, types.DelimitedBlock{
-		Kind:       types.Source,
-		Attributes: p.Attributes,
-		Elements:   p.Lines,
+	lines := make([][]interface{}, len(p.Lines))
+	copy(lines, p.Lines)
+	attributes := p.Attributes
+	attributes[types.AttrKind] = types.Source
+	return r.renderSourceBlock(ctx, types.ListingBlock{
+		Attributes: attributes,
+		Lines:      lines,
 	})
 }
 
@@ -118,12 +121,12 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Parag
 		Title       string
 		Attribution Attribution
 		Content     string
-		Lines       []interface{}
+		Lines       [][]interface{}
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
 		Title:       r.renderElementTitle(p.Attributes),
-		Attribution: newParagraphAttribution(p),
+		Attribution: paragraphAttribution(p),
 		Content:     string(content),
 		Lines:       p.Lines,
 	})
@@ -145,12 +148,12 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Parag
 		Title       string
 		Attribution Attribution
 		Content     string
-		Lines       []interface{}
+		Lines       [][]interface{}
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
 		Title:       r.renderElementTitle(p.Attributes),
-		Attribution: newParagraphAttribution(p),
+		Attribution: paragraphAttribution(p),
 		Content:     string(content),
 		Lines:       p.Lines,
 	})
@@ -170,7 +173,7 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types
 	err = r.manpageNameParagraph.Execute(result, struct {
 		Context *renderer.Context
 		Content string
-		Lines   []interface{}
+		Lines   [][]interface{}
 	}{
 		Context: ctx,
 		Content: string(content),
@@ -193,7 +196,7 @@ func (r *sgmlRenderer) renderDelimitedBlockParagraph(ctx *renderer.Context, p ty
 		Title      string
 		CheckStyle string
 		Content    string
-		Lines      []interface{}
+		Lines      [][]interface{}
 	}{
 		Context:    ctx,
 		ID:         r.renderElementID(p.Attributes),
@@ -252,7 +255,7 @@ func (r *sgmlRenderer) withPlainText() RenderLinesOption {
 // renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
 // and includes an `\n` character in-between, until the last one.
 // Trailing spaces are removed for each line.
-func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines []interface{}, options ...RenderLinesOption) (string, error) { // renderLineFunc renderFunc, hardbreak bool
+func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines [][]interface{}, options ...RenderLinesOption) (string, error) { // renderLineFunc renderFunc, hardbreak bool
 	linesRenderer := RenderLinesConfig{
 		render:     r.renderLine,
 		hardBreaks: false,

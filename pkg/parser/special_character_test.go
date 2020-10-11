@@ -13,10 +13,10 @@ var _ = Describe("special characters", func() {
 	It("should parse in paragraph", func() {
 		source := "<b>*</b> &apos; &amp;"
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
+			Elements: []interface{}{
 				types.Paragraph{
-					Lines: []interface{}{
-						[]interface{}{
+					Lines: [][]interface{}{
+						{
 							types.SpecialCharacter{
 								Name: "<",
 							},
@@ -66,11 +66,10 @@ var _ = Describe("special characters", func() {
 			"<b>*</b> &apos; &amp;" + "\n" +
 			"```"
 		expected := types.DraftDocument{
-			Blocks: []interface{}{
-				types.DelimitedBlock{
-					Kind: types.Fenced,
-					Elements: []interface{}{
-						[]interface{}{
+			Elements: []interface{}{
+				types.FencedBlock{
+					Lines: [][]interface{}{
+						{
 							types.SpecialCharacter{
 								Name: "<",
 							},

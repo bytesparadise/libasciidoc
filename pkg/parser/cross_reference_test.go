@@ -41,8 +41,8 @@ with some content linked to <<thetitle>>!`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "with some content linked to ",
 											},
@@ -90,8 +90,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "with some content linked to ",
 											},
@@ -120,8 +120,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "some content linked to ",
 								},
 									types.ExternalCrossReference{
@@ -159,8 +159,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "some content linked to ",
 								},
 									types.ExternalCrossReference{
@@ -199,8 +199,8 @@ some content linked to xref:{foo}[another_doc()]!`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "some content linked to ",
 								},
 									types.ExternalCrossReference{

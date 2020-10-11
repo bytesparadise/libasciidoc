@@ -23,13 +23,12 @@ foo
 					types.AttrSyntaxHighlighter: "pygments",
 				},
 				Elements: []interface{}{
-					types.DelimitedBlock{
+					types.ListingBlock{
 						Attributes: types.Attributes{
 							types.AttrKind: types.Source,
 						},
-						Kind: types.Source,
-						Elements: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{
 									Content: "foo",
 								},
@@ -97,8 +96,8 @@ Preamble comes here
 							types.Preamble{
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{
 													Content: "Preamble comes here",
 												},
@@ -217,8 +216,8 @@ eve - analyzes an image to determine if it's a picture of a life form
 								Title: nameSectionTitle,
 								Elements: []interface{}{
 									types.Paragraph{
-										Lines: []interface{}{
-											[]interface{}{
+										Lines: [][]interface{}{
+											{
 												types.StringElement{
 													Content: "eve - analyzes an image to determine if it\u2019s a picture of a life form",
 												},

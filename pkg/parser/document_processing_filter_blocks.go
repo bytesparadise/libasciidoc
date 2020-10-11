@@ -31,19 +31,23 @@ elements:
 			result = append(result, e)
 		case types.Paragraph:
 			log.Debug("filtering on paragraph")
-			lines := make([]interface{}, 0, len(e.Lines))
+			lines := make([][]interface{}, 0, len(e.Lines))
 			for _, l := range e.Lines {
 				log.Debugf("filtering on paragraph line of type '%T'", l)
-				if l, ok := l.([]interface{}); ok {
-					l = filter(l, matchers...)
-					if len(l) > 0 {
-						lines = append(lines, l)
-					}
+				l = filter(l, matchers...)
+				if len(l) > 0 {
+					lines = append(lines, l)
 				}
 			}
 			e.Lines = lines
 			result = append(result, e)
-		case types.DelimitedBlock:
+		case types.ExampleBlock:
+			e.Elements = filter(e.Elements, matchers...)
+			result = append(result, e)
+		case types.QuoteBlock:
+			e.Elements = filter(e.Elements, matchers...)
+			result = append(result, e)
+		case types.SidebarBlock:
 			e.Elements = filter(e.Elements, matchers...)
 			result = append(result, e)
 		case types.OrderedList:
@@ -110,12 +114,8 @@ var singleLineCommentMatcher filterMatcher = func(element interface{}) bool {
 	return ok
 }
 
-// commentBlockMatcher filters the element if it is a DelimitedBlock of kind 'Comment'
+// commentBlockMatcher filters the element if it is a NormalDelimitedBlock of kind 'Comment'
 var commentBlockMatcher filterMatcher = func(element interface{}) bool {
-	switch e := element.(type) {
-	case types.DelimitedBlock:
-		return e.Kind == types.Comment
-	default:
-		return false
-	}
+	_, ok := element.(types.CommentBlock)
+	return ok
 }

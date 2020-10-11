@@ -17,8 +17,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Bold,
 									Elements: []interface{}{
@@ -38,8 +38,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "("},
 								types.QuotedText{
 									Kind: types.Bold,
@@ -61,8 +61,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "some*bold*content"},
 							},
 						},
@@ -77,8 +77,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "some_italic_content"},
 							},
 						},
@@ -92,8 +92,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "some`monospace`content"},
 							},
 						},
@@ -108,8 +108,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "*foo*bar"},
 							},
 						},
@@ -124,8 +124,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.QuotedText{
 									Kind: types.Bold,
 									Elements: []interface{}{
@@ -146,8 +146,8 @@ var _ = Describe("inline elements", func() {
 			expected := types.Document{
 				Elements: []interface{}{
 					types.Paragraph{
-						Lines: []interface{}{
-							[]interface{}{
+						Lines: [][]interface{}{
+							{
 								types.StringElement{Content: "à bientôt"},
 							},
 						},

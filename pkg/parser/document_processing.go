@@ -17,7 +17,7 @@ func ParseDocument(r io.Reader, config configuration.Configuration, options ...O
 		return types.Document{}, err
 	}
 
-	draftDoc, err := ApplySubstitutions(rawDoc, config, options...)
+	draftDoc, err := ApplySubstitutions(rawDoc, config)
 	if err != nil {
 		return types.Document{}, err
 	}
@@ -27,7 +27,7 @@ func ParseDocument(r io.Reader, config configuration.Configuration, options ...O
 	}
 
 	// now, merge list items into proper lists
-	blocks, err := rearrangeListItems(draftDoc.Blocks, false)
+	blocks, err := rearrangeListItems(draftDoc.Elements, false)
 	if err != nil {
 		return types.Document{}, err
 	}

@@ -17,15 +17,15 @@ var _ = Describe("unordered lists", func() {
 			It("unordered list with a basic single item", func() {
 				source := `* a list item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a list item"},
 										},
 									},
@@ -43,7 +43,7 @@ var _ = Describe("unordered lists", func() {
 [.myrole]
 * a list item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Attributes: types.Attributes{
 								types.AttrTitle:    "mytitle",
@@ -56,8 +56,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a list item"},
 										},
 									},
@@ -74,7 +74,7 @@ var _ = Describe("unordered lists", func() {
 [.myrole]
 * a list item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Attributes: types.Attributes{
 								types.AttrTitle:    "mytitle",
@@ -88,8 +88,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a list item"},
 										},
 									},
@@ -105,7 +105,7 @@ var _ = Describe("unordered lists", func() {
 				source := `.a title
 	* a list item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
@@ -115,8 +115,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a list item"},
 										},
 									},
@@ -132,15 +132,15 @@ var _ = Describe("unordered lists", func() {
 				source := `* a first item
 					* a second item with *bold content*`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a first item"},
 										},
 									},
@@ -153,8 +153,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -183,7 +183,7 @@ var _ = Describe("unordered lists", func() {
 		*** nested nested list item B.2
 		* list item 2`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered list title",
@@ -193,8 +193,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "list item 1"},
 										},
 									},
@@ -207,8 +207,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "nested list item A"},
 										},
 									},
@@ -221,8 +221,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "nested nested list item A.1"},
 										},
 									},
@@ -235,8 +235,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "nested nested list item A.2"},
 										},
 									},
@@ -249,8 +249,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "nested list item B"},
 										},
 									},
@@ -263,8 +263,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "nested nested list item B.1"},
 										},
 									},
@@ -277,8 +277,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "nested nested list item B.2"},
 										},
 									},
@@ -291,8 +291,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "list item 2"},
 										},
 									},
@@ -308,15 +308,15 @@ var _ = Describe("unordered lists", func() {
 				source := "- a first item\n" +
 					"- a second item with *bold content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.Dash,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a first item"},
 										},
 									},
@@ -329,8 +329,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -355,15 +355,15 @@ var _ = Describe("unordered lists", func() {
 					* another child item
 					** with a sub child item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.Dash,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a parent item"},
 										},
 									},
@@ -376,8 +376,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a child item"},
 										},
 									},
@@ -390,8 +390,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "another parent item"},
 										},
 									},
@@ -404,8 +404,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "another child item"},
 										},
 									},
@@ -418,8 +418,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "with a sub child item"},
 										},
 									},
@@ -437,15 +437,15 @@ var _ = Describe("unordered lists", func() {
 					"\n" +
 					"* a second item with *bold content*"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a first item"},
 										},
 									},
@@ -459,8 +459,8 @@ var _ = Describe("unordered lists", func() {
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
 												Kind: types.Bold,
@@ -483,18 +483,18 @@ var _ = Describe("unordered lists", func() {
 * item 2
 on 2 lines, too.`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1"},
 										},
-										[]interface{}{
+										{
 											types.StringElement{Content: "  on 2 lines."},
 										},
 									},
@@ -507,11 +507,11 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2"},
 										},
-										[]interface{}{
+										{
 											types.StringElement{Content: "on 2 lines, too."},
 										},
 									},
@@ -528,15 +528,15 @@ on 2 lines, too.`
 
 * an item in the second list`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "an item in the first list"},
 										},
 									},
@@ -551,8 +551,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "an item in the second list"},
 										},
 									},
@@ -574,15 +574,15 @@ on 2 lines, too.`
 	* item 2
 	** item 2.1`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1"},
 										},
 									},
@@ -595,8 +595,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.1"},
 										},
 									},
@@ -609,8 +609,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.2"},
 										},
 									},
@@ -623,8 +623,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.2.1"},
 										},
 									},
@@ -637,8 +637,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.3"},
 										},
 									},
@@ -651,8 +651,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.4"},
 										},
 									},
@@ -665,8 +665,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2"},
 										},
 									},
@@ -679,8 +679,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2.1"},
 										},
 									},
@@ -701,7 +701,7 @@ on 2 lines, too.`
 ***** level 5
 * level 1`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
@@ -711,8 +711,8 @@ on 2 lines, too.`
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 1",
 											},
@@ -727,8 +727,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 2",
 											},
@@ -743,8 +743,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 3",
 											},
@@ -759,8 +759,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 4",
 											},
@@ -775,8 +775,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 5",
 											},
@@ -791,8 +791,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 1",
 											},
@@ -815,7 +815,7 @@ on 2 lines, too.`
 ***** level 5
 ** level 2`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Attributes: types.Attributes{
 								types.AttrTitle: "Unordered, max nesting",
@@ -825,8 +825,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 1",
 											},
@@ -841,8 +841,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 2",
 											},
@@ -857,8 +857,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 3",
 											},
@@ -872,8 +872,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 4",
 											},
@@ -888,8 +888,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 5",
 											},
@@ -904,8 +904,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 2",
 											},
@@ -929,15 +929,15 @@ on 2 lines, too.`
 					** item 1.2
 					* item 2`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1"},
 										},
 									},
@@ -950,8 +950,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.1"},
 										},
 									},
@@ -964,8 +964,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.1.1"},
 										},
 									},
@@ -978,8 +978,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 1.2"},
 										},
 									},
@@ -992,8 +992,8 @@ on 2 lines, too.`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "item 2"},
 										},
 									},
@@ -1008,10 +1008,10 @@ on 2 lines, too.`
 			It("invalid list item", func() {
 				source := "*an invalid list item"
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "*an invalid list item"},
 								},
 							},
@@ -1037,15 +1037,15 @@ another delimited block
 * bar
 `
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "foo"},
 										},
 									},
@@ -1054,10 +1054,9 @@ another delimited block
 						},
 						types.ContinuedListItemElement{
 							Offset: 0,
-							Element: types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									[]interface{}{
+							Element: types.ListingBlock{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a delimited block",
 										},
@@ -1067,10 +1066,9 @@ another delimited block
 						},
 						types.ContinuedListItemElement{
 							Offset: 0,
-							Element: types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									[]interface{}{
+							Element: types.ListingBlock{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "another delimited block",
 										},
@@ -1084,8 +1082,8 @@ another delimited block
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "bar"},
 										},
 									},
@@ -1112,7 +1110,7 @@ The {plus} symbol is on a new line.
 ***** level 5
 `
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
@@ -1122,8 +1120,8 @@ The {plus} symbol is on a new line.
 							},
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 1",
 											},
@@ -1138,8 +1136,8 @@ The {plus} symbol is on a new line.
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 2",
 											},
@@ -1154,13 +1152,13 @@ The {plus} symbol is on a new line.
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 3",
 											},
 										},
-										[]interface{}{
+										{
 											types.StringElement{
 												Content: "This is a new line inside an unordered list using ",
 											},
@@ -1171,13 +1169,13 @@ The {plus} symbol is on a new line.
 												Content: " symbol.",
 											},
 										},
-										[]interface{}{
+										{
 											types.StringElement{
 												Content: "We can even force content to start on a separate line\u2026\u200b",
 											},
 											types.LineBreak{},
 										},
-										[]interface{}{
+										{
 											types.StringElement{
 												Content: "Amazing, isn\u2019t it?",
 											},
@@ -1192,8 +1190,8 @@ The {plus} symbol is on a new line.
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 4",
 											},
@@ -1206,8 +1204,8 @@ The {plus} symbol is on a new line.
 						types.ContinuedListItemElement{
 							Offset: 0,
 							Element: types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "The ",
 										},
@@ -1228,8 +1226,8 @@ The {plus} symbol is on a new line.
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{
 												Content: "level 5",
 											},
@@ -1253,25 +1251,24 @@ a delimited block
 another delimited block
 ----`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "foo"},
 										},
 									},
 								},
 							},
 						},
-						types.DelimitedBlock{
-							Kind: types.Listing,
-							Elements: []interface{}{
-								[]interface{}{
+						types.ListingBlock{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a delimited block",
 									},
@@ -1284,18 +1281,17 @@ another delimited block
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "bar"},
 										},
 									},
 								},
 							},
 						},
-						types.DelimitedBlock{
-							Kind: types.Listing,
-							Elements: []interface{}{
-								[]interface{}{
+						types.ListingBlock{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "another delimited block",
 									},
@@ -1319,15 +1315,15 @@ another delimited block
 +
 paragraph attached to grand parent list item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "grand parent list item"},
 										},
 									},
@@ -1340,8 +1336,8 @@ paragraph attached to grand parent list item`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "parent list item"},
 										},
 									},
@@ -1354,8 +1350,8 @@ paragraph attached to grand parent list item`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "child list item"},
 										},
 									},
@@ -1367,8 +1363,8 @@ paragraph attached to grand parent list item`
 						types.ContinuedListItemElement{
 							Offset: 0,
 							Element: types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "paragraph attached to grand parent list item"},
 									},
 								},
@@ -1387,15 +1383,15 @@ paragraph attached to grand parent list item`
 +
 paragraph attached to parent list item`
 				expected := types.DraftDocument{
-					Blocks: []interface{}{
+					Elements: []interface{}{
 						types.UnorderedListItem{
 							Level:       1,
 							BulletStyle: types.OneAsterisk,
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "grandparent list item"},
 										},
 									},
@@ -1408,8 +1404,8 @@ paragraph attached to parent list item`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "parent list item"},
 										},
 									},
@@ -1422,8 +1418,8 @@ paragraph attached to parent list item`
 							CheckStyle:  types.NoCheck,
 							Elements: []interface{}{
 								types.Paragraph{
-									Lines: []interface{}{
-										[]interface{}{
+									Lines: [][]interface{}{
+										{
 											types.StringElement{Content: "child list item"},
 										},
 									},
@@ -1434,8 +1430,8 @@ paragraph attached to parent list item`
 						types.ContinuedListItemElement{
 							Offset: 0,
 							Element: types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{Content: "paragraph attached to parent list item"},
 									},
 								},
@@ -1464,8 +1460,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a list item"},
 												},
 											},
@@ -1500,8 +1496,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a list item"},
 												},
 											},
@@ -1530,8 +1526,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a list item"},
 												},
 											},
@@ -1558,8 +1554,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a first item"},
 												},
 											},
@@ -1572,8 +1568,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a second item with "},
 													types.QuotedText{
 														Kind: types.Bold,
@@ -1616,8 +1612,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "list item 1"},
 												},
 											},
@@ -1630,8 +1626,8 @@ paragraph attached to parent list item`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "nested list item A"},
 																},
 															},
@@ -1644,8 +1640,8 @@ paragraph attached to parent list item`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "nested nested list item A.1"},
 																				},
 																			},
@@ -1658,8 +1654,8 @@ paragraph attached to parent list item`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "nested nested list item A.2"},
 																				},
 																			},
@@ -1676,8 +1672,8 @@ paragraph attached to parent list item`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "nested list item B"},
 																},
 															},
@@ -1690,8 +1686,8 @@ paragraph attached to parent list item`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "nested nested list item B.1"},
 																				},
 																			},
@@ -1704,8 +1700,8 @@ paragraph attached to parent list item`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "nested nested list item B.2"},
 																				},
 																			},
@@ -1726,8 +1722,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "list item 2"},
 												},
 											},
@@ -1754,8 +1750,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a first item"},
 												},
 											},
@@ -1768,8 +1764,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a second item with "},
 													types.QuotedText{
 														Kind: types.Bold,
@@ -1805,8 +1801,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a parent item"},
 												},
 											},
@@ -1819,8 +1815,8 @@ paragraph attached to parent list item`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "a child item"},
 																},
 															},
@@ -1837,8 +1833,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "another parent item"},
 												},
 											},
@@ -1851,8 +1847,8 @@ paragraph attached to parent list item`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "another child item"},
 																},
 															},
@@ -1865,8 +1861,8 @@ paragraph attached to parent list item`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "with a sub child item"},
 																				},
 																			},
@@ -1903,8 +1899,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a first item"},
 												},
 											},
@@ -1917,8 +1913,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "a second item with "},
 													types.QuotedText{
 														Kind: types.Bold,
@@ -1952,11 +1948,11 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 1"},
 												},
-												[]interface{}{
+												{
 													types.StringElement{Content: "  on 2 lines."},
 												},
 											},
@@ -1969,11 +1965,11 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 2"},
 												},
-												[]interface{}{
+												{
 													types.StringElement{Content: "on 2 lines, too."},
 												},
 											},
@@ -2002,8 +1998,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "an item in the first list"},
 												},
 											},
@@ -2016,8 +2012,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "an item in the second list"},
 												},
 											},
@@ -2050,8 +2046,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 1"},
 												},
 											},
@@ -2064,8 +2060,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.1"},
 																},
 															},
@@ -2078,8 +2074,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.2"},
 																},
 															},
@@ -2092,8 +2088,8 @@ on 2 lines, too.`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "item 1.2.1"},
 																				},
 																			},
@@ -2110,8 +2106,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.3"},
 																},
 															},
@@ -2124,8 +2120,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.4"},
 																},
 															},
@@ -2142,8 +2138,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 2"},
 												},
 											},
@@ -2156,8 +2152,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 2.1"},
 																},
 															},
@@ -2196,8 +2192,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "level 1",
 													},
@@ -2212,8 +2208,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{
 																		Content: "level 2",
 																	},
@@ -2228,8 +2224,8 @@ on 2 lines, too.`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "level 3",
 																					},
@@ -2244,8 +2240,8 @@ on 2 lines, too.`
 																					CheckStyle:  types.NoCheck,
 																					Elements: []interface{}{
 																						types.Paragraph{
-																							Lines: []interface{}{
-																								[]interface{}{
+																							Lines: [][]interface{}{
+																								{
 																									types.StringElement{
 																										Content: "level 4",
 																									},
@@ -2260,8 +2256,8 @@ on 2 lines, too.`
 																									CheckStyle:  types.NoCheck,
 																									Elements: []interface{}{
 																										types.Paragraph{
-																											Lines: []interface{}{
-																												[]interface{}{
+																											Lines: [][]interface{}{
+																												{
 																													types.StringElement{
 																														Content: "level 5",
 																													},
@@ -2292,8 +2288,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "level 1",
 													},
@@ -2330,8 +2326,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "level 1",
 													},
@@ -2346,8 +2342,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{
 																		Content: "level 2",
 																	},
@@ -2362,8 +2358,8 @@ on 2 lines, too.`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "level 3",
 																					},
@@ -2378,8 +2374,8 @@ on 2 lines, too.`
 																					CheckStyle:  types.NoCheck,
 																					Elements: []interface{}{
 																						types.Paragraph{
-																							Lines: []interface{}{
-																								[]interface{}{
+																							Lines: [][]interface{}{
+																								{
 																									types.StringElement{
 																										Content: "level 4",
 																									},
@@ -2394,8 +2390,8 @@ on 2 lines, too.`
 																									CheckStyle:  types.NoCheck,
 																									Elements: []interface{}{
 																										types.Paragraph{
-																											Lines: []interface{}{
-																												[]interface{}{
+																											Lines: [][]interface{}{
+																												{
 																													types.StringElement{
 																														Content: "level 5",
 																													},
@@ -2422,8 +2418,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{
 																		Content: "level 2",
 																	},
@@ -2455,8 +2451,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.PredefinedAttribute{
 														Name: "amp",
 													},
@@ -2490,8 +2486,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 1"},
 												},
 											},
@@ -2504,8 +2500,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.1"},
 																},
 															},
@@ -2518,8 +2514,8 @@ on 2 lines, too.`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "item 1.1.1"},
 																				},
 																			},
@@ -2536,8 +2532,8 @@ on 2 lines, too.`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "item 1.2"},
 																},
 															},
@@ -2554,8 +2550,8 @@ on 2 lines, too.`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "item 2"},
 												},
 											},
@@ -2574,8 +2570,8 @@ on 2 lines, too.`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{Content: "*an invalid list item"}},
+							Lines: [][]interface{}{
+								{types.StringElement{Content: "*an invalid list item"}},
 							},
 						},
 					},
@@ -2608,26 +2604,24 @@ another delimited block
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "foo"},
 												},
 											},
 										},
-										types.DelimitedBlock{
-											Kind: types.Listing,
-											Elements: []interface{}{
-												[]interface{}{
+										types.ListingBlock{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "a delimited block",
 													},
 												},
 											},
 										},
-										types.DelimitedBlock{
-											Kind: types.Listing,
-											Elements: []interface{}{
-												[]interface{}{
+										types.ListingBlock{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "another delimited block",
 													},
@@ -2642,8 +2636,8 @@ another delimited block
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "bar"},
 												},
 											},
@@ -2684,8 +2678,8 @@ The {plus} symbol is on a new line.
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{
 														Content: "level 1",
 													},
@@ -2700,8 +2694,8 @@ The {plus} symbol is on a new line.
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{
 																		Content: "level 2",
 																	},
@@ -2716,13 +2710,13 @@ The {plus} symbol is on a new line.
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "level 3",
 																					},
 																				},
-																				[]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "This is a new line inside an unordered list using ",
 																					},
@@ -2733,13 +2727,13 @@ The {plus} symbol is on a new line.
 																						Content: " symbol.",
 																					},
 																				},
-																				[]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "We can even force content to start on a separate line\u2026\u200b",
 																					},
 																					types.LineBreak{},
 																				},
-																				[]interface{}{
+																				{
 																					types.StringElement{
 																						Content: "Amazing, isn\u2019t it?",
 																					},
@@ -2754,8 +2748,8 @@ The {plus} symbol is on a new line.
 																					CheckStyle:  types.NoCheck,
 																					Elements: []interface{}{
 																						types.Paragraph{
-																							Lines: []interface{}{
-																								[]interface{}{
+																							Lines: [][]interface{}{
+																								{
 																									types.StringElement{
 																										Content: "level 4",
 																									},
@@ -2764,8 +2758,8 @@ The {plus} symbol is on a new line.
 																						},
 																						// the `+` continuation produces the second paragrap below
 																						types.Paragraph{
-																							Lines: []interface{}{
-																								[]interface{}{
+																							Lines: [][]interface{}{
+																								{
 																									types.StringElement{
 																										Content: "The ",
 																									},
@@ -2787,8 +2781,8 @@ The {plus} symbol is on a new line.
 																									CheckStyle:  types.NoCheck,
 																									Elements: []interface{}{
 																										types.Paragraph{
-																											Lines: []interface{}{
-																												[]interface{}{
+																											Lines: [][]interface{}{
+																												{
 																													types.StringElement{
 																														Content: "level 5",
 																													},
@@ -2839,8 +2833,8 @@ another delimited block
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "foo"},
 												},
 											},
@@ -2849,10 +2843,9 @@ another delimited block
 								},
 							},
 						},
-						types.DelimitedBlock{
-							Kind: types.Listing,
-							Elements: []interface{}{
-								[]interface{}{
+						types.ListingBlock{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "a delimited block",
 									},
@@ -2867,8 +2860,8 @@ another delimited block
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "bar"},
 												},
 											},
@@ -2877,10 +2870,9 @@ another delimited block
 								},
 							},
 						},
-						types.DelimitedBlock{
-							Kind: types.Listing,
-							Elements: []interface{}{
-								[]interface{}{
+						types.ListingBlock{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{
 										Content: "another delimited block",
 									},
@@ -2913,8 +2905,8 @@ paragraph attached to grand parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "grand parent list item"},
 												},
 											},
@@ -2927,8 +2919,8 @@ paragraph attached to grand parent list item`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "parent list item"},
 																},
 															},
@@ -2941,8 +2933,8 @@ paragraph attached to grand parent list item`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "child list item"},
 																				},
 																			},
@@ -2956,8 +2948,8 @@ paragraph attached to grand parent list item`
 											},
 										},
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "paragraph attached to grand parent list item"},
 												},
 											},
@@ -2988,8 +2980,8 @@ paragraph attached to parent list item`
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										types.Paragraph{
-											Lines: []interface{}{
-												[]interface{}{
+											Lines: [][]interface{}{
+												{
 													types.StringElement{Content: "grandparent list item"},
 												},
 											},
@@ -3002,8 +2994,8 @@ paragraph attached to parent list item`
 													CheckStyle:  types.NoCheck,
 													Elements: []interface{}{
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "parent list item"},
 																},
 															},
@@ -3016,8 +3008,8 @@ paragraph attached to parent list item`
 																	CheckStyle:  types.NoCheck,
 																	Elements: []interface{}{
 																		types.Paragraph{
-																			Lines: []interface{}{
-																				[]interface{}{
+																			Lines: [][]interface{}{
+																				{
 																					types.StringElement{Content: "child list item"},
 																				},
 																			},
@@ -3027,8 +3019,8 @@ paragraph attached to parent list item`
 															},
 														},
 														types.Paragraph{
-															Lines: []interface{}{
-																[]interface{}{
+															Lines: [][]interface{}{
+																{
 																	types.StringElement{Content: "paragraph attached to parent list item"},
 																},
 															},

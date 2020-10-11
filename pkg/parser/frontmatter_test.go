@@ -28,8 +28,8 @@ first paragraph`
 					},
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "first paragraph"},
 								},
 							},
@@ -47,8 +47,8 @@ first paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{
+							Lines: [][]interface{}{
+								{
 									types.StringElement{Content: "first paragraph"},
 								},
 							},

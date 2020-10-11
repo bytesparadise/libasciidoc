@@ -25,8 +25,8 @@ a paragraph`
 								Attributes: types.Attributes{
 									"link": "http://foo.bar",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -46,8 +46,8 @@ a paragraph`
 								Attributes: types.Attributes{
 									"link": "http://foo.bar",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -68,13 +68,13 @@ a paragraph`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "[ link=http://foo.bar]",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -92,13 +92,13 @@ a paragraph`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "[link=http://foo.bar",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -126,8 +126,8 @@ a paragraph`
 									types.AttrID:       "img-foobar",
 									types.AttrCustomID: true,
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -149,8 +149,8 @@ a paragraph`
 									types.AttrID:       "img-foobar",
 									types.AttrCustomID: true,
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -171,13 +171,13 @@ a paragraph`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "[ #img-foobar ]",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -195,13 +195,13 @@ a paragraph`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "[#img-foobar",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -228,8 +228,8 @@ a paragraph`
 								Attributes: types.Attributes{
 									types.AttrTitle: "a title",
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -256,13 +256,13 @@ a list item!`
 										Style: types.Arabic,
 										Elements: []interface{}{
 											types.Paragraph{
-												Lines: []interface{}{
-													[]interface{}{
+												Lines: [][]interface{}{
+													{
 														types.StringElement{
 															Content: "a title",
 														},
 													},
-													[]interface{}{
+													{
 														types.StringElement{
 															Content: "a list item!",
 														},
@@ -285,13 +285,13 @@ a paragraph`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "!a title",
 										},
 									},
-									[]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -318,8 +318,8 @@ a paragraph`
 								Attributes: types.Attributes{
 									types.AttrRole: types.ElementRole{"a role"},
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -340,8 +340,8 @@ a paragraph`
 								Attributes: types.Attributes{
 									types.AttrRole: types.ElementRole{"a role"},
 								},
-								Lines: []interface{}{
-									[]interface{}{
+								Lines: [][]interface{}{
+									{
 										types.StringElement{
 											Content: "a paragraph",
 										},
@@ -364,8 +364,8 @@ a paragraph`
 							Attributes: types.Attributes{
 								types.AttrRole: types.ElementRole{"a role"},
 							},
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "a paragraph",
 								},
 								},
@@ -394,8 +394,8 @@ a paragraph`
 								types.AttrID:       "ID",
 								types.AttrCustomID: true,
 							},
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "a paragraph",
 								},
 								},
@@ -437,8 +437,8 @@ a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
-							Lines: []interface{}{
-								[]interface{}{types.StringElement{
+							Lines: [][]interface{}{
+								{types.StringElement{
 									Content: "a paragraph",
 								},
 								},
