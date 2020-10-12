@@ -450,11 +450,13 @@ include::../../../../test/includes/chapter-a.adoc[]
 			})
 
 			It("should include adoc file within passthrough block", func() {
-				Skip("missing support for passthrough blocks")
 				source := `++++
 include::../../../../test/includes/chapter-a.adoc[]
 ++++`
-				expected := ``
+				expected := `= Chapter A
+
+content
+`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})

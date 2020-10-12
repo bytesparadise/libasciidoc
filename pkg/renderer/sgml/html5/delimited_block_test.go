@@ -811,6 +811,18 @@ next lines</code></pre>
 
 	Context("listing blocks", func() {
 
+		It("with no line", func() {
+			source := `----
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("with multiple lines", func() {
 			source := `----
 some source code
