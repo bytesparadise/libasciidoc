@@ -1751,6 +1751,24 @@ type PassthroughBlock struct {
 	Lines      [][]interface{}
 }
 
+var _ BlockWithLineSubstitution = PassthroughBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b PassthroughBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// LinesToSubstitute returns the lines of this ExampleBlock so that substitutions can be applied onto them
+func (b PassthroughBlock) LinesToSubstitute() [][]interface{} {
+	return b.Lines
+}
+
+// ReplaceLines replaces the elements in this example block
+func (b PassthroughBlock) ReplaceLines(lines [][]interface{}) interface{} {
+	b.Lines = lines
+	return b
+}
+
 // NewPassthroughBlock initializes a new `PassthroughBlock` with the given lines
 func NewPassthroughBlock(lines []interface{}, attributes interface{}) (PassthroughBlock, error) {
 	log.Debugf("initializing a new PassthroughBlock with %d lines", len(lines))

@@ -1747,7 +1747,9 @@ and <more text> on the +
 				expected := types.DraftDocument{
 					Elements: []interface{}{
 						types.FencedBlock{
-							Lines: [][]interface{}{},
+							Lines: [][]interface{}{
+								{},
+							},
 						},
 					},
 				}
@@ -1994,7 +1996,9 @@ some listing code
 				expected := types.DraftDocument{
 					Elements: []interface{}{
 						types.ListingBlock{
-							Lines: [][]interface{}{},
+							Lines: [][]interface{}{
+								{},
+							},
 						},
 					},
 				}
@@ -2610,6 +2614,66 @@ _foo_
 								{
 									types.StringElement{
 										Content: "<input>",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("with inline link", func() {
+				source := `++++
+http://example.com[]
+++++`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.PassthroughBlock{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "http://example.com[]",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("with inline pass", func() {
+				source := `++++
+pass:[foo]
+++++`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.PassthroughBlock{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "pass:[foo]",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("with quoted text", func() {
+				source := `++++
+*foo*
+++++`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.PassthroughBlock{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "*foo*",
 									},
 								},
 							},
@@ -3576,6 +3640,51 @@ and <more text> on the +
 				}
 				Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
 			})
+
+			It("should apply the 'quotes' substitutions on a passthrough block", func() {
+				source := `[subs=quotes]
+.a title
+++++
+_foo_
+
+*bar*
+++++`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.PassthroughBlock{
+							Attributes: types.Attributes{
+								types.AttrSubstitutions: "quotes",
+								types.AttrTitle:         "a title",
+							},
+							Lines: [][]interface{}{
+								{
+									types.QuotedText{
+										Kind: types.Italic,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "foo",
+											},
+										},
+									},
+								},
+								{},
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "bar",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+
+			})
 		})
 
 		Context("admonition block", func() {
@@ -3606,7 +3715,6 @@ foo
 					},
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-
 			})
 
 			It("as admonition", func() {
@@ -4017,7 +4125,9 @@ ____`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
-							Lines: [][]interface{}{},
+							Lines: [][]interface{}{
+								{},
+							},
 						},
 					},
 				}
@@ -5710,7 +5820,9 @@ bar
 				expected := types.Document{
 					Elements: []interface{}{
 						types.FencedBlock{
-							Lines: [][]interface{}{},
+							Lines: [][]interface{}{
+								{},
+							},
 						},
 					},
 				}
@@ -5954,7 +6066,9 @@ some listing code
 				expected := types.Document{
 					Elements: []interface{}{
 						types.ListingBlock{
-							Lines: [][]interface{}{},
+							Lines: [][]interface{}{
+								{},
+							},
 						},
 					},
 				}
@@ -7030,7 +7144,9 @@ ____`
 							Attributes: types.Attributes{
 								types.AttrKind: types.Verse,
 							},
-							Lines: [][]interface{}{},
+							Lines: [][]interface{}{
+								{},
+							},
 						},
 					},
 				}

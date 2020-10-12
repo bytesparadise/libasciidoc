@@ -116,6 +116,7 @@ func applySubstitutions(elements []interface{}, attrs types.AttributesWithOverri
 // Delimited Block substitutions
 // ----------------------------------------------------------------------------
 
+// blocks of blocks
 var defaultSubstitutionsForBlockElements = []elementsSubstitution{
 	substituteInlinePassthrough,
 	substituteSpecialCharacters,
@@ -128,7 +129,10 @@ var defaultSubstitutionsForBlockElements = []elementsSubstitution{
 var defaultExampleBlockSubstitutions = defaultSubstitutionsForBlockElements
 var defaultQuoteBlockSubstitutions = defaultSubstitutionsForBlockElements
 var defaultSidebarBlockSubstitutions = defaultSubstitutionsForBlockElements
+var defaultVerseBlockSubstitutions = defaultSubstitutionsForBlockElements // even though it's a block of lines, not a block of blocks
+var defaultParagraphSubstitutions = defaultSubstitutionsForBlockElements  // even though it's a block of lines, not a block of blocks
 
+// blocks of lines
 var defaultSubstitutionsForBlockLines = []elementsSubstitution{
 	substituteCallouts,
 	substituteSpecialCharacters,
@@ -136,26 +140,9 @@ var defaultSubstitutionsForBlockLines = []elementsSubstitution{
 var defaultFencedBlockSubstitutions = defaultSubstitutionsForBlockLines
 var defaultListingBlockSubstitutions = defaultSubstitutionsForBlockLines
 
+// other blocks
+var defaultPassthroughBlockSubstitutions = []elementsSubstitution{}
 var defaultCommentBlockSubstitutions = []elementsSubstitution{substituteNone}
-
-var defaultVerseBlockSubstitutions = []elementsSubstitution{
-	substituteInlinePassthrough,
-	substituteSpecialCharacters,
-	substituteQuotedTexts,
-	substituteAttributes,
-	substituteReplacements,
-	substituteInlineMacros, // substituteVerseMacros
-	substitutePostReplacements,
-}
-var defaultParagraphSubstitutions = []elementsSubstitution{
-	substituteInlinePassthrough,
-	substituteSpecialCharacters,
-	substituteQuotedTexts,
-	substituteAttributes,
-	substituteReplacements,
-	substituteInlineMacros,
-	substitutePostReplacements,
-}
 
 func applySubstitutionsOnMarkdownQuoteBlock(b types.MarkdownQuoteBlock, attrs types.AttributesWithOverrides) (types.MarkdownQuoteBlock, error) {
 	funcs := []elementsSubstitution{
@@ -265,8 +252,8 @@ func defaultSubstitutionsFor(block interface{}) ([]elementsSubstitution, error) 
 		return defaultListingBlockSubstitutions, nil
 	case types.VerseBlock:
 		return defaultVerseBlockSubstitutions, nil
-	// case types.MarkdownQuoteBlock:
-	// 	return defaultMarkdownQuoteSubstitutions, nil
+	case types.PassthroughBlock:
+		return defaultPassthroughBlockSubstitutions, nil
 	case types.CommentBlock:
 		return defaultCommentBlockSubstitutions, nil
 	case types.Paragraph:
@@ -594,8 +581,8 @@ func splitLines(lines [][]interface{}, _ types.AttributesWithOverrides) ([][]int
 		spew.Fdump(log.StandardLogger().Out, lines)
 	}
 	result := [][]interface{}{}
-	pendingLine := []interface{}{}
 	for _, line := range lines {
+		pendingLine := []interface{}{}
 		for _, element := range line {
 			switch element := element.(type) {
 			case types.StringElement:
@@ -607,19 +594,18 @@ func splitLines(lines [][]interface{}, _ types.AttributesWithOverrides) ([][]int
 					}
 					if i < len(split)-1 {
 						result = append(result, pendingLine)
-						pendingLine = []interface{}{} // reset for the next line, except for the last item
+						pendingLine = []interface{}{} // reset for the next line
 					}
 				}
 			default:
 				pendingLine = append(pendingLine, element)
 			}
 		}
-	}
-	if len(pendingLine) > 0 { // don't forget the last line (if applicable)
+		// don't forget the last line (if applicable)
 		result = append(result, pendingLine)
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("result")
+		log.Debug("splitted lines")
 		spew.Fdump(log.StandardLogger().Out, result)
 	}
 	return result, nil
@@ -685,6 +671,7 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 	case types.ContinuedListItemElement:
 		e.Element, err = applyAttributeSubstitutionsOnElement(e.Element, attrs)
 		return e, err
+
 	case types.ExampleBlock:
 		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
 		return e, err
