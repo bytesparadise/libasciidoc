@@ -581,7 +581,7 @@ and <more text> on the +
 `
 
 			It("should apply the default substitution", func() {
-				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
+				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 				expected := types.DraftDocument{
 					Attributes: types.Attributes{
 						"github-url": "https://github.com",
@@ -591,7 +591,6 @@ and <more text> on the +
 							Name:  "github-url",
 							Value: "https://github.com",
 						},
-						types.BlankLine{},
 						types.BlankLine{},
 						types.ExampleBlock{
 							Elements: []interface{}{
@@ -2734,7 +2733,7 @@ another paragraph`
 			// share the same implementation
 
 			source := `:github-url: https://github.com
-				
+
 [subs="$SUBS"]
 ----
 a link to https://example.com[] <1>
@@ -2748,7 +2747,7 @@ and <more text> on the +
 `
 
 			It("should apply the default substitution", func() {
-				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
+				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "") // remove the 'subs' attribute
 				expected := types.DraftDocument{
 					Attributes: types.Attributes{
 						"github-url": "https://github.com",
@@ -2758,7 +2757,6 @@ and <more text> on the +
 							Name:  "github-url",
 							Value: "https://github.com",
 						},
-						types.BlankLine{},
 						types.BlankLine{},
 						types.ListingBlock{
 							Lines: [][]interface{}{
@@ -4176,7 +4174,7 @@ ____
 `
 
 				It("should apply the default substitution", func() {
-					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
+					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -4186,7 +4184,6 @@ ____
 								Name:  "github-url",
 								Value: "https://github.com",
 							},
-							types.BlankLine{},
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{

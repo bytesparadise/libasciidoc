@@ -139,6 +139,7 @@ var defaultSubstitutionsForBlockLines = []elementsSubstitution{
 }
 var defaultFencedBlockSubstitutions = defaultSubstitutionsForBlockLines
 var defaultListingBlockSubstitutions = defaultSubstitutionsForBlockLines
+var defaultLiteralBlockSubstitutions = defaultSubstitutionsForBlockLines
 
 // other blocks
 var defaultPassthroughBlockSubstitutions = []elementsSubstitution{}
@@ -252,6 +253,8 @@ func defaultSubstitutionsFor(block interface{}) ([]elementsSubstitution, error) 
 		return defaultListingBlockSubstitutions, nil
 	case types.VerseBlock:
 		return defaultVerseBlockSubstitutions, nil
+	case types.LiteralBlock:
+		return defaultLiteralBlockSubstitutions, nil
 	case types.PassthroughBlock:
 		return defaultPassthroughBlockSubstitutions, nil
 	case types.CommentBlock:

@@ -158,4 +158,165 @@ on two lines.</pre>
 		})
 	})
 
+	Context("with custom substitutions", func() {
+
+		// testing custom substitutions on a literal block only
+
+		It("should apply the default substitution on block with delimiter", func() {
+			source := `:github-url: https://github.com
+			
+....
+a link to https://example.com[] <1>
+and <more text> on the +
+*next* lines with a link to {github-url}[]
+
+* not a list item
+....
+
+<1> a callout
+`
+			expected := `<div class="literalblock">
+<div class="content">
+<pre>a link to https://example.com[] <b class="conum">(1)</b>
+and &lt;more text&gt; on the +
+*next* lines with a link to {github-url}[]
+
+* not a list item</pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>a callout</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+		It("should apply the 'normal' substitution on block with delimiter", func() {
+			source := `:github-url: https://github.com
+			
+[subs="normal"]
+....
+a link to https://example.com[] <1>
+and <more text> on the +
+*next* lines with a link to {github-url}[]
+
+* not a list item
+....
+
+<1> a callout
+`
+			expected := `<div class="literalblock">
+<div class="content">
+<pre>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a>
+
+* not a list item</pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>a callout</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("should apply the 'quotes,macros' substitution on block with delimiter", func() {
+			source := `:github-url: https://github.com
+			
+[subs="quotes,macros"]
+....
+a link to https://example.com[] <1>
+and <more text> on the +
+*next* lines with a link to {github-url}[]
+
+* not a list item
+....
+
+<1> a callout
+`
+			expected := `<div class="literalblock">
+<div class="content">
+<pre>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
+and <more text> on the +
+<strong>next</strong> lines with a link to {github-url}[]
+
+* not a list item</pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>a callout</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("should apply the 'quotes,macros' substitution on block with spaces", func() {
+			source := `:github-url: https://github.com
+			
+[subs="quotes,macros"]
+  a link to https://example.com[] <1> 
+  and <more text> on the +
+  *next* lines with a link to {github-url}[]
+
+<1> a callout
+`
+			expected := `<div class="literalblock">
+<div class="content">
+<pre>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
+and <more text> on the +
+<strong>next</strong> lines with a link to {github-url}[]</pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>a callout</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("should apply the 'quotes,macros' substitution on block with attribute", func() {
+			source := `:github-url: https://github.com
+			
+[subs="quotes,macros"]
+[literal]
+a link to https://example.com[] <1>
+and <more text> on the +
+*next* lines with a link to {github-url}[]
+
+<1> a callout
+`
+			expected := `<div class="literalblock">
+<div class="content">
+<pre>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
+and <more text> on the +
+<strong>next</strong> lines with a link to {github-url}[]</pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>a callout</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+	})
 })
