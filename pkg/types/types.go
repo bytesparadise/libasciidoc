@@ -1178,10 +1178,12 @@ func (p Paragraph) SubstitutionsToApply() string {
 	return p.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
 }
 
+// LinesToSubstitute returns the lines of this ExampleBlock so that substitutions can be applied onto them
 func (p Paragraph) LinesToSubstitute() [][]interface{} {
 	return p.Lines
 }
 
+// ReplaceLines replaces the elements in this example block
 func (p Paragraph) ReplaceLines(lines [][]interface{}) interface{} {
 	p.Lines = lines
 	return p
@@ -1846,6 +1848,24 @@ func NewLiteralBlock(origin string, lines []interface{}, attributes interface{})
 		Attributes: attrs,
 		Lines:      l,
 	}, nil
+}
+
+var _ BlockWithLineSubstitution = LiteralBlock{}
+
+// SubstitutionsToApply returns the name of the substitutions to apply
+func (b LiteralBlock) SubstitutionsToApply() string {
+	return b.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+}
+
+// LinesToSubstitute returns the lines of this ExampleBlock so that substitutions can be applied onto them
+func (b LiteralBlock) LinesToSubstitute() [][]interface{} {
+	return b.Lines
+}
+
+// ReplaceLines replaces the elements in this example block
+func (b LiteralBlock) ReplaceLines(lines [][]interface{}) interface{} {
+	b.Lines = lines
+	return b
 }
 
 // ------------------------------------------
