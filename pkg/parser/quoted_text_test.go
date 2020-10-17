@@ -10,9 +10,9 @@ import (
 
 var _ = Describe("quoted texts", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
-		Context("quoted text with single punctuation", func() {
+		Context("with single punctuations", func() {
 
 			It("bold text with newline", func() {
 				source := "*some bold\ncontent*"
@@ -447,7 +447,7 @@ var _ = Describe("quoted texts", func() {
 			})
 		})
 
-		Context("quoted text with double punctuation", func() {
+		Context("with double punctuations", func() {
 
 			It("bold text of 1 word in double quote", func() {
 				source := "**hello**"
@@ -637,7 +637,7 @@ var _ = Describe("quoted texts", func() {
 			})
 		})
 
-		Context("quoted text inline", func() {
+		Context("inline", func() {
 
 			It("inline content with bold text", func() {
 				source := "a paragraph with *some bold content*"
@@ -895,7 +895,7 @@ var _ = Describe("quoted texts", func() {
 
 		})
 
-		Context("attributes", func() {
+		Context("with attributes", func() {
 
 			It("simple role italics", func() {
 				source := "[myrole]_italics_"
@@ -1356,7 +1356,7 @@ var _ = Describe("quoted texts", func() {
 
 		})
 
-		Context("nested quoted text", func() {
+		Context("with nested quoted text", func() {
 
 			It("italic text within bold text", func() {
 				source := "some *bold and _italic content_ together*."
@@ -3448,9 +3448,9 @@ var _ = Describe("quoted texts", func() {
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
-		Context("quoted text with single punctuation", func() {
+		Context("with single punctuation", func() {
 
 			It("bold text with 1 word", func() {
 				source := "*hello*"
@@ -3832,7 +3832,7 @@ var _ = Describe("quoted texts", func() {
 
 		})
 
-		Context("quoted text with double punctuation", func() {
+		Context("with double punctuation", func() {
 
 			It("bold text of 1 word in double quote", func() {
 				source := "**hello**"
@@ -4275,7 +4275,7 @@ var _ = Describe("quoted texts", func() {
 			})
 		})
 
-		Context("nested quoted text", func() {
+		Context("with nested quoted text", func() {
 
 			It("italic text within bold text", func() {
 				source := "some *bold and _italic content_ together*."

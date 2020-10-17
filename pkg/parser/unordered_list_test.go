@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("unordered lists", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		Context("valid content", func() {
 
@@ -1444,7 +1444,7 @@ paragraph attached to parent list item`
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("valid content", func() {
 

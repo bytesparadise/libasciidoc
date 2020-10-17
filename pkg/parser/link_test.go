@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("links", func() {
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("external links", func() {
 

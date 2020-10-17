@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("index terms", func() {
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		It("index term in existing paragraph line", func() {
 			source := `a paragraph with an ((index)) term.`
@@ -82,7 +82,7 @@ a paragraph with an index term.`
 
 var _ = Describe("concealed index terms", func() {
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		It("concealed index term in existing paragraph line", func() {
 			source := `a paragraph with an index term (((index, term, here))).`

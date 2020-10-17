@@ -11,7 +11,7 @@ import (
 
 var _ = Describe("document attributes", func() {
 
-	Context("valid Document Header", func() {
+	Context("valid attributes", func() {
 
 		It("header alone", func() {
 			source := `= Document Title
@@ -466,7 +466,7 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 			})
 		})
 
-		Context("document revision", func() {
+		Context("document revisions", func() {
 
 			It("full document revision", func() {
 				source := `= title
@@ -1034,7 +1034,7 @@ v1.0:`
 
 		})
 
-		Context("document header Attributes", func() {
+		Context("document header attributes", func() {
 
 			It("valid attribute names", func() {
 				source := `:a:
@@ -1300,7 +1300,7 @@ a paragraph written by {author}.`
 
 	})
 
-	Context("invalid document attributes", func() {
+	Context("invalid attributes", func() {
 
 		It("paragraph without blank line before attribute declarations", func() {
 			source := `a paragraph
@@ -1351,7 +1351,7 @@ a paragraph written by {author}.`
 		})
 	})
 
-	Context("document with attribute overrides", func() {
+	Context("with overrides", func() {
 
 		It("custom icon attribute", func() {
 			// given

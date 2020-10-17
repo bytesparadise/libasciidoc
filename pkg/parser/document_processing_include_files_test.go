@@ -75,7 +75,7 @@ var _ = DescribeTable("check asciidoc file",
 
 var _ = Describe("file inclusions", func() {
 
-	Context("raw document", func() {
+	Context("in raw documents", func() {
 
 		Context("with file inclusions", func() {
 
@@ -1433,7 +1433,7 @@ include::{includedir}/include.foo[]`
 				})
 			})
 
-			Context("missing file to include", func() {
+			Context("with missing file to include", func() {
 
 				It("should fail if directory does not exist in standalone block", func() {
 					source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
@@ -1471,7 +1471,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 				})
 			})
 
-			Context("inclusion with attribute in path", func() {
+			Context("with inclusion with attribute in path", func() {
 
 				It("should resolve path with attribute in standalone block from local file", func() {
 					source := `:includedir: ../../test/includes
@@ -1686,7 +1686,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 
 	})
 
-	Context("final document", func() {
+	Context("in final documents", func() {
 
 		It("should include child and grandchild content with relative level offset", func() {
 			source := `include::../../test/includes/parent-include-relative-offset.adoc[leveloffset=+1]`

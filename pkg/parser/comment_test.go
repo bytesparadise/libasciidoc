@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("comments", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		Context("single line comments", func() {
 
@@ -236,7 +236,7 @@ a second paragraph`
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("single line comments", func() {
 

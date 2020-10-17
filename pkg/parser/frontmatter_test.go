@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("front-matters", func() {
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("yaml front-matter", func() {
 

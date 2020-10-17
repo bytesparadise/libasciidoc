@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("blank lines", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		It("blank line between 2 paragraphs", func() {
 			source := `first paragraph
@@ -77,7 +77,7 @@ second paragraph
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		It("blank line between 2 paragraphs", func() {
 			source := `first paragraph

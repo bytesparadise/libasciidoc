@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("user macros", func() {
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("inline macros", func() {
 
