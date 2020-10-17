@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("passthroughs", func() {
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("tripleplus inline passthrough", func() {
 

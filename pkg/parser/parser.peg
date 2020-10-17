@@ -2037,17 +2037,15 @@ ParagraphWithHeadingSpaces <- attributes:(Attributes)? lines:(ParagraphWithHeadi
 
 // first line MUST start with one (or more) space. Stop when reaching a blank line
 ParagraphWithHeadingSpacesLines <- 
-    firstLine:(Space+ [^\r\n]+ { // TODO: use ParagraphWithLiteralBlockDelimiterLine
-        return types.NewRawLine(string(c.text))
-    }) EOL // do not include the trailing 'EOL' on the first line
-    otherLines:(
-        !BlankLine 
-        otherLine:([^\r\n]+ { // TODO: use ParagraphWithLiteralBlockDelimiterLine
-            return types.NewRawLine(string(c.text))
-        }) EOL {
-            return otherLine, nil // do not include the trailing 'EOL'
-        })* { 
+    firstLine:(ParagraphWithHeadingSpacesLine)
+    otherLines:(LiteralParagraphLine)* { 
     return append([]interface{}{firstLine}, otherLines.([]interface{})...), nil
+}
+
+ParagraphWithHeadingSpacesLine <- line:(Space+ [^\r\n]+ {
+        return types.NewRawLine(string(c.text))
+    }) EOL { // do not include the trailing 'EOL' on the first line
+    return line, nil
 }
 
 // paragraph with the literal block delimiter (`....`)
@@ -2078,7 +2076,7 @@ ParagraphWithLiteralAttribute <-
         }
         return false, nil
     }
-    lines:(ParagraphWithLiteralAttributeLines) {
+    lines:(LiteralParagraphLine)+ {
         return types.NewLiteralBlock(types.LiteralBlockWithAttribute, lines.([]interface{}), attributes)
     }
 
@@ -2086,12 +2084,7 @@ LiteralKind <- "literal" {
     return string(c.text), nil
 }
 
-// include all lines until blankline
-ParagraphWithLiteralAttributeLines <- lines:(ParagraphWithLiteralAttributeLine)+ { 
-    return lines.([]interface{}), nil
-}
-
-ParagraphWithLiteralAttributeLine <- !BlankLine content:([^\r\n]+ {
+LiteralParagraphLine <- !BlankLine content:([^\r\n]+ {
     return types.NewRawLine(string(c.text))
 }) EOL {
     return content, nil // do not include the trailing 'EOL'

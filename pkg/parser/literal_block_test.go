@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("literal blocks", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		Context("literal blocks with spaces indentation", func() {
 
@@ -67,7 +67,9 @@ lines.`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("mixing literal block with attributes followed by a paragraph ", func() {

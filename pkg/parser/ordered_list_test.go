@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("ordered lists", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		Context("ordered list item alone", func() {
 
@@ -919,7 +919,7 @@ print("two")
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("ordered list item alone", func() {
 

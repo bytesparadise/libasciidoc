@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("paragraphs", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		Context("regular paragraphs", func() {
 
@@ -1370,7 +1370,7 @@ image::foo.png[]`
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("default paragraph", func() {
 

@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("sections", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		Context("valid sections", func() {
 
@@ -809,7 +809,7 @@ a short preamble
 
 		})
 
-		Context("unsupported section syntax", func() {
+		Context("unsupported syntax", func() {
 
 			It("should not fail with underlined title", func() {
 				source := `Document Title
@@ -848,7 +848,7 @@ Doc Writer <thedoc@asciidoctor.org>`
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		Context("valid sections", func() {
 

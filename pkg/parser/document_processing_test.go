@@ -11,7 +11,7 @@ import (
 
 var _ = Describe("document processing", func() {
 
-	Context("article", func() {
+	Context("article docs", func() {
 
 		It("should retain attributes passed in configuration", func() {
 			source := `[source]
@@ -154,7 +154,7 @@ Preamble comes here
 		})
 	})
 
-	Context("manpage", func() {
+	Context("manpage docs", func() {
 
 		It("manpage without preamble", func() {
 			source := `= eve(1)

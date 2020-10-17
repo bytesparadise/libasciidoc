@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("documents", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		It("should parse empty document", func() {
 			source := ``
@@ -107,7 +107,7 @@ Garrett D'Amore
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		It("should parse empty document", func() {
 			source := ``

@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("labeled lists", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		It("with a term and description on 2 lines", func() {
 			source := `Item1::
@@ -820,7 +820,7 @@ level 2::: description 2`
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		It("with a term and description on 2 lines", func() {
 			source := `Item1::

@@ -400,7 +400,7 @@ var _ = Describe("document attribute subsititutions", func() {
 		})
 	})
 
-	Context("quoted text", func() {
+	Context("quoted texts", func() {
 
 		It("should replace with new StringElement in quoted text", func() {
 			// given

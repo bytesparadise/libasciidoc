@@ -10,11 +10,11 @@ import (
 
 var _ = Describe("element attributes", func() {
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
-		Context("element link", func() {
+		Context("element links", func() {
 
-			Context("valid syntax", func() {
+			Context("with valid syntax", func() {
 
 				It("element link alone", func() {
 					source := `[link=http://foo.bar]
@@ -60,7 +60,7 @@ a paragraph`
 				})
 			})
 
-			Context("invalid syntax", func() {
+			Context("with invalid syntax", func() {
 
 				It("spaces before keyword", func() {
 					source := `[ link=http://foo.bar]
@@ -112,9 +112,9 @@ a paragraph`
 			})
 		})
 
-		Context("element id", func() {
+		Context("element ids", func() {
 
-			Context("valid syntax", func() {
+			Context("with valid syntax", func() {
 
 				It("normal syntax", func() {
 					source := `[[img-foobar]]
@@ -163,7 +163,7 @@ a paragraph`
 				})
 			})
 
-			Context("invalid syntax", func() {
+			Context("with invalid syntax", func() {
 
 				It("extra spaces", func() {
 					source := `[ #img-foobar ]
@@ -217,7 +217,7 @@ a paragraph`
 
 		Context("element title", func() {
 
-			Context("valid syntax", func() {
+			Context("with valid syntax", func() {
 
 				It("valid element title", func() {
 					source := `.a title
@@ -242,7 +242,7 @@ a paragraph`
 				})
 			})
 
-			Context("invalid syntax", func() {
+			Context("with invalid syntax", func() {
 
 				It("extra space after dot", func() {
 					source := `. a title
@@ -305,9 +305,9 @@ a paragraph`
 			})
 		})
 
-		Context("element role", func() {
+		Context("element roles", func() {
 
-			Context("valid syntax", func() {
+			Context("with valid syntax", func() {
 
 				It("shortcut role element", func() {
 					source := `[.a role]

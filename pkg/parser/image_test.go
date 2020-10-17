@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("block images", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		It("with empty alt", func() {
 			source := "image::images/foo.png[]"
@@ -123,7 +123,7 @@ image::images/foo.png[the foo.png image, 600, 400]`
 		})
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		It("with empty alt", func() {
 			source := "image::images/foo.png[]"
@@ -323,7 +323,7 @@ image::images/bar.png[]`
 
 var _ = Describe("inline images", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		It("with empty alt only", func() {
 			source := "image:images/foo.png[]"
@@ -657,7 +657,7 @@ var _ = Describe("inline images", func() {
 
 	})
 
-	Context("final document", func() {
+	Context("final documents", func() {
 
 		It("with empty alt only", func() {
 			source := "image:images/foo.png[]"

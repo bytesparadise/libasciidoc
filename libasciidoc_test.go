@@ -30,9 +30,9 @@ var _ = Describe("documents", func() {
 
 	lastUpdated := time.Now()
 
-	Context("article", func() {
+	Context("article documents", func() {
 
-		Context("document body", func() {
+		Context("with body only", func() {
 
 			It("empty document", func() {
 				// main title alone is not rendered in the body
@@ -240,7 +240,7 @@ a paragraph with _italic content_`
 			})
 		})
 
-		Context("complete Document ", func() {
+		Context("full", func() {
 
 			It("using existing file", func() {
 				expectedContent := `<!DOCTYPE html>
@@ -278,9 +278,9 @@ Last updated {{.LastUpdated}}
 		})
 	})
 
-	Context("manpage", func() {
+	Context("manpage docs", func() {
 
-		Context("document body", func() {
+		Context("with body only", func() {
 
 			It("should render valid manpage", func() {
 				source := `= eve(1)
@@ -326,7 +326,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 			})
 		})
 
-		Context("full document", func() {
+		Context("full", func() {
 
 			It("should render valid manpage", func() {
 				source := `= eve(1)
