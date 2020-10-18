@@ -18,16 +18,21 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	}
 	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
 		return r.renderAdmonitionParagraph(ctx, p)
-	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Source {
-		return r.renderSourceParagraph(ctx, p)
-	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Verse {
-		return r.renderVerseParagraph(ctx, p)
-	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == types.Quote {
-		return r.renderQuoteParagraph(ctx, p)
-	} else if kind, ok := p.Attributes[types.AttrKind]; ok && kind == "manpage" {
+	} else if k, ok := p.Attributes[types.AttrBlockKind].(types.BlockKind); ok {
+		switch k {
+		case types.Example:
+			return r.renderExampleParagraph(ctx, p)
+		case types.Source:
+			return r.renderSourceParagraph(ctx, p)
+		case types.Verse:
+			return r.renderVerseParagraph(ctx, p)
+		case types.Quote:
+			return r.renderQuoteParagraph(ctx, p)
+		}
+	} else if kind, ok := p.Attributes[types.AttrBlockKind]; ok && kind == "manpage" {
 		return r.renderManpageNameParagraph(ctx, p)
 	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
-		return r.renderDelimitedBlockParagraph(ctx, p)
+		return r.renderParagraphWithinDelimitedBlock(ctx, p)
 	} else {
 		roles, err := r.renderElementRoles(ctx, p.Attributes)
 		if err != nil {
@@ -54,113 +59,6 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	log.Debug("rendering admonition paragraph...")
-	result := &strings.Builder{}
-	k, ok := p.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
-	if !ok {
-		return "", errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrAdmonitionKind])
-	}
-	icon, err := r.renderIcon(ctx, types.Icon{Class: string(k), Attributes: p.Attributes}, true)
-	if err != nil {
-		return "", err
-	}
-	content, err := r.renderLines(ctx, p.Lines)
-	if err != nil {
-		return "", err
-	}
-	roles, err := r.renderElementRoles(ctx, p.Attributes)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
-	}
-	err = r.admonitionParagraph.Execute(result, struct {
-		Context *renderer.Context
-		ID      string
-		Title   string
-		Roles   string
-		Icon    string
-		Kind    string
-		Content string
-		Lines   [][]interface{}
-	}{
-		Context: ctx,
-		ID:      r.renderElementID(p.Attributes),
-		Title:   r.renderElementTitle(p.Attributes),
-		Kind:    string(k),
-		Roles:   roles,
-		Icon:    icon,
-		Content: string(content),
-		Lines:   p.Lines,
-	})
-
-	return result.String(), err
-}
-
-func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	lines := make([][]interface{}, len(p.Lines))
-	copy(lines, p.Lines)
-	attributes := p.Attributes
-	attributes[types.AttrKind] = types.Source
-	return r.renderSourceBlock(ctx, types.ListingBlock{
-		Attributes: attributes,
-		Lines:      lines,
-	})
-}
-
-func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	log.Debug("rendering verse paragraph...")
-	result := &strings.Builder{}
-
-	content, err := r.renderLines(ctx, p.Lines, r.withPlainText())
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render verse paragraph lines")
-	}
-	err = r.verseParagraph.Execute(result, struct {
-		Context     *renderer.Context
-		ID          string
-		Title       string
-		Attribution Attribution
-		Content     string
-		Lines       [][]interface{}
-	}{
-		Context:     ctx,
-		ID:          r.renderElementID(p.Attributes),
-		Title:       r.renderElementTitle(p.Attributes),
-		Attribution: paragraphAttribution(p),
-		Content:     string(content),
-		Lines:       p.Lines,
-	})
-
-	return result.String(), err
-}
-
-func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	log.Debug("rendering quote paragraph...")
-	result := &strings.Builder{}
-
-	content, err := r.renderLines(ctx, p.Lines)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render quote paragraph lines")
-	}
-	err = r.quoteParagraph.Execute(result, struct {
-		Context     *renderer.Context
-		ID          string
-		Title       string
-		Attribution Attribution
-		Content     string
-		Lines       [][]interface{}
-	}{
-		Context:     ctx,
-		ID:          r.renderElementID(p.Attributes),
-		Title:       r.renderElementTitle(p.Attributes),
-		Attribution: paragraphAttribution(p),
-		Content:     string(content),
-		Lines:       p.Lines,
-	})
-
-	return result.String(), err
-}
-
 func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debug("rendering name section paragraph in manpage...")
 	result := &strings.Builder{}
@@ -182,7 +80,7 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderDelimitedBlockParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderParagraphWithinDelimitedBlock(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
 	result := &strings.Builder{}
 

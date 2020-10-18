@@ -45,6 +45,17 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.ListingB
 	return result.String(), err
 }
 
+func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+	lines := make([][]interface{}, len(p.Lines))
+	copy(lines, p.Lines)
+	attributes := p.Attributes
+	attributes[types.AttrBlockKind] = types.Source
+	return r.renderSourceBlock(ctx, types.ListingBlock{
+		Attributes: attributes,
+		Lines:      lines,
+	})
+}
+
 func (r *sgmlRenderer) renderSourceLines(ctx *renderer.Context, b types.ListingBlock) (string, string, string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	previousIncludeBlankLine := ctx.IncludeBlankLine

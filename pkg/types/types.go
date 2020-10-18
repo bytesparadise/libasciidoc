@@ -382,8 +382,8 @@ func NewCounterSubstitution(name string, hidden bool, val interface{}) (CounterS
 type BlockKind string
 
 const (
-	// AttrKind the key for the kind of block
-	AttrKind string = "kind"
+	// AttrBlockKind the key for the kind of block
+	AttrBlockKind string = "block-kind"
 	// Fenced a fenced block
 	Fenced BlockKind = "fenced"
 	// Listing a listing block
@@ -1833,7 +1833,7 @@ const (
 func NewLiteralBlock(origin string, lines []interface{}, attributes interface{}) (LiteralBlock, error) {
 	// log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
 	attrs, err := NewAttributes(Attributes{
-		AttrKind:             Literal,
+		AttrBlockKind:        Literal,
 		AttrLiteralBlockType: origin,
 	})
 	attrs.Add(attributes)

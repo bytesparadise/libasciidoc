@@ -227,8 +227,9 @@ ElementAttribute <- &("[" / "." ) // skip if the content does not start with one
     attr:(ElementID / 
         ElementTitle / 
         ElementShortHandAttributes /
-        LiteralAttribute / 
+        LiteralBlockAttribute / 
         SourceAttributes / 
+        ExampleBlockAttribute /
         QuoteAttributes / 
         VerseAttributes / 
         AdmonitionMarkerAttribute / 
@@ -287,12 +288,16 @@ BlockAttrPositional3 <- Space* "," Space* value:PositionalValue? {
     return nil, nil
 }
 
-LiteralAttribute <- "[literal]" Space* Newline {
-    return types.NewLiteralAttribute()
+LiteralBlockAttribute <- "[literal]" Space* Newline {
+    return types.NewLiteralBlockAttribute()
 }
 
 PassthroughBlockAttribute <- "[pass]" Space* Newline {
     return types.NewPassthroughBlockAttribute()
+}
+
+ExampleBlockAttribute <- "[example]" Space* EOL {
+    return types.NewExampleBlockAttribute()
 }
 
 // expression for the whole admonition marker, but only retains the actual kind
@@ -870,7 +875,7 @@ RawParagraph <-
     attributes:(Attributes)? &{  
         // verify that one of the attributes is `passthrough`
         if attrs, ok := attributes.(types.Attributes); ok {
-            kind, exists := attrs[types.AttrKind]
+            kind, exists := attrs[types.AttrBlockKind]
             return exists && kind == types.Passthrough, nil
         }
         return false, nil
@@ -906,7 +911,7 @@ SimpleRawParagraph <- attributes:(Attributes)?
     &{
         // skip if the '[literal]' attribute was set on this paragraph
         if attrs, ok := attributes.(types.Attributes); ok {
-            kind, exists := attrs[types.AttrKind]
+            kind, exists := attrs[types.AttrBlockKind]
             return !exists || kind != types.Literal, nil
         }
         return true, nil
@@ -1704,7 +1709,7 @@ QuoteBlock <- attributes:(Attributes)?
             return true, nil
         }
         if attrs, ok := attributes.(types.Attributes); ok {
-            kind, ok := attrs[types.AttrKind]
+            kind, ok := attrs[types.AttrBlockKind]
             // if AttrKind is missing, then accept as a QuoteBlock
             return !ok || kind == types.Quote, nil
         }
@@ -1821,7 +1826,7 @@ ListingBlockRawContent <- (!ListingBlockEndDelimiter line:(RawLine) {
 VerseBlock <- attributes:(Attributes)? 
     &{
         if attrs, ok := attributes.(types.Attributes); ok {
-            kind, ok := attrs[types.AttrKind]
+            kind, ok := attrs[types.AttrBlockKind]
             return ok && kind == types.Verse, nil
         }
         return false, nil
@@ -2071,7 +2076,7 @@ ParagraphWithLiteralAttribute <-
     attributes:(Attributes)?
     &{
         if attrs, ok := attributes.(types.Attributes); ok {
-            kind, ok := attrs[types.AttrKind]
+            kind, ok := attrs[types.AttrBlockKind]
             return ok && kind == types.Literal, nil
         }
         return false, nil

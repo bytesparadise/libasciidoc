@@ -970,7 +970,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Verse,
+								types.AttrBlockKind:   types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 							},
@@ -994,7 +994,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Verse,
+								types.AttrBlockKind:   types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 								types.AttrID:          "universal",
@@ -1019,7 +1019,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Verse,
+								types.AttrBlockKind:   types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1040,7 +1040,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Verse,
+								types.AttrBlockKind:   types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1061,7 +1061,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind: types.Verse,
+								types.AttrBlockKind: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1081,7 +1081,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind: types.Verse,
+								types.AttrBlockKind: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1127,7 +1127,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Quote,
+								types.AttrBlockKind:   types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
@@ -1151,7 +1151,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Quote,
+								types.AttrBlockKind:   types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 								types.AttrID:          "universal",
@@ -1176,7 +1176,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Quote,
+								types.AttrBlockKind:   types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1197,7 +1197,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Quote,
+								types.AttrBlockKind:   types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1218,7 +1218,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind: types.Quote,
+								types.AttrBlockKind: types.Quote,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1238,7 +1238,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind: types.Quote,
+								types.AttrBlockKind: types.Quote,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1799,7 +1799,7 @@ a foo image:foo.png[]`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrKind:        types.Quote,
+								types.AttrBlockKind:   types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},

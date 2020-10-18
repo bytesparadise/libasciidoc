@@ -39,7 +39,7 @@ _foo_
 		})
 	})
 
-	Context("open blocks", func() {
+	Context("paragraph blocks", func() {
 
 		It("2-line paragraph followed by another paragraph", func() {
 			source := `[pass]
