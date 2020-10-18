@@ -417,5 +417,41 @@ foo
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
+
+		Context("paragraph blocks", func() {
+
+			It("with single rich line", func() {
+				source := `[example]
+some *example* content`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrBlockKind: types.Example,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "some ",
+									},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "example",
+											},
+										},
+									},
+									types.StringElement{
+										Content: " content",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
 	})
 })

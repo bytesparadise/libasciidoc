@@ -22,6 +22,8 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 		switch k {
 		case types.Example:
 			return r.renderExampleParagraph(ctx, p)
+		case types.Listing:
+			return r.renderListingParagraph(ctx, p)
 		case types.Source:
 			return r.renderSourceParagraph(ctx, p)
 		case types.Verse:

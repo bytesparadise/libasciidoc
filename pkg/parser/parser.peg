@@ -230,6 +230,7 @@ ElementAttribute <- &("[" / "." ) // skip if the content does not start with one
         LiteralBlockAttribute / 
         SourceAttributes / 
         ExampleBlockAttribute /
+        ListingBlockAttribute /
         QuoteAttributes / 
         VerseAttributes / 
         AdmonitionMarkerAttribute / 
@@ -298,6 +299,10 @@ PassthroughBlockAttribute <- "[pass]" Space* Newline {
 
 ExampleBlockAttribute <- "[example]" Space* EOL {
     return types.NewExampleBlockAttribute()
+}
+
+ListingBlockAttribute <- "[listing]" Space* EOL {
+    return types.NewListingBlockAttribute()
 }
 
 // expression for the whole admonition marker, but only retains the actual kind

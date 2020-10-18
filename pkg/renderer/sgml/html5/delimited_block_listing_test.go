@@ -192,4 +192,20 @@ import <a>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
+
+	Context("paragraph blocks", func() {
+
+		It("with single plaintext line", func() {
+			source := `[listing]
+some *listing* content`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre>some *listing* content</pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+	})
+
 })
