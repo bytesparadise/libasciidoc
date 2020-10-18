@@ -217,6 +217,8 @@ func substitutionsFor(block types.BlockWithSubstitution) ([]elementsSubstitution
 				substituteInlineMacros,
 				substitutePostReplacements,
 			)
+		case "callouts":
+			funcs = append(funcs, substituteCallouts)
 		case "specialcharacters", "specialchars":
 			funcs = append(funcs, substituteSpecialCharacters)
 		case "quotes":

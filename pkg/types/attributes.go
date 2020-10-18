@@ -309,6 +309,11 @@ func NewExampleBlockAttribute() (Attributes, error) {
 	return Attributes{AttrBlockKind: Example}, nil
 }
 
+// NewListingBlockAttribute initializes a new attribute map with a single entry for the `listing`` kind of block
+func NewListingBlockAttribute() (Attributes, error) {
+	return Attributes{AttrBlockKind: Listing}, nil
+}
+
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
 func NewSourceAttributes(language interface{}, others ...interface{}) (Attributes, error) {
 	result := Attributes{

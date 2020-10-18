@@ -1175,7 +1175,17 @@ var _ BlockWithLineSubstitution = Paragraph{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
 func (p Paragraph) SubstitutionsToApply() string {
-	return p.Attributes.GetAsStringWithDefault(AttrSubstitutions, "")
+	if subs, exists := p.Attributes.GetAsString(AttrSubstitutions); exists {
+		return subs
+	}
+	// treat 'Listing' paragraphs as verbatim blocks
+	if k, exists := p.Attributes[AttrBlockKind]; exists {
+		switch k {
+		case Listing:
+			return "callouts,specialcharacters"
+		}
+	}
+	return ""
 }
 
 // LinesToSubstitute returns the lines of this ExampleBlock so that substitutions can be applied onto them

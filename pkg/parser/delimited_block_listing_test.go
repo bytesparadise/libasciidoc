@@ -471,6 +471,31 @@ import <a>
 
 		})
 
+		Context("paragraph blocks", func() {
+
+			It("with single rich line", func() {
+				source := `[listing]
+some *listing* content`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrBlockKind: types.Listing,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "some *listing* content", // no quote substitution
+									},
+								},
+							},
+						},
+					},
+				}
+
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+		})
 	})
 
 	Context("final documents", func() {
@@ -933,5 +958,35 @@ import <a>
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
+
+		Context("paragraph blocks", func() {
+
+			It("with single rich line", func() {
+				source := `[listing]
+some *listing* content`
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrBlockKind: types.Listing,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "some *listing* content", // no quote substitution
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
 	})
+
+	Context("with custom substitutions", func() {
+
+	})
+
 })
