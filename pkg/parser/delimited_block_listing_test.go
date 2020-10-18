@@ -603,6 +603,7 @@ type Foo struct{
 			})
 		})
 	})
+
 	Context("final documents", func() {
 
 		Context("delimited blocks", func() {

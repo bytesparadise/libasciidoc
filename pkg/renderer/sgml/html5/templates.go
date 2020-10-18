@@ -53,7 +53,7 @@ var templates = sgml.Templates{
 	MonospaceText:             monospaceTextTmpl,
 	OrderedList:               orderedListTmpl,
 	OrderedListItem:           orderedListItemTmpl,
-	PassthroughBlock:          pssThroughBlock,
+	PassthroughBlock:          passthroughBlock,
 	Paragraph:                 paragraphTmpl,
 	Preamble:                  preambleTmpl,
 	PredefinedAttribute:       predefinedAttributeTmpl,
