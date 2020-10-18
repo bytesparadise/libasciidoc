@@ -20,7 +20,7 @@ var _ = Describe("literal blocks", func() {
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -44,7 +44,7 @@ lines.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -82,7 +82,7 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								types.AttrID:               "ID",
 								types.AttrCustomID:         true,
@@ -122,7 +122,7 @@ some content
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 							},
 							Lines: [][]interface{}{
@@ -152,7 +152,7 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 								types.AttrID:               "ID",
 								types.AttrCustomID:         true,
@@ -190,7 +190,7 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 							},
 							Lines: [][]interface{}{
@@ -226,7 +226,7 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrID:               "ID",
 								types.AttrCustomID:         true,
 								types.AttrTitle:            "title",
@@ -290,7 +290,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 							},
 							Lines: [][]interface{}{
@@ -377,7 +377,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 								types.AttrSubstitutions:    "normal",
 							},
@@ -504,7 +504,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 								types.AttrSubstitutions:    "quotes,macros",
 							},
@@ -595,7 +595,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								types.AttrSubstitutions:    "quotes,macros",
 							},
@@ -684,7 +684,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 								types.AttrSubstitutions:    "quotes,macros",
 							},

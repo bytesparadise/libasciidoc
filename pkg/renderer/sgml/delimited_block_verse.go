@@ -6,6 +6,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.VerseBlock) (string, error) {
@@ -39,5 +40,32 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.VerseBloc
 		Attribution: verseBlockAttribution(b),
 		Content:     string(content),
 	})
+	return result.String(), err
+}
+
+func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+	log.Debug("rendering verse paragraph...")
+	result := &strings.Builder{}
+
+	content, err := r.renderLines(ctx, p.Lines, r.withPlainText())
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render verse paragraph lines")
+	}
+	err = r.verseParagraph.Execute(result, struct {
+		Context     *renderer.Context
+		ID          string
+		Title       string
+		Attribution Attribution
+		Content     string
+		Lines       [][]interface{}
+	}{
+		Context:     ctx,
+		ID:          r.renderElementID(p.Attributes),
+		Title:       r.renderElementTitle(p.Attributes),
+		Attribution: paragraphAttribution(p),
+		Content:     string(content),
+		Lines:       p.Lines,
+	})
+
 	return result.String(), err
 }

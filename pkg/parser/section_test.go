@@ -755,7 +755,7 @@ a short preamble
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -791,7 +791,7 @@ a short preamble
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -1910,7 +1910,7 @@ a short preamble
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrKind:             types.Literal,
+								types.AttrBlockKind:        types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -1947,7 +1947,7 @@ a short preamble
 							Elements: []interface{}{
 								types.LiteralBlock{
 									Attributes: types.Attributes{
-										types.AttrKind:             types.Literal,
+										types.AttrBlockKind:        types.Literal,
 										types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 									},
 									Lines: [][]interface{}{

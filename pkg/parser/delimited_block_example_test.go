@@ -14,9 +14,9 @@ var _ = Describe("example blocks", func() {
 
 		Context("delimited blocks", func() {
 
-			It("with single plaintext line", func() {
+			It("with single rich line", func() {
 				source := `====
-some listing code
+some *example* content
 ====`
 				expected := types.DraftDocument{
 					Elements: []interface{}{
@@ -26,7 +26,18 @@ some listing code
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
-												Content: "some listing code",
+												Content: "some ",
+											},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "example",
+													},
+												},
+											},
+											types.StringElement{
+												Content: " content",
 											},
 										},
 									},
@@ -188,15 +199,50 @@ foo
 			})
 		})
 
+		Context("paragraph blocks", func() {
+
+			It("with single rich line", func() {
+				source := `[example]
+some *example* content`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrBlockKind: types.Example,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "some ",
+									},
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "example",
+											},
+										},
+									},
+									types.StringElement{
+										Content: " content",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+		})
 	})
 
 	Context("final documents", func() {
 
 		Context("delimited blocks", func() {
 
-			It("with single line", func() {
+			It("with single rich line", func() {
 				source := `====
-some listing code
+some *example* content
 ====`
 				expected := types.Document{
 					Elements: []interface{}{
@@ -206,7 +252,18 @@ some listing code
 									Lines: [][]interface{}{
 										{
 											types.StringElement{
-												Content: "some listing code",
+												Content: "some ",
+											},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "example",
+													},
+												},
+											},
+											types.StringElement{
+												Content: " content",
 											},
 										},
 									},

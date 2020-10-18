@@ -275,9 +275,9 @@ func NewQuoteAttributes(kind string, author, title interface{}) (map[string]inte
 	result := make(map[string]interface{}, 3)
 	switch kind {
 	case "verse":
-		result[AttrKind] = Verse
+		result[AttrBlockKind] = Verse
 	default:
-		result[AttrKind] = Quote
+		result[AttrBlockKind] = Quote
 	}
 	if author, ok := author.(string); ok {
 		author = strings.TrimSpace(author)
@@ -294,20 +294,25 @@ func NewQuoteAttributes(kind string, author, title interface{}) (map[string]inte
 	return result, nil
 }
 
-// NewLiteralAttribute initializes a new attribute map with a single entry for the literal kind of block
-func NewLiteralAttribute() (Attributes, error) {
-	return Attributes{AttrKind: Literal}, nil
+// NewLiteralBlockAttribute initializes a new attribute map with a single entry for the `literal` kind of block
+func NewLiteralBlockAttribute() (Attributes, error) {
+	return Attributes{AttrBlockKind: Literal}, nil
 }
 
-// NewPassthroughBlockAttribute initializes a new attribute map with a single entry for the passthrough kind of block
+// NewPassthroughBlockAttribute initializes a new attribute map with a single entry for the `passthrough` kind of block
 func NewPassthroughBlockAttribute() (Attributes, error) {
-	return Attributes{AttrKind: Passthrough}, nil
+	return Attributes{AttrBlockKind: Passthrough}, nil
+}
+
+// NewExampleBlockAttribute initializes a new attribute map with a single entry for the `example`` kind of block
+func NewExampleBlockAttribute() (Attributes, error) {
+	return Attributes{AttrBlockKind: Example}, nil
 }
 
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
 func NewSourceAttributes(language interface{}, others ...interface{}) (Attributes, error) {
 	result := Attributes{
-		AttrKind: Source,
+		AttrBlockKind: Source,
 	}
 	if language, ok := language.(string); ok {
 		result[AttrLanguage] = strings.TrimSpace(language)

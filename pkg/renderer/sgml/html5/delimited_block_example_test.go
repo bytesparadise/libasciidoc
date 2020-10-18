@@ -159,6 +159,21 @@ foo
 		})
 	})
 
+	Context("paragraph blocks", func() {
+
+		It("with single plaintext line", func() {
+			source := `[example]
+some *example* content`
+			expected := `<div class="exampleblock">
+<div class="content">
+some <strong>example</strong> content
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+	})
+
 	Context("with custom substitutions", func() {
 
 		source := `:github-url: https://github.com
