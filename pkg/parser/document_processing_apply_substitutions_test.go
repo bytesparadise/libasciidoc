@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega" //nolint golint
 )
 
-var _ = Describe("document attribute subsititutions", func() {
+var _ = Describe("document attribute substitutions", func() {
 
 	It("should replace with new StringElement on first position", func() {
 		// given
@@ -630,5 +630,71 @@ var _ = Describe("document attribute subsititutions", func() {
 				},
 			}))
 		})
+	})
+})
+
+var _ = Describe("substitution funcs", func() {
+
+	It("should append sub", func() {
+		// given"
+		f := funcs{"attributes", "quotes"}
+		// when
+		f = f.append("macros")
+		// then
+		Expect(f).To(Equal(funcs{"attributes", "quotes", "macros"}))
+	})
+
+	It("should append subs", func() {
+		// given"
+		f := funcs{"attributes"}
+		// when
+		f = f.append("quotes", "macros")
+		// then
+		Expect(f).To(Equal(funcs{"attributes", "quotes", "macros"}))
+	})
+
+	It("should prepend sub", func() {
+		// given"
+		f := funcs{"attributes", "quotes"}
+		// when
+		f = f.prepend("macros")
+		// then
+		Expect(f).To(Equal(funcs{"macros", "attributes", "quotes"}))
+	})
+
+	It("should remove first sub", func() {
+		// given"
+		f := funcs{"attributes", "quotes", "macros"}
+		// when
+		f = f.remove("attributes")
+		// then
+		Expect(f).To(Equal(funcs{"quotes", "macros"}))
+	})
+
+	It("should remove middle sub", func() {
+		// given"
+		f := funcs{"attributes", "quotes", "macros"}
+		// when
+		f = f.remove("quotes")
+		// then
+		Expect(f).To(Equal(funcs{"attributes", "macros"}))
+	})
+
+	It("should remove last sub", func() {
+		// given"
+		f := funcs{"attributes", "quotes", "macros"}
+		// when
+		f = f.remove("macros")
+		// then
+		Expect(f).To(Equal(funcs{"attributes", "quotes"}))
+	})
+
+	It("should remove non existinge", func() {
+		// given"
+		f := funcs{"attributes", "quotes", "macros"}
+		// when
+		f = f.remove("other")
+		// then
+		Expect(f).To(Equal(funcs{"attributes", "quotes", "macros"}))
 	})
 })
