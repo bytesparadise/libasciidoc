@@ -1178,13 +1178,6 @@ func (p Paragraph) SubstitutionsToApply() string {
 	if subs, exists := p.Attributes.GetAsString(AttrSubstitutions); exists {
 		return subs
 	}
-	// treat 'Listing' paragraphs as verbatim blocks
-	if k, exists := p.Attributes[AttrBlockKind]; exists {
-		switch k {
-		case Listing:
-			return "callouts,specialcharacters"
-		}
-	}
 	return ""
 }
 

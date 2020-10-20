@@ -14,19 +14,17 @@ var _ = Describe("custom substitutions", func() {
 
 	Context("example blocks", func() {
 
-		Context("delimited blocks", func() {
+		// testing custom substitutions on example blocks only, as
+		// other verbatim blocks (fenced, literal, source, passthrough)
+		// share the same implementation
 
-			// testing custom substitutions on example blocks only, as
-			// other verbatim blocks (fenced, literal, source, passthrough)
-			// share the same implementation
+		// also, see https://asciidoctor.org/docs/user-manual/#incremental-substitutions
+		// "When you set the subs attribute on a block, you automatically remove all of its default substitutions.
+		// For example, if you set subs on a literal block, and assign it a value of attributes,
+		// only attributes are substituted."
 
-			// also, see https://asciidoctor.org/docs/user-manual/#incremental-substitutions
-			// "When you set the subs attribute on a block, you automatically remove all of its default substitutions.
-			// For example, if you set subs on a literal block, and assign it a value of attributes,
-			// only attributes are substituted."
-
-			source := `:github-url: https://github.com
-				
+		source := `:github-url: https://github.com
+			
 [subs="$SUBS"]
 ====
 a link to https://example.com[] <1>
@@ -38,6 +36,7 @@ and <more text> on the +
 
 <1> a callout
 `
+		Context("explicit substitutions", func() {
 
 			It("should apply the default substitution", func() {
 				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
@@ -1173,7 +1172,6 @@ and <more text> on the +
 
 <1> a callout
 `
-
 			It("should apply the default substitution", func() {
 				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "") // remove the 'subs' attribute
 				expected := types.DraftDocument{
@@ -2111,16 +2109,184 @@ _foo_
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 
 			})
+
+			It("should apply the '+quotes' substitution", func() {
+				s := strings.ReplaceAll(source, "$SUBS", "+quotes") // default + quotes
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"github-url": "https://github.com",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "github-url",
+							Value: "https://github.com",
+						},
+						types.BlankLine{},
+						types.ListingBlock{
+							Attributes: types.Attributes{
+								types.AttrSubstitutions: "+quotes",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "a link to https://example.com[] ",
+									},
+									types.Callout{
+										Ref: 1,
+									},
+								},
+								{
+									types.StringElement{
+										Content: "and ",
+									},
+									types.SpecialCharacter{
+										Name: "<",
+									},
+									types.StringElement{
+										Content: "more text",
+									},
+									types.SpecialCharacter{
+										Name: ">",
+									},
+									types.StringElement{
+										Content: " on the +",
+									},
+								},
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "next",
+											},
+										},
+									},
+									types.StringElement{
+										Content: " lines with a link to {github-url}[]",
+									},
+								},
+								{},
+								{
+									types.StringElement{
+										Content: "* not a list item",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.CalloutListItem{
+							Ref: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a callout",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+			})
 		})
 
 		Context("paragraph blocks", func() {
 
-			It("should apply the 'quotes' substitution", func() {
-				source := `[listing]
-[subs=quotes]
-some *listing* content`
+			source := `:github-url: https://github.com
+
+[listing]
+[subs="$SUBS"]
+a link to https://example.com[] <1>
+and <more text> on the +
+*next* lines with a link to {github-url}[]
+
+<1> a callout`
+
+			It("should apply the default substitution", func() {
+				s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"github-url": "https://github.com",
+					},
 					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "github-url",
+							Value: "https://github.com",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrBlockKind: types.Listing,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "a link to https://example.com[] ",
+									},
+									types.Callout{
+										Ref: 1,
+									},
+								},
+								{
+									types.StringElement{
+										Content: "and ",
+									},
+									types.SpecialCharacter{
+										Name: "<",
+									},
+									types.StringElement{
+										Content: "more text",
+									},
+									types.SpecialCharacter{
+										Name: ">",
+									},
+									types.StringElement{
+										Content: " on the +",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "*next* lines with a link to {github-url}[]",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.CalloutListItem{
+							Ref: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a callout",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+			})
+
+			It("should apply the 'quotes' substitution", func() {
+				s := strings.ReplaceAll(source, "$SUBS", "quotes")
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"github-url": "https://github.com",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "github-url",
+							Value: "https://github.com",
+						},
+						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrBlockKind:     types.Listing,
@@ -2129,27 +2295,195 @@ some *listing* content`
 							Lines: [][]interface{}{
 								{
 									types.StringElement{
-										Content: "some ",
+										Content: "a link to https://example.com[] <1>",
 									},
-									types.QuotedText{ // quote substitution applied
+								},
+								{
+									types.StringElement{
+										Content: "and <more text> on the +",
+									},
+								},
+								{
+									types.QuotedText{
 										Kind: types.Bold,
 										Elements: []interface{}{
 											types.StringElement{
-												Content: "listing", //
+												Content: "next",
 											},
 										},
 									},
 									types.StringElement{
-										Content: " content",
+										Content: " lines with a link to {github-url}[]",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.CalloutListItem{
+							Ref: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a callout",
+											},
+										},
 									},
 								},
 							},
 						},
 					},
 				}
+				Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+			})
 
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			It("should apply the '+quotes' substitution", func() {
+				s := strings.ReplaceAll(source, "$SUBS", "+quotes") // ie, default + quotes
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"github-url": "https://github.com",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "github-url",
+							Value: "https://github.com",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrBlockKind:     types.Listing,
+								types.AttrSubstitutions: "+quotes",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "a link to https://example.com[] ",
+									},
+									types.Callout{
+										Ref: 1,
+									},
+								},
+								{
+									types.StringElement{
+										Content: "and ",
+									},
+									types.SpecialCharacter{
+										Name: "<",
+									},
+									types.StringElement{
+										Content: "more text",
+									},
+									types.SpecialCharacter{
+										Name: ">",
+									},
+									types.StringElement{
+										Content: " on the +",
+									},
+								},
+								{
+									types.QuotedText{
+										Kind: types.Bold,
+										Elements: []interface{}{
+											types.StringElement{
+												Content: "next",
+											},
+										},
+									},
+									types.StringElement{
+										Content: " lines with a link to {github-url}[]",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.CalloutListItem{
+							Ref: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a callout",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
+			})
+
+			It("should apply the 'macros,+quotes,-quotes' substitution", func() {
+				s := strings.ReplaceAll(source, "$SUBS", "macros,+quotes,-quotes")
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"github-url": "https://github.com",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "github-url",
+							Value: "https://github.com",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrBlockKind:     types.Listing,
+								types.AttrSubstitutions: "macros,+quotes,-quotes", // ie, "macros" only
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "a link to ",
+									},
+									types.InlineLink{
+										Location: types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "example.com",
+												},
+											},
+										},
+									},
+									types.StringElement{
+										Content: " <1>",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "and <more text> on the +",
+									},
+								},
+								{
+									types.StringElement{
+										Content: "*next* lines with a link to {github-url}[]",
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.CalloutListItem{
+							Ref: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a callout",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(s)).To(MatchDraftDocument(expected))
 			})
 		})
+
 	})
 })

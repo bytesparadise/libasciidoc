@@ -116,15 +116,28 @@ func applySubstitutions(elements []interface{}, attrs types.AttributesWithOverri
 // Delimited Block substitutions
 // ----------------------------------------------------------------------------
 
+var substitutions = map[string]elementsSubstitution{
+	"inline_passthrough": substituteInlinePassthrough,
+	"callouts":           substituteCallouts,
+	"specialcharacters":  substituteSpecialCharacters,
+	"specialchars":       substituteSpecialCharacters,
+	"quotes":             substituteQuotedTexts,
+	"attributes":         substituteAttributes,
+	"replacements":       substituteReplacements,
+	"macros":             substituteInlineMacros,
+	"post_replacements":  substitutePostReplacements,
+	"none":               substituteNone,
+}
+
 // blocks of blocks
-var defaultSubstitutionsForBlockElements = []elementsSubstitution{
-	substituteInlinePassthrough,
-	substituteSpecialCharacters,
-	substituteQuotedTexts,
-	substituteAttributes,
-	substituteReplacements,
-	substituteInlineMacros,
-	substitutePostReplacements,
+var defaultSubstitutionsForBlockElements = []string{
+	"inline_passthrough",
+	"specialcharacters",
+	"quotes",
+	"attributes",
+	"replacements",
+	"macros",
+	"post_replacements",
 }
 var defaultExampleBlockSubstitutions = defaultSubstitutionsForBlockElements
 var defaultQuoteBlockSubstitutions = defaultSubstitutionsForBlockElements
@@ -133,17 +146,17 @@ var defaultVerseBlockSubstitutions = defaultSubstitutionsForBlockElements // eve
 var defaultParagraphSubstitutions = defaultSubstitutionsForBlockElements  // even though it's a block of lines, not a block of blocks
 
 // blocks of lines
-var defaultSubstitutionsForBlockLines = []elementsSubstitution{
-	substituteCallouts,
-	substituteSpecialCharacters,
+var defaultSubstitutionsForBlockLines = []string{
+	"callouts", // must be executed before "specialcharacters"
+	"specialcharacters",
 }
 var defaultFencedBlockSubstitutions = defaultSubstitutionsForBlockLines
 var defaultListingBlockSubstitutions = defaultSubstitutionsForBlockLines
 var defaultLiteralBlockSubstitutions = defaultSubstitutionsForBlockLines
 
 // other blocks
-var defaultPassthroughBlockSubstitutions = []elementsSubstitution{}
-var defaultCommentBlockSubstitutions = []elementsSubstitution{substituteNone}
+var defaultPassthroughBlockSubstitutions = []string{}
+var defaultCommentBlockSubstitutions = []string{"none"}
 
 func applySubstitutionsOnMarkdownQuoteBlock(b types.MarkdownQuoteBlock, attrs types.AttributesWithOverrides) (types.MarkdownQuoteBlock, error) {
 	funcs := []elementsSubstitution{
@@ -197,74 +210,107 @@ func extractMarkdownQuoteAttribution(lines [][]interface{}) ([][]interface{}, st
 	return lines, ""
 }
 
+type funcs []string
+
+func (f funcs) append(others ...string) funcs {
+	return append(f, others...)
+}
+
+func (f funcs) prepend(other string) funcs {
+	return append(funcs{other}, f...)
+}
+
+func (f funcs) remove(other string) funcs {
+	for i, s := range f {
+		if s == other {
+			return append(f[:i], f[i+1:]...)
+		}
+	}
+	// unchanged
+	return f
+}
+
 func substitutionsFor(block types.BlockWithSubstitution) ([]elementsSubstitution, error) {
-	funcs := []elementsSubstitution{}
+	subs := funcs{}
 	for _, s := range strings.Split(block.SubstitutionsToApply(), ",") {
 		switch s {
 		case "":
-			defaultSubs, err := defaultSubstitutionsFor(block)
-			if err != nil {
-				return nil, err
-			}
-			funcs = append(funcs, defaultSubs...)
+			subs = subs.append(defaultSubstitutionsFor(block)...)
 		case "normal":
-			funcs = append(funcs,
-				substituteInlinePassthrough,
-				substituteSpecialCharacters,
-				substituteQuotedTexts,
-				substituteAttributes,
-				substituteReplacements,
-				substituteInlineMacros,
-				substitutePostReplacements,
+			subs = subs.append(
+				"inline_passthrough",
+				"specialcharacters",
+				"quotes",
+				"attributes",
+				"replacements",
+				"macros",
+				"post_replacements",
 			)
-		case "callouts":
-			funcs = append(funcs, substituteCallouts)
-		case "specialcharacters", "specialchars":
-			funcs = append(funcs, substituteSpecialCharacters)
-		case "quotes":
-			funcs = append(funcs, substituteQuotedTexts)
-		case "attributes":
-			funcs = append(funcs, substituteAttributes)
-		case "macros":
-			funcs = append(funcs, substituteInlineMacros)
-		case "replacements":
-			funcs = append(funcs, substituteReplacements)
-		case "post_replacements":
-			funcs = append(funcs, substitutePostReplacements)
-		case "none":
-			funcs = append(funcs, substituteNone)
+		case "callouts", "specialcharacters", "specialchars", "quotes", "attributes", "macros", "replacements", "post_replacements", "none":
+			subs = subs.append(s)
+		case "+callouts", "+specialcharacters", "+specialchars", "+quotes", "+attributes", "+macros", "+replacements", "+post_replacements", "+none":
+			if len(subs) == 0 {
+				subs = subs.append(defaultSubstitutionsFor(block)...)
+			}
+			subs = subs.append(strings.ReplaceAll(s, "+", ""))
+		case "callouts+", "specialcharacters+", "specialchars+", "quotes+", "attributes+", "macros+", "replacements+", "post_replacements+", "none+":
+			if len(subs) == 0 {
+				subs = subs.append(defaultSubstitutionsFor(block)...)
+			}
+			subs = subs.prepend(strings.ReplaceAll(s, "+", ""))
+		case "-callouts", "-specialcharacters", "-specialchars", "-quotes", "-attributes", "-macros", "-replacements", "-post_replacements", "-none":
+			if len(subs) == 0 {
+				subs = subs.append(defaultSubstitutionsFor(block)...)
+			}
+			subs = subs.remove(strings.ReplaceAll(s, "-", ""))
 		default:
 			return nil, fmt.Errorf("unsupported substitution: '%s", s)
 		}
 	}
-	funcs = append(funcs, splitLines)
-	return funcs, nil
+	result := make([]elementsSubstitution, 0, len(subs)+1)
+	// result = append(result, substituteInlinePassthrough)
+	for _, s := range subs {
+		if f, exists := substitutions[s]; exists {
+			result = append(result, f)
+		}
+	}
+	result = append(result, splitLines)
+	return result, nil
 }
 
-func defaultSubstitutionsFor(block interface{}) ([]elementsSubstitution, error) {
-	switch block.(type) {
+func defaultSubstitutionsFor(block interface{}) []string {
+	switch b := block.(type) {
 	case types.ExampleBlock:
-		return defaultExampleBlockSubstitutions, nil
+		return defaultExampleBlockSubstitutions
 	case types.QuoteBlock:
-		return defaultQuoteBlockSubstitutions, nil
+		return defaultQuoteBlockSubstitutions
 	case types.SidebarBlock:
-		return defaultSidebarBlockSubstitutions, nil
+		return defaultSidebarBlockSubstitutions
 	case types.FencedBlock:
-		return defaultFencedBlockSubstitutions, nil
+		return defaultFencedBlockSubstitutions
 	case types.ListingBlock:
-		return defaultListingBlockSubstitutions, nil
+		return defaultListingBlockSubstitutions
 	case types.VerseBlock:
-		return defaultVerseBlockSubstitutions, nil
+		return defaultVerseBlockSubstitutions
 	case types.LiteralBlock:
-		return defaultLiteralBlockSubstitutions, nil
+		return defaultLiteralBlockSubstitutions
 	case types.PassthroughBlock:
-		return defaultPassthroughBlockSubstitutions, nil
+		return defaultPassthroughBlockSubstitutions
 	case types.CommentBlock:
-		return defaultCommentBlockSubstitutions, nil
+		return defaultCommentBlockSubstitutions
 	case types.Paragraph:
-		return defaultParagraphSubstitutions, nil
+		// support for masquerading
+		// treat 'Listing' paragraphs as verbatim blocks
+		if k, exists := b.Attributes[types.AttrBlockKind]; exists {
+			switch k {
+			case types.Listing:
+				return defaultListingBlockSubstitutions
+			}
+		}
+		return defaultParagraphSubstitutions
 	default:
-		return nil, fmt.Errorf("unsupported type of block: '%T'", block)
+		log.Warnf("unsupported substitutions on block of type: '%T'", block)
+		return nil
 	}
 }
 
