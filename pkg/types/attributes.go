@@ -19,10 +19,16 @@ const (
 	AttrDocType = "doctype"
 	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
 	AttrSyntaxHighlighter = "source-highlighter"
+	// AttrID the key to retrieve the ID
+	AttrID = "id"
 	// AttrIDPrefix the key to retrieve the ID Prefix
 	AttrIDPrefix = "idprefix"
 	// DefaultIDPrefix the default ID Prefix
 	DefaultIDPrefix = "_"
+	// AttrIDSeparator the key to retrieve the ID Separator
+	AttrIDSeparator = "idseparator"
+	// DefaultIDSeparator the default ID Separator
+	DefaultIDSeparator = "_"
 	// AttrTableOfContents the `toc` attribute at document level
 	AttrTableOfContents = "toc"
 	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
@@ -31,8 +37,6 @@ const (
 	AttrNoHeader = "noheader"
 	// AttrNoFooter attribute to disable the rendering of document footer
 	AttrNoFooter = "nofooter"
-	// AttrID the key to retrieve the ID
-	AttrID = "id"
 	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
 	AttrCustomID = "@customID"
 	// AttrTitle the key to retrieve the title

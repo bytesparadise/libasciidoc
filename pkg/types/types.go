@@ -547,7 +547,8 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes in
 func (s Section) ResolveID(docAttributes AttributesWithOverrides) (Section, error) {
 	if !s.Attributes.GetAsBool(AttrCustomID) {
 		log.Debugf("resolving section id")
-		replacement, err := ReplaceNonAlphanumerics(s.Title, "_")
+		separator := docAttributes.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
+		replacement, err := ReplaceNonAlphanumerics(s.Title, separator)
 		if err != nil {
 			return s, errors.Wrapf(err, "failed to generate default ID on Section element")
 		}
