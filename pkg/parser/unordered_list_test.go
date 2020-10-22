@@ -68,6 +68,7 @@ var _ = Describe("unordered lists", func() {
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
 			It("unordered list with style ID, title, role and a single item", func() {
 				source := `.mytitle
 [square#listID]
@@ -477,6 +478,7 @@ var _ = Describe("unordered lists", func() {
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
 			It("unordered list with 2 items on multiple lines", func() {
 				source := `* item 1
   on 2 lines.
@@ -495,7 +497,7 @@ on 2 lines, too.`
 											types.StringElement{Content: "item 1"},
 										},
 										{
-											types.StringElement{Content: "  on 2 lines."},
+											types.StringElement{Content: "on 2 lines."}, // heading spaces are trimmed
 										},
 									},
 								},
@@ -522,6 +524,7 @@ on 2 lines, too.`
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
 			It("unordered lists with 2 empty lines in-between", func() {
 				source := `* an item in the first list
 			
@@ -908,6 +911,68 @@ on 2 lines, too.`
 										{
 											types.StringElement{
 												Content: "level 2",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("unordered list item with dash on multiple lines", func() {
+				source := `- an item (quite
+  short) breaks` // with heading spaces
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.UnorderedListItem{
+							Level:       1,
+							BulletStyle: types.Dash,
+							CheckStyle:  types.NoCheck,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "an item (quite",
+											},
+										},
+										{
+											types.StringElement{
+												Content: "short) breaks", // heading spaces are trimmed
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("unordered list item with asterisk on multiple lines", func() {
+				source := `*  an item (quite
+  short) breaks`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.UnorderedListItem{
+							Level:       1,
+							BulletStyle: types.OneAsterisk,
+							CheckStyle:  types.NoCheck,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "an item (quite",
+											},
+										},
+										{
+											types.StringElement{
+												Content: "short) breaks", // heading spaces are trimmed
 											},
 										},
 									},
@@ -1953,7 +2018,7 @@ on 2 lines, too.`
 													types.StringElement{Content: "item 1"},
 												},
 												{
-													types.StringElement{Content: "  on 2 lines."},
+													types.StringElement{Content: "on 2 lines."}, // heading spaces are trimmed
 												},
 											},
 										},

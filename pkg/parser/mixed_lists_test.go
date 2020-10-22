@@ -119,6 +119,47 @@ var _ = Describe("mixed lists - document", func() {
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
+
+		It("unordered list item and order list item with roman numbering", func() {
+			source := `- unordered list item
+ II) ordered list item`
+			expected := types.DraftDocument{
+				Elements: []interface{}{
+					types.UnorderedListItem{
+						Level:       1,
+						BulletStyle: types.Dash,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "unordered list item",
+										},
+									},
+								},
+							},
+						},
+					},
+					types.OrderedListItem{
+						Level: 1,
+						Style: types.UpperRoman,
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{
+											Content: "ordered list item",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
 	})
 
 	Context("complex cases", func() {
@@ -533,10 +574,10 @@ ii) ordered 1.2.ii
 																				types.StringElement{Content: "unordered 2.1.1"},
 																			},
 																			{
-																				types.StringElement{Content: "\twith some"},
+																				types.StringElement{Content: "with some"}, // heading tabs are trimmed
 																			},
 																			{
-																				types.StringElement{Content: "\textra lines."},
+																				types.StringElement{Content: "extra lines."}, // heading tabs are trimmed
 																			},
 																		},
 																	},
