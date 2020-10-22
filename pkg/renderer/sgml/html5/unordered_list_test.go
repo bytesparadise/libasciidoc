@@ -119,6 +119,21 @@ and a standalone paragraph`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("unordered list item with dash on multiple lines", func() {
+		source := `- an item (quite
+  short) breaks` // with leading spaces which shall be trimmed during rendering
+		expected := `<div class="ulist">
+<ul>
+<li>
+<p>an item (quite
+short) breaks</p>
+</li>
+</ul>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
 	It("simple unordered list with continuation", func() {
 		source := `* item 1
 +

@@ -656,7 +656,7 @@ ListParagraphLine <- !EOF
     !ElementAttribute
     !BlockDelimiter
     !LabeledListItemPrefix 
-    line:(elements:(InlineElement)+ { 
+    line:(Space* elements:(InlineElement)+ { 
             return types.NewInlineElements(elements.([]interface{}))
         }) EOL { 
         return line, nil
@@ -727,9 +727,9 @@ OrderedListItemPrefix <-
             return types.NewOrderedListItemPrefix(types.LowerAlpha, 1)
         } / ([A-Z]) "." { // numbering style: "A."
             return types.NewOrderedListItemPrefix(types.UpperAlpha, 1)
-        } / ([a-z])+ ")" { // numbering style: "i)"
+        } / ([ivxdlcm])+ ")" { // numbering style: "i)"
             return types.NewOrderedListItemPrefix(types.LowerRoman, 1)
-        } / ([A-Z])+ ")" { // numbering style: "I)"
+        } / ([IVXDLCM])+ ")" { // numbering style: "I)"
             return types.NewOrderedListItemPrefix(types.UpperRoman, 1)
         }) Space+ {
     return prefix, nil
