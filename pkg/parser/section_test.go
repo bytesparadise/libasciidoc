@@ -142,6 +142,36 @@ and a paragraph`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
+			It("section level 1 with custom idseparator", func() {
+				source := `:idseparator: -
+				
+== section 1`
+				section1Title := []interface{}{
+					types.StringElement{Content: "section 1"},
+				}
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						types.AttrIDSeparator: "-",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  types.AttrIDSeparator,
+							Value: "-",
+						},
+						types.BlankLine{},
+						types.Section{
+							Attributes: types.Attributes{
+								types.AttrID: "_section-1",
+							},
+							Level:    1,
+							Title:    section1Title,
+							Elements: []interface{}{},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("section level 1 with quoted text", func() {
 				source := `==  *2 spaces and bold content*`
 				sectionTitle := []interface{}{

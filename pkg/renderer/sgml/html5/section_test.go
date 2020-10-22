@@ -32,6 +32,19 @@ var _ = Describe("sections", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("section level 1 with custom idseparator", func() {
+			source := `:idseparator: -
+			
+== section 1`
+			expected := `<div class="sect1">
+<h2 id="_section-1">section 1</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("section level 1 alone with roles and id", func() {
 			source := "[.role1#anchor.role2]\n== a title with *bold* content"
 			// top-level section is not rendered per-say,
