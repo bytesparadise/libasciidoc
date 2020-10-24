@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -400,17 +399,6 @@ func applySubstitutionsOnImageBlock(b types.ImageBlock, attrs types.AttributesWi
 	}
 	b.Location.Path = elements[0]
 	b.Location = b.Location.WithPathPrefix(attrs.GetAsStringWithDefault("imagesdir", ""))
-	if !b.Attributes.Has(types.AttrImageAlt) {
-		alt := filepath.Base(b.Location.Stringify())
-		ext := filepath.Ext(alt)
-		alt = alt[0 : len(alt)-len(ext)]
-		b.Attributes = b.Attributes.Set(types.AttrImageAlt, alt)
-	}
-
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("image block after substitution:")
-		spew.Fdump(log.StandardLogger().Out, b)
-	}
 	return b, nil
 }
 
@@ -534,6 +522,14 @@ func restoreElements(elmts []interface{}, placeholders *placeholders) []interfac
 			}
 			elmts[i] = elmt
 		case types.InlineLink: // TODO: use an interface and implement the `restoreElements` func on these types, instead
+			elmt.Location.Path = restoreElements(elmt.Location.Path, placeholders)
+			elmt.Attributes = restoreAttributes(elmt.Attributes, placeholders)
+			elmts[i] = elmt
+		case types.InlineImage: // TODO: use an interface and implement the `restoreElements` func on these types, instead
+			elmt.Location.Path = restoreElements(elmt.Location.Path, placeholders)
+			elmt.Attributes = restoreAttributes(elmt.Attributes, placeholders)
+			elmts[i] = elmt
+		case types.ImageBlock: // TODO: use an interface and implement the `restoreElements` func on these types, instead
 			elmt.Location.Path = restoreElements(elmt.Location.Path, placeholders)
 			elmt.Attributes = restoreAttributes(elmt.Attributes, placeholders)
 			elmts[i] = elmt
@@ -704,9 +700,6 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 	case types.AttributeReset:
 		attrs.Set(e.Name, nil) // This allows us to test for a reset vs. undefined.
 		return e, nil
-	case types.ImageBlock:
-		e.Location.Path, err = applyAttributeSubstitutionsOnElements(e.Location.Path, attrs)
-		return e, err
 	case types.Section:
 		e.Title, err = applyAttributeSubstitutionsOnElements(e.Title, attrs)
 		return e, err
@@ -722,7 +715,6 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 	case types.ContinuedListItemElement:
 		e.Element, err = applyAttributeSubstitutionsOnElement(e.Element, attrs)
 		return e, err
-
 	case types.ExampleBlock:
 		e.Elements, err = applyAttributeSubstitutionsOnElements(e.Elements, attrs)
 		return e, err
@@ -765,6 +757,9 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 		}, nil
 	case types.CounterSubstitution:
 		return applyCounterSubstitution(e, attrs)
+	case types.ImageBlock:
+		e.Location.Path, err = applyAttributeSubstitutionsOnElements(e.Location.Path, attrs)
+		return e, err
 	case types.InlineImage:
 		e.Location.Path, err = applyAttributeSubstitutionsOnElements(e.Location.Path, attrs)
 		return e, err

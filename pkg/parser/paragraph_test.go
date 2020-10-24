@@ -1809,9 +1809,6 @@ a foo image:foo.png[]`
 										Content: "a foo ",
 									},
 									types.InlineImage{
-										Attributes: types.Attributes{
-											types.AttrImageAlt: "foo",
-										},
 										Location: types.Location{
 											Path: []interface{}{
 												types.StringElement{

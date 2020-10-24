@@ -146,9 +146,9 @@ DocumentRevision <- Space* !":" revision:(
 }
 
 // DocumentRevisionNumber MUST start with a `v` or MAY start with a `v` but MUST end with a `,`
-DocumentRevisionNumber <- "v"i DIGIT  [^:,\r\n]+ {
+DocumentRevisionNumber <- "v"i Digit  [^:,\r\n]+ {
     return string(c.text), nil
-} / "v"i? DIGIT  [^:,\r\n]+ Space* &"," {
+} / "v"i? Digit  [^:,\r\n]+ Space* &"," {
     return string(c.text), nil
 }
 
@@ -239,11 +239,11 @@ ElementAttribute <- &("[" / "." ) // skip if the content does not start with one
     return attr, nil // avoid returning something like `[]interface{}{attr, EOL}`
 }
 
-ElementID <- "[[" id:(ID) "]]" Space* EOL {
+ElementID <- "[[" id:(Id) "]]" Space* EOL {
     return types.NewElementID(id)
 }
 
-InlineElementID <- "[[" id:(ID) "]]" Space* { // no EOL here since there can be multiple InlineElementID on the same line
+InlineElementID <- "[[" id:(Id) "]]" Space* { // no EOL here since there can be multiple InlineElementID on the same line
     return types.NewInlineElementID(id.(string))
 }
 
@@ -571,19 +571,19 @@ MultipleQuotedLineRanges <- "\"" first:(MultiLineRange / SingleLineRange)
         return append([]interface{}{first}, others.([]interface{})...), nil
     }
 
-MultiLineRange <- start:(NUMBER) ".." end:(NUMBER) { // eg: lines=12..14
+MultiLineRange <- start:(Number) ".." end:(Number) { // eg: lines=12..14
     return types.NewLineRange(start.(int), end.(int))
 } 
 
-MultiLineQuotedRange <- "\"" start:(NUMBER) ".." end:(NUMBER) "\"" { // eg: lines=12..14
+MultiLineQuotedRange <- "\"" start:(Number) ".." end:(Number) "\"" { // eg: lines=12..14
     return types.NewLineRange(start.(int), end.(int))
 } 
 
-SingleLineRange <- singleline:(NUMBER) { // eg: lines=12
+SingleLineRange <- singleline:(Number) { // eg: lines=12
     return types.NewLineRange(singleline.(int), singleline.(int))
 }
 
-SingleLineQuotedRange <- "\"" singleline:(NUMBER) "\"" { // eg: lines=12
+SingleLineQuotedRange <- "\"" singleline:(Number) "\"" { // eg: lines=12
     return types.NewLineRange(singleline.(int), singleline.(int))
 }
 
@@ -1467,9 +1467,9 @@ PassthroughMacroCharacter <- [^\]] {
 // ------------------------------------------
 CrossReference <- InternalCrossReference / ExternalCrossReference 
 
-InternalCrossReference <- "<<" id:(ID) Space* "," label:(CrossReferenceLabel) ">>" {
+InternalCrossReference <- "<<" id:(Id) Space* "," label:(CrossReferenceLabel) ">>" {
     return types.NewInternalCrossReference(id.(string), label.(string))
-} / "<<" id:(ID) ">>" {
+} / "<<" id:(Id) ">>" {
     return types.NewInternalCrossReference(id.(string), nil)
 } 
 
@@ -1520,17 +1520,6 @@ QuotedAttributeChar <- [^\r\n"=\]] { // does not exclude comma
 
 UnquotedAttributeChar <- [^\r\n"=\],] { // excludes comma
     return types.NewStringElement(string(c.text))
-}
-
-ResolvedLink <- ResolvedRelativeLink / ResolvedExternalLink // links without AttributeSubstitution
-
-// url preceeding with `link:` MUST be followed by square brackets
-ResolvedRelativeLink <- "link:" url:(ResolvedLocation / ResolvedFileLocation) inlineAttributes:(LinkAttributes) {
-    return types.NewInlineLink(url.(types.Location), inlineAttributes.(types.Attributes))
-}
-
-ResolvedExternalLink <- url:(ResolvedLocation) inlineAttributes:(LinkAttributes)? {
-    return types.NewInlineLink(url.(types.Location), inlineAttributes)
 }
 
 // ------------------------------------------
@@ -2204,46 +2193,33 @@ AnyChar <- [^\r\n] {
     return types.NewStringElement(string(c.text))
 } 
 
-FileLocation <- path:(FILENAME / ElementPlaceHolder)+ {
+FileLocation <- path:(Filename / ElementPlaceHolder)+ {
     return types.NewLocation("", path.([]interface{}))
 }
 
-ResolvedFileLocation <- path:([^\r\n [])+ {
-    return types.NewLocation("", path.([]interface{}))
-}
-
-Location <- scheme:(URL_SCHEME)? path:(FILENAME  / ElementPlaceHolder)+ {
+Location <- scheme:(Scheme)? path:(Filename / ElementPlaceHolder)+ {
     return types.NewLocation(scheme, path.([]interface{}))
 }
 
-LocationWithScheme <- scheme:(URL_SCHEME) path:(FILENAME / ElementPlaceHolder)+ {
+LocationWithScheme <- scheme:(Scheme) path:(Filename / ElementPlaceHolder)+ {
     return types.NewLocation(scheme, path.([]interface{}))
 }
 
-FILENAME <- ([^\r\n[\]\uFFFD ])+ // not supported for now: EOL, space, "[", "]"
-
-ResolvedLocation <- scheme:(URL_SCHEME) path:(RESOLVED_FILENAME) {
-    return types.NewLocation(scheme, path.([]interface{}))
+Filename <- ([^\r\n[\]\uFFFD ])+ { // not supported for now: EOL, space, "[", "]"
+    return types.NewStringElement(string(c.text))
 }
 
-//RESOLVED_FILENAME <- ([ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+_,%{}] / "-" / ".")+ // here, `{` and `}` are valid characters
-RESOLVED_FILENAME <- ([^\r\n[\] ])+ // not supported for now: EOL, space, "[", "]", "{" and "}" as they may be used for document attribute substitutions
+Scheme <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
 
-URL <-  [^\r\n[\]]+ {
+Id <- [^[\]<>,]+ { // previously: (Alphanums / (!Newline !Space !"[" !"]" !"<<" !">>" !","  .))+
     return string(c.text), nil
 }
 
-URL_SCHEME <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
-
-ID <- [^[\]<>,]+ { // previously: (Alphanums / (!Newline !Space !"[" !"]" !"<<" !">>" !","  .))+
+Digit <- [0-9] {
     return string(c.text), nil
 }
 
-DIGIT <- [0-9] {
-    return string(c.text), nil
-}
-
-NUMBER <- "-"? DIGIT+ {
+Number <- "-"? Digit+ {
     return strconv.Atoi(string(c.text))
 }
 

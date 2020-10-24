@@ -18,9 +18,6 @@ var _ = Describe("attributes", func() {
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "foo.png"},
@@ -36,9 +33,6 @@ var _ = Describe("attributes", func() {
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "foo.png"},
@@ -55,9 +49,6 @@ var _ = Describe("attributes", func() {
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "foo.png"},
@@ -75,8 +66,7 @@ var _ = Describe("attributes", func() {
 				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-							types.AttrWidth:    "200",
+							types.AttrWidth: "200",
 						},
 						Location: types.Location{
 							Path: []interface{}{

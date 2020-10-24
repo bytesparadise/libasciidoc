@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
@@ -1329,9 +1328,9 @@ type InlineImage struct {
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
 func NewInlineImage(location Location, attributes Attributes, imagesdir interface{}) (InlineImage, error) {
-	if !attributes.Has(AttrImageAlt) {
-		attributes = attributes.Set(AttrImageAlt, resolveAlt(location))
-	}
+	// if !attributes.Has(AttrImageAlt) {
+	// 	attributes = attributes.Set(AttrImageAlt, resolveAlt(location))
+	// }
 	location = location.WithPathPrefix(imagesdir)
 	return InlineImage{
 		Location:   location,
@@ -2527,6 +2526,9 @@ func NewLocation(scheme interface{}, path []interface{}) (Location, error) {
 // path and if there is no defined scheme
 func (l Location) WithPathPrefix(p interface{}) Location {
 	if p, ok := p.(string); ok && p != "" {
+		if !strings.HasSuffix(p, "/") {
+			p = p + "/"
+		}
 		if l.Scheme == "" && !strings.HasPrefix(l.Stringify(), "/") {
 			if u, err := url.Parse(l.Stringify()); err == nil {
 				if !u.IsAbs() {
@@ -2543,75 +2545,19 @@ func (l Location) WithPathPrefix(p interface{}) Location {
 }
 
 // Stringify returns a string representation of the location
-func (l Location) Stringify() string { // (attrs map[string]string) string {
+func (l Location) Stringify() string {
 	result := bytes.NewBuffer(nil)
 	result.WriteString(l.Scheme)
-	for i, e := range l.Path {
-		if s, ok := e.(string); ok {
-			result.WriteString(s) // no need to use `fmt.Sprintf` for elements of type 'string'
-		} else if s, ok := e.(StringElement); ok {
+	for _, e := range l.Path {
+		if s, ok := e.(StringElement); ok {
 			result.WriteString(s.Content) // no need to use `fmt.Sprintf` for elements of type 'string'
+		} else if s, ok := e.(SpecialCharacter); ok {
+			result.WriteString(s.Name) // no need to use `fmt.Sprintf` for elements of type 'string'
 		} else {
 			result.WriteString(fmt.Sprintf("%s", e))
 		}
-		// include a "/" separator after each path element
-		if i < len(l.Path)-1 {
-			result.WriteString("/")
-		}
 	}
 	return result.String()
-}
-
-const imagesdir = "imagesdir"
-
-// Resolve resolves the Location by replacing all document attribute substitutions
-// with their associated values, or their corresponding raw text if
-// no attribute matched
-// returns `true` if some document attribute substitution occurred
-func (l Location) Resolve(attrs AttributesWithOverrides) Location {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("resolving location using '%v'", attrs)
-		spew.Fdump(log.StandardLogger().Out, l.Path)
-	}
-	content := bytes.NewBuffer(nil)
-	for _, e := range l.Path {
-		switch e := e.(type) {
-		case AttributeSubstitution:
-			if value, found := attrs.GetAsString(e.Name); found {
-				content.WriteString(value)
-			} else {
-				content.WriteRune('{')
-				content.WriteString(e.Name)
-				content.WriteRune('}')
-			}
-		case string:
-			content.WriteString(e) // no need to use `fmt.Sprintf` for elements of type 'string'
-		case StringElement:
-			content.WriteString(e.Content) // no need to use `fmt.Sprintf` for elements of type 'string'
-		default:
-			content.WriteString(fmt.Sprintf("%s", e))
-		}
-	}
-	// location should remain an []interface{} and may contain SpecialCahracter elements
-	location := content.String()
-	if l.Scheme == "" && !strings.HasPrefix(location, "/") {
-		if u, err := url.Parse(location); err == nil {
-			if !u.IsAbs() {
-				if imagesdir, ok := attrs.GetAsString(imagesdir); ok {
-					location = imagesdir + "/" + location
-				}
-			}
-		}
-	}
-	log.Debugf("resolved location: '%v' -> '%s'", l, location)
-	return Location{
-		Scheme: l.Scheme,
-		Path: []interface{}{
-			StringElement{
-				Content: location,
-			},
-		},
-	}
 }
 
 // -------------------------------------------------------------------------------------

@@ -410,9 +410,6 @@ var _ = Describe("quoted strings", func() {
 									Elements: []interface{}{
 										types.StringElement{Content: "a "},
 										types.InlineImage{
-											Attributes: types.Attributes{
-												types.AttrImageAlt: "foo",
-											},
 											Location: types.Location{
 												Path: []interface{}{
 													types.StringElement{
@@ -851,9 +848,6 @@ var _ = Describe("quoted strings", func() {
 									Elements: []interface{}{
 										types.StringElement{Content: "a "},
 										types.InlineImage{
-											Attributes: types.Attributes{
-												types.AttrImageAlt: "foo",
-											},
 											Location: types.Location{
 												Path: []interface{}{
 													types.StringElement{

@@ -468,123 +468,123 @@ var _ = Describe("tag ranges", func() {
 
 })
 
-var _ = Describe("location resolution", func() {
+// var _ = Describe("location resolution", func() {
 
-	attrs := types.AttributesWithOverrides{
-		Content: map[string]interface{}{
-			"imagesdir":  "./images",
-			"includedir": "includes",
-			"foo":        "bar",
-		},
-		Overrides: map[string]string{},
-	}
-	DescribeTable("resolve URL",
-		func(actual types.Location, expected types.Location, expectedStr string) {
-			actual = actual.Resolve(attrs)
-			Expect(actual).To(Equal(expected))
-			Expect(actual.Stringify()).To(Equal(expectedStr))
-		},
-		Entry("includes/file.ext",
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "includes/file.ext",
-					},
-				},
-			},
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "./images/includes/file.ext",
-					},
-				},
-			},
-			"./images/includes/file.ext",
-		),
-		Entry("./{includedir}/file.ext",
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "./",
-					},
-					types.AttributeSubstitution{
-						Name: "includedir",
-					},
-					types.StringElement{
-						Content: "/file.ext",
-					},
-				},
-			},
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "./images/./includes/file.ext",
-					},
-				},
-			},
-			"./images/./includes/file.ext",
-		),
-		Entry("./{unknown}/file.ext",
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "./",
-					},
-					types.AttributeSubstitution{
-						Name: "unknown",
-					},
-					types.StringElement{
-						Content: "/file.ext",
-					},
-				},
-			},
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "./images/./{unknown}/file.ext",
-					},
-				},
-			},
-			"./images/./{unknown}/file.ext",
-		),
-		Entry("https://foo.bar",
-			types.Location{
-				Scheme: "https://",
-				Path: []interface{}{
-					types.StringElement{
-						Content: "foo.bar",
-					},
-				},
-			},
-			types.Location{
-				Scheme: "https://",
-				Path: []interface{}{
-					types.StringElement{
-						Content: "foo.bar",
-					},
-				},
-			},
-			"https://foo.bar",
-		),
-		Entry("/foo/bar",
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "/foo/bar",
-					},
-				},
-			},
-			types.Location{
-				Path: []interface{}{
-					types.StringElement{
-						Content: "/foo/bar",
-					},
-				},
-			},
-			"/foo/bar",
-		),
-	)
-})
+// 	attrs := types.AttributesWithOverrides{
+// 		Content: map[string]interface{}{
+// 			"imagesdir":  "./images",
+// 			"includedir": "includes",
+// 			"foo":        "bar",
+// 		},
+// 		Overrides: map[string]string{},
+// 	}
+// 	DescribeTable("resolve URL",
+// 		func(actual types.Location, expected types.Location, expectedStr string) {
+// 			actual = actual.Resolve(attrs)
+// 			Expect(actual).To(Equal(expected))
+// 			Expect(actual.Stringify()).To(Equal(expectedStr))
+// 		},
+// 		Entry("includes/file.ext",
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "includes/file.ext",
+// 					},
+// 				},
+// 			},
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "./images/includes/file.ext",
+// 					},
+// 				},
+// 			},
+// 			"./images/includes/file.ext",
+// 		),
+// 		Entry("./{includedir}/file.ext",
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "./",
+// 					},
+// 					types.AttributeSubstitution{
+// 						Name: "includedir",
+// 					},
+// 					types.StringElement{
+// 						Content: "/file.ext",
+// 					},
+// 				},
+// 			},
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "./images/./includes/file.ext",
+// 					},
+// 				},
+// 			},
+// 			"./images/./includes/file.ext",
+// 		),
+// 		Entry("./{unknown}/file.ext",
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "./",
+// 					},
+// 					types.AttributeSubstitution{
+// 						Name: "unknown",
+// 					},
+// 					types.StringElement{
+// 						Content: "/file.ext",
+// 					},
+// 				},
+// 			},
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "./images/./{unknown}/file.ext",
+// 					},
+// 				},
+// 			},
+// 			"./images/./{unknown}/file.ext",
+// 		),
+// 		Entry("https://foo.bar",
+// 			types.Location{
+// 				Scheme: "https://",
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "foo.bar",
+// 					},
+// 				},
+// 			},
+// 			types.Location{
+// 				Scheme: "https://",
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "foo.bar",
+// 					},
+// 				},
+// 			},
+// 			"https://foo.bar",
+// 		),
+// 		Entry("/foo/bar",
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "/foo/bar",
+// 					},
+// 				},
+// 			},
+// 			types.Location{
+// 				Path: []interface{}{
+// 					types.StringElement{
+// 						Content: "/foo/bar",
+// 					},
+// 				},
+// 			},
+// 			"/foo/bar",
+// 		),
+// 	)
+// })
 
 var _ = DescribeTable("raw document attributes",
 	func(d types.RawDocument, expectation types.Attributes) {

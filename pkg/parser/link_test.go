@@ -10,12 +10,46 @@ import (
 
 var _ = Describe("links", func() {
 
+	Context("draft document", func() {
+
+		It("link with special characters", func() {
+			source := `a link to https://example.com?a=1&b=2`
+			expected := types.DraftDocument{
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{types.StringElement{Content: "a link to "},
+								types.InlineLink{
+									Location: types.Location{
+										Scheme: "https://",
+										Path: []interface{}{
+											types.StringElement{
+												Content: "example.com?a=1",
+											},
+											types.SpecialCharacter{
+												Name: "&",
+											},
+											types.StringElement{
+												Content: "b=2",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+	})
+
 	Context("final documents", func() {
 
 		Context("external links", func() {
 
 			It("external link without text", func() {
-				source := "a link to https://foo.bar"
+				source := "a link to https://example.com"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -26,7 +60,7 @@ var _ = Describe("links", func() {
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.bar",
+													Content: "example.com",
 												},
 											},
 										},
@@ -40,7 +74,7 @@ var _ = Describe("links", func() {
 			})
 
 			It("external link with empty text", func() {
-				source := "a link to https://foo.bar[]"
+				source := "a link to https://example.com[]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -51,7 +85,7 @@ var _ = Describe("links", func() {
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.bar",
+													Content: "example.com",
 												},
 											},
 										},
@@ -211,7 +245,7 @@ next lines`
 			})
 
 			It("external link with more text afterwards", func() {
-				source := `a link to https://foo.bar and more text`
+				source := `a link to https://example.com and more text`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -222,7 +256,7 @@ next lines`
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.bar",
+													Content: "example.com",
 												},
 											},
 										},
@@ -419,7 +453,7 @@ next lines`
 			})
 
 			It("external link with quoted text", func() {
-				source := "a link to https://foo.com[_a_ *b* `c`]"
+				source := "a link to https://example.com[_a_ *b* `c`]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -464,7 +498,7 @@ next lines`
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.com",
+													Content: "example.com",
 												},
 											},
 										},
@@ -478,7 +512,7 @@ next lines`
 			})
 
 			It("external link in bold text", func() {
-				source := `a link to *https://foo.com[]*`
+				source := `a link to *https://example.com[]*`
 
 				expected := types.Document{
 					Elements: []interface{}{
@@ -493,7 +527,7 @@ next lines`
 													Scheme: "https://",
 													Path: []interface{}{
 														types.StringElement{
-															Content: "foo.com",
+															Content: "example.com",
 														},
 													},
 												},
@@ -534,7 +568,7 @@ next lines`
 			})
 
 			It("external link in bold text", func() {
-				source := `a link to *https://foo.com[]*`
+				source := `a link to *https://example.com[]*`
 
 				expected := types.Document{
 					Elements: []interface{}{
@@ -549,7 +583,7 @@ next lines`
 													Scheme: "https://",
 													Path: []interface{}{
 														types.StringElement{
-															Content: "foo.com",
+															Content: "example.com",
 														},
 													},
 												},
@@ -565,7 +599,7 @@ next lines`
 			})
 
 			It("external link in italic text", func() {
-				source := `a link to _https://foo.com[]_`
+				source := `a link to _https://example.com[]_`
 
 				expected := types.Document{
 					Elements: []interface{}{
@@ -580,7 +614,7 @@ next lines`
 													Scheme: "https://",
 													Path: []interface{}{
 														types.StringElement{
-															Content: "foo.com",
+															Content: "example.com",
 														},
 													},
 												},
@@ -599,7 +633,7 @@ next lines`
 
 				It("external link with a document attribute substitution for the whole URL", func() {
 					source := `
-:url: https://foo.bar
+:url: https://example.com
 :url: https://foo2.bar
 	
 a link to {url}`
@@ -636,14 +670,14 @@ a link to {url}`
 				It("external link with two document attribute substitutions only", func() {
 					source := `
 :scheme: https
-:path: foo.bar
+:path: example.com
 	
-a link to {scheme}://{path} and https://foo.baz`
+a link to {scheme}://{path} and https://foo.com`
 
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"scheme": "https",
-							"path":   "foo.bar",
+							"path":   "example.com",
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -655,7 +689,7 @@ a link to {scheme}://{path} and https://foo.baz`
 												Scheme: "https://",
 												Path: []interface{}{
 													types.StringElement{
-														Content: "foo.bar",
+														Content: "example.com",
 													},
 												},
 											},
@@ -666,7 +700,7 @@ a link to {scheme}://{path} and https://foo.baz`
 												Scheme: "https://",
 												Path: []interface{}{
 													types.StringElement{
-														Content: "foo.baz",
+														Content: "foo.com",
 													},
 												},
 											},
@@ -682,14 +716,14 @@ a link to {scheme}://{path} and https://foo.baz`
 				It("external link with two document attribute substitutions in bold text", func() {
 					source := `
 :scheme: https
-:path: foo.bar
+:path: example.com
 	
-a link to *{scheme}://{path}[] and https://foo.baz[]*`
+a link to *{scheme}://{path}[] and https://foo.com[]*`
 
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"scheme": "https",
-							"path":   "foo.bar",
+							"path":   "example.com",
 						},
 						Elements: []interface{}{
 							types.Paragraph{
@@ -704,7 +738,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 														Scheme: "https://",
 														Path: []interface{}{
 															types.StringElement{
-																Content: "foo.bar",
+																Content: "example.com",
 															},
 														},
 													},
@@ -717,7 +751,7 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 														Scheme: "https://",
 														Path: []interface{}{
 															types.StringElement{
-																Content: "foo.baz",
+																Content: "foo.com",
 															},
 														},
 													},
@@ -735,11 +769,11 @@ a link to *{scheme}://{path}[] and https://foo.baz[]*`
 				It("external link with two document attribute substitutions and a reset", func() {
 					source := `
 :scheme: https
-:path: foo.bar
+:path: example.com
 	
 :!path:
 	
-a link to {scheme}://{path} and https://foo.baz`
+a link to {scheme}://{path} and https://foo.com`
 
 					expected := types.Document{
 						Attributes: types.Attributes{
@@ -767,7 +801,7 @@ a link to {scheme}://{path} and https://foo.baz`
 												Scheme: "https://",
 												Path: []interface{}{
 													types.StringElement{
-														Content: "foo.baz",
+														Content: "foo.com",
 													},
 												},
 											},
@@ -781,9 +815,9 @@ a link to {scheme}://{path} and https://foo.baz`
 				})
 
 				It("external link with document attribute in section 0 title", func() {
-					source := `= a title to {scheme}://{path} and https://foo.baz
+					source := `= a title to {scheme}://{path} and https://foo.com
 :scheme: https
-:path: foo.bar`
+:path: example.com`
 
 					title := []interface{}{
 						types.StringElement{Content: "a title to "},
@@ -792,7 +826,7 @@ a link to {scheme}://{path} and https://foo.baz`
 								Scheme: "https://",
 								Path: []interface{}{
 									types.StringElement{
-										Content: "foo.bar",
+										Content: "example.com",
 									},
 								},
 							},
@@ -803,7 +837,7 @@ a link to {scheme}://{path} and https://foo.baz`
 								Scheme: "https://",
 								Path: []interface{}{
 									types.StringElement{
-										Content: "foo.baz",
+										Content: "foo.com",
 									},
 								},
 							},
@@ -812,16 +846,16 @@ a link to {scheme}://{path} and https://foo.baz`
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"scheme": "https",
-							"path":   "foo.bar",
+							"path":   "example.com",
 						},
 						ElementReferences: types.ElementReferences{
-							"_a_title_to_httpsfoo_bar_and_httpsfoo_baz": title,
+							"_a_title_to_httpsexample_com_and_httpsfoo_com": title,
 						},
 						Elements: []interface{}{
 							types.Section{
 								Level: 0,
 								Attributes: types.Attributes{
-									types.AttrID: "_a_title_to_httpsfoo_bar_and_httpsfoo_baz",
+									types.AttrID: "_a_title_to_httpsexample_com_and_httpsfoo_com",
 								},
 								Title:    title,
 								Elements: []interface{}{},
@@ -833,9 +867,9 @@ a link to {scheme}://{path} and https://foo.baz`
 
 				It("external link with document attribute in section 1 title", func() {
 					source := `:scheme: https
-:path: foo.bar
+:path: example.com
 	
-== a title to {scheme}://{path} and https://foo.baz`
+== a title to {scheme}://{path} and https://foo.com`
 
 					title := []interface{}{
 						types.StringElement{Content: "a title to "},
@@ -844,7 +878,7 @@ a link to {scheme}://{path} and https://foo.baz`
 								Scheme: "https://",
 								Path: []interface{}{
 									types.StringElement{
-										Content: "foo.bar",
+										Content: "example.com",
 									},
 								},
 							},
@@ -855,7 +889,7 @@ a link to {scheme}://{path} and https://foo.baz`
 								Scheme: "https://",
 								Path: []interface{}{
 									types.StringElement{
-										Content: "foo.baz",
+										Content: "foo.com",
 									},
 								},
 							},
@@ -864,16 +898,16 @@ a link to {scheme}://{path} and https://foo.baz`
 					expected := types.Document{
 						Attributes: types.Attributes{
 							"scheme": "https",
-							"path":   "foo.bar",
+							"path":   "example.com",
 						},
 						ElementReferences: types.ElementReferences{
-							"_a_title_to_httpsfoo_bar_and_httpsfoo_baz": title,
+							"_a_title_to_httpsexample_com_and_httpsfoo_com": title,
 						},
 						Elements: []interface{}{
 							types.Section{
 								Level: 1,
 								Attributes: types.Attributes{
-									types.AttrID: "_a_title_to_httpsfoo_bar_and_httpsfoo_baz",
+									types.AttrID: "_a_title_to_httpsexample_com_and_httpsfoo_com",
 								},
 								Title:    title,
 								Elements: []interface{}{},
@@ -945,7 +979,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			})
 
 			It("relative link to external URL with text only", func() {
-				source := "a link to link:https://foo.bar[foo doc]"
+				source := "a link to link:https://example.com[foo doc]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -956,7 +990,7 @@ a link to {scheme}://{path} and https://foo.baz`
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.bar",
+													Content: "example.com",
 												},
 											},
 										},
@@ -977,7 +1011,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			})
 
 			It("relative link to external URL with text and extra attributes", func() {
-				source := "a link to link:https://foo.bar[foo doc, foo=bar]"
+				source := "a link to link:https://example.com[foo doc, foo=bar]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -988,7 +1022,7 @@ a link to {scheme}://{path} and https://foo.baz`
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.bar",
+													Content: "example.com",
 												},
 											},
 										},
@@ -1010,7 +1044,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			})
 
 			It("relative link to external URL with extra attributes only", func() {
-				source := "a link to link:https://foo.bar[foo=bar]"
+				source := "a link to link:https://example.com[foo=bar]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -1021,7 +1055,7 @@ a link to {scheme}://{path} and https://foo.baz`
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.bar",
+													Content: "example.com",
 												},
 											},
 										},
@@ -1195,11 +1229,11 @@ Test 2: link:/test/a%20b[with encoded space]`
 			It("relative link with two document attribute substitutions and a reset", func() {
 				source := `
 :scheme: link
-:path: foo.bar
+:path: example.com
 
 :!path:
 
-a link to {scheme}:{path}[] and https://foo.baz`
+a link to {scheme}:{path}[] and https://foo.com`
 
 				expected := types.Document{
 					Attributes: types.Attributes{
@@ -1230,7 +1264,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 											Scheme: "https://",
 											Path: []interface{}{
 												types.StringElement{
-													Content: "foo.baz",
+													Content: "foo.com",
 												},
 											},
 										},
@@ -1274,7 +1308,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 			Context("text attribute with comma", func() {
 
 				It("relative link only with text having comma", func() {
-					source := `a link to link:https://foo.bar[A, B, and C]`
+					source := `a link to link:https://example.com[A, B, and C]`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
@@ -1286,7 +1320,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 												Scheme: "https://",
 												Path: []interface{}{
 													types.StringElement{
-														Content: "foo.bar",
+														Content: "example.com",
 													},
 												},
 											},
@@ -1317,7 +1351,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				})
 
 				It("relative link only with doublequoted text having comma", func() {
-					source := `a link to link:https://foo.bar["A, B, and C"]`
+					source := `a link to link:https://example.com["A, B, and C"]`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
@@ -1329,7 +1363,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 												Scheme: "https://",
 												Path: []interface{}{
 													types.StringElement{
-														Content: "foo.bar",
+														Content: "example.com",
 													},
 												},
 											},
@@ -1350,7 +1384,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				})
 
 				It("relative link with doublequoted text having comma and other attrs", func() {
-					source := `a link to link:https://foo.bar["A, B, and C", role=foo]`
+					source := `a link to link:https://example.com["A, B, and C", role=foo]`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
@@ -1362,7 +1396,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 												Scheme: "https://",
 												Path: []interface{}{
 													types.StringElement{
-														Content: "foo.bar",
+														Content: "example.com",
 													},
 												},
 											},
@@ -1384,7 +1418,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 				})
 
 				It("relative link with text having comma and other attributes", func() {
-					source := `a link to link:https://foo.bar[A, B, and C, role=foo]`
+					source := `a link to link:https://example.com[A, B, and C, role=foo]`
 					expected := types.Document{
 						Elements: []interface{}{
 							types.Paragraph{
@@ -1396,7 +1430,7 @@ a link to {scheme}:{path}[] and https://foo.baz`
 												Scheme: "https://",
 												Path: []interface{}{
 													types.StringElement{
-														Content: "foo.bar",
+														Content: "example.com",
 													},
 												},
 											},
