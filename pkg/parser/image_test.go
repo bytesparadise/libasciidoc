@@ -17,9 +17,6 @@ var _ = Describe("block images", func() {
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "images/foo.png"},
@@ -36,9 +33,6 @@ var _ = Describe("block images", func() {
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "images/foo.png"},
@@ -121,6 +115,25 @@ image::images/foo.png[the foo.png image, 600, 400]`
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
+		It("with special characters", func() {
+			source := `image::http://example.com/foo.png?a=1&b=2[]`
+			expected := types.DraftDocument{
+				Elements: []interface{}{
+					types.ImageBlock{
+						Location: types.Location{
+							Scheme: "http://",
+							Path: []interface{}{
+								types.StringElement{
+									Content: "example.com/foo.png?a=1&b=2", // no special character substitution on image block location
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
 	})
 
 	Context("final documents", func() {
@@ -130,9 +143,6 @@ image::images/foo.png[the foo.png image, 600, 400]`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "images/foo.png"},
@@ -155,12 +165,9 @@ image::foo.png[]`
 				},
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
-								types.StringElement{Content: "./path/to/images"},
+								types.StringElement{Content: "./path/to/images/"},
 								types.StringElement{Content: "foo.png"},
 							},
 						},
@@ -181,9 +188,6 @@ image::{dir}/foo.png[]`
 				},
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "./path/to/images/foo.png"},
@@ -206,12 +210,9 @@ image::foo.png[]`
 				},
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
-								types.StringElement{Content: "./path/to/images"},
+								types.StringElement{Content: "./path/to/images/"},
 								types.StringElement{Content: "foo.png"},
 							},
 						},
@@ -232,12 +233,9 @@ image::{imagesdir}/foo.png[]`
 				},
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
-								types.StringElement{Content: "./path/to/images"},
+								types.StringElement{Content: "./path/to/images/"},
 								types.StringElement{Content: "./path/to/images/foo.png"},
 							},
 						},
@@ -253,9 +251,6 @@ image::images/bar.png[]`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "images/foo.png"},
@@ -263,9 +258,6 @@ image::images/bar.png[]`
 						},
 					},
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "bar",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "images/bar.png"},
@@ -333,9 +325,6 @@ var _ = Describe("inline images", func() {
 						Lines: [][]interface{}{
 							{
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
 											types.StringElement{Content: "images/foo.png"},
@@ -358,9 +347,6 @@ var _ = Describe("inline images", func() {
 						Lines: [][]interface{}{
 							{
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
 											types.StringElement{Content: "images/foo.png"},
@@ -378,7 +364,7 @@ var _ = Describe("inline images", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
-		It("inline image surrounded with test", func() {
+		It("surrounded with test", func() {
 			source := "a foo image:images/foo.png[] bar..."
 			expected := types.DraftDocument{
 				Elements: []interface{}{
@@ -389,9 +375,6 @@ var _ = Describe("inline images", func() {
 									Content: "a foo ",
 								},
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
 											types.StringElement{Content: "images/foo.png"},
@@ -521,7 +504,6 @@ var _ = Describe("inline images", func() {
 							{
 								types.InlineImage{
 									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
 										types.AttrID:       "myid",
 										types.AttrCustomID: true,
 									},
@@ -548,7 +530,6 @@ var _ = Describe("inline images", func() {
 							{
 								types.InlineImage{
 									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
 										types.AttrID:       "myid",
 										types.AttrCustomID: true,
 										types.AttrTitle:    "mytitle",
@@ -599,7 +580,7 @@ var _ = Describe("inline images", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
-		It("inline image in a paragraph with space after colon", func() {
+		It("in a paragraph with space after colon", func() {
 			source := "this is an image: image:images/foo.png[]"
 			expected := types.DraftDocument{
 				Elements: []interface{}{
@@ -610,9 +591,6 @@ var _ = Describe("inline images", func() {
 									Content: "this is an image: ",
 								},
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
 											types.StringElement{Content: "images/foo.png"},
@@ -627,7 +605,7 @@ var _ = Describe("inline images", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
-		It("inline image in a paragraph without space separator", func() {
+		It("in a paragraph without space separator", func() {
 			source := "this is an inline.image:images/foo.png[]"
 			expected := types.DraftDocument{
 				Elements: []interface{}{
@@ -638,12 +616,40 @@ var _ = Describe("inline images", func() {
 									Content: "this is an inline.",
 								},
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
 											types.StringElement{Content: "images/foo.png"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
+		It("with special characters", func() {
+			source := `image:http://example.com/foo.png?a=1&b=2[]`
+			expected := types.DraftDocument{
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.InlineImage{
+									Location: types.Location{
+										Scheme: "http://",
+										Path: []interface{}{
+											types.StringElement{
+												Content: "example.com/foo.png?a=1",
+											},
+											types.SpecialCharacter{
+												Name: "&",
+											},
+											types.StringElement{
+												Content: "b=2",
+											},
 										},
 									},
 								},
@@ -667,9 +673,6 @@ var _ = Describe("inline images", func() {
 						Lines: [][]interface{}{
 							{
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
 											types.StringElement{Content: "images/foo.png"},
@@ -699,9 +702,6 @@ an image:{dir}/foo.png[].`
 							{
 								types.StringElement{Content: "an "},
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
 											types.StringElement{Content: "./path/to/images/foo.png"},
@@ -732,12 +732,9 @@ an image:foo.png[].`
 							{
 								types.StringElement{Content: "an "},
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
-											types.StringElement{Content: "./path/to/images"},
+											types.StringElement{Content: "./path/to/images/"},
 											types.StringElement{Content: "foo.png"},
 										},
 									},
@@ -766,12 +763,9 @@ an image:{imagesdir}/foo.png[].`
 							{
 								types.StringElement{Content: "an "},
 								types.InlineImage{
-									Attributes: types.Attributes{
-										types.AttrImageAlt: "foo",
-									},
 									Location: types.Location{
 										Path: []interface{}{
-											types.StringElement{Content: "./path/to/images"},
+											types.StringElement{Content: "./path/to/images/"},
 											types.StringElement{Content: "./path/to/images/foo.png"},
 										},
 									},
@@ -795,9 +789,6 @@ image::{path}/foo.png[]`
 				},
 				Elements: []interface{}{
 					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: "foo",
-						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "./path/to/images/foo.png"}, // resolved
@@ -812,7 +803,7 @@ image::{path}/foo.png[]`
 
 	Context("errors", func() {
 
-		It("inline image appending inline content", func() {
+		It("appending inline content", func() {
 			source := "a paragraph\nimage::images/foo.png[]"
 			expected := types.Document{
 				Elements: []interface{}{

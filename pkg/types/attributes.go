@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -581,11 +580,11 @@ func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
 	return result, nil
 }
 
-func resolveAlt(path Location) string {
-	_, filename := filepath.Split(path.Stringify())
-	ext := filepath.Ext(filename)
-	if ext != "" {
-		return strings.TrimSuffix(filename, ext)
-	}
-	return filename
-}
+// func resolveAlt(path Location) string {
+// 	_, filename := filepath.Split(path.Stringify())
+// 	ext := filepath.Ext(filename)
+// 	if ext != "" {
+// 		return strings.TrimSuffix(filename, ext)
+// 	}
+// 	return filename
+// }

@@ -11,7 +11,7 @@ var _ = Describe("links", func() {
 
 	Context("external links", func() {
 
-		It("external link without text", func() {
+		It("without text", func() {
 
 			source := "a link to https://foo.com[]."
 			expected := `<div class="paragraph">
@@ -21,7 +21,7 @@ var _ = Describe("links", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("external link with quoted text", func() {
+		It("with quoted text", func() {
 			source := "https://foo.com[_a_ *b* `c`]"
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com"><em>a</em> <strong>b</strong> <code>c</code></a></p>
@@ -30,7 +30,7 @@ var _ = Describe("links", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("external link with unquoted text having comma", func() {
+		It("with unquoted text having comma", func() {
 			source := "https://foo.com[A, B, and C]"
 			expected := `<div class="paragraph">
 <p><a href="https://foo.com">A, B, and C</a></p>
@@ -47,7 +47,7 @@ var _ = Describe("links", func() {
 		// 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		// 		})
 
-		It("email link with quoted text having comma", func() {
+		It("with quoted text having comma", func() {
 			source := `mailto:foo@example.com["A, B, and C"]`
 			expected := `<div class="paragraph">
 <p><a href="mailto:foo@example.com">A, B, and C</a></p>
@@ -56,7 +56,7 @@ var _ = Describe("links", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("external link inside a multiline paragraph", func() {
+		It("inside a multiline paragraph", func() {
 			source := `a http://website.com
 and more text on the
 next lines`
@@ -71,7 +71,7 @@ next lines</p>
 
 		Context("with document attribute substitutions", func() {
 
-			It("external link with a document attribute substitution for the whole URL", func() {
+			It("with a document attribute substitution for the whole URL", func() {
 				source := `:url: https://foo.bar
 	
 :url: https://foo2.bar
@@ -84,7 +84,7 @@ a link to {url}`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("external link with two document attribute substitutions only", func() {
+			It("with two document attribute substitutions only", func() {
 				source := `:scheme: https
 :path: foo.bar
 	
@@ -96,7 +96,7 @@ a link to {scheme}://{path}`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("external link with two document attribute substitutions and a reset", func() {
+			It("with two document attribute substitutions and a reset", func() {
 				source := `:scheme: https
 :path: foo.bar
 
@@ -110,7 +110,7 @@ a link to {scheme}://{path}`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("external link with document attribute in section 0 title", func() {
+			It("with document attribute in section 0 title", func() {
 				source := `= a title to {scheme}://{path} and https://foo.baz
 :scheme: https
 :path: foo.bar`
@@ -118,7 +118,7 @@ a link to {scheme}://{path}`
 				Expect(RenderHTML5Title(source)).To(Equal(expected))
 			})
 
-			It("external link with document attribute in section 1 title", func() {
+			It("with document attribute in section 1 title", func() {
 				source := `:scheme: https
 :path: foo.bar
 	
@@ -132,7 +132,7 @@ a link to {scheme}://{path}`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("external link with two document attribute substitutions and a reset", func() {
+			It("with two document attribute substitutions and a reset", func() {
 				source := `:scheme: https
 :path: foo.bar
 
@@ -141,6 +141,15 @@ a link to {scheme}://{path}`
 a link to {scheme}://{path} and https://foo.baz`
 				expected := `<div class="paragraph">
 <p>a link to <a href="https://{path}" class="bare">https://{path}</a> and <a href="https://foo.baz" class="bare">https://foo.baz</a></p>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("with special characters", func() {
+				source := `a link to https://example.com?a=1&b=2`
+				expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com?a=1&b=2" class="bare">https://example.com?a=1&amp;b=2</a></p>
 </div>
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))

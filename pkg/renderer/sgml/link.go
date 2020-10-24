@@ -1,6 +1,7 @@
 package sgml
 
 import (
+	"html"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -14,7 +15,6 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 	location := l.Location.Stringify()
 	text := ""
 	class := ""
-	var err error
 	// TODO; support `mailto:` positional attributes
 	positionals := l.Attributes.Positionals()
 	if len(positionals) > 0 {
@@ -22,7 +22,7 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 		for i, arg := range positionals {
 			t, err := r.renderInlineElements(ctx, arg)
 			if err != nil {
-				return "", errors.Wrap(err, "unable to render external link")
+				return "", errors.Wrap(err, "unable to render link")
 			}
 			buf.WriteString(t)
 			if i < len(positionals)-1 {
@@ -32,9 +32,9 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 		text = buf.String()
 	} else {
 		class = "bare"
-		text = location
+		text = html.EscapeString(location)
 	}
-	err = r.link.Execute(result, struct {
+	err := r.link.Execute(result, struct {
 		URL   string
 		Text  string
 		Class string
@@ -44,8 +44,8 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 		Class: class,
 	})
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render external link")
+		return "", errors.Wrap(err, "unable to render link")
 	}
-	log.Debugf("rendered external link: %s", result.String())
+	log.Debugf("rendered link: %s", result.String())
 	return result.String(), nil
 }

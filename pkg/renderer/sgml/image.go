@@ -1,6 +1,8 @@
 package sgml
 
 import (
+	"net/url"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -37,7 +39,12 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	}
 	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render image roles")
+		return "", errors.Wrap(err, "unable to render image")
+	}
+	path := img.Location.Stringify()
+	alt, err := r.renderImageAlt(img.Attributes, path)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render image")
 	}
 	err = r.blockImage.Execute(result, struct {
 		ID          string
@@ -57,14 +64,14 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		Caption:     caption.String(),
 		Roles:       roles,
 		Href:        img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
-		Alt:         img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
+		Alt:         alt,
 		Width:       img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height:      img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
-		Path:        img.Location.Stringify(),
+		Path:        path,
 	})
 
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render block image")
+		return "", errors.Wrap(err, "unable to render image")
 	}
 	// log.Debugf("rendered block image: %s", result.Bytes())
 	return result.String(), nil
@@ -74,7 +81,12 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (s
 	result := &strings.Builder{}
 	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render image roles")
+		return "", errors.Wrap(err, "unable to render image")
+	}
+	path := img.Location.Stringify()
+	alt, err := r.renderImageAlt(img.Attributes, path)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render image")
 	}
 	err = r.inlineImage.Execute(result, struct {
 		Roles  string
@@ -88,10 +100,10 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (s
 		Title:  r.renderElementTitle(img.Attributes),
 		Roles:  roles,
 		Href:   img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
-		Alt:    img.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""),
+		Alt:    alt,
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
-		Path:   img.Location.Stringify(),
+		Path:   path,
 	})
 
 	if err != nil {
@@ -99,4 +111,16 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (s
 	}
 	// log.Debugf("rendered inline image: %s", result.Bytes())
 	return result.String(), nil
+}
+
+func (r *sgmlRenderer) renderImageAlt(attrs types.Attributes, path string) (string, error) {
+	if alt, found := attrs.GetAsString(types.AttrImageAlt); found {
+		return alt, nil
+	}
+	u, err := url.Parse(path)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render image")
+	}
+	// return base path without its extension
+	return strings.TrimSuffix(filepath.Base(u.Path), filepath.Ext(u.Path)), nil
 }
