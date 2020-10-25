@@ -950,8 +950,6 @@ func toCheckStyle(checkstyle interface{}) UnorderedListItemCheckStyle {
 type BulletStyle string
 
 const (
-	// UnknownBulletStyle the default, unknown type
-	UnknownBulletStyle BulletStyle = "unkwown"
 	// Dash an unordered item can begin with a single dash
 	Dash BulletStyle = "dash"
 	// OneAsterisk an unordered item marked with a single asterisk

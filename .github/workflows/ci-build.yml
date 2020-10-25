@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        go-version: [1.13.x, 1.14.x]
+        go-version: [1.15.x, 1.14.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
     name: Test ${{ matrix.os }} with Go ${{ matrix.go-version }}
 
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [1.13.x, 1.14.x]
+        go-version: [1.15.x, 1.14.x]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -73,6 +73,6 @@ jobs:
     - name: Lint
       uses: golangci/golangci-lint-action@v1
       with:
-        version: v1.27
+        version: v1.29
         args: -E gofmt,golint,megacheck,misspell
 
