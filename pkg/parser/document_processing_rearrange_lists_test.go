@@ -500,12 +500,9 @@ var _ = Describe("rearrange lists", func() {
 		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
 	})
 
-	It("callout list with rich terms", func() {
+	It("callout list items and a block afterwards", func() {
 		actual := []interface{}{
 			types.CalloutListItem{
-				Attributes: types.Attributes{
-					types.AttrTitle: "callout title",
-				},
 				Elements: []interface{}{
 					types.Paragraph{
 						Lines: [][]interface{}{
@@ -527,12 +524,22 @@ var _ = Describe("rearrange lists", func() {
 					},
 				},
 			},
+			types.ExampleBlock{
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "foo",
+								},
+							},
+						},
+					},
+				},
+			},
 		}
 		expected := []interface{}{
 			types.CalloutList{
-				Attributes: types.Attributes{
-					types.AttrTitle: "callout title",
-				},
 				Items: []types.CalloutListItem{
 					{
 						Elements: []interface{}{
@@ -551,6 +558,553 @@ var _ = Describe("rearrange lists", func() {
 								Lines: [][]interface{}{
 									{
 										types.StringElement{Content: "description 2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			types.ExampleBlock{
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "foo",
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
+	})
+
+	It("unordered list items and continued list item attached to grandparent", func() {
+		// * grandparent list item
+		// ** parent list item
+		// *** child list item
+		//
+		//
+		// +
+		// paragraph attached to parent list item
+
+		actual := []interface{}{
+			types.UnorderedListItem{
+				Level:       1,
+				BulletStyle: types.OneAsterisk,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "grandparent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       2,
+				BulletStyle: types.TwoAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "parent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       3,
+				BulletStyle: types.ThreeAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "child list item"},
+							},
+						},
+					},
+				},
+			},
+			types.BlankLine{},
+			types.BlankLine{},
+			types.ContinuedListItemElement{
+				Element: types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{Content: "paragraph attached to grandparent list item"},
+						},
+					},
+				},
+			},
+		}
+		expected := []interface{}{
+			types.UnorderedList{
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "grandparent list item"},
+									},
+								},
+							},
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "parent list item"},
+													},
+												},
+											},
+											types.UnorderedList{
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														CheckStyle:  types.NoCheck,
+														Elements: []interface{}{
+															types.Paragraph{
+																Lines: [][]interface{}{
+																	{
+																		types.StringElement{Content: "child list item"},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "paragraph attached to grandparent list item"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
+	})
+
+	It("unordered list items and continued list item attached to parent", func() {
+		// * grandparent list item
+		// ** parent list item
+		// *** child list item
+		//
+		// +
+		// paragraph attached to parent list item
+
+		actual := []interface{}{
+			types.UnorderedListItem{
+				Level:       1,
+				BulletStyle: types.OneAsterisk,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "grandparent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       2,
+				BulletStyle: types.TwoAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "parent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       3,
+				BulletStyle: types.ThreeAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "child list item"},
+							},
+						},
+					},
+				},
+			},
+			types.BlankLine{},
+			types.ContinuedListItemElement{
+				Element: types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{Content: "paragraph attached to parent list item"},
+						},
+					},
+				},
+			},
+		}
+		expected := []interface{}{
+			types.UnorderedList{
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "grandparent list item"},
+									},
+								},
+							},
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "parent list item"},
+													},
+												},
+											},
+											types.UnorderedList{
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														CheckStyle:  types.NoCheck,
+														Elements: []interface{}{
+															types.Paragraph{
+																Lines: [][]interface{}{
+																	{
+																		types.StringElement{Content: "child list item"},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "paragraph attached to parent list item"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
+	})
+
+	It("unordered list items and continued list item attached to parent", func() {
+		// * grandparent list item
+		// ** parent list item
+		// *** child list item
+		//
+		// +
+		// paragraph attached to parent list item
+
+		actual := []interface{}{
+			types.UnorderedListItem{
+				Level:       1,
+				BulletStyle: types.OneAsterisk,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "grandparent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       2,
+				BulletStyle: types.TwoAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "parent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       3,
+				BulletStyle: types.ThreeAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "child list item"},
+							},
+						},
+					},
+				},
+			},
+			types.BlankLine{},
+			types.ContinuedListItemElement{
+				Element: types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{Content: "paragraph attached to parent list item"},
+						},
+					},
+				},
+			},
+		}
+		expected := []interface{}{
+			types.UnorderedList{
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "grandparent list item"},
+									},
+								},
+							},
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "parent list item"},
+													},
+												},
+											},
+											types.UnorderedList{
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														CheckStyle:  types.NoCheck,
+														Elements: []interface{}{
+															types.Paragraph{
+																Lines: [][]interface{}{
+																	{
+																		types.StringElement{Content: "child list item"},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "paragraph attached to parent list item"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		Expect(rearrangeListItems(actual, false)).To(Equal(expected))
+	})
+
+	It("unordered list items and continued list item attached to parent and grandparent", func() {
+		// * grandparent list item
+		// ** parent list item
+		// *** child list item
+		//
+		// +
+		// paragraph attached to parent list item
+		//
+		// +
+		// paragraph attached to grandparent list item
+
+		actual := []interface{}{
+			types.UnorderedListItem{
+				Level:       1,
+				BulletStyle: types.OneAsterisk,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "grandparent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       2,
+				BulletStyle: types.TwoAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "parent list item"},
+							},
+						},
+					},
+				},
+			},
+			types.UnorderedListItem{
+				Level:       3,
+				BulletStyle: types.ThreeAsterisks,
+				CheckStyle:  types.NoCheck,
+				Elements: []interface{}{
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{Content: "child list item"},
+							},
+						},
+					},
+				},
+			},
+			types.BlankLine{},
+			types.ContinuedListItemElement{
+				Element: types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{Content: "paragraph attached to parent list item"},
+						},
+					},
+				},
+			},
+			types.BlankLine{},
+			types.ContinuedListItemElement{
+				Element: types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{Content: "paragraph attached to grandparent list item"},
+						},
+					},
+				},
+			},
+		}
+		expected := []interface{}{
+			types.UnorderedList{
+				Items: []types.UnorderedListItem{
+					{
+						Level:       1,
+						BulletStyle: types.OneAsterisk,
+						CheckStyle:  types.NoCheck,
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "grandparent list item"},
+									},
+								},
+							},
+							types.UnorderedList{
+								Items: []types.UnorderedListItem{
+									{
+										Level:       2,
+										BulletStyle: types.TwoAsterisks,
+										CheckStyle:  types.NoCheck,
+										Elements: []interface{}{
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "parent list item"},
+													},
+												},
+											},
+											types.UnorderedList{
+												Items: []types.UnorderedListItem{
+													{
+														Level:       3,
+														BulletStyle: types.ThreeAsterisks,
+														CheckStyle:  types.NoCheck,
+														Elements: []interface{}{
+															types.Paragraph{
+																Lines: [][]interface{}{
+																	{
+																		types.StringElement{Content: "child list item"},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+											types.Paragraph{
+												Lines: [][]interface{}{
+													{
+														types.StringElement{Content: "paragraph attached to parent list item"},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "paragraph attached to grandparent list item"},
 									},
 								},
 							},
