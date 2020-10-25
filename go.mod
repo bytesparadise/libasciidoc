@@ -5,6 +5,7 @@ go 1.11
 require (
 	github.com/alecthomas/chroma v0.7.1
 	github.com/davecgh/go-spew v1.1.1
+	github.com/golangci/golangci-lint v1.29.0 // indirect
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect

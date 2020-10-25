@@ -30,33 +30,35 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 			return r.renderVerseParagraph(ctx, p)
 		case types.Quote:
 			return r.renderQuoteParagraph(ctx, p)
+		default:
+			// do nothing, will move to default below
 		}
 	} else if kind, ok := p.Attributes[types.AttrBlockKind]; ok && kind == "manpage" {
 		return r.renderManpageNameParagraph(ctx, p)
 	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
 		return r.renderParagraphWithinDelimitedBlock(ctx, p)
-	} else {
-		roles, err := r.renderElementRoles(ctx, p.Attributes)
-		if err != nil {
-			return "", errors.Wrap(err, "unable to render paragraph roles")
-		}
-		log.Debug("rendering a standalone paragraph")
-		err = r.paragraph.Execute(result, struct {
-			Context *renderer.Context
-			ID      string
-			Roles   string
-			Title   string
-			Content string
-		}{
-			Context: ctx,
-			ID:      r.renderElementID(p.Attributes),
-			Title:   r.renderElementTitle(p.Attributes),
-			Roles:   roles,
-			Content: string(content),
-		})
-		if err != nil {
-			return "", errors.Wrap(err, "unable to render paragraph")
-		}
+	}
+	// default case
+	roles, err := r.renderElementRoles(ctx, p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render paragraph roles")
+	}
+	log.Debug("rendering a standalone paragraph")
+	err = r.paragraph.Execute(result, struct {
+		Context *renderer.Context
+		ID      string
+		Roles   string
+		Title   string
+		Content string
+	}{
+		Context: ctx,
+		ID:      r.renderElementID(p.Attributes),
+		Title:   r.renderElementTitle(p.Attributes),
+		Roles:   roles,
+		Content: string(content),
+	})
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render paragraph")
 	}
 	return result.String(), nil
 }
