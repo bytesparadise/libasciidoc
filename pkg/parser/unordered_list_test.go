@@ -1372,13 +1372,13 @@ another delimited block
 		Context("attach to ancestor", func() {
 
 			It("attach to grandparent item", func() {
-				source := `* grand parent list item
+				source := `* grandparent list item
 ** parent list item
 *** child list item
 
 
 +
-paragraph attached to grand parent list item`
+paragraph attached to grandparent list item`
 				expected := types.DraftDocument{
 					Elements: []interface{}{
 						types.UnorderedListItem{
@@ -1389,7 +1389,7 @@ paragraph attached to grand parent list item`
 								types.Paragraph{
 									Lines: [][]interface{}{
 										{
-											types.StringElement{Content: "grand parent list item"},
+											types.StringElement{Content: "grandparent list item"},
 										},
 									},
 								},
@@ -1430,7 +1430,7 @@ paragraph attached to grand parent list item`
 							Element: types.Paragraph{
 								Lines: [][]interface{}{
 									{
-										types.StringElement{Content: "paragraph attached to grand parent list item"},
+										types.StringElement{Content: "paragraph attached to grandparent list item"},
 									},
 								},
 							},
@@ -2953,13 +2953,13 @@ another delimited block
 		Context("attach to ancestor", func() {
 
 			It("attach to grandparent item", func() {
-				source := `* grand parent list item
+				source := `* grandparent list item
 ** parent list item
 *** child list item
 
 
 +
-paragraph attached to grand parent list item`
+paragraph attached to grandparent list item`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.UnorderedList{
@@ -2972,7 +2972,7 @@ paragraph attached to grand parent list item`
 										types.Paragraph{
 											Lines: [][]interface{}{
 												{
-													types.StringElement{Content: "grand parent list item"},
+													types.StringElement{Content: "grandparent list item"},
 												},
 											},
 										},
@@ -3015,7 +3015,7 @@ paragraph attached to grand parent list item`
 										types.Paragraph{
 											Lines: [][]interface{}{
 												{
-													types.StringElement{Content: "paragraph attached to grand parent list item"},
+													types.StringElement{Content: "paragraph attached to grandparent list item"},
 												},
 											},
 										},

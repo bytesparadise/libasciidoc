@@ -180,8 +180,53 @@ printf("Hello world!\n"); // <1>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
-		It("with callouts and syntax highlighting", func() {
-			source := `[source,java]
+
+		It("with callout and admonition block afterwards", func() {
+			source := `[source]
+----
+const cookies = "cookies" <1>
+----
+<1> a constant
+
+[NOTE]
+====
+a note
+====`
+
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>const cookies = "cookies" <b class="conum">(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>a constant</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>a note</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		Context("with syntax highlighting", func() {
+
+			It("with callouts and syntax highlighting", func() {
+				source := `[source,java]
 ----
 @QuarkusTest
 public class GreetingResourceTest {
@@ -205,7 +250,7 @@ public class GreetingResourceTest {
 ----
 <1> We need to use the @RestClient CDI qualifier, since Quarkus creates the GreetingService bean with this qualifier.
 `
-			expected := `<div class="listingblock">
+				expected := `<div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@QuarkusTest
 public class GreetingResourceTest {
@@ -236,24 +281,22 @@ public class GreetingResourceTest {
 </ol>
 </div>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
-		})
-
-		Context("with syntax highlighting", func() {
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 
 			It("should render source block with go syntax only", func() {
 				source := `:source-highlighter: pygments
-		
+        
 [source,go]
 ----
 type Foo struct{
-	Field string
+    Field string
 }
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
-	<span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
 <span class="tok-p">}</span></code></pre>
 </div>
 </div>
@@ -263,17 +306,17 @@ type Foo struct{
 
 			It("should render source block without highlighter when language is not set", func() {
 				source := `:source-highlighter: pygments
-		
+        
 [source]
 ----
 type Foo struct{
-	Field string
+    Field string
 }
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code>type Foo struct{
-	Field string
+    Field string
 }</code></pre>
 </div>
 </div>
@@ -283,17 +326,17 @@ type Foo struct{
 
 			It("should render source block without highlighter when language is not set", func() {
 				source := `:source-highlighter: pygments
-		
+        
 [source]
 ----
 type Foo struct{
-	Field string
+    Field string
 }
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code>type Foo struct{
-	Field string
+    Field string
 }</code></pre>
 </div>
 </div>

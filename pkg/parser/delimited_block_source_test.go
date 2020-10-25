@@ -143,12 +143,77 @@ type Foo struct{
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
+			It("with callout and admonition block afterwards", func() {
+				source := `[source]
+----
+const cookies = "cookies" <1>
+----
+<1> a constant
+
+[NOTE]
+====
+a note
+====`
+
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.ListingBlock{
+							Attributes: types.Attributes{
+								types.AttrBlockKind: types.Source,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: `const cookies = "cookies" `,
+									},
+									types.Callout{
+										Ref: 1,
+									},
+								},
+							},
+						},
+						types.CalloutListItem{
+							Ref: 1,
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a constant",
+											},
+										},
+									},
+								},
+							},
+						},
+						types.BlankLine{},
+						types.ExampleBlock{
+							Attributes: types.Attributes{
+								types.AttrAdmonitionKind: types.Note,
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a note",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
 	})
 
 	Context("final documents", func() {
 
-		Context("source block", func() {
+		Context("delimited block", func() {
 
 			It("with source attribute only", func() {
 				source := `[source]
@@ -282,6 +347,74 @@ end
 								{
 									types.StringElement{
 										Content: "end",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with callout and admonition block afterwards", func() {
+				source := `[source]
+----
+const cookies = "cookies" <1>
+----
+<1> a constant
+
+[NOTE]
+====
+a note
+====`
+
+				expected := types.Document{
+					Elements: []interface{}{
+						types.ListingBlock{
+							Attributes: types.Attributes{
+								types.AttrBlockKind: types.Source,
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: `const cookies = "cookies" `,
+									},
+									types.Callout{
+										Ref: 1,
+									},
+								},
+							},
+						},
+						types.CalloutList{
+							Items: []types.CalloutListItem{
+								{
+									Ref: 1,
+									Elements: []interface{}{
+										types.Paragraph{
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "a constant",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						types.ExampleBlock{
+							Attributes: types.Attributes{
+								types.AttrAdmonitionKind: types.Note,
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "a note",
+											},
+										},
 									},
 								},
 							},
