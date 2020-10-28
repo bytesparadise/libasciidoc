@@ -10,13 +10,10 @@ import (
 
 func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.FencedBlock) (string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
-	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
-		ctx.IncludeBlankLine = previousIncludeBlankLine
 	}()
 	ctx.WithinDelimitedBlock = true
-	ctx.IncludeBlankLine = true
 	result := &strings.Builder{}
 	lines := discardEmptyLines(b.Lines)
 	content, err := r.renderLines(ctx, lines)

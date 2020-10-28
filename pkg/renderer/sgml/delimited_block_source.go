@@ -58,13 +58,10 @@ func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Para
 
 func (r *sgmlRenderer) renderSourceLines(ctx *renderer.Context, b types.ListingBlock) (string, string, string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
-	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
-		ctx.IncludeBlankLine = previousIncludeBlankLine
 	}()
 	ctx.WithinDelimitedBlock = true
-	ctx.IncludeBlankLine = true
 
 	lines := discardEmptyLines(b.Lines)
 	highlighter, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)

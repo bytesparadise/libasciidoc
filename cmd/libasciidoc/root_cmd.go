@@ -10,7 +10,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	logsupport "github.com/bytesparadise/libasciidoc/pkg/log"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -36,7 +35,11 @@ func NewRootCmd() *cobra.Command {
 				fmt.Fprintf(cmd.OutOrStderr(), "unable to parse log level '%v'", logLevel)
 				return err
 			}
-			logsupport.Setup(log.WarnLevel)
+			log.SetFormatter(&log.TextFormatter{
+				EnvironmentOverrideColors: true,
+				DisableLevelTruncation:    true,
+				DisableTimestamp:          true,
+			})
 			log.SetLevel(lvl)
 			log.SetOutput(cmd.OutOrStdout())
 			return nil
