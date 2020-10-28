@@ -49,7 +49,70 @@ some *bold* content
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("with title, paragraph and sourcecode block", func() {
+			It("with title, paragraph and example block", func() {
+				source := `.a title
+****
+some *bold* content
+
+====
+foo
+bar
+====
+****`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.SidebarBlock{
+							Attributes: types.Attributes{
+								types.AttrTitle: "a title",
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "some ",
+											},
+											types.QuotedText{
+												Kind: types.Bold,
+												Elements: []interface{}{
+													types.StringElement{
+														Content: "bold",
+													},
+												},
+											},
+											types.StringElement{
+												Content: " content",
+											},
+										},
+									},
+								},
+								types.BlankLine{},
+								types.ExampleBlock{
+									Elements: []interface{}{
+										types.Paragraph{
+											Lines: [][]interface{}{
+												{
+													types.StringElement{
+														Content: "foo",
+													},
+												},
+												{
+													types.StringElement{
+														Content: "bar",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("with title, paragraph and source block", func() {
 				source := `.a title
 ****
 some *bold* content

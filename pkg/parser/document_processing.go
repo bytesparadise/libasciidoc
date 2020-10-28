@@ -75,6 +75,6 @@ func ParseRawDocument(r io.Reader, config configuration.Configuration, options .
 	} else if doc, ok := result.(types.RawDocument); ok {
 		return doc, nil
 	} else {
-		return types.RawDocument{}, fmt.Errorf("unexpected type of raw lines: '%T'", result)
+		return types.RawDocument{}, fmt.Errorf("unexpected type of content: '%T'", result)
 	}
 }

@@ -13,13 +13,10 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Listing
 		return r.renderSourceBlock(ctx, b)
 	}
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
-	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
-		ctx.IncludeBlankLine = previousIncludeBlankLine
 	}()
 	ctx.WithinDelimitedBlock = true
-	ctx.IncludeBlankLine = true
 	result := &strings.Builder{}
 	lines := discardEmptyLines(b.Lines)
 	content, err := r.renderLines(ctx, lines)

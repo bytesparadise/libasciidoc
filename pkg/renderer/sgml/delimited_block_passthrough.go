@@ -12,13 +12,10 @@ func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b types.Pas
 	result := &strings.Builder{}
 	lines := discardEmptyLines(b.Lines)
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
-	previousIncludeBlankLine := ctx.IncludeBlankLine
 	defer func() {
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
-		ctx.IncludeBlankLine = previousIncludeBlankLine
 	}()
 	ctx.WithinDelimitedBlock = true
-	ctx.IncludeBlankLine = true
 	content, err := r.renderLines(ctx, lines)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render passthrough")

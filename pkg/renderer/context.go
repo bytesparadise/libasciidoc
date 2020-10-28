@@ -12,7 +12,6 @@ type Context struct {
 	// TableOfContents exists even if the document did not specify the `:toc:` attribute.
 	// It will take into account the configured `:toclevels:` attribute value.
 	TableOfContents      types.TableOfContents
-	IncludeBlankLine     bool
 	WithinDelimitedBlock bool
 	EncodeSpecialChars   bool
 	WithinList           int
