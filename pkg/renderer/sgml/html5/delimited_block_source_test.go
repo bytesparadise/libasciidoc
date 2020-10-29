@@ -223,6 +223,20 @@ a note
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with nowrap option", func() {
+			source := `[source%nowrap,go]
+----
+const Cookie = "cookie"
+----`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">const Cookie = "cookie"</code></pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		Context("with syntax highlighting", func() {
 
 			It("with callouts and syntax highlighting", func() {
@@ -409,7 +423,25 @@ type Foo struct{
 ` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
-		})
 
+			It("with nowrap option", func() {
+				source := `:source-highlighter: pygments
+:pygments-style: manni
+:pygments-css: style
+:pygments-linenums-mode: inline
+
+[source%nowrap,go]
+----
+const Cookie = "cookie"
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight nowrap"><code data-lang="go"><span style="color:#069;font-weight:bold">const</span> Cookie = <span style="color:#c30">&#34;cookie&#34;</span></code></pre>
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+		})
 	})
 })

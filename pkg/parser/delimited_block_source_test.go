@@ -208,6 +208,32 @@ a note
 				}
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
+
+			It("with nowrap option", func() {
+				source := `[source%nowrap,go]
+----
+const Cookie = "cookie"
+----`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.ListingBlock{
+							Attributes: types.Attributes{
+								types.AttrBlockKind:         types.Source,
+								types.AttrSourceBlockOption: "nowrap",
+								types.AttrLanguage:          "go",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: `const Cookie = "cookie"`,
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
 	})
 

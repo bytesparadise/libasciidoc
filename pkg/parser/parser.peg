@@ -312,10 +312,13 @@ AdmonitionMarkerAttribute <- "[" k:(AdmonitionKind) "]" Space* EOL {
 
 // a paragraph or a delimited block may contain source code in a given language
 SourceAttributes <- "[source" 
+    option:("%nowrap" {
+        return "nowrap", nil
+    })?
     language:("," attr:(StandaloneAttributeValue)? { return attr, nil })? 
     others:("," attr:(GenericAttribute)? { return attr, nil })* 
     "]" Space* EOL {
-    return types.NewSourceAttributes(language, others.([]interface{})...)
+    return types.NewSourceAttributes(language, option, others.([]interface{})...)
 }
 
 // one or more attributes. eg: [foo, key1=value1, key2 = value2 , ]
