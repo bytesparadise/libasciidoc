@@ -417,6 +417,9 @@ const (
 	Source BlockKind = "source"
 	// Passthrough a passthrough block
 	Passthrough BlockKind = "passthrough"
+
+	// AttrSourceBlockOption the option set on a source block, using the `source%<option>` attribute
+	AttrSourceBlockOption = "source-option"
 )
 
 // ------------------------------------------

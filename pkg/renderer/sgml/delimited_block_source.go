@@ -25,12 +25,14 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.ListingB
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render source block roles")
 	}
+	option := b.Attributes.GetAsStringWithDefault(types.AttrSourceBlockOption, "")
 	result := &bytes.Buffer{}
 	err = r.sourceBlock.Execute(result, struct {
 		ID                string
 		Title             string
 		Roles             string
 		Language          string
+		Option            string
 		SyntaxHighlighter string
 		Content           string
 	}{
@@ -39,6 +41,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.ListingB
 		SyntaxHighlighter: highlighter,
 		Roles:             roles,
 		Language:          language,
+		Option:            option,
 		Content:           content,
 	})
 

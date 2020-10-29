@@ -318,12 +318,15 @@ func NewListingBlockAttribute() (Attributes, error) {
 }
 
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
-func NewSourceAttributes(language interface{}, others ...interface{}) (Attributes, error) {
+func NewSourceAttributes(language interface{}, option interface{}, others ...interface{}) (Attributes, error) {
 	result := Attributes{
 		AttrBlockKind: Source,
 	}
 	if language, ok := language.(string); ok {
 		result[AttrLanguage] = strings.TrimSpace(language)
+	}
+	if option, ok := option.(string); ok {
+		result[AttrSourceBlockOption] = strings.TrimSpace(option)
 	}
 	for _, other := range others {
 		result.Add(other)
