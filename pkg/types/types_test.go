@@ -468,124 +468,6 @@ var _ = Describe("tag ranges", func() {
 
 })
 
-// var _ = Describe("location resolution", func() {
-
-// 	attrs := types.AttributesWithOverrides{
-// 		Content: map[string]interface{}{
-// 			"imagesdir":  "./images",
-// 			"includedir": "includes",
-// 			"foo":        "bar",
-// 		},
-// 		Overrides: map[string]string{},
-// 	}
-// 	DescribeTable("resolve URL",
-// 		func(actual types.Location, expected types.Location, expectedStr string) {
-// 			actual = actual.Resolve(attrs)
-// 			Expect(actual).To(Equal(expected))
-// 			Expect(actual.Stringify()).To(Equal(expectedStr))
-// 		},
-// 		Entry("includes/file.ext",
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "includes/file.ext",
-// 					},
-// 				},
-// 			},
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "./images/includes/file.ext",
-// 					},
-// 				},
-// 			},
-// 			"./images/includes/file.ext",
-// 		),
-// 		Entry("./{includedir}/file.ext",
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "./",
-// 					},
-// 					types.AttributeSubstitution{
-// 						Name: "includedir",
-// 					},
-// 					types.StringElement{
-// 						Content: "/file.ext",
-// 					},
-// 				},
-// 			},
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "./images/./includes/file.ext",
-// 					},
-// 				},
-// 			},
-// 			"./images/./includes/file.ext",
-// 		),
-// 		Entry("./{unknown}/file.ext",
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "./",
-// 					},
-// 					types.AttributeSubstitution{
-// 						Name: "unknown",
-// 					},
-// 					types.StringElement{
-// 						Content: "/file.ext",
-// 					},
-// 				},
-// 			},
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "./images/./{unknown}/file.ext",
-// 					},
-// 				},
-// 			},
-// 			"./images/./{unknown}/file.ext",
-// 		),
-// 		Entry("https://foo.bar",
-// 			types.Location{
-// 				Scheme: "https://",
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "foo.bar",
-// 					},
-// 				},
-// 			},
-// 			types.Location{
-// 				Scheme: "https://",
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "foo.bar",
-// 					},
-// 				},
-// 			},
-// 			"https://foo.bar",
-// 		),
-// 		Entry("/foo/bar",
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "/foo/bar",
-// 					},
-// 				},
-// 			},
-// 			types.Location{
-// 				Path: []interface{}{
-// 					types.StringElement{
-// 						Content: "/foo/bar",
-// 					},
-// 				},
-// 			},
-// 			"/foo/bar",
-// 		),
-// 	)
-// })
-
 var _ = DescribeTable("raw document attributes",
 	func(d types.RawDocument, expectation types.Attributes) {
 		Expect(d.Attributes()).To(Equal(expectation))
@@ -1202,3 +1084,53 @@ var _ = Describe("footnote replacements", func() {
 		})
 	})
 })
+
+var _ = DescribeTable("match for attribute with key and value",
+	func(key string, value interface{}, expected bool) {
+		// given
+		attributes := []interface{}{
+			types.Attribute{
+				Key:   types.AttrBlockKind,
+				Value: types.Quote,
+			},
+			types.Attributes{
+				types.AttrBlockKind: types.Verse,
+				types.AttrTitle:     "verse title",
+			},
+		}
+		// when
+		result := types.HasAttributeWithValue(attributes, key, value)
+
+		// then
+		Expect(result).To((Equal(expected)))
+
+	},
+	Entry("match for block-kind: verse", types.AttrBlockKind, types.Verse, true),
+	Entry("match for block-kind: quote", types.AttrBlockKind, types.Quote, true),
+	Entry("no match for block-kind: quote", types.AttrID, "unknown", false),
+)
+
+var _ = DescribeTable("no match attribute with key",
+	func(key string, expected bool) {
+		// given
+		attributes := []interface{}{
+			types.Attribute{
+				Key:   types.AttrBlockKind,
+				Value: types.Quote,
+			},
+			types.Attributes{
+				types.AttrBlockKind: types.Verse,
+				types.AttrTitle:     "verse title",
+			},
+		}
+		// when
+		result := types.HasNotAttribute(attributes, key)
+
+		// then
+		Expect(result).To((Equal(expected)))
+
+	},
+	Entry("match for block-kind: verse", types.AttrBlockKind, false),
+	Entry("match for block-kind: quote", types.AttrBlockKind, false),
+	Entry("no match for block-kind: quote", types.AttrID, true),
+)

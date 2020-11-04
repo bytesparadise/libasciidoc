@@ -51,7 +51,6 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 			a.appendContinuedListItemElement(block)
 		case types.BlankLine:
 			a.appendBlankline(block)
-
 		default:
 			a.appendBlock(block)
 		}

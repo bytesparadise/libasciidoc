@@ -188,6 +188,34 @@ foo
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
+			It("with caption", func() {
+				source := `[caption="a caption "]
+====
+foo
+====`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.ExampleBlock{
+							Attributes: types.Attributes{
+								types.AttrCaption: "a caption ", // trailing space is preserved
+							},
+							Elements: []interface{}{
+								types.Paragraph{
+									Lines: [][]interface{}{
+										{
+											types.StringElement{
+												Content: "foo",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
 			It("example block starting delimiter only", func() {
 				source := `====`
 				expected := types.DraftDocument{
@@ -450,7 +478,9 @@ some *example* content`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				result, err := ParseDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDocument(expected))
 			})
 		})
 	})

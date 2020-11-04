@@ -166,7 +166,9 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			result, err := ParseDraftDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDraftDocument(expected))
 		})
 		It("block image alt and named pair", func() {
 			source := "image::foo.png[\"Quoted, Here\", height=100]"
@@ -229,7 +231,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
-		It("block image alt, width, height, and named pair embedded quote)", func() {
+		It("block image alt, width, height, and named pair embedded quote", func() {
 			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100, test1=123 ,test2 = second \"test\" ]"
 			expected := types.DraftDocument{
 				Elements: []interface{}{

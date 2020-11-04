@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -134,58 +134,187 @@ const (
 	AttrSubstitutions = "subs"
 )
 
+// Attribute is a key/value pair wrapper
+type Attribute struct {
+	Key   string
+	Value interface{}
+}
+
+// Attributes the element attributes
+// a map[string]interface{} with some utility methods
+type Attributes map[string]interface{}
+
+// NewAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
+func NewAttributes(attributes ...interface{}) (Attributes, error) {
+	if len(attributes) == 0 {
+		return nil, nil
+	}
+	result := Attributes{}
+	for _, attr := range attributes {
+		switch attr := attr.(type) {
+		case Attribute:
+			result[attr.Key] = attr.Value
+		case Attributes: // when an there were multiple attributes, eg: `[quote,author,title]`
+			result.Add(attr)
+		default:
+			return nil, fmt.Errorf("unexpected type of attribute: '%[1]T' (%[1]v)", attr)
+		}
+	}
+	return result, nil
+}
+
+// NewAttributeGroup initializes an AttributeGroup
+// We always pass in an array of Attributes.  Special handling for certain attributes:
+//
+// AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
+// AttrRole - these are strings, we append them into an array
+// AttrOptions - comma separated list, we split and put into a map
+func NewAttributeGroup(attributes ...interface{}) (Attributes, error) {
+	if len(attributes) == 0 {
+		return nil, nil
+	}
+	result := Attributes{}
+	for _, item := range attributes {
+		if item == nil {
+			continue
+		}
+		var attrs Attributes
+		var err error
+		switch item := item.(type) {
+		case Attribute:
+			attrs = Attributes{
+				item.Key: item.Value,
+			}
+		case Attributes:
+			attrs = item
+		case []interface{}:
+			attrs, err = NewAttributeGroup(item...)
+			if err != nil {
+				return nil, err
+			}
+		default:
+			return nil, fmt.Errorf("unexpected type of attributes: %T", item)
+		}
+		for k, v := range attrs {
+			switch k {
+			case AttrID:
+				// The first ID set wins.
+				// if !result.Has(AttrID) {
+				result[AttrID] = v
+				result[AttrCustomID] = true
+				// }
+			case AttrRole:
+				result.append(AttrRole, v)
+			case AttrOptions, AttrOpts: // TODO handle the split in the `NewElementOption` func
+				if !result.Has(AttrOptions) {
+					result[AttrOptions] = map[string]bool{}
+				}
+				m := result[AttrOptions].(map[string]bool)
+				switch v := v.(type) {
+				case string:
+					for _, o := range strings.Split(v, ",") {
+						m[o] = true
+					}
+				case map[string]bool:
+					for o := range v {
+						m[o] = v[o]
+					}
+				}
+			default:
+				result[k] = v
+			}
+		}
+	}
+	if len(result) == 0 {
+		return nil, nil // don't retain groups with no attribute
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("new attribute group:")
+		spew.Fdump(log.StandardLogger().Out, result)
+	}
+	return result, nil
+}
+
+// HasAttributeWithValue checks that there is an entry for the given key/value pair
+func HasAttributeWithValue(attributes interface{}, key string, value interface{}) bool {
+	if attrs, ok := attributes.([]interface{}); ok {
+		for _, attr := range attrs {
+			switch attr := attr.(type) {
+			case Attribute:
+				if attr.Key == key && attr.Value == value {
+					return true
+				}
+			case Attributes:
+				if v, ok := attr[key]; ok && v == value {
+					return true
+				}
+			}
+		}
+	}
+	log.Debugf("no attribute '%s:%v' found in %v", key, value, attributes)
+	return false
+}
+
+// HasNotAttribute checks that there is no entry for the given key
+func HasNotAttribute(attributes interface{}, key string) bool {
+	if attrs, ok := attributes.([]interface{}); ok {
+		for _, attr := range attrs {
+			if attr, ok := attr.(Attribute); ok && attr.Key == key {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 // NewElementID initializes a new attribute map with a single entry for the ID using the given value
 func NewElementID(id interface{}) (Attributes, error) {
 	// log.Debugf("initializing a new ElementID with ID=%s", id)
-	id, err := Reduce(id)
-	if err != nil {
-		return nil, err
-	}
 	return Attributes{
-		AttrID:       id,
+		AttrID:       Reduce(id),
 		AttrCustomID: true,
 	}, nil
 }
 
 // NewElementOption sets a boolean option.
-func NewElementOption(options interface{}) (Attributes, error) {
-	options, err := Reduce(options)
-	if err != nil {
-		return nil, err
-	}
-	return Attributes{
-		AttrOptions: options,
+func NewElementOption(options interface{}) (Attribute, error) {
+	return Attribute{
+		Key:   AttrOptions,
+		Value: Reduce(options),
 	}, nil
 }
 
-// NewElementNamedAttr a named (or positional) element
-func NewElementNamedAttr(key string, value interface{}) (Attributes, error) {
-	value, err := Reduce(value)
-	if err != nil {
-		return nil, err
-	}
+// NewNamedAttribute a named (or positional) element
+func NewNamedAttribute(key string, value interface{}) (Attribute, error) {
+	value = Reduce(value)
 	if key == AttrOpts { // Handle the alias
 		key = AttrOptions
 	}
-	switch key {
-	case AttrRole:
-		return Attributes{key: ElementRole{value}}, nil
-	default:
-		return Attributes{key: value}, nil
+	if key == AttrRole {
+		value = ElementRole{value} // wrap value in an `ElementRole` type
 	}
+	log.Debugf("new named attribute: '%[1]s':'%[2]v' (%[2]T)", key, value)
+	return Attribute{
+		Key:   key,
+		Value: value,
+	}, nil
 }
 
 // NewInlineElementID initializes a new attribute map with a single entry for the ID using the given value
-func NewInlineElementID(id string) (Attributes, error) {
+func NewInlineElementID(id string) (Attribute, error) {
 	log.Debugf("initializing a new inline ElementID with ID=%s", id)
-	return Attributes{AttrID: id}, nil
+	return Attribute{
+		Key:   AttrID,
+		Value: id,
+	}, nil
 }
 
 // NewElementTitle initializes a new attribute map with a single entry for the title using the given value
-func NewElementTitle(title string) (Attributes, error) {
-	// log.Debugf("initializing a new ElementTitle with content=%s", title)
-	return Attributes{
-		AttrTitle: title,
+func NewElementTitle(title string) (Attribute, error) {
+	log.Debugf("initializing a new ElementTitle with content=%s", title)
+	return Attribute{
+		Key:   AttrTitle,
+		Value: title,
 	}, nil
 }
 
@@ -193,88 +322,41 @@ func NewElementTitle(title string) (Attributes, error) {
 type ElementRole []interface{}
 
 // NewElementRole initializes a new attribute map with a single entry for the title using the given value
-func NewElementRole(role interface{}) (Attributes, error) {
+func NewElementRole(role interface{}) (Attribute, error) {
 	// log.Debugf("initializing a new ElementRole with content=%s", role)
-	role, err := Reduce(role)
-	if err != nil {
-		return nil, err
-	}
+	role = Reduce(role)
 	switch role := role.(type) {
 	case []interface{}:
-		return Attributes{
-			AttrRole: ElementRole(role), // convert
+		return Attribute{
+			Key:   AttrRole,
+			Value: ElementRole(role), // convert
 		}, nil
 	default:
-		return Attributes{
-			AttrRole: ElementRole{role}, // wrap
+		return Attribute{
+			Key:   AttrRole,
+			Value: ElementRole{role}, // wrap
 		}, nil
 	}
 }
 
 // NewElementStyle initializes a new attribute map with a single entry for the style
-func NewElementStyle(style interface{}) (Attributes, error) {
-	style, err := Reduce(style)
-	if err != nil {
-		return nil, err
-	}
-	return Attributes{AttrStyle: style}, nil
+func NewElementStyle(style interface{}) (Attribute, error) {
+	return Attribute{
+		Key:   AttrStyle,
+		Value: Reduce(style),
+	}, nil
 }
 
 // NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
-func NewAdmonitionAttribute(k AdmonitionKind) (Attributes, error) {
-	return Attributes{AttrAdmonitionKind: k}, nil
-}
-
-// NewAttributeGroup initializes a group of attributes from the given generic attributes.
-func NewAttributeGroup(attributes []interface{}) (Attributes, error) {
-	log.Debugf("initializing a new AttributeGroup with %v", attributes)
-	result := make(Attributes)
-	for _, a := range attributes {
-		// log.Debugf("processing attribute element of type %T", a)
-		if a, ok := a.(Attributes); ok {
-			for k, v := range a {
-				switch k {
-				case AttrRole:
-					result[k] = ElementRole{v}
-				default:
-					result[k] = v
-				}
-			}
-		} else {
-			return result, errors.Errorf("unable to process element of type '%[1]T': '%[1]s'", a)
-		}
-	}
-	// log.Debugf("initialized a new AttributeGroup: %v", result)
-	return result, nil
-}
-
-// NewGenericAttribute initializes a new ElementAttribute from the given key and optional value
-func NewGenericAttribute(key string, value interface{}) (Attributes, error) {
-	result := make(map[string]interface{})
-	k := Apply(key,
-		// remove surrounding quotes
-		func(s string) string {
-			return strings.Trim(s, "\"")
-		},
-		strings.TrimSpace)
-	result[k] = nil
-	if value, ok := value.(string); ok {
-		v := Apply(value,
-			// remove surrounding quotes
-			func(s string) string {
-				return strings.Trim(s, "\"")
-			},
-			strings.TrimSpace)
-		if len(v) > 0 {
-			result[k] = v
-		}
-	}
-	// log.Debugf("initialized a new Attributes: %v", result)
-	return result, nil
+func NewAdmonitionAttribute(kind AdmonitionKind) (Attribute, error) {
+	return Attribute{
+		Key:   AttrAdmonitionKind,
+		Value: kind,
+	}, nil
 }
 
 // NewQuoteAttributes initializes a new map of attributes for a verse paragraph
-func NewQuoteAttributes(kind string, author, title interface{}) (map[string]interface{}, error) {
+func NewQuoteAttributes(kind string, author, title interface{}) (Attributes, error) {
 	result := make(map[string]interface{}, 3)
 	switch kind {
 	case "verse":
@@ -298,23 +380,35 @@ func NewQuoteAttributes(kind string, author, title interface{}) (map[string]inte
 }
 
 // NewLiteralBlockAttribute initializes a new attribute map with a single entry for the `literal` kind of block
-func NewLiteralBlockAttribute() (Attributes, error) {
-	return Attributes{AttrBlockKind: Literal}, nil
+func NewLiteralBlockAttribute() (Attribute, error) {
+	return Attribute{
+		Key:   AttrBlockKind,
+		Value: Literal,
+	}, nil
 }
 
 // NewPassthroughBlockAttribute initializes a new attribute map with a single entry for the `passthrough` kind of block
-func NewPassthroughBlockAttribute() (Attributes, error) {
-	return Attributes{AttrBlockKind: Passthrough}, nil
+func NewPassthroughBlockAttribute() (Attribute, error) {
+	return Attribute{
+		Key:   AttrBlockKind,
+		Value: Passthrough,
+	}, nil
 }
 
 // NewExampleBlockAttribute initializes a new attribute map with a single entry for the `example`` kind of block
-func NewExampleBlockAttribute() (Attributes, error) {
-	return Attributes{AttrBlockKind: Example}, nil
+func NewExampleBlockAttribute() (Attribute, error) {
+	return Attribute{
+		Key:   AttrBlockKind,
+		Value: Example,
+	}, nil
 }
 
 // NewListingBlockAttribute initializes a new attribute map with a single entry for the `listing`` kind of block
-func NewListingBlockAttribute() (Attributes, error) {
-	return Attributes{AttrBlockKind: Listing}, nil
+func NewListingBlockAttribute() (Attribute, error) {
+	return Attribute{
+		Key:   AttrBlockKind,
+		Value: Listing,
+	}, nil
 }
 
 // NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
@@ -329,13 +423,10 @@ func NewSourceAttributes(language interface{}, option interface{}, others ...int
 		result[AttrSourceBlockOption] = strings.TrimSpace(option)
 	}
 	for _, other := range others {
-		result.Add(other)
+		result = result.Add(other)
 	}
 	return result, nil
 }
-
-// Attributes is a map[string]interface{} with some utility methods
-type Attributes map[string]interface{}
 
 // Set sets the key/value entry in the Attributes.
 func (a Attributes) Set(key string, value interface{}) Attributes {
@@ -347,21 +438,37 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 }
 
 // Add adds the given attributes to the current ones
-func (a Attributes) Add(attrs interface{}) Attributes {
-	if attrs, ok := attrs.(Attributes); ok {
-		if len(attrs) == 0 {
+func (a Attributes) Add(attr interface{}) Attributes {
+	log.Debugf("adding attribute of type '%[1]T': %[1]v", attr)
+	switch attr := attr.(type) {
+	case Attribute:
+		if a == nil {
+			a = Attributes{}
+		}
+		a[attr.Key] = attr.Value
+		if attr.Key == AttrID {
+			a[AttrCustomID] = true
+		}
+	case Attributes:
+		if len(attr) == 0 {
 			return a
 		}
 		if a == nil {
 			a = Attributes{}
 		}
-		for k, v := range attrs {
+		for k, v := range attr {
 			a[k] = v
 			if k == AttrID {
 				a[AttrCustomID] = true
 			}
 		}
+	case []interface{}:
+		for i := range attr {
+			a.Add(attr[i])
+		}
 	}
+
+	// will return nil if it was nil before and nothing was added
 	return a
 }
 
@@ -473,121 +580,3 @@ func (a Attributes) Positionals() [][]interface{} {
 	}
 	return result
 }
-
-// NewAttributes retrieves the ElementID, ElementTitle and ElementInlineLink from the given slice of attributes
-func NewAttributes(attributes interface{}) (Attributes, error) {
-	if attributes == nil {
-		return nil, nil
-	}
-	switch attrs := attributes.(type) {
-	case []interface{}:
-		// nested case, because of the grammar syntax,
-		// eg: `attributes:(ElementAttribute* LiteralAttribute ElementAttribute*)`
-		// which is used to ensure that a `LiteralAttribute` element is set amongst the attributes
-		if len(attrs) == 0 {
-			return nil, nil
-		}
-		result := Attributes{}
-		for _, a := range attrs {
-			r, err := NewAttributes(a)
-			if err != nil {
-				return nil, err
-			}
-			for k, v := range r {
-				result[k] = v
-			}
-		}
-		return result, nil
-	case Attributes:
-		return attrs, nil
-	case map[string]interface{}:
-		if len(attrs) == 0 {
-			return nil, nil
-		}
-		result := Attributes{}
-		for k, v := range attrs {
-			result[k] = v
-		}
-		return result, nil
-	default:
-		return nil, fmt.Errorf("unexpected type of attributes: '%T'", attrs)
-	}
-}
-
-// NewElementAttributes retrieves the attributes for elements.
-// We always pass in an array of Attributes.  Special handling for certain attributes:
-//
-// AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
-// AttrRole - these are strings, we append them into an array
-// AttrOptions - comma separated list, we split and put into a map
-func NewElementAttributes(attributes ...interface{}) (Attributes, error) {
-	if len(attributes) == 0 {
-		return nil, nil
-	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug("new element attributes:")
-	// 	spew.Fdump(log.StandardLogger().Out, attributes)
-	// }
-	var err error
-	result := Attributes{}
-	for _, item := range attributes {
-		if item == nil {
-			continue
-		}
-		var attrs Attributes
-		switch item := item.(type) {
-		case Attributes:
-			attrs = item
-		case []interface{}:
-			attrs, err = NewElementAttributes(item...)
-			if err != nil {
-				return nil, err
-			}
-		default:
-			return nil, fmt.Errorf("unexpected type of attributes: %T", item)
-		}
-		for k, v := range attrs {
-			switch k {
-			case AttrID:
-				// The first ID set wins.
-				if !result.Has(AttrID) {
-					result[AttrID] = v
-					result[AttrCustomID] = true
-				}
-			case AttrRole:
-				result.append(AttrRole, v)
-			case AttrOptions, AttrOpts:
-				if !result.Has(AttrOptions) {
-					result[AttrOptions] = map[string]bool{}
-				}
-				m := result[AttrOptions].(map[string]bool)
-				switch v := v.(type) {
-				case string:
-					for _, o := range strings.Split(v, ",") {
-						m[o] = true
-					}
-				case map[string]bool:
-					for o := range v {
-						m[o] = v[o]
-					}
-				}
-			default:
-				result[k] = v
-			}
-
-		}
-	}
-	if len(result) == 0 {
-		return nil, nil
-	}
-	return result, nil
-}
-
-// func resolveAlt(path Location) string {
-// 	_, filename := filepath.Split(path.Stringify())
-// 	ext := filepath.Ext(filename)
-// 	if ext != "" {
-// 		return strings.TrimSuffix(filename, ext)
-// 	}
-// 	return filename
-// }

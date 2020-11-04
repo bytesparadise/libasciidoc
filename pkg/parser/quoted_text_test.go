@@ -1068,12 +1068,12 @@ var _ = Describe("quoted texts", func() {
 								{
 									types.QuotedText{
 										Kind: types.Italic,
-										Elements: []interface{}{
-											types.StringElement{Content: "italics"},
-										},
 										Attributes: types.Attributes{
 											types.AttrRole: types.ElementRole{"myrole"},
 											"and":          "nothing",
+										},
+										Elements: []interface{}{
+											types.StringElement{Content: "italics"},
 										},
 									},
 								},
@@ -1351,7 +1351,9 @@ var _ = Describe("quoted texts", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 		})

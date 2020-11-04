@@ -158,7 +158,9 @@ Item1:: foo`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			result, err := ParseDraftDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDraftDocument(expected))
 		})
 
 		It("with a single term and a blank line", func() {
