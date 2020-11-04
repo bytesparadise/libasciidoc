@@ -22,7 +22,7 @@ elements:
 				continue elements
 			}
 		}
-		// log.Debugf("keeping element of type '%T'", element)
+		log.Debugf("keeping element of type '%T'", element)
 
 		// also, process the content if the element to retain
 		switch e := element.(type) {

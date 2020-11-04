@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
@@ -22,7 +23,7 @@ type RawDocument struct {
 
 // NewRawDocument initializes a new `RawDocument` from the given lines
 func NewRawDocument(frontMatter interface{}, elements []interface{}) (RawDocument, error) {
-	log.Debugf("initializing a new RawDocument with %d block element(s)", len(elements))
+	log.Debugf("new RawDocument with %d block element(s)", len(elements))
 	result := RawDocument{
 		Elements: elements,
 	}
@@ -113,14 +114,20 @@ type Stringer interface {
 	Stringify() string
 }
 
+// WithPlaceholdersInElements interface for all blocks in which elements can
+// be replaced with placeholders while applying the substitutions
 type WithPlaceholdersInElements interface {
 	RestoreElements(placeholders map[string]interface{}) interface{}
 }
 
+// WithPlaceholdersInAttributes interface for all blocks in which attribute content can
+// be replaced with placeholders while applying the substitutions
 type WithPlaceholdersInAttributes interface {
 	RestoreAttributes(placeholders map[string]interface{}) interface{}
 }
 
+// WithPlaceholdersInLocation interface for all blocks in which location elements can
+// be replaced with placeholders while applying the substitutions
 type WithPlaceholdersInLocation interface {
 	RestoreLocation(placeholders map[string]interface{}) interface{}
 }
@@ -224,7 +231,7 @@ type DocumentAuthor struct {
 
 // NewDocumentAuthors converts the given authors into an array of `DocumentAuthor`
 func NewDocumentAuthors(authors []interface{}) ([]DocumentAuthor, error) {
-	log.Debugf("initializing a new array of document authors from `%+v`", authors)
+	log.Debugf("new array of document authors from `%+v`", authors)
 	result := make([]DocumentAuthor, len(authors))
 	for i, author := range authors {
 		switch author := author.(type) {
@@ -312,7 +319,7 @@ type AttributeDeclaration struct {
 // NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
 func NewAttributeDeclaration(name string, value interface{}) (AttributeDeclaration, error) {
 	attrValue, _ := value.(string)
-	log.Debugf("initialized a new AttributeDeclaration: '%s' -> '%s'", name, attrValue)
+	log.Debugf("new AttributeDeclaration: '%s' -> '%s'", name, attrValue)
 	return AttributeDeclaration{
 		Name:  name,
 		Value: attrValue,
@@ -336,7 +343,7 @@ type AttributeReset struct {
 
 // NewAttributeReset initializes a new Document Attribute Resets.
 func NewAttributeReset(attrName string) (AttributeReset, error) {
-	log.Debugf("initialized a new AttributeReset: '%s'", attrName)
+	log.Debugf("new AttributeReset: '%s'", attrName)
 	return AttributeReset{Name: attrName}, nil
 }
 
@@ -354,7 +361,7 @@ func NewAttributeSubstitution(name string) (interface{}, error) {
 	if isPrefedinedAttribute(name) {
 		return PredefinedAttribute{Name: name}, nil
 	}
-	log.Debugf("initialized a new AttributeSubstitution: '%s'", name)
+	log.Debugf("new AttributeSubstitution: '%s'", name)
 	return AttributeSubstitution{Name: name}, nil
 }
 
@@ -455,31 +462,23 @@ type UserMacro struct {
 }
 
 // NewUserMacroBlock returns an UserMacro
-func NewUserMacroBlock(name string, value string, attributes interface{}, raw string) (UserMacro, error) {
-	attrs, err := NewAttributes(attributes)
-	if err != nil {
-		return UserMacro{}, errors.Wrap(err, "failed to initialize a UserMacro element")
-	}
+func NewUserMacroBlock(name string, value string, attributes Attributes, raw string) (UserMacro, error) {
 	return UserMacro{
 		Name:       name,
 		Kind:       BlockMacro,
 		Value:      value,
-		Attributes: attrs,
+		Attributes: attributes,
 		RawText:    raw,
 	}, nil
 }
 
 // NewInlineUserMacro returns an UserMacro
-func NewInlineUserMacro(name, value string, attributes interface{}, raw string) (UserMacro, error) {
-	attrs, err := NewAttributes(attributes)
-	if err != nil {
-		return UserMacro{}, errors.Wrap(err, "failed to initialize a UserMacro element")
-	}
+func NewInlineUserMacro(name, value string, attributes Attributes, raw string) (UserMacro, error) {
 	return UserMacro{
 		Name:       name,
 		Kind:       InlineMacro,
 		Value:      value,
-		Attributes: attrs,
+		Attributes: attributes,
 		RawText:    raw,
 	}, nil
 }
@@ -523,7 +522,7 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 	if err != nil {
 		return FrontMatter{}, errors.Wrapf(err, "failed to parse yaml content in front-matter of document")
 	}
-	log.Debugf("initialized a new FrontMatter with attributes: %+v", attributes)
+	log.Debugf("new FrontMatter with attributes: %+v", attributes)
 	return FrontMatter{Content: attributes}, nil
 }
 
@@ -540,8 +539,8 @@ type Section struct {
 }
 
 // NewSection initializes a new `Section` from the given section title and elements
-func NewSection(level int, title []interface{}, ids []interface{}, attributes interface{}) (Section, error) {
-	attrs, err := NewAttributes(attributes)
+func NewSection(level int, title []interface{}, ids []interface{}, attributes []interface{}) (Section, error) {
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return Section{}, errors.Wrapf(err, "failed to initialize a Section element")
 	}
@@ -572,7 +571,12 @@ func (s Section) ReplaceElements(title []interface{}) interface{} {
 
 // ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
 func (s Section) ResolveID(docAttributes AttributesWithOverrides) (Section, error) {
-	if !s.Attributes.GetAsBool(AttrCustomID) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("section attributes:")
+		spew.Fdump(log.StandardLogger().Out, s.Attributes)
+	}
+
+	if !s.Attributes.Has(AttrID) {
 		log.Debugf("resolving section id")
 		separator := docAttributes.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
 		replacement, err := ReplaceNonAlphanumerics(s.Title, separator)
@@ -606,7 +610,7 @@ func (s Section) ReplaceFootnotes(notes *Footnotes) interface{} {
 
 // NewDocumentHeader initializes a new Section with level 0 which can have authors and a revision, among other attributes
 func NewDocumentHeader(title []interface{}, authors interface{}, revision interface{}) (Section, error) {
-	// log.Debugf("initializing a new Section level 0 with authors '%v' and revision '%v'", authors, revision)
+	// log.Debugf("new Section level 0 with authors '%v' and revision '%v'", authors, revision)
 	section, err := NewSection(0, title, nil, nil)
 	if err != nil {
 		return Section{}, err
@@ -741,7 +745,7 @@ type ContinuedListItemElement struct {
 
 // NewContinuedListItemElement returns a wrapper for an element which should be attached to a list item (same level or an ancestor)
 func NewContinuedListItemElement(element interface{}) (ContinuedListItemElement, error) {
-	// log.Debugf("initializing a new continued list element for element of type %T", element)
+	// log.Debugf("new continued list element for element of type %T", element)
 	return ContinuedListItemElement{
 		Offset:  0,
 		Element: element,
@@ -835,9 +839,9 @@ type OrderedListItem struct {
 var _ ListItem = &OrderedListItem{}
 
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
-func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes interface{}) (OrderedListItem, error) {
-	log.Debugf("initializing a new OrderedListItem")
-	attrs, err := NewAttributes(attributes)
+func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes []interface{}) (OrderedListItem, error) {
+	log.Debugf("new OrderedListItem")
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return OrderedListItem{}, errors.Wrapf(err, "failed to initialize an OrderedListItem element")
 	}
@@ -932,10 +936,10 @@ type UnorderedListItem struct {
 }
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
-func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes interface{}) (UnorderedListItem, error) {
-	log.Debugf("initializing a new UnorderedListItem with %d elements", len(elements))
-	// log.Debugf("initializing a new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
-	attrs, err := NewAttributes(attributes)
+func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes []interface{}) (UnorderedListItem, error) {
+	log.Debugf("new UnorderedListItem with %d elements", len(elements))
+	// log.Debugf("new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return UnorderedListItem{}, errors.Wrapf(err, "failed to initialize an UnorderedListItem element")
 	}
@@ -1060,7 +1064,7 @@ func NewUnorderedListItemPrefix(s BulletStyle, l int) (UnorderedListItemPrefix, 
 
 // NewListItemContent initializes a new `UnorderedListItemContent`
 func NewListItemContent(content []interface{}) ([]interface{}, error) {
-	// log.Debugf("initializing a new ListItemContent with %d line(s)", len(content))
+	// log.Debugf("new ListItemContent with %d line(s)", len(content))
 	elements := make([]interface{}, 0)
 	for _, element := range content {
 		// log.Debugf("Processing line element of type %T", element)
@@ -1071,7 +1075,7 @@ func NewListItemContent(content []interface{}) ([]interface{}, error) {
 			elements = append(elements, element)
 		}
 	}
-	// log.Debugf("initialized a new ListItemContent with %d elements(s)", len(elements))
+	// log.Debugf("new ListItemContent with %d elements(s)", len(elements))
 	// no need to return an empty ListItemContent
 	if len(elements) == 0 {
 		return nil, nil
@@ -1127,9 +1131,9 @@ type LabeledListItem struct {
 var _ ListItem = &LabeledListItem{}
 
 // NewLabeledListItem initializes a new LabeledListItem
-func NewLabeledListItem(level int, term []interface{}, description interface{}, attributes interface{}) (LabeledListItem, error) {
-	log.Debugf("initializing a new LabeledListItem")
-	attrs, err := NewAttributes(attributes)
+func NewLabeledListItem(level int, term []interface{}, description interface{}, attributes []interface{}) (LabeledListItem, error) {
+	log.Debugf("new LabeledListItem")
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return LabeledListItem{}, errors.Wrapf(err, "failed to initialize a LabeledListItem element")
 	}
@@ -1187,8 +1191,9 @@ const AttrHardBreaks = "%hardbreaks"
 const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
-func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error) {
-	attrs, err := NewAttributes(attributes)
+func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, error) {
+	log.Debugf("new paragraph with attributes: '%v'", attributes)
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph")
 	}
@@ -1283,13 +1288,9 @@ func (p Paragraph) ReplaceFootnotes(notes *Footnotes) interface{} {
 }
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
-func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes interface{}) (Paragraph, error) {
+func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes []interface{}) (Paragraph, error) {
 	log.Debugf("new admonition paragraph")
-	attrs, err := NewAttributes(attributes)
-	if err != nil {
-		return Paragraph{}, errors.Wrapf(err, "failed to initialize an Admonition Paragraph element")
-	}
-	p, err := NewParagraph(lines, attrs)
+	p, err := NewParagraph(lines, attributes)
 	if err != nil {
 		return Paragraph{}, err
 	}
@@ -1336,7 +1337,7 @@ type InternalCrossReference struct {
 
 // NewInternalCrossReference initializes a new `InternalCrossReference` from the given ID
 func NewInternalCrossReference(id string, label interface{}) (InternalCrossReference, error) {
-	log.Debugf("initializing a new InternalCrossReference with ID=%s", id)
+	log.Debugf("new InternalCrossReference with ID=%s", id)
 	var l string
 	if label, ok := label.(string); ok {
 		l = Apply(label, strings.TrimSpace)
@@ -1359,7 +1360,7 @@ func NewExternalCrossReference(location Location, attributes Attributes) (Extern
 	if l, ok := attributes["positional-1"].([]interface{}); ok {
 		label = l
 	}
-	log.Debugf("initializing a new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attributes[AttrInlineLinkText])
+	log.Debugf("new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attributes[AttrInlineLinkText])
 	return ExternalCrossReference{
 		Location: location,
 		Label:    label,
@@ -1398,17 +1399,13 @@ type ImageBlock struct {
 }
 
 // NewImageBlock initializes a new `ImageBlock`
-func NewImageBlock(location Location, inlineAttributes Attributes, attributes interface{}) (ImageBlock, error) {
-	attrs, err := NewAttributes(attributes)
+func NewImageBlock(location Location, inlineAttributes Attributes, attributes []interface{}) (ImageBlock, error) {
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return ImageBlock{}, errors.Wrapf(err, "failed to initialize an ImageBlock element")
 	}
 	// inline attributes trump block attributes
-	if attrs == nil && len(inlineAttributes) > 0 {
-		attrs = inlineAttributes
-	} else if len(inlineAttributes) > 0 {
-		attrs = attrs.Add(inlineAttributes)
-	}
+	attrs = attrs.Add(inlineAttributes)
 	return ImageBlock{
 		Location:   location,
 		Attributes: attrs,
@@ -1455,10 +1452,14 @@ func NewInlineImage(location Location, attributes Attributes, imagesdir interfac
 	// if !attributes.Has(AttrImageAlt) {
 	// 	attributes = attributes.Set(AttrImageAlt, resolveAlt(location))
 	// }
+	// attrs, err := NewAttributes(attributes...)
+	// if err != nil {
+	// 	return InlineImage{}, errors.Wrap(err, "failed to initialize a new inline image")
+	// }
 	location = location.WithPathPrefix(imagesdir)
 	return InlineImage{
-		Location:   location,
 		Attributes: attributes,
+		Location:   location,
 	}, nil
 }
 
@@ -1694,9 +1695,9 @@ type ExampleBlock struct {
 }
 
 // NewExampleBlock initializes a new `ExampleBlock` with the given elements
-func NewExampleBlock(elements []interface{}, attributes interface{}) (ExampleBlock, error) {
-	log.Debugf("initializing a new ExampleBlock with %d blocks", len(elements))
-	attrs, err := NewAttributes(attributes)
+func NewExampleBlock(elements []interface{}, attributes []interface{}) (ExampleBlock, error) {
+	log.Debugf("new ExampleBlock with %d blocks", len(elements))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return ExampleBlock{}, errors.Wrap(err, "failed to initialize a new example block")
 	}
@@ -1739,9 +1740,9 @@ type QuoteBlock struct {
 }
 
 // NewQuoteBlock initializes a new `QuoteBlock` with the given elements
-func NewQuoteBlock(elements []interface{}, attributes interface{}) (QuoteBlock, error) {
-	log.Debugf("initializing a new QuoteBlock with %d blocks", len(elements))
-	attrs, err := NewAttributes(attributes)
+func NewQuoteBlock(elements []interface{}, attributes []interface{}) (QuoteBlock, error) {
+	log.Debugf("new QuoteBlock with %d blocks", len(elements))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return QuoteBlock{}, errors.Wrap(err, "failed to initialize a new quote block")
 	}
@@ -1784,9 +1785,9 @@ type SidebarBlock struct {
 }
 
 // NewSidebarBlock initializes a new `SidebarBlock` with the given elements
-func NewSidebarBlock(elements []interface{}, attributes interface{}) (SidebarBlock, error) {
-	log.Debugf("initializing a new SidebarBlock with %d blocks", len(elements))
-	attrs, err := NewAttributes(attributes)
+func NewSidebarBlock(elements []interface{}, attributes []interface{}) (SidebarBlock, error) {
+	log.Debugf("new SidebarBlock with %d blocks", len(elements))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return SidebarBlock{}, errors.Wrap(err, "failed to initialize a new sidebar block")
 	}
@@ -1829,9 +1830,9 @@ type FencedBlock struct {
 }
 
 // NewFencedBlock initializes a new `FencedBlock` with the given lines
-func NewFencedBlock(lines []interface{}, attributes interface{}) (FencedBlock, error) {
-	log.Debugf("initializing a new FencedBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes)
+func NewFencedBlock(lines []interface{}, attributes []interface{}) (FencedBlock, error) {
+	log.Debugf("new FencedBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return FencedBlock{}, errors.Wrap(err, "failed to initialize a new fenced block")
 	}
@@ -1878,9 +1879,9 @@ type ListingBlock struct {
 }
 
 // NewListingBlock initializes a new `ListingBlock` with the given lines
-func NewListingBlock(lines []interface{}, attributes interface{}) (ListingBlock, error) {
-	log.Debugf("initializing a new ListingBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes)
+func NewListingBlock(lines []interface{}, attributes []interface{}) (ListingBlock, error) {
+	log.Debugf("new ListingBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return ListingBlock{}, errors.Wrap(err, "failed to initialize a new listing block")
 	}
@@ -1927,9 +1928,9 @@ type VerseBlock struct {
 }
 
 // NewVerseBlock initializes a new `VerseBlock` with the given lines
-func NewVerseBlock(lines []interface{}, attributes interface{}) (VerseBlock, error) {
-	log.Debugf("initializing a new VerseBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes)
+func NewVerseBlock(lines []interface{}, attributes []interface{}) (VerseBlock, error) {
+	log.Debugf("new VerseBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return VerseBlock{}, errors.Wrap(err, "failed to initialize a new verse block")
 	}
@@ -1976,9 +1977,9 @@ type MarkdownQuoteBlock struct {
 }
 
 // NewMarkdownQuoteBlock initializes a new `MarkdownQuoteBlock` with the given lines
-func NewMarkdownQuoteBlock(lines []interface{}, attributes interface{}) (MarkdownQuoteBlock, error) {
-	log.Debugf("initializing a new MarkdownQuoteBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes)
+func NewMarkdownQuoteBlock(lines []interface{}, attributes []interface{}) (MarkdownQuoteBlock, error) {
+	log.Debugf("new MarkdownQuoteBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return MarkdownQuoteBlock{}, errors.Wrap(err, "failed to initialize a new markdown quote block")
 	}
@@ -2025,9 +2026,9 @@ func (b PassthroughBlock) ReplaceLines(lines [][]interface{}) interface{} {
 }
 
 // NewPassthroughBlock initializes a new `PassthroughBlock` with the given lines
-func NewPassthroughBlock(lines []interface{}, attributes interface{}) (PassthroughBlock, error) {
-	log.Debugf("initializing a new PassthroughBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes)
+func NewPassthroughBlock(lines []interface{}, attributes []interface{}) (PassthroughBlock, error) {
+	log.Debugf("new PassthroughBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return PassthroughBlock{}, errors.Wrap(err, "failed to initialize a new passthrough block")
 	}
@@ -2048,9 +2049,9 @@ type CommentBlock struct {
 }
 
 // NewCommentBlock initializes a new `CommentBlock` with the given lines
-func NewCommentBlock(lines []interface{}, attributes interface{}) (CommentBlock, error) {
-	log.Debugf("initializing a new CommentBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes)
+func NewCommentBlock(lines []interface{}, attributes []interface{}) (CommentBlock, error) {
+	log.Debugf("new CommentBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes...)
 	if err != nil {
 		return CommentBlock{}, errors.Wrap(err, "failed to initialize a new comment block")
 	}
@@ -2083,8 +2084,8 @@ const (
 
 // NewLiteralBlock initializes a new `LiteralBlock` of the given kind with the given content,
 // along with the given sectionTitle spaces
-func NewLiteralBlock(origin string, lines []interface{}, attributes interface{}) (LiteralBlock, error) {
-	// log.Debugf("initialized a new LiteralBlock with %d lines", len(lines))
+func NewLiteralBlock(origin string, lines []interface{}, attributes []interface{}) (LiteralBlock, error) {
+	// log.Debugf("new LiteralBlock with %d lines", len(lines))
 	attrs, err := NewAttributes(Attributes{
 		AttrBlockKind:        Literal,
 		AttrLiteralBlockType: origin,
@@ -2227,7 +2228,7 @@ type BlankLine struct {
 
 // NewBlankLine initializes a new `BlankLine`
 func NewBlankLine() (BlankLine, error) {
-	// log.Debug("initializing a new BlankLine")
+	log.Debug("new BlankLine")
 	return BlankLine{}, nil
 }
 
@@ -2261,11 +2262,6 @@ type StringElement struct {
 func NewStringElement(content string) (StringElement, error) {
 	return StringElement{Content: content}, nil
 }
-
-// // String return the content of this StringElement
-// func (s StringElement) String() string {
-// 	return s.Content
-// }
 
 // ------------------------------------------
 // VerbatimLine
@@ -2353,7 +2349,7 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, attributes interface{}, elements ...interface{}) (QuotedText, error) {
-	attrs, err := NewElementAttributes(attributes)
+	attrs, err := NewAttributeGroup(attributes)
 	if err != nil {
 		return QuotedText{}, errors.Wrap(err, "failed to initialize a QuotedText element")
 	}
@@ -2535,6 +2531,8 @@ func NewInlineLinkAttributes(attributes []interface{}) (Attributes, error) {
 	for i, attr := range attributes {
 		log.Debugf("new inline link attribute: '%[1]v' (%[1]T)", attr)
 		switch attr := attr.(type) {
+		case Attribute:
+			result[attr.Key] = attr.Value
 		case Attributes:
 			for k, v := range attr {
 				result[k] = v
@@ -2559,13 +2557,9 @@ type FileInclusion struct {
 }
 
 // NewFileInclusion initializes a new inline `InlineLink`
-func NewFileInclusion(location Location, attributes interface{}, rawtext string) (FileInclusion, error) {
-	attrs, err := NewAttributes(attributes)
-	if err != nil {
-		return FileInclusion{}, errors.Wrap(err, "failed to initialize a FileInclusion element")
-	}
+func NewFileInclusion(location Location, attributes Attributes, rawtext string) (FileInclusion, error) {
 	return FileInclusion{
-		Attributes: attrs,
+		Attributes: attributes,
 		Location:   location,
 		RawText:    rawtext,
 	}, nil
@@ -2625,7 +2619,7 @@ type LineRange struct {
 
 // NewLineRange returns a new line range
 func NewLineRange(start, end int) (LineRange, error) {
-	// log.Debugf("initializing a new multiline range: %d..%d", start, end)
+	// log.Debugf("new multiline range: %d..%d", start, end)
 	return LineRange{
 		StartLine: start,
 		EndLine:   end,
@@ -2679,7 +2673,7 @@ func NewTagRangesAttribute(ranges []interface{}) (Attributes, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("initialized a new TagRanges attribute with values: %v", r)
+	log.Debugf("new TagRanges attribute with values: %v", r)
 	return Attributes{
 		AttrTagRanges: r,
 	}, nil
@@ -2931,8 +2925,6 @@ func NewString(v interface{}) (string, error) {
 	switch v := v.(type) {
 	case string:
 		return v, nil
-	case []byte:
-		return string(v), nil
 	case []interface{}:
 		res := &strings.Builder{}
 		for _, item := range v {
@@ -2950,6 +2942,7 @@ func NewString(v interface{}) (string, error) {
 
 // NewInlineAttribute returns a new InlineAttribute if the value is a string (or an error otherwise)
 func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
+	log.Debugf("new inline attribute: '%s':'%v'", name, value)
 	if value == nil {
 		return nil, nil
 	}

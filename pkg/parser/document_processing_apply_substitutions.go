@@ -48,6 +48,10 @@ func applySubstitutions(elements []interface{}, attrs types.AttributesWithOverri
 	if len(elements) == 0 {
 		return nil, nil
 	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("applying substitutions on:")
+		spew.Fdump(log.StandardLogger().Out, elements)
+	}
 	result := make([]interface{}, 0, len(elements))
 	for _, e := range elements {
 		log.Debugf("applying substitutions on element of type '%T'", e)
@@ -106,7 +110,7 @@ func applySubstitutions(elements []interface{}, attrs types.AttributesWithOverri
 		}
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("after all substitutions:")
+		log.Debug("applied substitutions:")
 		spew.Fdump(log.StandardLogger().Out, result)
 	}
 	return result, nil
@@ -345,8 +349,8 @@ func applySubstitutionsOnSection(s types.Section, attrs types.AttributesWithOver
 		return types.Section{}, err
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("section title after substitution:")
-		spew.Fdump(log.StandardLogger().Out, s.Title)
+		log.Debugf("section after substitution:")
+		spew.Fdump(log.StandardLogger().Out, s)
 	}
 	return s, nil
 }
@@ -484,7 +488,7 @@ func restorePlaceholderElements(elements []interface{}, placeholders *placeholde
 		return elements
 	}
 	for i, e := range elements {
-		log.Debugf("restoring (placeholder) on element of type '%T'", e)
+		// log.Debugf("restoring (placeholder) on element of type '%T'", e)
 		//
 		if e, ok := e.(types.ElementPlaceHolder); ok {
 			elements[i] = placeholders.elements[e.Ref]

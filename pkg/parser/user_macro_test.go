@@ -20,9 +20,10 @@ var _ = Describe("user macros", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "AAA ",
-								},
+								{
+									types.StringElement{
+										Content: "AAA ",
+									},
 									types.UserMacro{
 										Kind:    types.InlineMacro,
 										Name:    "hello",
@@ -37,8 +38,8 @@ var _ = Describe("user macros", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("inline macro with attribute", func() {
-				source := `AAA hello:[suffix="!!!!!"]`
+			It("inline macro with double quoted attributes", func() {
+				source := `AAA hello:[prefix="hello ",suffix="!!"]`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
@@ -51,9 +52,10 @@ var _ = Describe("user macros", func() {
 										Name:  "hello",
 										Value: "",
 										Attributes: types.Attributes{
-											"suffix": "!!!!!",
+											"prefix": "hello ",
+											"suffix": "!!",
 										},
-										RawText: `hello:[suffix="!!!!!"]`,
+										RawText: `hello:[prefix="hello ",suffix="!!"]`,
 									},
 								},
 							},

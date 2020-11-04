@@ -113,7 +113,9 @@ image::images/foo.png[the foo.png image, 600, 400]`
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			result, err := ParseDraftDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDraftDocument(expected))
 		})
 
 		It("with special characters", func() {

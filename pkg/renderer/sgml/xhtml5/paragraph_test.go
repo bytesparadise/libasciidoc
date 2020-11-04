@@ -379,9 +379,11 @@ I am a verse paragraph.`
 		It("image block as a verse", func() {
 			source := `[verse, john doe, verse title]
 image::foo.png[]`
-			expected := `<div class="imageblock">
-<div class="content">
-<img src="foo.png" alt="verse" width="john doe" height="verse title"/>
+			expected := `<div class="verseblock">
+<pre class="content">image::foo.png[]</pre>
+<div class="attribution">
+&#8212; john doe<br/>
+<cite>verse title</cite>
 </div>
 </div>
 `
@@ -497,6 +499,7 @@ a foo <span class="image"><img src="foo.png" alt="foo"/></span>
 		})
 
 		It("image block is NOT a quote", func() {
+			Skip("needs clarification...")
 			source := `[quote, john doe, quote title]
 image::foo.png[]`
 			expected := `<div class="imageblock">

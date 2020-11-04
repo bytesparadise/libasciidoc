@@ -92,12 +92,44 @@ baz`
 						},
 					},
 				}
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(Equal(expected))
+			})
+
+			It("with paragraph multiple attributes", func() {
+				source := `[%hardbreaks.role1.role2]
+[#anchor]
+foo
+baz`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrCustomID: true,
+								types.AttrID:       "anchor",
+								types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
+								types.AttrOptions:  map[string]bool{"hardbreaks": true},
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
 				Expect(ParseDraftDocument(source)).To(Equal(expected))
 			})
 
-			It("with paragraph multiple attribute", func() {
+			It("with paragraph multiple attributes and blanklines in-between", func() {
 				source := `[%hardbreaks.role1.role2]
+
 [#anchor]
+
 foo
 baz`
 				expected := types.DraftDocument{
@@ -192,7 +224,7 @@ foo`
 
 				// using the same input for all substitution tests
 				source := `:github-url: https://github.com
-					
+
 [subs="$SUBS"]
 a link to https://github.com[] <using the *inline link macro*>
 another one using attribute substitution: {github-url}[]...
@@ -200,7 +232,7 @@ another one using attribute substitution: {github-url}[]...
 
 				It("should apply the 'default' substitution on multiple lines", func() {
 					// quoted text is parsed but inline link macro is not
-					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]", "")
+					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 					expected := types.DraftDocument{
 						Attributes: types.Attributes{
 							"github-url": "https://github.com",
@@ -210,7 +242,6 @@ another one using attribute substitution: {github-url}[]...
 								Name:  "github-url",
 								Value: "https://github.com",
 							},
-							types.BlankLine{},
 							types.BlankLine{},
 							types.Paragraph{
 								Lines: [][]interface{}{
@@ -1100,21 +1131,23 @@ I am a verse paragraph.`
 image::foo.png[]`
 				expected := types.DraftDocument{
 					Elements: []interface{}{
-						types.ImageBlock{
+						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrImageAlt:    "verse",
-								types.AttrWidth:       "john doe",
-								types.AttrImageHeight: "verse title",
+								types.AttrBlockKind:   types.Verse,
+								types.AttrQuoteAuthor: "john doe",
+								types.AttrQuoteTitle:  "verse title",
 							},
-							Location: types.Location{
-								Path: []interface{}{
-									types.StringElement{Content: "foo.png"},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "image::foo.png[]"},
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 		})
 
@@ -1252,6 +1285,7 @@ I am a quote paragraph.`
 			})
 
 			It("image block is NOT a quote", func() {
+				Skip("needs clarification...")
 				source := `[quote, john doe, quote title]
 image::foo.png[]`
 				expected := types.DraftDocument{
