@@ -13,7 +13,7 @@ import (
 func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
 	log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := &strings.Builder{}
-	if !ctx.Config.IncludeHeaderFooter && len(elements) > 0 {
+	if !ctx.Config.WrapInHTMLBodyElement && len(elements) > 0 {
 		if s, ok := elements[0].(types.Section); ok && s.Level == 0 {
 			// don't render the top-level section, but only its elements (plus the rest if there's anything)
 			if len(elements) > 1 {

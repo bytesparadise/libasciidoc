@@ -13,7 +13,7 @@ import (
 
 var _ = Describe("document header", func() {
 
-	It("header with quoted text", func() {
+	It("with quoted text", func() {
 		source := `= The _Document_ *Title*`
 		expected := `<!DOCTYPE html>
 <html lang="en">
@@ -46,7 +46,7 @@ Last updated {{.LastUpdated}}
 			To(MatchHTMLTemplate(expected, now))
 	})
 
-	It("header with role", func() {
+	It("with role", func() {
 		source := `[.my_role]
 = My Title`
 		expected := `<!DOCTYPE html>
@@ -80,7 +80,7 @@ Last updated {{.LastUpdated}}
 			To(MatchHTMLTemplate(expected, now))
 	})
 
-	It("header with multple roles and id", func() {
+	It("with multple roles and id", func() {
 		source := `[.role1#anchor.role2]
 = My Title`
 		expected := `<!DOCTYPE html>
@@ -114,6 +114,55 @@ Last updated {{.LastUpdated}}
 			To(MatchHTMLTemplate(expected, now))
 	})
 
+	Context("without title", func() {
+
+		now := time.Now()
+		source := `a paragraph`
+
+		It("without header and footer", func() {
+			expected := `<div class="paragraph">
+<p>a paragraph</p>
+</div>
+`
+			Expect(RenderHTML(source,
+				configuration.WithLastUpdated(now),
+				configuration.WithAttributes(map[string]string{
+					types.AttrNoHeader: "",
+					types.AttrNoFooter: "",
+				}),
+			)).To(MatchHTMLTemplate(expected, now))
+		})
+
+		It("with body header and footer", func() {
+			expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>Untitled</title>
+</head>
+<body class="article">
+<div id="content">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>
+`
+			Expect(RenderHTML(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+			)).To(MatchHTMLTemplate(expected, now))
+		})
+	})
 	It("should include adoc file without leveloffset from relative file", func() {
 		source := "include::../../../../../test/includes/grandchild-include.adoc[]" // with filename `tmp/foo.adoc`, we are virtually in a subfolder
 		expectedContent := `<div class="sect1">

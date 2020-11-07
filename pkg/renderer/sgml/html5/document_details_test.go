@@ -106,7 +106,7 @@ Last updated {{.LastUpdated}}
 
 		now := time.Now()
 
-		It("with header and footer", func() {
+		It("with body header and footer", func() {
 			source := `= Document Title
 
 a paragraph`
