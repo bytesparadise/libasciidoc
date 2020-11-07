@@ -37,9 +37,10 @@ var _ = Describe("documents", func() {
 			It("empty document", func() {
 				// main title alone is not rendered in the body
 				source := ""
+				expectedTitle := ""
 				expectedContent := ""
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(RenderHTML5Title(source)).To(Equal(""))
+				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 			})
 
 			It("document with no section", func() {
@@ -48,7 +49,7 @@ var _ = Describe("documents", func() {
 				expectedTitle := "a document title"
 				expectedContent := ""
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 			})
 
 			It("section levels 0 and 1", func() {
@@ -68,13 +69,14 @@ a paragraph with *bold content*`
 </div>
 `
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 			})
 
 			It("section level 1 with a paragraph", func() {
 				source := `== Section A
 
 a paragraph with *bold content*`
+				expectedTitle := ""
 				expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
@@ -85,7 +87,7 @@ a paragraph with *bold content*`
 </div>
 `
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(RenderHTML5Title(source)).To(Equal(""))
+				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 			})
 
 			It("section levels 0, 1 and 3", func() {
@@ -115,7 +117,7 @@ a paragraph`
 </div>
 `
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
@@ -178,7 +180,7 @@ a paragraph with _italic content_`
 </div>
 `
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(RenderHTML5Title(source)).To(Equal(expectedTitle))
+				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),

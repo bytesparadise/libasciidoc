@@ -115,7 +115,7 @@ a link to {scheme}://{path}`
 :scheme: https
 :path: foo.bar`
 				expected := `a title to https://foo.bar and https://foo.baz`
-				Expect(RenderHTML5Title(source)).To(Equal(expected))
+				Expect(MetadataTitle(source)).To(Equal(expected))
 			})
 
 			It("with document attribute in section 1 title", func() {

@@ -22,29 +22,4 @@ var _ = Describe("html5 body renderer", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(result).To(Equal(expected))
 	})
-
-})
-
-var _ = Describe("html5 body renderer", func() {
-
-	It("should match when title exists", func() {
-		// given
-		actual := `= hello, world!`
-		expected := `hello, world!`
-		// when
-		result, err := testsupport.RenderHTML5Title(actual)
-		// then
-		Expect(err).ToNot(HaveOccurred())
-		Expect(result).To(Equal(expected))
-	})
-
-	It("should match title does not exist", func() {
-		// given
-		actual := `foo` // no title in this doc
-		// when
-		result, err := testsupport.RenderHTML5Title(actual)
-		// then
-		Expect(err).ToNot(HaveOccurred())
-		Expect(result).To(Equal(""))
-	})
 })

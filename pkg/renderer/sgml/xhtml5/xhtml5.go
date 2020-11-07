@@ -15,11 +15,11 @@ const (
 		"<body" +
 		"{{ if .ID }} id=\"{{ .ID }}\"{{ end }}" +
 		" class=\"{{ .Doctype }}{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
-		"{{ if .IncludeHeader }}{{ .Header }}{{ end }}" +
+		"{{ if .IncludeHTMLBodyHeader }}{{ .Header }}{{ end }}" +
 		"<div id=\"content\">\n" +
 		"{{ .Content }}" +
 		"</div>\n" +
-		"{{ if .IncludeFooter }}<div id=\"footer\">\n" +
+		"{{ if .IncludeHTMLBodyFooter }}<div id=\"footer\">\n" +
 		"<div id=\"footer-text\">\n" +
 		"{{ if .RevNumber }}Version {{ .RevNumber }}<br/>\n{{ end }}" +
 		"Last updated {{ .LastUpdated }}\n" +

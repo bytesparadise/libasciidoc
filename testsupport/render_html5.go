@@ -43,25 +43,6 @@ func RenderHTML(actual string, settings ...configuration.Setting) (string, error
 	return resultWriter.String(), nil
 }
 
-// RenderHTML5Title renders the HTML body using the given source
-func RenderHTML5Title(actual string, options ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration()
-	configuration.WithBackEnd("html5")(&config)
-	for _, set := range options {
-		set(&config)
-	}
-	contentReader := strings.NewReader(actual)
-	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.Convert(contentReader, resultWriter, config)
-	if err != nil {
-		return "", err
-	}
-	// if strings.Contains(m.expected, "{{.LastUpdated}}") {
-	// 	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", metadata.LastUpdated, 1)
-	// }
-	return metadata.Title, nil
-}
-
 // RenderHTML5Document a custom matcher to verify that a block renders as expected
 func RenderHTML5Document(filename string, options ...configuration.Setting) (string, error) {
 	resultWriter := bytes.NewBuffer(nil)

@@ -19,23 +19,24 @@ func NewConfiguration(settings ...Setting) Configuration {
 
 // Configuration the configuration used when rendering a document
 type Configuration struct {
-	Filename            string
-	AttributeOverrides  map[string]string
-	LastUpdated         time.Time
-	IncludeHeaderFooter bool
-	CSS                 string
-	BackEnd             string
-	macros              map[string]MacroTemplate
+	Filename           string
+	AttributeOverrides map[string]string
+	LastUpdated        time.Time
+	// WrapInHTMLBodyElement flag to include the content in an html>body element
+	WrapInHTMLBodyElement bool
+	CSS                   string
+	BackEnd               string
+	macros                map[string]MacroTemplate
 }
 
 // Clone return a clone of the current configuration
 func (c Configuration) Clone() Configuration {
 	return Configuration{
-		CSS:                 c.CSS,
-		AttributeOverrides:  c.AttributeOverrides,
-		Filename:            c.Filename,
-		IncludeHeaderFooter: c.IncludeHeaderFooter,
-		LastUpdated:         c.LastUpdated,
+		CSS:                   c.CSS,
+		AttributeOverrides:    c.AttributeOverrides,
+		Filename:              c.Filename,
+		WrapInHTMLBodyElement: c.WrapInHTMLBodyElement,
+		LastUpdated:           c.LastUpdated,
 	}
 }
 
@@ -80,7 +81,7 @@ func WithAttribute(key, value string) Setting {
 // WithHeaderFooter function to set the `include header/footer` setting in the config
 func WithHeaderFooter(value bool) Setting {
 	return func(config *Configuration) {
-		config.IncludeHeaderFooter = value
+		config.WrapInHTMLBodyElement = value
 	}
 }
 
