@@ -43,7 +43,7 @@ baz`
 				Expect(result).To(MatchDraftDocument(expected))
 			})
 
-			It("with paragraph attribute", func() {
+			It("with hardbreaks attribute", func() {
 				source := `[%hardbreaks]
 foo
 bar
@@ -68,10 +68,10 @@ baz`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("with paragraph title attribute", func() {
+			It("with title attribute", func() {
 				source := `[title=My Title]
 foo
 baz`
@@ -94,7 +94,151 @@ baz`
 				}
 				result, err := ParseDraftDocument(source)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(result).To(Equal(expected))
+				Expect(result).To(MatchDraftDocument(expected))
+			})
+
+			It("with custom title attribute - explicit and unquoted", func() {
+				source := `:title: cookies
+				
+[title=my {title}]
+foo
+baz`
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"title": "cookies",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrTitle: "my cookies",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
+			})
+
+			It("with custom title attribute - explicit and single quoted", func() {
+				source := `:title: cookies
+				
+[title='my {title}']
+foo
+baz`
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"title": "cookies",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrTitle: "my cookies",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
+			})
+
+			It("with custom title attribute - explicit and double quoted", func() {
+				source := `:title: cookies
+				
+[title="my {title}"]
+foo
+baz`
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"title": "cookies",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrTitle: "my cookies",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
+			})
+
+			It("with custom title attribute - implicit", func() {
+				source := `:title: cookies
+				
+.my {title}
+foo
+baz`
+				expected := types.DraftDocument{
+					Attributes: types.Attributes{
+						"title": "cookies",
+					},
+					Elements: []interface{}{
+						types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
+						},
+						types.BlankLine{},
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrTitle: "my cookies",
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("with paragraph multiple attributes", func() {
@@ -122,7 +266,7 @@ baz`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with paragraph multiple attributes and blanklines in-between", func() {
@@ -152,7 +296,7 @@ baz`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("with paragraph roles and attribute", func() {
@@ -220,7 +364,7 @@ foo`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			Context("with substitutions", func() {
+			Context("with custom substitutions", func() {
 
 				// using the same input for all substitution tests
 				source := `:github-url: https://github.com
@@ -1316,7 +1460,7 @@ image::foo.png[]`
 						types.ThematicBreak{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("thematic break form2 by itself", func() {
@@ -1326,7 +1470,7 @@ image::foo.png[]`
 						types.ThematicBreak{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("thematic break form3 by itself", func() {
@@ -1336,7 +1480,7 @@ image::foo.png[]`
 						types.ThematicBreak{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("thematic break form4 by itself", func() {
@@ -1346,7 +1490,7 @@ image::foo.png[]`
 						types.ThematicBreak{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("thematic break form5 by itself", func() {
@@ -1356,7 +1500,7 @@ image::foo.png[]`
 						types.ThematicBreak{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("thematic break form4 by itself", func() {
@@ -1366,7 +1510,7 @@ image::foo.png[]`
 						types.ThematicBreak{},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			It("thematic break with leading text", func() {
@@ -1382,7 +1526,7 @@ image::foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
 			// NB: three asterisks gets confused with bullets if with trailing text
@@ -1399,7 +1543,7 @@ image::foo.png[]`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(Equal(expected))
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 		})
 	})

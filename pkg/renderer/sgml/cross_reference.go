@@ -14,9 +14,13 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 	log.Debugf("rendering cross reference with ID: %s", xref.ID)
 	result := &strings.Builder{}
 	var label string
-	if xref.Label != "" {
-		label = xref.Label
-	} else if target, found := ctx.ElementReferences[xref.ID]; found {
+	xrefID, ok := xref.ID.(string)
+	if !ok {
+		return "", errors.Errorf("unable to process internal cross reference: invalid ID: '%v'", xref.ID)
+	}
+	if xrefLabel, ok := xref.Label.(string); ok {
+		label = xrefLabel
+	} else if target, found := ctx.ElementReferences[xrefID]; found {
 		if t, ok := target.([]interface{}); ok {
 			renderedContent, err := r.renderElement(ctx, t)
 			if err != nil {
@@ -27,13 +31,13 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 			return "", errors.Errorf("unable to process internal cross reference to element of type %T", target)
 		}
 	} else {
-		label = "[" + xref.ID + "]"
+		label = "[" + xrefID + "]"
 	}
 	err := r.internalCrossReference.Execute(result, struct {
 		Href  string
 		Label string
 	}{
-		Href:  xref.ID,
+		Href:  xrefID,
 		Label: label,
 	})
 	if err != nil {

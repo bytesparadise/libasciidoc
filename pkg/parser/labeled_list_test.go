@@ -1597,7 +1597,9 @@ second term:: definition of the second term`
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
+			result, err := ParseDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDocument(expected))
 		})
 
 		It("max level of labeled items - case 1", func() {

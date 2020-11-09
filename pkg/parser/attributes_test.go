@@ -97,7 +97,7 @@ var _ = Describe("attributes", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 		It("block image with double quoted alt and embedded quotes", func() {
-			source := "image::foo.png[  \"The Ascii\\\"Doctor\\\" Is In\" ]"
+			source := `image::foo.png[  "The Ascii\"Doctor\" Is In" ]`
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
@@ -115,12 +115,12 @@ var _ = Describe("attributes", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 		It("block image with double quoted alt extra whitespace", func() {
-			source := "image::foo.png[ \"This \\Backslash  2Spaced End Space \" ]"
+			source := `image::foo.png[ "This \Backslash  2Spaced End Space " ]`
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
-							types.AttrImageAlt: `This \Backslash  2Spaced End Space `,
+							types.AttrImageAlt: `This \Backslash  2Spaced End Space `, // trailing space is retained
 						},
 						Location: types.Location{
 							Path: []interface{}{
@@ -156,7 +156,7 @@ var _ = Describe("attributes", func() {
 				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
-							types.AttrImageAlt: `This \Backslash  2Spaced End Space `,
+							types.AttrImageAlt: `This \Backslash  2Spaced End Space `, // trailing space within quotes is retained
 						},
 						Location: types.Location{
 							Path: []interface{}{
@@ -171,7 +171,7 @@ var _ = Describe("attributes", func() {
 			Expect(result).To(MatchDraftDocument(expected))
 		})
 		It("block image alt and named pair", func() {
-			source := "image::foo.png[\"Quoted, Here\", height=100]"
+			source := `image::foo.png["Quoted, Here", height=100]`
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.ImageBlock{
@@ -187,7 +187,9 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			result, err := ParseDraftDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDraftDocument(expected))
 		})
 		It("block image alt, width, height, and named pair", func() {
 			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100]"

@@ -7,215 +7,361 @@ import (
 	. "github.com/onsi/gomega" //nolint golint
 )
 
-var _ = Describe("document attribute substitutions", func() {
+var _ = Describe("document substitutions", func() {
 
-	It("should replace with new StringElement on first position", func() {
-		// given
-		elements := []interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.AttributeSubstitution{
-							Name: "foo",
-						},
-						types.StringElement{
-							Content: " and more content.",
+	Context("paragraphs", func() {
+
+		It("should replace with new StringElement on first position", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.AttributeSubstitution{
+								Name: "foo",
+							},
+							types.StringElement{
+								Content: " and more content.",
+							},
 						},
 					},
 				},
-			},
-		}
-		// when
-		result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-			Content: map[string]interface{}{
-				"foo": "bar",
-			},
-			Overrides: map[string]string{},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "bar and more content.",
+							},
+						},
+					},
+				},
+			}))
 		})
-		// then
-		Expect(err).To(Not(HaveOccurred()))
-		Expect(result).To(Equal([]interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "bar and more content.",
+
+		It("should replace with new StringElement on middle position", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "baz, ",
+							},
+							types.AttributeSubstitution{
+								Name: "foo",
+							},
+							types.StringElement{
+								Content: " and more content.",
+							},
 						},
 					},
 				},
-			},
-		}))
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo": "bar",
+				},
+				Overrides: map[string]string{},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "baz, bar and more content.",
+							},
+						},
+					},
+				},
+			}))
+		})
+
+		It("should replace with undefined attribute", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "baz, ",
+							},
+							types.AttributeSubstitution{
+								Name: "foo",
+							},
+							types.StringElement{
+								Content: " and more content.",
+							},
+						},
+					},
+				},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content:   map[string]interface{}{},
+				Overrides: map[string]string{},
+			})
+
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "baz, {foo} and more content.",
+							},
+						},
+					},
+				},
+			}))
+		})
+
+		It("should merge without substitution", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "baz, ",
+							},
+							types.StringElement{
+								Content: "foo",
+							},
+							types.StringElement{
+								Content: " and more content.",
+							},
+						},
+					},
+				},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content:   map[string]interface{}{},
+				Overrides: map[string]string{},
+			})
+
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "baz, foo and more content.",
+							},
+						},
+					},
+				},
+			}))
+		})
+
+		It("should replace with new link", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "a link to ",
+							},
+							types.AttributeSubstitution{
+								Name: "scheme",
+							},
+							types.StringElement{
+								Content: "://",
+							},
+							types.AttributeSubstitution{
+								Name: "host",
+							},
+							types.StringElement{
+								Content: "[].", // explicit use of `[]` to avoid grabbing the `.`
+							},
+						},
+					},
+				},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"foo":    "bar",
+					"scheme": "https",
+					"host":   "example.com",
+				},
+				Overrides: map[string]string{},
+			})
+
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "a link to ",
+							},
+							types.InlineLink{
+								Location: types.Location{
+									Scheme: "https://",
+									Path: []interface{}{
+										types.StringElement{
+											Content: "example.com",
+										},
+									},
+								},
+							},
+							types.StringElement{
+								Content: ".",
+							},
+						},
+					},
+				},
+			}))
+		})
+
+		It("should substitute title attribute", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Attributes: types.Attributes{
+						types.AttrTitle: []interface{}{
+							types.StringElement{
+								Content: "a ",
+							},
+							types.AttributeSubstitution{
+								Name: "title",
+							},
+						},
+					},
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "a paragraph with title '",
+							},
+							types.AttributeSubstitution{
+								Name: "title",
+							},
+							types.StringElement{
+								Content: "'",
+							},
+						},
+					},
+				},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"title": "cookie",
+				},
+				Overrides: map[string]string{},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Attributes: types.Attributes{
+						types.AttrTitle: "a cookie",
+					},
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "a paragraph with title 'cookie'",
+							},
+						},
+					},
+				},
+			}))
+		})
 	})
 
-	It("should replace with new StringElement on middle position", func() {
-		// given
-		elements := []interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "baz, ",
-						},
-						types.AttributeSubstitution{
-							Name: "foo",
-						},
-						types.StringElement{
-							Content: " and more content.",
-						},
-					},
-				},
-			},
-		}
-		// when
-		result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-			Content: map[string]interface{}{
-				"foo": "bar",
-			},
-			Overrides: map[string]string{},
-		})
-		// then
-		Expect(err).To(Not(HaveOccurred()))
-		Expect(result).To(Equal([]interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "baz, bar and more content.",
-						},
-					},
-				},
-			},
-		}))
-	})
+	Context("image blocks", func() {
 
-	It("should replace with undefined attribute", func() {
-		// given
-		elements := []interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "baz, ",
+		It("should substitute inline attribute", func() {
+			elements := []interface{}{
+				types.ImageBlock{
+					Attributes: types.Attributes{
+						types.AttrImageAlt: []interface{}{
+							types.AttributeSubstitution{
+								Name: "alt",
+							},
 						},
-						types.AttributeSubstitution{
-							Name: "foo",
-						},
-						types.StringElement{
-							Content: " and more content.",
+					},
+					Location: types.Location{
+						Path: []interface{}{
+							types.StringElement{Content: "foo.png"},
 						},
 					},
 				},
-			},
-		}
-		// when
-		result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-			Content:   map[string]interface{}{},
-			Overrides: map[string]string{},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"alt": "cookie",
+				},
+				Overrides: map[string]string{},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.ImageBlock{
+					Attributes: types.Attributes{
+						types.AttrImageAlt: "cookie", // substituted
+					},
+					Location: types.Location{
+						Path: []interface{}{
+							types.StringElement{Content: "foo.png"},
+						},
+					},
+				},
+			}))
 		})
 
-		// then
-		Expect(err).To(Not(HaveOccurred()))
-		Expect(result).To(Equal([]interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "baz, {foo} and more content.",
+		It("should substitute inline attribute", func() {
+			elements := []interface{}{
+				types.ImageBlock{
+					Location: types.Location{
+						Path: []interface{}{
+							types.AttributeSubstitution{
+								Name: "path",
+							},
 						},
 					},
 				},
-			},
-		}))
-	})
-
-	It("should merge without substitution", func() {
-		// given
-		elements := []interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "baz, ",
-						},
-						types.StringElement{
-							Content: "foo",
-						},
-						types.StringElement{
-							Content: " and more content.",
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"path": "cookie.png",
+				},
+				Overrides: map[string]string{},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.ImageBlock{
+					Location: types.Location{
+						Path: []interface{}{
+							types.StringElement{Content: "cookie.png"},
 						},
 					},
 				},
-			},
-		}
-		// when
-		result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-			Content:   map[string]interface{}{},
-			Overrides: map[string]string{},
+			}))
 		})
 
-		// then
-		Expect(err).To(Not(HaveOccurred()))
-		Expect(result).To(Equal([]interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "baz, foo and more content.",
-						},
-					},
-				},
-			},
-		}))
-	})
-
-	It("should replace with new link", func() {
-		// given
-		elements := []interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "a link to ",
-						},
-						types.AttributeSubstitution{
-							Name: "scheme",
-						},
-						types.StringElement{
-							Content: "://",
-						},
-						types.AttributeSubstitution{
-							Name: "host",
-						},
-						types.StringElement{
-							Content: "[].", // explicit use of `[]` to avoid grabbing the `.`
-						},
-					},
-				},
-			},
-		}
-		// when
-		result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-			Content: map[string]interface{}{
-				"foo":    "bar",
-				"scheme": "https",
-				"host":   "foo.bar",
-			},
-			Overrides: map[string]string{},
-		})
-
-		// then
-		Expect(err).To(Not(HaveOccurred()))
-		Expect(result).To(Equal([]interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "a link to https://foo.bar[].",
-						},
-					},
-				},
-			},
-		}))
 	})
 
 	Context("list items", func() {
@@ -227,9 +373,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.AttributeSubstitution{
-									Name: "foo",
-								},
+								{
+									types.AttributeSubstitution{
+										Name: "foo",
+									},
 									types.StringElement{
 										Content: " and more content.",
 									},
@@ -240,7 +387,7 @@ var _ = Describe("document attribute substitutions", func() {
 				},
 			}
 			// when
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -253,9 +400,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "bar and more content.",
-								},
+								{
+									types.StringElement{
+										Content: "bar and more content.",
+									},
 								},
 							},
 						},
@@ -271,9 +419,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.AttributeSubstitution{
-									Name: "foo",
-								},
+								{
+									types.AttributeSubstitution{
+										Name: "foo",
+									},
 									types.StringElement{
 										Content: " and more content.",
 									},
@@ -284,7 +433,7 @@ var _ = Describe("document attribute substitutions", func() {
 				},
 			}
 			// when
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -297,9 +446,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "bar and more content.",
-								},
+								{
+									types.StringElement{
+										Content: "bar and more content.",
+									},
 								},
 							},
 						},
@@ -315,9 +465,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.AttributeSubstitution{
-									Name: "foo",
-								},
+								{
+									types.AttributeSubstitution{
+										Name: "foo",
+									},
 									types.StringElement{
 										Content: " and more content.",
 									},
@@ -328,7 +479,7 @@ var _ = Describe("document attribute substitutions", func() {
 				},
 			}
 			// when
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -341,9 +492,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "bar and more content.",
-								},
+								{
+									types.StringElement{
+										Content: "bar and more content.",
+									},
 								},
 							},
 						},
@@ -362,9 +514,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.AttributeSubstitution{
-									Name: "foo",
-								},
+								{
+									types.AttributeSubstitution{
+										Name: "foo",
+									},
 									types.StringElement{
 										Content: " and more content.",
 									},
@@ -375,7 +528,7 @@ var _ = Describe("document attribute substitutions", func() {
 				},
 			}
 			// when
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -388,9 +541,10 @@ var _ = Describe("document attribute substitutions", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "bar and more content.",
-								},
+								{
+									types.StringElement{
+										Content: "bar and more content.",
+									},
 								},
 							},
 						},
@@ -431,7 +585,7 @@ var _ = Describe("document attribute substitutions", func() {
 				},
 			}
 			// when
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -457,47 +611,6 @@ var _ = Describe("document attribute substitutions", func() {
 						{
 							types.StringElement{
 								Content: "and another line",
-							},
-						},
-					},
-				},
-			}))
-		})
-	})
-
-	Context("tables", func() {
-
-		It("should replace with new StringElement in table cell", func() {
-			// given
-			elements := []interface{}{
-				types.ListingBlock{
-					Lines: [][]interface{}{
-						{
-							types.AttributeSubstitution{
-								Name: "foo",
-							},
-							types.StringElement{
-								Content: " and more content.",
-							},
-						},
-					},
-				},
-			}
-			// when
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
-				},
-				Overrides: map[string]string{},
-			})
-			// then
-			Expect(err).To(Not(HaveOccurred()))
-			Expect(result).To(Equal([]interface{}{
-				types.ListingBlock{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{
-								Content: "bar and more content.",
 							},
 						},
 					},
@@ -532,7 +645,7 @@ var _ = Describe("document attribute substitutions", func() {
 				},
 			}
 			// when
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
 				Content: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -572,7 +685,7 @@ var _ = Describe("document attribute substitutions", func() {
 					Name: "foo",
 				},
 			}
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
 				Content:   map[string]interface{}{},
 				Overrides: map[string]string{},
 				Counters:  map[string]interface{}{},

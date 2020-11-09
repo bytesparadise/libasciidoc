@@ -249,12 +249,18 @@ InlineElementID <- "[[" id:(Id) "]]" Space* { // no EOL here since there can be 
 // a title attached to an element, such as a ImageBlock
 // a title starts with a single "." followed by the value, without space in-between
 ElementTitle <- "." title:(ElementTitleContent) Space* EOL {
-    return types.NewElementTitle(title.(string))
+    return types.NewElementTitle(title.([]interface{}))
 }
 
-ElementTitleContent <- [\pL0-9][^\r\n<>]* { // "<" and ">" characters are not allowed as they are used as cross-reference markers
-    return string(c.text), nil
-}
+ElementTitleContent <- (
+    ([\pL0-9][^\r\n{<>]+ { // `{`, `>` and `>` characters are not allowed as they are used for attribute substitutions and cross-references 
+        return types.NewStringElement(string(c.text))
+    }) /
+    AttrSub /
+    ("{" { 
+        return types.NewStringElement(string(c.text))
+    })
+    )+
 
 // These are elements that do not start with a leading positional attribute, except
 // perhaps the shorthand attributes.
@@ -332,7 +338,7 @@ NamedAttributes <- attributes:(NamedAttribute)* {
 }
 
 NamedAttribute <- key:(NamedAttributeKey)  "=" value:(AttributeValue) ("," Space*)? {
-    return types.NewNamedAttribute(key.(string), value.(string))
+    return types.NewNamedAttribute(key.(string), value)
 }
 
 // The spec says attributes have be alphanumeric but does not consider foreign letters.  We are more generous.
@@ -340,53 +346,52 @@ NamedAttributeKey <- !Space [^\r\n=,\]]+ Space* {
     return strings.TrimSpace(string(c.text)), nil
 }
 
-AttributeValue <- SingleQuotedAttributeValue / DoubleQuotedAttributeValue / UnquotedAttributeValue
-
-// Single Quoted Attribute Values
-// TODO: These values need to be passed through attribute substitution
-SingleQuotedAttributeValue <- "'" val:(SingleQuotedAttributeValueContent) "'" Space* { 
-    return val, nil 
+AttributeValue <- Space* value:(SingleQuotedAttributeValue / DoubleQuotedAttributeValue / UnquotedAttributeValue) Space* &[,\]] {
+    return value, nil
 }
 
-SingleQuotedAttributeValueContent <- val:( 
+SingleQuotedAttributeValue <- "'" elements:(
+    ([^'\r\n\uFFFD\\{]+ { // '=' and `,` signs are allowed within quotes
+        return types.NewStringElement(string(c.text))
+    }) / 
+    ElementPlaceHolder /
+    AttrSub /
     (`\'` { return `'`, nil }) / 
-    ([^\r\n'\uFFFD\\]+ { return string(c.text), nil}) / 
-    (`\` { return `\`, nil})
-)* { 
-    return types.NewString(val.([]interface{})) 
-} 
-
-// TODO: merge with SingleQuotedAttributeValue while addressing https://github.com/bytesparadise/libasciidoc/issues/604
-AttrValueSingleQuoted <- "'" elements:(
-    ([^'\r\n\uFFFD]+ { 
+    ([{\\] { // `{` or `\`
         return types.NewStringElement(string(c.text))
-    }) / ElementPlaceHolder)+ "'" {
-        return elements, nil
-    }
-
-// Double Quoted Attribute Values
-DoubleQuotedAttributeValue <- '"' val:(DoubleQuotedAttributeValueContent) '"' Space* { 
-    return val, nil 
+    })
+)+ "'" {
+    return types.Reduce(elements), nil
 }
 
-DoubleQuotedAttributeValueContent <- val:( 
-    (`\"` { return `"`, nil }) /  
-    ([^\r\n"\\]+ { return string(c.text), nil}) / 
-    (`\` { return `\`, nil})
-)* { 
-    return types.NewString(val.([]interface{})) 
-}
-
-// TODO: merge with DoubleQuotedAttributeValue while addressing https://github.com/bytesparadise/libasciidoc/issues/604
-AttrValueDoubleQuoted <- "\"" elements:(
-    ([^"\r\n\uFFFD]+ { 
+DoubleQuotedAttributeValue <- "\"" elements:(
+    ([^\r\n\uFFFD"\\{]+ { // '=' and `,` signs are allowed within quotes
         return types.NewStringElement(string(c.text))
-    }) / ElementPlaceHolder)+ "\"" {
-        return elements, nil
-    }
+    }) / 
+    ElementPlaceHolder /
+    AttrSub /
+    (`\"` { // escaped "
+        return types.NewStringElement(`"`) // escaped "
+    }) /
+    ( [{\\] { // `{` or `\`
+        return types.NewStringElement(string(c.text))
+    })
+)+ "\"" {
+    return types.Reduce(elements), nil
+}
 
 // Fallback Named Attribute Value, may include equals
-UnquotedAttributeValue <- [^,=\r\n\]]+ &[,\]] { return strings.TrimSpace(string(c.text)), nil }
+UnquotedAttributeValue <- elements:(
+    ([^,=\r\n\uFFFD{\]]+ {
+        return types.NewStringElement(string(c.text))
+    }) / 
+    ElementPlaceHolder /
+    AttrSub /
+    ("{" { 
+        return types.NewStringElement(string(c.text))
+    }))+ {
+        return types.Reduce(elements, strings.TrimSpace), nil
+    }
 
 StandaloneAttributeKey <- !"quote" !"verse" !"literal" key:(NamedAttributeKey) ("," Space*)? { // value is not defined
     return types.NewNamedAttribute(key.(string), nil)
@@ -432,10 +437,10 @@ ShortHandAttrRole <- '.' role:(ShortHandValue) &[,#%.\r\n\]] ("," Space*)? {
 
 // PositionalValue is an unnamed attribute.
 PositionalValue <- value:(ShortHandValue) &[,#%.\]] {
-    return value, nil
+    return types.Reduce(value, strings.TrimSpace), nil
 }
 
-ShortHandValue <- ShortHandValuePlain / AttrValueSingleQuoted / AttrValueDoubleQuoted
+ShortHandValue <- ShortHandValuePlain / SingleQuotedAttributeValue / DoubleQuotedAttributeValue
 
 // ShortHandValuePlain is sort of like AttrValuePlain, but it also needs to exclude the characters
 // used to start a short hand role, id, or option, as well as equals signs.
@@ -1435,9 +1440,9 @@ PassthroughMacroCharacter <- [^\]] {
 CrossReference <- InternalCrossReference / ExternalCrossReference 
 
 InternalCrossReference <- "<<" id:(Id) Space* "," label:(CrossReferenceLabel) ">>" {
-    return types.NewInternalCrossReference(id.(string), label.(string))
+    return types.NewInternalCrossReference(id, label)
 } / "<<" id:(Id) ">>" {
-    return types.NewInternalCrossReference(id.(string), nil)
+    return types.NewInternalCrossReference(id, nil)
 } 
 
 ExternalCrossReference <- "xref:" url:(FileLocation) inlineAttributes:(LinkAttributes) {

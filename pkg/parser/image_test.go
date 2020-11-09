@@ -63,6 +63,35 @@ var _ = Describe("block images", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
+		It("with attribute alt", func() {
+			source := `:alt: the foo.png image
+			
+image::images/foo.png[{alt}]`
+			expected := types.DraftDocument{
+				Attributes: types.Attributes{
+					"alt": "the foo.png image",
+				},
+				Elements: []interface{}{
+					types.AttributeDeclaration{
+						Name:  "alt",
+						Value: "the foo.png image",
+					},
+					types.BlankLine{},
+					types.ImageBlock{
+						Attributes: types.Attributes{
+							types.AttrImageAlt: "the foo.png image", // substituted
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
 		It("with dimensions and id link title meta", func() {
 			source := `[#img-foobar]
 .A title to foobar
@@ -145,6 +174,30 @@ image::images/foo.png[the foo.png image, 600, 400]`
 			expected := types.Document{
 				Elements: []interface{}{
 					types.ImageBlock{
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with attribute alt", func() {
+			source := `:alt: the foo.png image
+			
+image::images/foo.png[{alt}]`
+			expected := types.Document{
+				Attributes: types.Attributes{
+					"alt": "the foo.png image",
+				},
+				Elements: []interface{}{
+					types.ImageBlock{
+						Attributes: types.Attributes{
+							types.AttrImageAlt: "the foo.png image", // substituted
+						},
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "images/foo.png"},

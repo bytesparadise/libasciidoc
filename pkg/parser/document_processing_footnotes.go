@@ -12,7 +12,7 @@ func processFootnotes(blocks []interface{}) ([]interface{}, []types.Footnote) {
 	footnotes := types.NewFootnotes()
 	for i, block := range blocks {
 		if c, ok := block.(types.FootnotesContainer); ok {
-			blocks[i] = c.ReplaceFootnotes(footnotes)
+			blocks[i] = c.SubstituteFootnotes(footnotes)
 		}
 	}
 	return blocks, footnotes.Notes()

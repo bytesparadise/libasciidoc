@@ -811,7 +811,7 @@ var _ = Describe("footnote replacements", func() {
 			}
 			footnotes := types.NewFootnotes()
 			// when
-			section.ReplaceFootnotes(footnotes)
+			section.SubstituteFootnotes(footnotes)
 			// then
 			Expect(section).To(Equal(types.Section{
 				Level:      0,
@@ -860,7 +860,7 @@ var _ = Describe("footnote replacements", func() {
 			}
 			footnotes := types.NewFootnotes()
 			// when
-			section.ReplaceFootnotes(footnotes)
+			section.SubstituteFootnotes(footnotes)
 			// then
 			Expect(section).To(Equal(types.Section{
 				Level:      0,
@@ -934,7 +934,7 @@ var _ = Describe("footnote replacements", func() {
 			}
 			footnotes := types.NewFootnotes()
 			// when
-			paragraph.ReplaceFootnotes(footnotes)
+			paragraph.SubstituteFootnotes(footnotes)
 			// then
 			Expect(paragraph).To(Equal(types.Paragraph{
 				Lines: [][]interface{}{
@@ -1030,7 +1030,7 @@ var _ = Describe("footnote replacements", func() {
 			}
 			footnotes := types.NewFootnotes()
 			// when
-			paragraph.ReplaceFootnotes(footnotes)
+			paragraph.SubstituteFootnotes(footnotes)
 			// then
 			Expect(paragraph).To(Equal(types.Paragraph{
 				Lines: [][]interface{}{

@@ -38,7 +38,7 @@ var _ = Describe("paragraphs", func() {
 .a title
 *bold content* with more content afterwards...`
 			expected := `<div id="foo" class="paragraph">
-<div class="doctitle">a title</div>
+<div class="title">a title</div>
 <p><strong>bold content</strong> with more content afterwards&#8230;&#8203;</p>
 </div>
 `
@@ -95,6 +95,66 @@ some content`
 			source := "hello {plus} world"
 			expected := `<div class="paragraph">
 <p>hello &#43; world</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with custom title attribute - explicit and unquoted", func() {
+			source := `:title: cookies
+			
+[title=my {title}]
+foo
+baz`
+			expected := `<div class="paragraph">
+<div class="title">my cookies</div>
+<p>foo
+baz</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with custom title attribute - explicit and single quoted", func() {
+			source := `:title: cookies
+			
+[title='my {title}']
+foo
+baz`
+			expected := `<div class="paragraph">
+<div class="title">my cookies</div>
+<p>foo
+baz</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with custom title attribute - explicit and double quoted", func() {
+			source := `:title: cookies
+			
+[title="my {title}"]
+foo
+baz`
+			expected := `<div class="paragraph">
+<div class="title">my cookies</div>
+<p>foo
+baz</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with custom title attribute - implicit", func() {
+			source := `:title: cookies
+			
+.my {title}
+foo
+baz`
+			expected := `<div class="paragraph">
+<div class="title">my cookies</div>
+<p>foo
+baz</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
