@@ -197,7 +197,7 @@ foo
 					Elements: []interface{}{
 						types.ExampleBlock{
 							Attributes: types.Attributes{
-								types.AttrCaption: "a caption ", // trailing space is preserved
+								types.AttrCaption: "a caption ", // trailing space is retained
 							},
 							Elements: []interface{}{
 								types.Paragraph{

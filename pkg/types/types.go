@@ -115,22 +115,84 @@ type Stringer interface {
 }
 
 // WithPlaceholdersInElements interface for all blocks in which elements can
-// be replaced with placeholders while applying the substitutions
+// be substituted with placeholders while applying the substitutions
 type WithPlaceholdersInElements interface {
 	RestoreElements(placeholders map[string]interface{}) interface{}
 }
 
 // WithPlaceholdersInAttributes interface for all blocks in which attribute content can
-// be replaced with placeholders while applying the substitutions
+// be substituted with placeholders while applying the substitutions
 type WithPlaceholdersInAttributes interface {
 	RestoreAttributes(placeholders map[string]interface{}) interface{}
 }
 
 // WithPlaceholdersInLocation interface for all blocks in which location elements can
-// be replaced with placeholders while applying the substitutions
+// be substituted with placeholders while applying the substitutions
 type WithPlaceholdersInLocation interface {
 	RestoreLocation(placeholders map[string]interface{}) interface{}
 }
+
+// ------------------------------------------
+// Substitution support
+// ------------------------------------------
+
+// WithCustomSubstitutions base interface for types on which custom substitutions apply
+type WithCustomSubstitutions interface {
+	SubstitutionsToApply() []string
+	DefaultSubstitutions() []string
+}
+
+// WithAttributesToSubstitute base interface for types on which attributes can be substituted
+type WithAttributesToSubstitute interface {
+	AttributesToSubstitute() Attributes
+	ReplaceAttributes(Attributes) interface{}
+}
+
+// WithElementsToSubstitute interface for types on which elements can be substituted
+type WithElementsToSubstitute interface {
+	ElementsToSubstitute() []interface{}
+	ReplaceElements([]interface{}) interface{}
+}
+
+// WithLineSubstitution interface for types on which lines can be substituted
+type WithLineSubstitution interface {
+	WithCustomSubstitutions
+	LinesToSubstitute() [][]interface{}
+	SubstituteLines([][]interface{}) interface{}
+}
+
+// WithNestedElementSubstitution a block in which nested elements can be substituted
+type WithNestedElementSubstitution interface {
+	WithCustomSubstitutions
+	WithElementsToSubstitute
+}
+
+var defaultSubstitutionsForBlockElements = []string{
+	"inline_passthrough",
+	"specialcharacters",
+	"quotes",
+	"attributes",
+	"replacements",
+	"macros",
+	"post_replacements",
+}
+var defaultExampleBlockSubstitutions = defaultSubstitutionsForBlockElements
+var defaultQuoteBlockSubstitutions = defaultSubstitutionsForBlockElements
+var defaultSidebarBlockSubstitutions = defaultSubstitutionsForBlockElements
+var defaultVerseBlockSubstitutions = defaultSubstitutionsForBlockElements // even though it's a block of lines, not a block of blocks
+var defaultParagraphSubstitutions = defaultSubstitutionsForBlockElements  // even though it's a block of lines, not a block of blocks
+
+// blocks of lines
+var defaultSubstitutionsForBlockLines = []string{
+	"callouts", // must be executed before "specialcharacters"
+	"specialcharacters",
+}
+var defaultFencedBlockSubstitutions = defaultSubstitutionsForBlockLines
+var defaultListingBlockSubstitutions = defaultSubstitutionsForBlockLines
+var defaultLiteralBlockSubstitutions = defaultSubstitutionsForBlockLines
+
+// other blocks
+var defaultPassthroughBlockSubstitutions = []string{}
 
 // ------------------------------------------
 // Draft Document: document in which
@@ -556,16 +618,29 @@ func NewSection(level int, title []interface{}, ids []interface{}, attributes []
 	}, nil
 }
 
-var _ WithElementsToReplace = Section{}
+var _ WithElementsToSubstitute = Section{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (s Section) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns this section's title so that substitutions can be applied onto its elements
+func (s Section) ElementsToSubstitute() []interface{} {
 	return s.Title
 }
 
-// ReplaceElements replaces the elements in this example block
+// ReplaceElements replaces the elements in this section
 func (s Section) ReplaceElements(title []interface{}) interface{} {
 	s.Title = title
+	return s
+}
+
+var _ WithAttributesToSubstitute = Section{}
+
+// AttributesToSubstitute returns this section's attributes
+func (s Section) AttributesToSubstitute() Attributes {
+	return s.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this section
+func (s Section) ReplaceAttributes(attributes Attributes) interface{} {
+	s.Attributes = attributes
 	return s
 }
 
@@ -597,9 +672,9 @@ func (s *Section) AddElement(e interface{}) {
 
 var _ FootnotesContainer = Section{}
 
-// ReplaceFootnotes replaces the footnotes in the section title
+// SubstituteFootnotes replaces the footnotes in the section title
 // with footnote references. The footnotes are stored in the given 'notes' param
-func (s Section) ReplaceFootnotes(notes *Footnotes) interface{} {
+func (s Section) SubstituteFootnotes(notes *Footnotes) interface{} {
 	for i, element := range s.Title {
 		if note, ok := element.(Footnote); ok {
 			s.Title[i] = notes.Reference(note)
@@ -863,16 +938,29 @@ func (i *OrderedListItem) AddElement(element interface{}) {
 	i.Elements = append(i.Elements, element)
 }
 
-var _ WithElementsToReplace = OrderedListItem{}
+var _ WithElementsToSubstitute = OrderedListItem{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (i OrderedListItem) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns this item's elements so that substitutions can be applied onto them
+func (i OrderedListItem) ElementsToSubstitute() []interface{} {
 	return i.Elements
 }
 
 // ReplaceElements replaces the elements in this example block
 func (i OrderedListItem) ReplaceElements(elements []interface{}) interface{} {
 	i.Elements = elements
+	return i
+}
+
+var _ WithAttributesToSubstitute = OrderedListItem{}
+
+// AttributesToSubstitute returns this list item's attributes
+func (i OrderedListItem) AttributesToSubstitute() Attributes {
+	return i.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this list item
+func (i OrderedListItem) ReplaceAttributes(attributes Attributes) interface{} {
+	i.Attributes = attributes
 	return i
 }
 
@@ -972,16 +1060,29 @@ func (i *UnorderedListItem) AddElement(element interface{}) {
 	i.Elements = append(i.Elements, element)
 }
 
-var _ WithElementsToReplace = UnorderedListItem{}
+var _ WithElementsToSubstitute = UnorderedListItem{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (i UnorderedListItem) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns this item's elements so that substitutions can be applied onto them
+func (i UnorderedListItem) ElementsToSubstitute() []interface{} {
 	return i.Elements
 }
 
 // ReplaceElements replaces the elements in this example block
 func (i UnorderedListItem) ReplaceElements(elements []interface{}) interface{} {
 	i.Elements = elements
+	return i
+}
+
+var _ WithAttributesToSubstitute = UnorderedListItem{}
+
+// AttributesToSubstitute returns this list item's attributes
+func (i UnorderedListItem) AttributesToSubstitute() Attributes {
+	return i.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this list item
+func (i UnorderedListItem) ReplaceAttributes(attributes Attributes) interface{} {
+	i.Attributes = attributes
 	return i
 }
 
@@ -1161,16 +1262,29 @@ func (i *LabeledListItem) AddElement(element interface{}) {
 	i.Elements = append(i.Elements, element)
 }
 
-var _ WithElementsToReplace = LabeledListItem{}
+var _ WithElementsToSubstitute = LabeledListItem{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (i LabeledListItem) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns this item's elements so that substitutions can be applied onto them
+func (i LabeledListItem) ElementsToSubstitute() []interface{} {
 	return i.Elements
 }
 
 // ReplaceElements replaces the elements in this example block
 func (i LabeledListItem) ReplaceElements(elements []interface{}) interface{} {
 	i.Elements = elements
+	return i
+}
+
+var _ WithAttributesToSubstitute = LabeledListItem{}
+
+// AttributesToSubstitute returns this list item's attributes
+func (i LabeledListItem) AttributesToSubstitute() Attributes {
+	return i.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this list item
+func (i LabeledListItem) ReplaceAttributes(attributes Attributes) interface{} {
+	i.Attributes = attributes
 	return i
 }
 
@@ -1222,6 +1336,19 @@ func toLines(lines []interface{}) ([][]interface{}, error) {
 	return result, nil
 }
 
+var _ WithAttributesToSubstitute = Paragraph{}
+
+// AttributesToSubstitute returns the attributes of this paragraph so that substitutions can be applied onto them
+func (p Paragraph) AttributesToSubstitute() Attributes {
+	return p.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this paragraph
+func (p Paragraph) ReplaceAttributes(attributes Attributes) interface{} {
+	p.Attributes = attributes
+	return p
+}
+
 var _ WithLineSubstitution = Paragraph{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
@@ -1247,8 +1374,8 @@ func (p Paragraph) LinesToSubstitute() [][]interface{} {
 	return p.Lines
 }
 
-// ReplaceLines replaces the elements in this paragraph
-func (p Paragraph) ReplaceLines(lines [][]interface{}) interface{} {
+// SubstituteLines replaces the elements in this paragraph
+func (p Paragraph) SubstituteLines(lines [][]interface{}) interface{} {
 	p.Lines = lines
 	return p
 }
@@ -1273,9 +1400,9 @@ func (p Paragraph) RestoreElements(placeholders map[string]interface{}) interfac
 
 var _ FootnotesContainer = Paragraph{}
 
-// ReplaceFootnotes replaces the footnotes in the paragraph lines
+// SubstituteFootnotes replaces the footnotes in the paragraph lines
 // with footnote references. The footnotes are stored in the given 'notes' param
-func (p Paragraph) ReplaceFootnotes(notes *Footnotes) interface{} {
+func (p Paragraph) SubstituteFootnotes(notes *Footnotes) interface{} {
 	for i, line := range p.Lines {
 		for j, element := range line {
 			if note, ok := element.(Footnote); ok {
@@ -1331,20 +1458,16 @@ func NewInlineElements(elements ...interface{}) ([]interface{}, error) {
 
 // InternalCrossReference the struct for Cross References
 type InternalCrossReference struct {
-	ID    string
-	Label string
+	ID    interface{}
+	Label interface{}
 }
 
 // NewInternalCrossReference initializes a new `InternalCrossReference` from the given ID
-func NewInternalCrossReference(id string, label interface{}) (InternalCrossReference, error) {
+func NewInternalCrossReference(id, label interface{}) (InternalCrossReference, error) {
 	log.Debugf("new InternalCrossReference with ID=%s", id)
-	var l string
-	if label, ok := label.(string); ok {
-		l = Apply(label, strings.TrimSpace)
-	}
 	return InternalCrossReference{
-		ID:    id,
-		Label: l,
+		ID:    Reduce(id),
+		Label: Reduce(label),
 	}, nil
 }
 
@@ -1367,7 +1490,7 @@ func NewExternalCrossReference(location Location, attributes Attributes) (Extern
 	}, nil
 }
 
-var _ WithPlaceholdersInElements = QuotedText{}
+var _ WithPlaceholdersInElements = ExternalCrossReference{}
 
 // RestoreElements restores the elements which had been substituted by placeholders
 func (r ExternalCrossReference) RestoreElements(placeholders map[string]interface{}) interface{} {
@@ -1375,10 +1498,10 @@ func (r ExternalCrossReference) RestoreElements(placeholders map[string]interfac
 	return r
 }
 
-var _ WithElementsToReplace = InlineLink{}
+var _ WithElementsToSubstitute = ExternalCrossReference{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (r ExternalCrossReference) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns this corss reference location path so that substitutions can be applied onto it
+func (r ExternalCrossReference) ElementsToSubstitute() []interface{} {
 	return r.Location.Path
 }
 
@@ -1428,10 +1551,23 @@ func (i ImageBlock) RestoreLocation(placeholders map[string]interface{}) interfa
 	return i
 }
 
-var _ WithElementsToReplace = ImageBlock{}
+var _ WithAttributesToSubstitute = ImageBlock{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (i ImageBlock) ElementsToReplace() []interface{} {
+// AttributesToSubstitute returns this list item's attributes
+func (i ImageBlock) AttributesToSubstitute() Attributes {
+	return i.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this list item
+func (i ImageBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	i.Attributes = attributes
+	return i
+}
+
+var _ WithElementsToSubstitute = ImageBlock{}
+
+// ElementsToSubstitute returns this image's location path so that substitutions can be applied onto it
+func (i ImageBlock) ElementsToSubstitute() []interface{} {
 	return i.Location.Path
 }
 
@@ -1449,13 +1585,6 @@ type InlineImage struct {
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
 func NewInlineImage(location Location, attributes Attributes, imagesdir interface{}) (InlineImage, error) {
-	// if !attributes.Has(AttrImageAlt) {
-	// 	attributes = attributes.Set(AttrImageAlt, resolveAlt(location))
-	// }
-	// attrs, err := NewAttributes(attributes...)
-	// if err != nil {
-	// 	return InlineImage{}, errors.Wrap(err, "failed to initialize a new inline image")
-	// }
 	location = location.WithPathPrefix(imagesdir)
 	return InlineImage{
 		Attributes: attributes,
@@ -1479,14 +1608,27 @@ func (i InlineImage) RestoreLocation(placeholders map[string]interface{}) interf
 	return i
 }
 
-var _ WithElementsToReplace = InlineImage{}
+var _ WithAttributesToSubstitute = InlineImage{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (i InlineImage) ElementsToReplace() []interface{} {
-	return i.Location.Path
+// AttributesToSubstitute returns this inline image's attributes
+func (i InlineImage) AttributesToSubstitute() Attributes {
+	return i.Attributes
 }
 
-// ReplaceElements replaces the elements in this example block
+// ReplaceAttributes replaces the attributes in this inline image
+func (i InlineImage) ReplaceAttributes(attributes Attributes) interface{} {
+	i.Attributes = attributes
+	return i
+}
+
+var _ WithElementsToSubstitute = InlineImage{}
+
+// ElementsToSubstitute returns this inline image location path so that substitutions can be applied onto its elements
+func (i InlineImage) ElementsToSubstitute() []interface{} {
+	return i.Location.Path // TODO: should return the location so substitution can also take place on the scheme
+}
+
+// ReplaceElements replaces the elements in this inline image
 func (i InlineImage) ReplaceElements(path []interface{}) interface{} {
 	i.Location.Path = path
 	return i
@@ -1549,7 +1691,7 @@ func (n Footnote) RestoreElements(placeholders map[string]interface{}) interface
 	return n
 }
 
-// FootnoteReference a footnote reference. Replaces the actual footnote in the document,
+// FootnoteReference a footnote reference. Substitutes the actual footnote in the document,
 // and only contains a generated, sequential ID (which will be displayed)
 type FootnoteReference struct {
 	ID        int
@@ -1559,7 +1701,7 @@ type FootnoteReference struct {
 
 // FootnotesContainer interface for all types which may contain footnotes
 type FootnotesContainer interface {
-	ReplaceFootnotes(existing *Footnotes) interface{}
+	SubstituteFootnotes(existing *Footnotes) interface{}
 }
 
 // Footnotes the footnotes of a document. Footnotes are "collected"
@@ -1629,62 +1771,6 @@ func (s *sequence) nextVal() int {
 }
 
 // ------------------------------------------
-// Substitution support
-// ------------------------------------------
-
-// WithSubstitution a block on which substitutions apply
-type WithSubstitution interface {
-	SubstitutionsToApply() []string
-	DefaultSubstitutions() []string
-}
-
-// WithElementsToReplace interface of types which have elements that can be replaced
-type WithElementsToReplace interface {
-	ElementsToReplace() []interface{}
-	ReplaceElements([]interface{}) interface{}
-}
-
-// WithElementSubstitution a block in which elements can be substituted
-type WithElementSubstitution interface {
-	WithElementsToReplace
-	WithSubstitution
-}
-
-// WithLineSubstitution a block in which lines can be substituted
-type WithLineSubstitution interface {
-	WithSubstitution
-	LinesToSubstitute() [][]interface{}
-	ReplaceLines([][]interface{}) interface{}
-}
-
-var defaultSubstitutionsForBlockElements = []string{
-	"inline_passthrough",
-	"specialcharacters",
-	"quotes",
-	"attributes",
-	"replacements",
-	"macros",
-	"post_replacements",
-}
-var defaultExampleBlockSubstitutions = defaultSubstitutionsForBlockElements
-var defaultQuoteBlockSubstitutions = defaultSubstitutionsForBlockElements
-var defaultSidebarBlockSubstitutions = defaultSubstitutionsForBlockElements
-var defaultVerseBlockSubstitutions = defaultSubstitutionsForBlockElements // even though it's a block of lines, not a block of blocks
-var defaultParagraphSubstitutions = defaultSubstitutionsForBlockElements  // even though it's a block of lines, not a block of blocks
-
-// blocks of lines
-var defaultSubstitutionsForBlockLines = []string{
-	"callouts", // must be executed before "specialcharacters"
-	"specialcharacters",
-}
-var defaultFencedBlockSubstitutions = defaultSubstitutionsForBlockLines
-var defaultListingBlockSubstitutions = defaultSubstitutionsForBlockLines
-var defaultLiteralBlockSubstitutions = defaultSubstitutionsForBlockLines
-
-// other blocks
-var defaultPassthroughBlockSubstitutions = []string{}
-
-// ------------------------------------------
 // Delimited blocks
 // ------------------------------------------
 
@@ -1707,7 +1793,7 @@ func NewExampleBlock(elements []interface{}, attributes []interface{}) (ExampleB
 	}, nil
 }
 
-var _ WithElementSubstitution = ExampleBlock{}
+var _ WithNestedElementSubstitution = ExampleBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
 func (b ExampleBlock) SubstitutionsToApply() []string {
@@ -1722,14 +1808,27 @@ func (b ExampleBlock) DefaultSubstitutions() []string {
 	return defaultExampleBlockSubstitutions
 }
 
-// ElementsToReplace returns the elements of this example block so that substitutions can be applied onto them
-func (b ExampleBlock) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns the elements of this example block so that substitutions can be applied onto them
+func (b ExampleBlock) ElementsToSubstitute() []interface{} {
 	return b.Elements
 }
 
 // ReplaceElements replaces the elements in this example block
 func (b ExampleBlock) ReplaceElements(elements []interface{}) interface{} {
 	b.Elements = elements
+	return b
+}
+
+var _ WithAttributesToSubstitute = ExampleBlock{}
+
+// AttributesToSubstitute returns this example block's attributes
+func (b ExampleBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this example block
+func (b ExampleBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
 	return b
 }
 
@@ -1752,7 +1851,7 @@ func NewQuoteBlock(elements []interface{}, attributes []interface{}) (QuoteBlock
 	}, nil
 }
 
-var _ WithElementSubstitution = QuoteBlock{}
+var _ WithNestedElementSubstitution = QuoteBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
 func (b QuoteBlock) SubstitutionsToApply() []string {
@@ -1767,14 +1866,27 @@ func (b QuoteBlock) DefaultSubstitutions() []string {
 	return defaultQuoteBlockSubstitutions
 }
 
-// ElementsToReplace returns the elements of this quote block so that substitutions can be applied onto them
-func (b QuoteBlock) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns the elements of this quote block so that substitutions can be applied onto them
+func (b QuoteBlock) ElementsToSubstitute() []interface{} {
 	return b.Elements
 }
 
 // ReplaceElements replaces the elements in this quote block
 func (b QuoteBlock) ReplaceElements(elements []interface{}) interface{} {
 	b.Elements = elements
+	return b
+}
+
+var _ WithAttributesToSubstitute = QuoteBlock{}
+
+// AttributesToSubstitute returns this quote block's attributes
+func (b QuoteBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this quote block
+func (b QuoteBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
 	return b
 }
 
@@ -1797,7 +1909,7 @@ func NewSidebarBlock(elements []interface{}, attributes []interface{}) (SidebarB
 	}, nil
 }
 
-var _ WithElementSubstitution = SidebarBlock{}
+var _ WithNestedElementSubstitution = SidebarBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
 func (b SidebarBlock) SubstitutionsToApply() []string {
@@ -1812,14 +1924,27 @@ func (b SidebarBlock) DefaultSubstitutions() []string {
 	return defaultSidebarBlockSubstitutions
 }
 
-// ElementsToReplace returns the elements of this sidebar block so that substitutions can be applied onto them
-func (b SidebarBlock) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns the elements of this sidebar block so that substitutions can be applied onto them
+func (b SidebarBlock) ElementsToSubstitute() []interface{} {
 	return b.Elements
 }
 
 // ReplaceElements replaces the elements in this sidebar block
 func (b SidebarBlock) ReplaceElements(elements []interface{}) interface{} {
 	b.Elements = elements
+	return b
+}
+
+var _ WithAttributesToSubstitute = SidebarBlock{}
+
+// AttributesToSubstitute returns this sidebar block's attributes
+func (b SidebarBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this sidebar block
+func (b SidebarBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
 	return b
 }
 
@@ -1866,9 +1991,22 @@ func (b FencedBlock) LinesToSubstitute() [][]interface{} {
 	return b.Lines
 }
 
-// ReplaceLines replaces the elements in this fenced block
-func (b FencedBlock) ReplaceLines(lines [][]interface{}) interface{} {
+// SubstituteLines replaces the elements in this fenced block
+func (b FencedBlock) SubstituteLines(lines [][]interface{}) interface{} {
 	b.Lines = lines
+	return b
+}
+
+var _ WithAttributesToSubstitute = FencedBlock{}
+
+// AttributesToSubstitute returns this fenced block's attributes
+func (b FencedBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this fenced block
+func (b FencedBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
 	return b
 }
 
@@ -1915,9 +2053,22 @@ func (b ListingBlock) LinesToSubstitute() [][]interface{} {
 	return b.Lines
 }
 
-// ReplaceLines replaces the elements in this listing block
-func (b ListingBlock) ReplaceLines(lines [][]interface{}) interface{} {
+// SubstituteLines replaces the elements in this listing block
+func (b ListingBlock) SubstituteLines(lines [][]interface{}) interface{} {
 	b.Lines = lines
+	return b
+}
+
+var _ WithAttributesToSubstitute = ListingBlock{}
+
+// AttributesToSubstitute returns this listing block's attributes
+func (b ListingBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this listing block
+func (b ListingBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
 	return b
 }
 
@@ -1964,9 +2115,22 @@ func (b VerseBlock) LinesToSubstitute() [][]interface{} {
 	return b.Lines
 }
 
-// ReplaceLines replaces the elements in this verse block
-func (b VerseBlock) ReplaceLines(lines [][]interface{}) interface{} {
+// SubstituteLines replaces the elements in this verse block
+func (b VerseBlock) SubstituteLines(lines [][]interface{}) interface{} {
 	b.Lines = lines
+	return b
+}
+
+var _ WithAttributesToSubstitute = VerseBlock{}
+
+// AttributesToSubstitute returns this verse block's attributes
+func (b VerseBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this verse block
+func (b VerseBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
 	return b
 }
 
@@ -1999,6 +2163,23 @@ type PassthroughBlock struct {
 	Lines      [][]interface{}
 }
 
+// NewPassthroughBlock initializes a new `PassthroughBlock` with the given lines
+func NewPassthroughBlock(lines []interface{}, attributes []interface{}) (PassthroughBlock, error) {
+	log.Debugf("new PassthroughBlock with %d lines", len(lines))
+	attrs, err := NewAttributes(attributes...)
+	if err != nil {
+		return PassthroughBlock{}, errors.Wrap(err, "failed to initialize a new passthrough block")
+	}
+	l, err := toLines(lines)
+	if err != nil {
+		return PassthroughBlock{}, errors.Wrapf(err, "failed to initialize a new passthrough block")
+	}
+	return PassthroughBlock{
+		Attributes: attrs,
+		Lines:      l,
+	}, nil
+}
+
 var _ WithLineSubstitution = PassthroughBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
@@ -2019,27 +2200,23 @@ func (b PassthroughBlock) LinesToSubstitute() [][]interface{} {
 	return b.Lines
 }
 
-// ReplaceLines replaces the elements in this passthrough block
-func (b PassthroughBlock) ReplaceLines(lines [][]interface{}) interface{} {
+// SubstituteLines replaces the elements in this passthrough block
+func (b PassthroughBlock) SubstituteLines(lines [][]interface{}) interface{} {
 	b.Lines = lines
 	return b
 }
 
-// NewPassthroughBlock initializes a new `PassthroughBlock` with the given lines
-func NewPassthroughBlock(lines []interface{}, attributes []interface{}) (PassthroughBlock, error) {
-	log.Debugf("new PassthroughBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return PassthroughBlock{}, errors.Wrap(err, "failed to initialize a new passthrough block")
-	}
-	l, err := toLines(lines)
-	if err != nil {
-		return PassthroughBlock{}, errors.Wrapf(err, "failed to initialize a new passthrough block")
-	}
-	return PassthroughBlock{
-		Attributes: attrs,
-		Lines:      l,
-	}, nil
+var _ WithAttributesToSubstitute = PassthroughBlock{}
+
+// AttributesToSubstitute returns this passthrough block's attributes
+func (b PassthroughBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this passthrough block
+func (b PassthroughBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
+	return b
 }
 
 // CommentBlock the structure for the comment blocks
@@ -2119,13 +2296,24 @@ func (b LiteralBlock) DefaultSubstitutions() []string {
 	return defaultLiteralBlockSubstitutions
 }
 
+// AttributesToSubstitute returns this literal block's attributes
+func (b LiteralBlock) AttributesToSubstitute() Attributes {
+	return b.Attributes
+}
+
+// ReplaceAttributes replaces the attributes in this literal block
+func (b LiteralBlock) ReplaceAttributes(attributes Attributes) interface{} {
+	b.Attributes = attributes
+	return b
+}
+
 // LinesToSubstitute returns the lines of this literal block so that substitutions can be applied onto them
 func (b LiteralBlock) LinesToSubstitute() [][]interface{} {
 	return b.Lines
 }
 
-// ReplaceLines replaces the elements in this literal block
-func (b LiteralBlock) ReplaceLines(lines [][]interface{}) interface{} {
+// SubstituteLines replaces the elements in this literal block
+func (b LiteralBlock) SubstituteLines(lines [][]interface{}) interface{} {
 	b.Lines = lines
 	return b
 }
@@ -2376,10 +2564,10 @@ func (t QuotedText) RestoreElements(placeholders map[string]interface{}) interfa
 	return t
 }
 
-var _ WithElementsToReplace = OrderedListItem{}
+var _ WithElementsToSubstitute = OrderedListItem{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (t QuotedText) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns this quoted text elements so that substitutions can be applied onto then
+func (t QuotedText) ElementsToSubstitute() []interface{} {
 	return t.Elements
 }
 
@@ -2505,10 +2693,10 @@ func (l InlineLink) RestoreLocation(placeholders map[string]interface{}) interfa
 	return l
 }
 
-var _ WithElementsToReplace = InlineLink{}
+var _ WithElementsToSubstitute = InlineLink{}
 
-// ElementsToReplace returns this section's title so that substitutions can be applied onto its elements
-func (l InlineLink) ElementsToReplace() []interface{} {
+// ElementsToSubstitute returns this inline link's location path so that substitutions can be applied onto its elements
+func (l InlineLink) ElementsToSubstitute() []interface{} {
 	return l.Location.Path
 }
 
@@ -2946,12 +3134,8 @@ func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
 	if value == nil {
 		return nil, nil
 	}
-	switch value := value.(type) {
-	case string:
-		return Attributes{name: value}, nil
-	default:
-		return nil, fmt.Errorf("invalid type for attribute %q: %T", name, value)
-	}
+	value = Reduce(value)
+	return Attributes{name: value}, nil
 }
 
 // ------------------------------------------------------------------------------------
@@ -2977,7 +3161,7 @@ func NewSpecialCharacter(name string) (SpecialCharacter, error) {
 // ------------------------------------------------------------------------------------
 
 // ElementPlaceHolder a placeholder for elements which may have been parsed
-// during previous substitution, and which are replaced with a placeholder while
+// during previous substitution, and which are substituted with a placeholder while
 // serializing the content to parse with the "macros" substitution
 type ElementPlaceHolder struct {
 	Ref string

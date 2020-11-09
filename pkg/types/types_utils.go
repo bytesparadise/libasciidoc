@@ -47,19 +47,27 @@ func appendBuffer(elements []interface{}, buf *bytes.Buffer) ([]interface{}, *by
 	return elements, buf
 }
 
+// ReduceOption an option to apply on the reduced content when it is a `string`
+type ReduceOption func(string) string
+
 // Reduce merges and returns a string if the given elements only contain a single StringElement
 // (ie, return its `Content`), otherwise rsturn the given elements
-func Reduce(elements interface{}) interface{} {
+func Reduce(elements interface{}, opts ...ReduceOption) interface{} {
 	if e, ok := elements.(string); ok {
-		// return trimQuotes(e)
+		for _, apply := range opts {
+			e = apply(e)
+		}
 		return e
 	}
 	if elmts, ok := elements.([]interface{}); ok {
 		elmts = Merge(elmts...)
 		if len(elmts) == 1 {
 			if e, ok := elmts[0].(StringElement); ok {
-				// return trimQuotes(e.Content)
-				return e.Content
+				c := e.Content
+				for _, apply := range opts {
+					c = apply(c)
+				}
+				return c
 			}
 		}
 		return elements

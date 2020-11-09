@@ -3,7 +3,7 @@ package html5
 const (
 	paragraphTmpl = "<div{{ if .ID }} id=\"{{ .ID }}\"{{ end }}" +
 		" class=\"paragraph{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
-		"{{ if .Title  }}<div class=\"doctitle\">{{ .Title }}</div>\n{{ end }}" +
+		"{{ if .Title  }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<p>{{ .Content }}</p>\n" +
 		"</div>\n"
 

@@ -38,7 +38,7 @@ var _ = Describe("paragraphs", func() {
 .a title
 *bold content* with more content afterwards...`
 			expected := `<div id="foo" class="paragraph">
-<div class="doctitle">a title</div>
+<div class="title">a title</div>
 <p><strong>bold content</strong> with more content afterwards&#8230;&#8203;</p>
 </div>
 `

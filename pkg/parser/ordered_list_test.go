@@ -167,7 +167,9 @@ var _ = Describe("ordered lists", func() {
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("max level of ordered items - case 1", func() {

@@ -47,8 +47,7 @@ with some content linked to <<thetitle>>!`
 												Content: "with some content linked to ",
 											},
 											types.InternalCrossReference{
-												ID:    "thetitle",
-												Label: "",
+												ID: "thetitle",
 											},
 											types.StringElement{
 												Content: "!",

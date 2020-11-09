@@ -310,11 +310,11 @@ func NewInlineElementID(id string) (Attribute, error) {
 }
 
 // NewElementTitle initializes a new attribute map with a single entry for the title using the given value
-func NewElementTitle(title string) (Attribute, error) {
-	log.Debugf("initializing a new ElementTitle with content=%s", title)
+func NewElementTitle(title []interface{}) (Attribute, error) {
+	log.Debugf("initializing a new ElementTitle with content=%v", title)
 	return Attribute{
 		Key:   AttrTitle,
-		Value: title,
+		Value: Reduce(title),
 	}, nil
 }
 
@@ -416,8 +416,8 @@ func NewSourceAttributes(language interface{}, option interface{}, others ...int
 	result := Attributes{
 		AttrBlockKind: Source,
 	}
-	if language, ok := language.(string); ok {
-		result[AttrLanguage] = strings.TrimSpace(language)
+	if language := Reduce(language); language != nil {
+		result[AttrLanguage] = language
 	}
 	if option, ok := option.(string); ok {
 		result[AttrSourceBlockOption] = strings.TrimSpace(option)
