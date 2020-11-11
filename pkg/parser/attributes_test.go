@@ -28,6 +28,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image with empty alt and extra whitespace", func() {
 			source := "image::foo.png[ ]"
 			expected := types.DraftDocument{
@@ -78,6 +79,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image with simple double quoted alt", func() {
 			source := "image::foo.png[\"Quoted, Here\"]"
 			expected := types.DraftDocument{
@@ -96,6 +98,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image with double quoted alt and embedded quotes", func() {
 			source := `image::foo.png[  "The Ascii\"Doctor\" Is In" ]`
 			expected := types.DraftDocument{
@@ -114,6 +117,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image with double quoted alt extra whitespace", func() {
 			source := `image::foo.png[ "This \Backslash  2Spaced End Space " ]`
 			expected := types.DraftDocument{
@@ -132,6 +136,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image with single quoted alt and embedded quotes", func() {
 			source := "image::foo.png[  'It\\'s It!' ]"
 			expected := types.DraftDocument{
@@ -150,6 +155,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image with single quoted alt extra whitespace", func() {
 			source := "image::foo.png[ 'This \\Backslash  2Spaced End Space ' ]"
 			expected := types.DraftDocument{
@@ -170,6 +176,7 @@ var _ = Describe("attributes", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(MatchDraftDocument(expected))
 		})
+
 		It("block image alt and named pair", func() {
 			source := `image::foo.png["Quoted, Here", height=100]`
 			expected := types.DraftDocument{
@@ -191,6 +198,7 @@ var _ = Describe("attributes", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(MatchDraftDocument(expected))
 		})
+
 		It("block image alt, width, height, and named pair", func() {
 			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100]"
 			expected := types.DraftDocument{
@@ -211,6 +219,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image alt, width, height, and named pair (spacing)", func() {
 			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100, test1=123 ,test2 = second test ]"
 			expected := types.DraftDocument{
@@ -233,6 +242,7 @@ var _ = Describe("attributes", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("block image alt, width, height, and named pair embedded quote", func() {
 			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100, test1=123 ,test2 = second \"test\" ]"
 			expected := types.DraftDocument{
@@ -248,6 +258,71 @@ var _ = Describe("attributes", func() {
 						Location: types.Location{
 							Path: []interface{}{
 								types.StringElement{Content: "foo.png"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+	})
+
+	Context("recursive attributes", func() {
+
+		It("should substitute an attribute in another attribute", func() {
+			source := `:def: foo
+:abc: {def}bar
+
+{abc}`
+			expected := types.DraftDocument{
+				Attributes: types.Attributes{
+					"def": "foo",
+					"abc": "foobar", // resolved
+				},
+				Elements: []interface{}{
+					types.AttributeDeclaration{
+						Name:  "def",
+						Value: "foo",
+					},
+					types.AttributeDeclaration{
+						Name:  "abc",
+						Value: "foobar", // resolved
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "foobar",
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
+		It("should not substitute an attribute in another attribute when not defined", func() {
+			source := `:abc: {def}bar
+
+{abc}`
+			expected := types.DraftDocument{
+				Attributes: types.Attributes{
+					"abc": "{def}bar", // unresolved
+				},
+				Elements: []interface{}{
+					types.AttributeDeclaration{
+						Name:  "abc",
+						Value: "{def}bar", // unresolved
+					},
+					types.BlankLine{},
+					types.Paragraph{
+						Lines: [][]interface{}{
+							{
+								types.StringElement{
+									Content: "{def}bar",
+								},
 							},
 						},
 					},

@@ -607,42 +607,45 @@ func applyAttributeSubstitutionsOnLines(lines [][]interface{}, attrs types.Attri
 func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.AttributesWithOverrides) (interface{}, error) {
 	var err error
 	switch e := element.(type) {
-	case types.AttributeDeclaration:
-		attrs.Set(e.Name, e.Value)
-		return e, nil
 	case types.AttributeReset:
 		attrs.Set(e.Name, nil) // This allows us to test for a reset vs. undefined.
-		return e, nil
 	case types.AttributeSubstitution:
 		if value, ok := attrs.GetAsString(e.Name); ok {
-			return types.StringElement{
+			element = types.StringElement{
 				Content: value,
-			}, nil
+			}
+			break
 		}
 		log.Warnf("unable to find attribute '%s'", e.Name)
-		return types.StringElement{
+		element = types.StringElement{
 			Content: "{" + e.Name + "}",
-		}, nil
+		}
 	case types.CounterSubstitution:
-		return applyCounterSubstitution(e, attrs)
+		if element, err = applyCounterSubstitution(e, attrs); err != nil {
+			return nil, err
+		}
 	case types.WithElementsToSubstitute:
 		elmts, err := applyAttributeSubstitutionsOnElements(e.ElementsToSubstitute(), attrs)
 		if err != nil {
-			return e, err
+			return nil, err
 		}
-		return e.ReplaceElements(elmts), nil
+		element = e.ReplaceElements(elmts)
 	case types.WithLineSubstitution:
 		lines, err := applyAttributeSubstitutionsOnLines(e.LinesToSubstitute(), attrs)
 		if err != nil {
-			return e, err
+			return nil, err
 		}
-		return e.SubstituteLines(lines), nil
+		element = e.SubstituteLines(lines)
 	case types.ContinuedListItemElement:
-		e.Element, err = applyAttributeSubstitutionsOnElement(e.Element, attrs)
-		return e, err
-	default:
-		return e, nil
+		if e.Element, err = applyAttributeSubstitutionsOnElement(e.Element, attrs); err != nil {
+			return nil, err
+		}
 	}
+	// also, retain the attribute declaration value (if applicable)
+	if e, ok := element.(types.AttributeDeclaration); ok {
+		attrs.Set(e.Name, e.Value)
+	}
+	return element, nil
 }
 
 // applyCounterSubstitutions is called by applyAttributeSubstitutionsOnElement.  Unless there is an error with

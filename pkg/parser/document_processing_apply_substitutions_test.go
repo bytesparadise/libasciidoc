@@ -744,6 +744,64 @@ var _ = Describe("document substitutions", func() {
 			}))
 		})
 	})
+
+	Context("recursive attributes", func() {
+
+		It("should substitute an attribute in another attribute", func() {
+			elements := []interface{}{
+				types.AttributeDeclaration{
+					Name:  "def",
+					Value: "foo",
+				},
+				types.AttributeDeclaration{
+					Name: "abc",
+					Value: []interface{}{
+						types.AttributeSubstitution{
+							Name: "def",
+						},
+						types.StringElement{
+							Content: "bar",
+						},
+					},
+				},
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.AttributeSubstitution{
+								Name: "abc",
+							},
+						},
+					},
+				},
+			}
+			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
+				Content:   map[string]interface{}{},
+				Overrides: map[string]string{},
+				Counters:  map[string]interface{}{},
+			})
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
+				types.AttributeDeclaration{
+					Name:  "def",
+					Value: "foo",
+				},
+				types.AttributeDeclaration{
+					Name:  "abc",
+					Value: "foobar",
+				},
+				types.Paragraph{
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "foobar",
+							},
+						},
+					},
+				},
+			}))
+		})
+
+	})
 })
 
 var _ = Describe("substitution funcs", func() {

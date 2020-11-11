@@ -375,16 +375,18 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRev
 // AttributeDeclaration the type for Document Attribute Declarations
 type AttributeDeclaration struct {
 	Name  string
-	Value string
+	Value interface{}
 }
 
 // NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
 func NewAttributeDeclaration(name string, value interface{}) (AttributeDeclaration, error) {
-	attrValue, _ := value.(string)
-	log.Debugf("new AttributeDeclaration: '%s' -> '%s'", name, attrValue)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new AttributeDeclaration: '%s'", name)
+		spew.Fdump(log.StandardLogger().Out, value)
+	}
 	return AttributeDeclaration{
 		Name:  name,
-		Value: attrValue,
+		Value: value,
 	}, nil
 }
 
@@ -392,10 +394,41 @@ var _ Stringer = AttributeDeclaration{}
 
 // Stringify returns the string representation of this attribute declaration, as it existed in the source document
 func (a AttributeDeclaration) Stringify() string {
-	if len(a.Value) == 0 {
-		return ":" + a.Name + ":"
+	result := strings.Builder{}
+	result.WriteString(":" + a.Name + ":")
+	switch v := a.Value.(type) {
+	case string:
+		result.WriteString(" " + v)
+	case []interface{}:
+		result.WriteString(" ")
+		for _, e := range v {
+			switch e := e.(type) {
+			case StringElement:
+				result.WriteString(e.Content)
+			case AttributeSubstitution:
+				result.WriteString("{" + e.Name + "}")
+			}
+		}
 	}
-	return ":" + a.Name + ": " + a.Value
+	return result.String()
+}
+
+var _ WithElementsToSubstitute = AttributeDeclaration{}
+
+// ElementsToSubstitute returns this section's title so that substitutions can be applied onto its elements
+func (a AttributeDeclaration) ElementsToSubstitute() []interface{} {
+	switch v := a.Value.(type) {
+	case []interface{}:
+		return v
+	default:
+		return []interface{}{v}
+	}
+}
+
+// ReplaceElements replaces the elements in this section
+func (a AttributeDeclaration) ReplaceElements(value []interface{}) interface{} {
+	a.Value = Reduce(value, strings.TrimSpace)
+	return a
 }
 
 // AttributeReset the type for AttributeReset

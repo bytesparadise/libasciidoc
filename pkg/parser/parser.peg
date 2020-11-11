@@ -167,10 +167,8 @@ DocumentRevisionRemark <- [^\r\r\n]+ {
 // Attributes
 // ------------------------------------------
 AttributeDeclaration <- ":" name:(AttributeName) ":" 
-        value:((Space+ value:(AttributeDeclarationValue)) { 
-            return value, nil 
-        })? Space* EOL {
-    return types.NewAttributeDeclaration(name.(string), value)
+        value:(AttributeDeclarationValue)? EOL {
+    return types.NewAttributeDeclaration(name.(string), types.Reduce(value, strings.TrimSpace))
 } 
 
 // AttributeName must be at least one character long, 
@@ -180,8 +178,16 @@ AttributeName <- [\pL0-9_] ([\pL0-9-])* {
     return string(c.text), nil
 }
 
-AttributeDeclarationValue <- [^\r\n]+ {
-    return string(c.text), nil
+AttributeDeclarationValue <- Space+ elements:(
+    ([^\r\n{]+ {
+        return types.NewStringElement(string(c.text))
+    }) /
+    AttributeSubstitution /
+    ("{" { // standalone '{'
+        return types.NewStringElement(string(c.text))
+    })
+)* {
+    return types.Reduce(elements.([]interface{}), strings.TrimSpace), nil
 }
 
 AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {

@@ -82,7 +82,7 @@ Preamble comes here
 			}
 			expected := types.Document{
 				Attributes: types.Attributes{
-					types.AttrTableOfContents: "",
+					types.AttrTableOfContents: nil,
 				},
 				Elements: []interface{}{
 					types.Section{

@@ -41,7 +41,7 @@ var _ = Describe("include table of contents", func() {
 	It("table of contents with default placement and no header with content", func() {
 		source := types.Document{
 			Attributes: types.Attributes{
-				types.AttrTableOfContents: "",
+				types.AttrTableOfContents: nil,
 			},
 			Elements: []interface{}{
 				preamble,
@@ -50,7 +50,7 @@ var _ = Describe("include table of contents", func() {
 		}
 		expected := types.Document{
 			Attributes: types.Attributes{
-				types.AttrTableOfContents: "",
+				types.AttrTableOfContents: nil,
 			},
 			Elements: []interface{}{
 				tocPlaceHolder,
@@ -64,7 +64,7 @@ var _ = Describe("include table of contents", func() {
 	It("table of contents with default placement and a header with content", func() {
 		source := types.Document{
 			Attributes: types.Attributes{
-				types.AttrTableOfContents: "",
+				types.AttrTableOfContents: nil,
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
 			Elements: []interface{}{
@@ -83,7 +83,7 @@ var _ = Describe("include table of contents", func() {
 		}
 		expected := types.Document{
 			Attributes: types.Attributes{
-				types.AttrTableOfContents: "",
+				types.AttrTableOfContents: nil,
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
 			Elements: []interface{}{
@@ -107,7 +107,7 @@ var _ = Describe("include table of contents", func() {
 	It("table of contents with default placement and a header without content", func() {
 		source := types.Document{
 			Attributes: types.Attributes{
-				types.AttrTableOfContents: "",
+				types.AttrTableOfContents: nil,
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
 			Elements: []interface{}{
@@ -125,7 +125,7 @@ var _ = Describe("include table of contents", func() {
 		}
 		expected := types.Document{
 			Attributes: types.Attributes{
-				types.AttrTableOfContents: "",
+				types.AttrTableOfContents: nil,
 			},
 			ElementReferences: types.ElementReferences{}, // can leave empty for this test
 			Elements: []interface{}{

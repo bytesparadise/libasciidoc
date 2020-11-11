@@ -8,21 +8,21 @@ import (
 // IncludeTableOfContentsPlaceHolder includes a `TableOfContentsPlaceHolder` block in the document
 // if the `toc` attribute is present
 func includeTableOfContentsPlaceHolder(doc types.Document) types.Document {
-	if t, found := doc.Attributes.GetAsString(types.AttrTableOfContents); found {
+	if t, found := doc.Attributes[types.AttrTableOfContents]; found {
 		doc = doInsertTableOfContentsPlaceHolder(doc, t)
 	}
 	return doc
 }
 
-func doInsertTableOfContentsPlaceHolder(doc types.Document, location string) types.Document {
+func doInsertTableOfContentsPlaceHolder(doc types.Document, location interface{}) types.Document {
 	log.Debugf("inserting a table of contents at location `%s`", location)
 	// insert a TableOfContentsPlaceHolder element if `toc` value is:
-	// - "auto" (or empty)
+	// - "auto" (or `nil`)
 	// - "preamble"
 	log.Debugf("inserting ToC macro with placement: '%s'", location)
 	toc := types.TableOfContentsPlaceHolder{}
 	switch location {
-	case "", "auto":
+	case "auto", nil:
 		// insert TableOfContentsPlaceHolder at first position (in section '0' if it exists)
 		if header, ok := doc.Header(); ok {
 			header.Elements = append([]interface{}{toc}, header.Elements...)
