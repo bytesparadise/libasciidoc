@@ -1045,7 +1045,7 @@ v1.0:`
 :Auth0r: Xavier`
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"a":       "",
+						"a":       nil,
 						"author":  "Xavier",
 						"_author": "Xavier",
 						"Author":  "Xavier",
@@ -1065,10 +1065,10 @@ v1.0:`
 a paragraph`
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"toc":                        "",
+						"toc":                        nil,
 						"date":                       "2017-01-01",
 						"author":                     "Xavier",
-						types.DocumentAttrHardBreaks: "",
+						types.DocumentAttrHardBreaks: nil,
 					},
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
@@ -1090,7 +1090,7 @@ a paragraph`
 a paragraph`
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"toc":    "",
+						"toc":    nil,
 						"date":   "2017-01-01",
 						"author": "Xavier",
 					},
@@ -1117,10 +1117,10 @@ a paragraph`
 a paragraph`
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"toc":        "",
+						"toc":        nil,
 						"date":       "2017-01-01",
 						"author":     "Xavier",
-						"hardbreaks": "",
+						"hardbreaks": nil,
 					},
 					Elements: []interface{}{
 						types.TableOfContentsPlaceHolder{},
@@ -1142,7 +1142,7 @@ a paragraph`
 :author: Xavier`
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"toc":    "",
+						"toc":    nil,
 						"date":   "2017-01-01",
 						"author": "Xavier",
 					},
@@ -1216,7 +1216,7 @@ This journey continues`
 				}
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"toc":      "",
+						"toc":      nil,
 						"keywords": "documentation, team, obstacles, journey, victory",
 						types.AttrAuthors: []types.DocumentAuthor{
 							{

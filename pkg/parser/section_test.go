@@ -688,7 +688,7 @@ a short preamble
 == section 1`
 				expected := types.DraftDocument{
 					Attributes: types.Attributes{
-						types.AttrTableOfContents: "",
+						types.AttrTableOfContents: nil,
 					},
 					Elements: []interface{}{
 						types.Section{
@@ -1856,7 +1856,7 @@ a short preamble
 == Section 1`
 				expected := types.Document{
 					Attributes: types.Attributes{
-						"toc": "",
+						"toc": nil,
 					},
 					ElementReferences: types.ElementReferences{
 						"_a_title": []interface{}{

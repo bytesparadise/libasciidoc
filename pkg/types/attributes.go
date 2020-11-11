@@ -517,9 +517,6 @@ func (a Attributes) append(key string, value interface{}) {
 // or empty string (+ `false`) if none was found
 func (a Attributes) GetAsString(key string) (string, bool) {
 	if value, found := a[key]; found {
-		if value == nil {
-			return "", false // nil here means attribute was reset
-		}
 		if value, ok := value.(string); ok {
 			return value, true
 		} else if v, ok := a[key]; ok {
