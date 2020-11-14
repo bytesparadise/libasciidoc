@@ -123,6 +123,32 @@ var _ = Describe("checklists", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("with interactive checkboxes", func() {
+		source := `[%interactive]
+* [*] checked
+* [x] also checked
+* [ ] not checked
+*     normal list item`
+		expected := `<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><input type="checkbox" data-item-complete="1" checked> checked</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="1" checked> also checked</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> not checked</p>
+</li>
+<li>
+<p>normal list item</p>
+</li>
+</ul>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
 	Context("attach to unordered list item ancestor", func() {
 
 		It("attach to grandparent unordered list item", func() {

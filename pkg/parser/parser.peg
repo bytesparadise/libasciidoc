@@ -742,9 +742,13 @@ OrderedListItemContent <- elements:(ListParagraph+) {
 // ------------------------------------------
 // Unordered List Items
 // ------------------------------------------
-UnorderedListItem <- attributes:(BlockAttributes)? prefix:(UnorderedListItemPrefix) checkstyle:(UnorderedListItemCheckStyle)? content:(UnorderedListItemContent) {
-    return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), checkstyle, content.([]interface{}), attributes)
-}
+UnorderedListItem <- 
+    attributes:(BlockAttributes)? 
+    prefix:(UnorderedListItemPrefix) 
+    checkstyle:(UnorderedListItemCheckStyle)? 
+    content:(UnorderedListItemContent) {
+        return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), checkstyle, content.([]interface{}), attributes)
+    }
 
 UnorderedListItemPrefix <- 
     Space* prefix:((

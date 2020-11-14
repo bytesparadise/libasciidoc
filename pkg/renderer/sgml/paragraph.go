@@ -112,11 +112,16 @@ func (r *sgmlRenderer) renderParagraphWithinDelimitedBlock(ctx *renderer.Context
 }
 
 func renderCheckStyle(style interface{}) string {
+	// default checkboxes
 	switch style {
-	case types.Unchecked:
-		return "&#10063; "
 	case types.Checked:
 		return "&#10003; "
+	case types.CheckedInteractive:
+		return `<input type="checkbox" data-item-complete="1" checked> `
+	case types.Unchecked:
+		return "&#10063; "
+	case types.UncheckedInteractive:
+		return `<input type="checkbox" data-item-complete="0"> `
 	default:
 		return ""
 	}
