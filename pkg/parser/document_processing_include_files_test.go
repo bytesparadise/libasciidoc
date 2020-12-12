@@ -902,6 +902,8 @@ include::{includedir}/include.foo[]`
 					})
 
 					It("file inclusion with invalid unquoted range - case 1", func() {
+						_, reset := ConfigureLogger(log.WarnLevel)
+						defer reset()
 						source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
 						expected := types.RawDocument{
 							Elements: []interface{}{
@@ -991,7 +993,7 @@ include::{includedir}/include.foo[]`
 						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
-					It("file inclusion with multiple quoted ranges", func() {
+					It("file inclusion with multiple quoted ranges with colons", func() {
 						// here, the `content` paragraph gets attached to the header and becomes the author
 						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..-1"]`
 						expected := types.RawDocument{
@@ -1017,12 +1019,20 @@ include::{includedir}/include.foo[]`
 						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
-					It("file inclusion with invalid quoted range - case 1", func() {
-						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
+					It("file inclusion with multiple quoted ranges with semicolons", func() {
+						// here, the `content` paragraph gets attached to the header and becomes the author
+						source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..-1"]`
 						expected := types.RawDocument{
 							Elements: []interface{}{
 								types.Section{
 									Level: 0,
+									Attributes: types.Attributes{
+										types.AttrAuthors: []types.DocumentAuthor{
+											{
+												FullName: "content",
+											},
+										},
+									},
 									Title: []interface{}{
 										types.StringElement{
 											Content: "Chapter A",
@@ -1030,23 +1040,15 @@ include::{includedir}/include.foo[]`
 									},
 									Elements: []interface{}{},
 								},
-								types.BlankLine{},
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "content",
-											},
-										},
-									},
-								},
 							},
 						}
 						Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
 					})
 
-					It("file inclusion with invalid quoted range - case 2", func() {
-						source := `include::../../test/includes/chapter-a.adoc[lines="1;3..4;6..10"]` // using semi-colons instead of commas
+					It("file inclusion with invalid quoted range - case 1", func() {
+						_, reset := ConfigureLogger(log.WarnLevel)
+						defer reset()
+						source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
 						expected := types.RawDocument{
 							Elements: []interface{}{
 								types.Section{

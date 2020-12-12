@@ -353,7 +353,7 @@ content</mark>.</p>
 		})
 
 		It("simple role mono", func() {
-			source := "[myrole]`true`"
+			source := "[.myrole]`true`"
 			expected := `<div class="paragraph">
 <p><code class="myrole">true</code></p>
 </div>
@@ -362,7 +362,7 @@ content</mark>.</p>
 		})
 
 		It("short-hand role with special characters", func() {
-			source := `["a <role>"]**bold**`
+			source := `[."a <role>"]**bold**`
 			// wrapping quotes are not preserved
 			expected := `<div class="paragraph">
 <p><strong class="a &lt;role&gt;">bold</strong></p>
@@ -372,7 +372,7 @@ content</mark>.</p>
 		})
 
 		It("simple role mono unconstrained", func() {
-			source := "int[uncle]``eg``rate"
+			source := "int[.uncle]``eg``rate"
 			expected := `<div class="paragraph">
 <p>int<code class="uncle">eg</code>rate</p>
 </div>
@@ -381,7 +381,7 @@ content</mark>.</p>
 		})
 
 		It("role with comma truncates", func() {
-			source := "[myrole,and=nothing_else]_italics_"
+			source := "[.myrole,and=nothing_else]_italics_"
 			expected := `<div class="paragraph">
 <p><em class="myrole">italics</em></p>
 </div>
@@ -446,7 +446,7 @@ content</mark>.</p>
 		// This is a departure from asciidoctor, as we support quoting the role in first position.
 		// (Asciidoctor passes it, but does not sanitize it, leading to invalid HTML.)
 		It("quoted role", func() {
-			source := "[\"something <wicked>\"]**bold**"
+			source := "[.\"something <wicked>\"]**bold**"
 			expected := `<div class="paragraph">
 <p><strong class="something &lt;wicked&gt;">bold</strong></p>
 </div>
@@ -507,7 +507,7 @@ content</mark>.</p>
 		})
 
 		It("span content within italic quote in sentence", func() {
-			source := "some *bold and [strikeout]#span content#* together."
+			source := "some *bold and [.strikeout]#span content#* together."
 			expected := `<div class="paragraph">
 <p>some <strong>bold and <span class="strikeout">span content</span></strong> together.</p>
 </div>

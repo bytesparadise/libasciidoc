@@ -45,13 +45,13 @@ elements:
 				// also, expand document authors and revision
 				if authors, ok := b.Attributes[AttrAuthors].([]DocumentAuthor); ok {
 					// move to the Document attributes
-					result.Add(expandAuthors(authors))
+					result.SetAll(expandAuthors(authors))
 					delete(b.Attributes, AttrAuthors)
 				}
 				// also, expand document authors and revision
 				if revision, ok := b.Attributes[AttrRevision].(DocumentRevision); ok {
 					// move to the Document attributes
-					result.Add(expandRevision(revision))
+					result.SetAll(expandRevision(revision))
 					delete(b.Attributes, AttrRevision)
 				}
 				continue // allow to continue if the section is level 0
@@ -491,37 +491,32 @@ func NewCounterSubstitution(name string, hidden bool, val interface{}) (CounterS
 // Element kinds
 // ------------------------------------------
 
-// BlockKind the kind of block
-type BlockKind string
-
 const (
-	// AttrBlockKind the key for the kind of block
-	AttrBlockKind string = "block-kind"
 	// Fenced a fenced block
-	Fenced BlockKind = "fenced"
+	Fenced = "fenced"
 	// Listing a listing block
-	Listing BlockKind = "listing"
+	Listing = "listing"
 	// Example an example block
-	Example BlockKind = "example"
+	Example = "example"
 	// Comment a comment block
-	Comment BlockKind = "comment"
+	Comment = "comment"
 	// Quote a quote block
-	Quote BlockKind = "quote"
+	Quote = "quote"
 	// MarkdownQuote a quote block in the Markdown style
-	MarkdownQuote BlockKind = "markdown-quote"
+	MarkdownQuote = "markdown-quote"
 	// Verse a verse block
-	Verse BlockKind = "verse"
+	Verse = "verse"
 	// Sidebar a sidebar block
-	Sidebar BlockKind = "sidebar"
+	Sidebar = "sidebar"
 	// Literal a literal block
-	Literal BlockKind = "literal"
+	Literal = "literal"
 	// Source a source block
-	Source BlockKind = "source"
+	Source = "source"
 	// Passthrough a passthrough block
-	Passthrough BlockKind = "passthrough"
+	Passthrough = "pass"
 
 	// AttrSourceBlockOption the option set on a source block, using the `source%<option>` attribute
-	AttrSourceBlockOption = "source-option"
+	AttrSourceBlockOption = "source-option" // DEPRECATED
 )
 
 // ------------------------------------------
@@ -557,23 +552,23 @@ type UserMacro struct {
 }
 
 // NewUserMacroBlock returns an UserMacro
-func NewUserMacroBlock(name string, value string, attributes Attributes, raw string) (UserMacro, error) {
+func NewUserMacroBlock(name string, value string, attributes interface{}, raw string) (UserMacro, error) {
 	return UserMacro{
 		Name:       name,
 		Kind:       BlockMacro,
 		Value:      value,
-		Attributes: attributes,
+		Attributes: toAttributes(attributes),
 		RawText:    raw,
 	}, nil
 }
 
 // NewInlineUserMacro returns an UserMacro
-func NewInlineUserMacro(name, value string, attributes Attributes, raw string) (UserMacro, error) {
+func NewInlineUserMacro(name, value string, attributes interface{}, raw string) (UserMacro, error) {
 	return UserMacro{
 		Name:       name,
 		Kind:       InlineMacro,
 		Value:      value,
-		Attributes: attributes,
+		Attributes: toAttributes(attributes),
 		RawText:    raw,
 	}, nil
 }
@@ -634,14 +629,13 @@ type Section struct {
 }
 
 // NewSection initializes a new `Section` from the given section title and elements
-func NewSection(level int, title []interface{}, ids []interface{}, attributes []interface{}) (Section, error) {
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return Section{}, errors.Wrapf(err, "failed to initialize a Section element")
-	}
+func NewSection(level int, title []interface{}, ids []interface{}, attributes interface{}) (Section, error) {
+	attrs := toAttributes(attributes)
 	// multiple IDs can be defined (by mistake), but only the last one is used
-	for _, id := range ids {
-		attrs = attrs.Add(id)
+	attrs = attrs.SetAll(ids)
+	// also, set the `AttrCustomID` flag if an ID was set
+	if _, exists := attrs[AttrID]; exists {
+		attrs[AttrCustomID] = true
 	}
 	return Section{
 		Level:      level,
@@ -947,14 +941,10 @@ type OrderedListItem struct {
 var _ ListItem = &OrderedListItem{}
 
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
-func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes []interface{}) (OrderedListItem, error) {
+func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes interface{}) (OrderedListItem, error) {
 	log.Debugf("new OrderedListItem")
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return OrderedListItem{}, errors.Wrapf(err, "failed to initialize an OrderedListItem element")
-	}
 	return OrderedListItem{
-		Attributes: attrs,
+		Attributes: toAttributesWithMapping(attributes, map[string]string{AttrPositional1: AttrStyle}),
 		Style:      prefix.Style,
 		Level:      prefix.Level,
 		Elements:   elements,
@@ -1057,13 +1047,9 @@ type UnorderedListItem struct {
 }
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
-func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes []interface{}) (UnorderedListItem, error) {
+func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes interface{}) (UnorderedListItem, error) {
 	log.Debugf("new UnorderedListItem with %d elements", len(elements))
 	// log.Debugf("new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return UnorderedListItem{}, errors.Wrapf(err, "failed to initialize an UnorderedListItem element")
-	}
 	cs := toCheckStyle(checkstyle)
 	if cs != NoCheck && len(elements) > 0 {
 		if p, ok := elements[0].(Paragraph); ok {
@@ -1076,7 +1062,7 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 	}
 	return UnorderedListItem{
 		Level:       prefix.Level,
-		Attributes:  attrs,
+		Attributes:  toAttributesWithMapping(attributes, map[string]string{AttrPositional1: AttrStyle}),
 		BulletStyle: prefix.BulletStyle,
 		CheckStyle:  cs,
 		Elements:    elements,
@@ -1265,12 +1251,8 @@ type LabeledListItem struct {
 var _ ListItem = &LabeledListItem{}
 
 // NewLabeledListItem initializes a new LabeledListItem
-func NewLabeledListItem(level int, term []interface{}, description interface{}, attributes []interface{}) (LabeledListItem, error) {
+func NewLabeledListItem(level int, term []interface{}, description interface{}, attributes interface{}) (LabeledListItem, error) {
 	log.Debugf("new LabeledListItem")
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return LabeledListItem{}, errors.Wrapf(err, "failed to initialize a LabeledListItem element")
-	}
 	var elements []interface{}
 	if description, ok := description.([]interface{}); ok {
 		elements = description
@@ -1278,7 +1260,7 @@ func NewLabeledListItem(level int, term []interface{}, description interface{}, 
 		elements = []interface{}{}
 	}
 	return LabeledListItem{
-		Attributes: attrs,
+		Attributes: toAttributesWithMapping(attributes, map[string]string{AttrPositional1: AttrStyle}),
 		Term:       term,
 		Level:      level,
 		Elements:   elements,
@@ -1332,21 +1314,32 @@ type Paragraph struct {
 }
 
 // AttrHardBreaks the attribute to set on a paragraph to render with hard breaks on each line
-const AttrHardBreaks = "%hardbreaks"
+// TODO: remove?
+const AttrHardBreaks = "hardbreaks"
 
 // DocumentAttrHardBreaks the attribute to set at the document level to render with hard breaks on each line of all paragraphs
 const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
-func NewParagraph(lines []interface{}, attributes []interface{}) (Paragraph, error) {
+func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error) {
 	log.Debugf("new paragraph with attributes: '%v'", attributes)
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph")
-	}
 	l, err := toLines(lines)
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph")
+	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
+	switch attrs.GetAsStringWithDefault(AttrStyle, "") {
+	case string(Source):
+		attrs = toAttributesWithMapping(attrs, map[string]string{
+			AttrPositional2: AttrLanguage,
+		})
+	case string(Quote), string(Verse):
+		attrs = toAttributesWithMapping(attrs, map[string]string{
+			AttrPositional2: AttrQuoteAuthor,
+			AttrPositional3: AttrQuoteTitle,
+		})
 	}
 	return Paragraph{
 		Attributes: attrs,
@@ -1396,7 +1389,7 @@ func (p Paragraph) SubstitutionsToApply() []string {
 func (p Paragraph) DefaultSubstitutions() []string {
 	// support for masquerading
 	// treat 'Listing' paragraphs as verbatim blocks
-	if p.Attributes.GetAsStringWithDefault(AttrBlockKind, "") == string(Listing) {
+	if p.Attributes.GetAsStringWithDefault(AttrStyle, "") == string(Listing) {
 		return defaultListingBlockSubstitutions
 	}
 	return defaultParagraphSubstitutions
@@ -1448,13 +1441,13 @@ func (p Paragraph) SubstituteFootnotes(notes *Footnotes) interface{} {
 }
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
-func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, attributes []interface{}) (Paragraph, error) {
+func NewAdmonitionParagraph(lines []interface{}, admonitionKind string, attributes interface{}) (Paragraph, error) {
 	log.Debugf("new admonition paragraph")
 	p, err := NewParagraph(lines, attributes)
 	if err != nil {
 		return Paragraph{}, err
 	}
-	p.Attributes = p.Attributes.Set(AttrAdmonitionKind, admonitionKind)
+	p.Attributes = p.Attributes.Set(AttrStyle, admonitionKind)
 	return p, nil
 }
 
@@ -1462,22 +1455,19 @@ func NewAdmonitionParagraph(lines []interface{}, admonitionKind AdmonitionKind, 
 // Admonitions
 // ------------------------------------------
 
-// AdmonitionKind the type of admonition
-type AdmonitionKind string
-
 const (
 	// Tip the 'TIP' type of admonition
-	Tip AdmonitionKind = "tip"
+	Tip = "TIP"
 	// Note the 'NOTE' type of admonition
-	Note AdmonitionKind = "note"
+	Note = "NOTE"
 	// Important the 'IMPORTANT' type of admonition
-	Important AdmonitionKind = "important"
+	Important = "IMPORTANT"
 	// Warning the 'WARNING' type of admonition
-	Warning AdmonitionKind = "warning"
+	Warning = "WARNING"
 	// Caution the 'CAUTION' type of admonition
-	Caution AdmonitionKind = "caution"
+	Caution = "CAUTION"
 	// Unknown is the zero value for admonition kind
-	Unknown AdmonitionKind = ""
+	Unknown = ""
 )
 
 // NewInlineElements initializes a new `InlineElements` from the given values
@@ -1507,16 +1497,17 @@ func NewInternalCrossReference(id, label interface{}) (InternalCrossReference, e
 // ExternalCrossReference the struct for Cross References
 type ExternalCrossReference struct {
 	Location Location
-	Label    []interface{}
+	Label    interface{}
 }
 
 // NewExternalCrossReference initializes a new `InternalCrossReference` from the given ID
-func NewExternalCrossReference(location Location, attributes Attributes) (ExternalCrossReference, error) {
-	var label []interface{}
-	if l, ok := attributes["positional-1"].([]interface{}); ok {
+func NewExternalCrossReference(location Location, attributes interface{}) (ExternalCrossReference, error) {
+	var label interface{}
+	attrs := toAttributes(attributes)
+	if l, ok := attrs[AttrPositional1]; ok {
 		label = l
 	}
-	log.Debugf("new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attributes[AttrInlineLinkText])
+	log.Debugf("new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attrs[AttrInlineLinkText])
 	return ExternalCrossReference{
 		Location: location,
 		Label:    label,
@@ -1527,7 +1518,9 @@ var _ WithPlaceholdersInElements = ExternalCrossReference{}
 
 // RestoreElements restores the elements which had been substituted by placeholders
 func (r ExternalCrossReference) RestoreElements(placeholders map[string]interface{}) interface{} {
-	r.Label = restoreElements(r.Label, placeholders)
+	if l, ok := r.Label.([]interface{}); ok {
+		r.Label = restoreElements(l, placeholders)
+	}
 	return r
 }
 
@@ -1555,13 +1548,15 @@ type ImageBlock struct {
 }
 
 // NewImageBlock initializes a new `ImageBlock`
-func NewImageBlock(location Location, inlineAttributes Attributes, attributes []interface{}) (ImageBlock, error) {
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return ImageBlock{}, errors.Wrapf(err, "failed to initialize an ImageBlock element")
-	}
+func NewImageBlock(location Location, inlineAttributes Attributes, attributes interface{}) (ImageBlock, error) {
 	// inline attributes trump block attributes
-	attrs = attrs.Add(inlineAttributes)
+	attrs := toAttributes(inlineAttributes)
+	attrs.SetAll(attributes)
+	attrs = toAttributesWithMapping(attrs, map[string]string{
+		AttrPositional1: AttrImageAlt,
+		AttrPositional2: AttrWidth,
+		AttrPositional3: AttrHeight,
+	})
 	return ImageBlock{
 		Location:   location,
 		Attributes: attrs,
@@ -1617,10 +1612,15 @@ type InlineImage struct {
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
-func NewInlineImage(location Location, attributes Attributes, imagesdir interface{}) (InlineImage, error) {
+func NewInlineImage(location Location, attributes interface{}, imagesdir interface{}) (InlineImage, error) {
 	location = location.WithPathPrefix(imagesdir)
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrImageAlt,
+		AttrPositional2: AttrWidth,
+		AttrPositional3: AttrHeight,
+	})
 	return InlineImage{
-		Attributes: attributes,
+		Attributes: attrs,
 		Location:   location,
 	}, nil
 }
@@ -1678,10 +1678,13 @@ type Icon struct {
 }
 
 // NewIcon initializes a new `Icon`
-func NewIcon(class string, attributes Attributes) (Icon, error) {
+func NewIcon(class string, attributes interface{}) (Icon, error) {
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrIconSize,
+	})
 	return Icon{
 		Class:      class,
-		Attributes: attributes,
+		Attributes: attrs,
 	}, nil
 }
 
@@ -1814,12 +1817,11 @@ type ExampleBlock struct {
 }
 
 // NewExampleBlock initializes a new `ExampleBlock` with the given elements
-func NewExampleBlock(elements []interface{}, attributes []interface{}) (ExampleBlock, error) {
+func NewExampleBlock(elements []interface{}, attributes interface{}) (ExampleBlock, error) {
 	log.Debugf("new ExampleBlock with %d blocks", len(elements))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return ExampleBlock{}, errors.Wrap(err, "failed to initialize a new example block")
-	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
 	return ExampleBlock{
 		Attributes: attrs,
 		Elements:   elements,
@@ -1872,12 +1874,13 @@ type QuoteBlock struct {
 }
 
 // NewQuoteBlock initializes a new `QuoteBlock` with the given elements
-func NewQuoteBlock(elements []interface{}, attributes []interface{}) (QuoteBlock, error) {
+func NewQuoteBlock(elements []interface{}, attributes interface{}) (QuoteBlock, error) {
 	log.Debugf("new QuoteBlock with %d blocks", len(elements))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return QuoteBlock{}, errors.Wrap(err, "failed to initialize a new quote block")
-	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+		AttrPositional2: AttrQuoteAuthor,
+		AttrPositional3: AttrQuoteTitle,
+	})
 	return QuoteBlock{
 		Attributes: attrs,
 		Elements:   elements,
@@ -1930,12 +1933,11 @@ type SidebarBlock struct {
 }
 
 // NewSidebarBlock initializes a new `SidebarBlock` with the given elements
-func NewSidebarBlock(elements []interface{}, attributes []interface{}) (SidebarBlock, error) {
+func NewSidebarBlock(elements []interface{}, attributes interface{}) (SidebarBlock, error) {
 	log.Debugf("new SidebarBlock with %d blocks", len(elements))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return SidebarBlock{}, errors.Wrap(err, "failed to initialize a new sidebar block")
-	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
 	return SidebarBlock{
 		Attributes: attrs,
 		Elements:   elements,
@@ -1988,16 +1990,15 @@ type FencedBlock struct {
 }
 
 // NewFencedBlock initializes a new `FencedBlock` with the given lines
-func NewFencedBlock(lines []interface{}, attributes []interface{}) (FencedBlock, error) {
+func NewFencedBlock(lines []interface{}, attributes interface{}) (FencedBlock, error) {
 	log.Debugf("new FencedBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return FencedBlock{}, errors.Wrap(err, "failed to initialize a new fenced block")
-	}
 	l, err := toLines(lines)
 	if err != nil {
 		return FencedBlock{}, errors.Wrapf(err, "failed to initialize a new fenced block")
 	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
 	return FencedBlock{
 		Attributes: attrs,
 		Lines:      l,
@@ -2050,15 +2051,31 @@ type ListingBlock struct {
 }
 
 // NewListingBlock initializes a new `ListingBlock` with the given lines
-func NewListingBlock(lines []interface{}, attributes []interface{}) (ListingBlock, error) {
+func NewListingBlock(lines []interface{}, attributes interface{}) (ListingBlock, error) {
 	log.Debugf("new ListingBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return ListingBlock{}, errors.Wrap(err, "failed to initialize a new listing block")
-	}
 	l, err := toLines(lines)
 	if err != nil {
 		return ListingBlock{}, errors.Wrapf(err, "failed to initialize a new listing block")
+	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
+	if style, ok := attrs.GetAsString(AttrStyle); ok && style == AttrSource {
+		attrs = toAttributesWithMapping(attributes, map[string]string{
+			AttrPositional1: AttrStyle,
+			AttrPositional2: AttrLanguage,
+			AttrPositional3: AttrLineNums,
+		})
+		// // positional attribute #2 is the "language" associated with the source block
+		// if lang, ok := attrs[AttrPositionalIndex+"2"]; ok {
+		// 	attrs[AttrLanguage] = lang
+		// }
+		// delete(attrs, AttrPositionalIndex+"2") // no-op if there is no such element
+		// // positional attribute #3 is the "linenums" flag
+		// if _, ok := attrs[AttrPositionalIndex+"3"]; ok {
+		// 	attrs[AttrLineNums] = true
+		// }
+		// delete(attrs, AttrPositionalIndex+"3") // no-op if there is no such element
 	}
 	return ListingBlock{
 		Attributes: attrs,
@@ -2112,16 +2129,17 @@ type VerseBlock struct {
 }
 
 // NewVerseBlock initializes a new `VerseBlock` with the given lines
-func NewVerseBlock(lines []interface{}, attributes []interface{}) (VerseBlock, error) {
+func NewVerseBlock(lines []interface{}, attributes interface{}) (VerseBlock, error) {
 	log.Debugf("new VerseBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return VerseBlock{}, errors.Wrap(err, "failed to initialize a new verse block")
-	}
 	l, err := toLines(lines)
 	if err != nil {
 		return VerseBlock{}, errors.Wrapf(err, "failed to initialize a new verse block")
 	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+		AttrPositional2: AttrQuoteAuthor,
+		AttrPositional3: AttrQuoteTitle,
+	})
 	return VerseBlock{
 		Attributes: attrs,
 		Lines:      l,
@@ -2174,16 +2192,15 @@ type MarkdownQuoteBlock struct {
 }
 
 // NewMarkdownQuoteBlock initializes a new `MarkdownQuoteBlock` with the given lines
-func NewMarkdownQuoteBlock(lines []interface{}, attributes []interface{}) (MarkdownQuoteBlock, error) {
+func NewMarkdownQuoteBlock(lines []interface{}, attributes interface{}) (MarkdownQuoteBlock, error) {
 	log.Debugf("new MarkdownQuoteBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return MarkdownQuoteBlock{}, errors.Wrap(err, "failed to initialize a new markdown quote block")
-	}
 	l, err := toLines(lines)
 	if err != nil {
 		return MarkdownQuoteBlock{}, errors.Wrapf(err, "failed to initialize a new markdown quote block")
 	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
 	return MarkdownQuoteBlock{
 		Attributes: attrs,
 		Lines:      l,
@@ -2197,16 +2214,15 @@ type PassthroughBlock struct {
 }
 
 // NewPassthroughBlock initializes a new `PassthroughBlock` with the given lines
-func NewPassthroughBlock(lines []interface{}, attributes []interface{}) (PassthroughBlock, error) {
+func NewPassthroughBlock(lines []interface{}, attributes interface{}) (PassthroughBlock, error) {
 	log.Debugf("new PassthroughBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return PassthroughBlock{}, errors.Wrap(err, "failed to initialize a new passthrough block")
-	}
 	l, err := toLines(lines)
 	if err != nil {
 		return PassthroughBlock{}, errors.Wrapf(err, "failed to initialize a new passthrough block")
 	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
 	return PassthroughBlock{
 		Attributes: attrs,
 		Lines:      l,
@@ -2259,18 +2275,17 @@ type CommentBlock struct {
 }
 
 // NewCommentBlock initializes a new `CommentBlock` with the given lines
-func NewCommentBlock(lines []interface{}, attributes []interface{}) (CommentBlock, error) {
+func NewCommentBlock(lines []interface{}, attributes interface{}) (CommentBlock, error) {
 	log.Debugf("new CommentBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return CommentBlock{}, errors.Wrap(err, "failed to initialize a new comment block")
-	}
 	l, err := toLines(lines)
 	if err != nil {
 		return CommentBlock{}, errors.Wrapf(err, "failed to initialize a new comment block")
 	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
+	})
 	return CommentBlock{
-		Attributes: attrs,
+		Attributes: attrs, // TODO: should we expect attributes on comment blocks??
 		Lines:      l,
 	}, nil
 }
@@ -2294,16 +2309,14 @@ const (
 
 // NewLiteralBlock initializes a new `LiteralBlock` of the given kind with the given content,
 // along with the given sectionTitle spaces
-func NewLiteralBlock(origin string, lines []interface{}, attributes []interface{}) (LiteralBlock, error) {
+func NewLiteralBlock(origin string, lines []interface{}, attributes interface{}) (LiteralBlock, error) {
 	// log.Debugf("new LiteralBlock with %d lines", len(lines))
-	attrs, err := NewAttributes(Attributes{
-		AttrBlockKind:        Literal,
-		AttrLiteralBlockType: origin,
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrStyle,
 	})
-	attrs.Add(attributes)
-	if err != nil {
-		return LiteralBlock{}, errors.Wrapf(err, "failed to initialize a literal block")
-	}
+	// make sure these 2 attributes are set, even if there was no other attrs (above)
+	attrs = attrs.Set(AttrStyle, Literal)
+	attrs = attrs.Set(AttrLiteralBlockType, origin)
 	l, err := toLines(lines)
 	if err != nil {
 		return LiteralBlock{}, errors.Wrapf(err, "failed to initialize a new literal block")
@@ -2570,10 +2583,9 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, attributes interface{}, elements ...interface{}) (QuotedText, error) {
-	attrs, err := NewAttributeGroup(attributes)
-	if err != nil {
-		return QuotedText{}, errors.Wrap(err, "failed to initialize a QuotedText element")
-	}
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrRoles,
+	})
 	return QuotedText{
 		Kind:       kind,
 		Elements:   Merge(elements),
@@ -2700,14 +2712,14 @@ type InlineLink struct {
 }
 
 // NewInlineLink initializes a new inline `InlineLink`
-func NewInlineLink(url Location, attrs interface{}) (InlineLink, error) {
-	result := InlineLink{
-		Location: url,
-	}
-	if attrs, ok := attrs.(Attributes); ok && len(attrs) > 0 {
-		result.Attributes = attrs
-	}
-	return result, nil
+func NewInlineLink(url Location, attributes interface{}) (InlineLink, error) {
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		AttrPositional1: AttrInlineLinkText,
+	})
+	return InlineLink{
+		Location:   url,
+		Attributes: attrs,
+	}, nil
 }
 
 var _ WithPlaceholdersInAttributes = InlineLink{}
@@ -2738,9 +2750,6 @@ func (l InlineLink) ReplaceElements(path []interface{}) interface{} {
 	l.Location.Path = path
 	return l
 }
-
-// AttrInlineLinkText the link `text` attribute
-const AttrInlineLinkText string = "positional-1"
 
 // NewInlineLinkAttributes returns a map of link attributes
 func NewInlineLinkAttributes(attributes []interface{}) (Attributes, error) {
@@ -2778,9 +2787,12 @@ type FileInclusion struct {
 }
 
 // NewFileInclusion initializes a new inline `InlineLink`
-func NewFileInclusion(location Location, attributes Attributes, rawtext string) (FileInclusion, error) {
+func NewFileInclusion(location Location, attributes interface{}, rawtext string) (FileInclusion, error) {
+	attrs := toAttributesWithMapping(attributes, map[string]string{
+		"tag": "tags", // convert `tag` to `tags`
+	})
 	return FileInclusion{
-		Attributes: attributes,
+		Attributes: attrs,
 		Location:   location,
 		RawText:    rawtext,
 	}, nil
@@ -2812,11 +2824,12 @@ func (f *FileInclusion) TagRanges() (TagRanges, bool) {
 // -------------------------------------------------------------------------------------
 
 // NewLineRangesAttribute returns an element attribute with a slice of line ranges attribute for a file inclusion.
+// TODO: DEPRECATED
 func NewLineRangesAttribute(ranges interface{}) (Attributes, error) {
 	switch ranges := ranges.(type) {
 	case []interface{}:
 		return Attributes{
-			AttrLineRanges: NewLineRanges(ranges...),
+			AttrLineRanges: NewLineRanges(ranges),
 		}, nil
 	case LineRange:
 		return Attributes{
@@ -2826,6 +2839,27 @@ func NewLineRangesAttribute(ranges interface{}) (Attributes, error) {
 		return Attributes{
 			AttrLineRanges: ranges,
 		}, nil
+	}
+}
+
+// NewLineRanges returns a slice of line ranges attribute for a file inclusion.
+func NewLineRanges(ranges interface{}) LineRanges {
+	switch ranges := ranges.(type) {
+	case []interface{}:
+		result := LineRanges{}
+		for _, r := range ranges {
+			if lr, ok := r.(LineRange); ok {
+				result = append(result, lr)
+			}
+		}
+		// sort the range by `start` line
+		sort.Sort(result)
+		return result
+	case LineRange:
+		return LineRanges{ranges}
+	default:
+		log.Warnf("invalid type of line range: '%T'", ranges)
+		return LineRanges{}
 	}
 }
 
@@ -2849,19 +2883,6 @@ func NewLineRange(start, end int) (LineRange, error) {
 
 // LineRanges the ranges of lines of the child doc to include in the master doc
 type LineRanges []LineRange
-
-// NewLineRanges returns a slice of line ranges attribute for a file inclusion.
-func NewLineRanges(ranges ...interface{}) LineRanges {
-	result := LineRanges{}
-	for _, r := range ranges {
-		if lr, ok := r.(LineRange); ok {
-			result = append(result, lr)
-		}
-	}
-	// sort the range by `start` line
-	sort.Sort(result)
-	return result
-}
 
 // Match checks if the given line number matches one of the line ranges
 func (r LineRanges) Match(line int) bool {
@@ -2889,31 +2910,44 @@ func (r LineRanges) Less(i, j int) bool { return r[i].StartLine < r[j].StartLine
 // -------------------------------------------------------------------------------------
 
 // NewTagRangesAttribute returns an element attribute with a slice of tag ranges attribute for a file inclusion.
-func NewTagRangesAttribute(ranges []interface{}) (Attributes, error) {
-	r, err := NewTagRanges(ranges...)
-	if err != nil {
-		return nil, err
+// TODO: DEPRECATED
+func NewTagRangesAttribute(ranges interface{}) (Attributes, error) {
+	switch ranges := ranges.(type) {
+	case []interface{}:
+		return Attributes{
+			AttrTagRanges: NewTagRanges(ranges),
+		}, nil
+	case LineRange:
+		return Attributes{
+			AttrTagRanges: NewTagRanges(ranges),
+		}, nil
+	default:
+		return Attributes{
+			AttrTagRanges: ranges,
+		}, nil
 	}
-	log.Debugf("new TagRanges attribute with values: %v", r)
-	return Attributes{
-		AttrTagRanges: r,
-	}, nil
 }
 
 // TagRanges the ranges of tags of the child doc to include in the master doc
 type TagRanges []TagRange
 
 // NewTagRanges returns a slice of tag ranges attribute for a file inclusion.
-func NewTagRanges(ranges ...interface{}) (TagRanges, error) {
-	result := TagRanges{}
-	for _, r := range ranges {
-		if tr, ok := r.(TagRange); ok {
-			result = append(result, tr)
-		} else {
-			return nil, errors.Errorf("unexpected type of tag range: %T", r)
+func NewTagRanges(ranges interface{}) TagRanges {
+	switch ranges := ranges.(type) {
+	case []interface{}:
+		result := TagRanges{}
+		for _, r := range ranges {
+			if lr, ok := r.(TagRange); ok {
+				result = append(result, lr)
+			}
 		}
+		return result
+	case TagRange:
+		return TagRanges{ranges}
+	default:
+		log.Warnf("invalid type of tag range: '%T'", ranges)
+		return TagRanges{}
 	}
-	return result, nil
 }
 
 // Match checks if the given tag matches one of the range
@@ -3214,8 +3248,11 @@ func (p ElementPlaceHolder) String() string {
 // replace the placeholders with their original element in the given elements
 func restoreElements(elements []interface{}, placeholders map[string]interface{}) []interface{} {
 	for i, e := range elements {
-		if e, ok := e.(ElementPlaceHolder); ok {
+		switch e := e.(type) {
+		case ElementPlaceHolder:
 			elements[i] = placeholders[e.Ref]
+		case []interface{}:
+			elements[i] = restoreElements(e, placeholders)
 		}
 	}
 	return elements
@@ -3223,15 +3260,23 @@ func restoreElements(elements []interface{}, placeholders map[string]interface{}
 
 // replace the placeholders with their original element in the given attributes
 func restoreAttributes(attrs Attributes, placeholders map[string]interface{}) Attributes {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("restoring placeholders in")
+		spew.Fdump(log.StandardLogger().Out, attrs)
+	}
 	for key, value := range attrs {
 		switch value := value.(type) {
 		case ElementPlaceHolder:
 			attrs[key] = placeholders[value.Ref]
-		case ElementRole:
-			attrs[key] = ElementRole(restoreElements(value, placeholders))
+		// case ElementRoles:
+		// 	attrs[key] = ElementRoles(restoreElements(value, placeholders))
 		case []interface{}:
 			attrs[key] = restoreElements(value, placeholders)
 		}
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("restored placeholders in")
+		spew.Fdump(log.StandardLogger().Out, attrs)
 	}
 	return attrs
 }

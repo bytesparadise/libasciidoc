@@ -8,7 +8,7 @@ const (
 		"<pre class=\"" +
 		`{{ if .SyntaxHighlighter }}{{ .SyntaxHighlighter }} {{ end }}` +
 		`highlight` +
-		`{{ if .Option }} {{ .Option }}{{ end }}` + // space before the option as it's the last value in the 'class' attribute
+		`{{ if .Nowrap }} nowrap{{ end }}` + // space before the `nowrap` option as it's the last value in the 'class' attribute
 		`">` +
 		`<code{{ if .Language }}{{ if not .SyntaxHighlighter }} class="language-{{ .Language}}"{{ end }} ` +
 		`data-lang="{{ .Language}}"{{ end }}>` +

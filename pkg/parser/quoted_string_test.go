@@ -136,7 +136,7 @@ var _ = Describe("quoted strings", func() {
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 		It("span in single quoted string", func() {
-			source := "'`curly [strikeout]#was#_is_ single`'"
+			source := "'`curly [.strikeout]#was#_is_ single`'"
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.Paragraph{
@@ -145,22 +145,32 @@ var _ = Describe("quoted strings", func() {
 								types.QuotedString{
 									Kind: types.SingleQuote,
 									Elements: []interface{}{
-										types.StringElement{Content: "curly "},
+										types.StringElement{
+											Content: "curly ",
+										},
 										types.QuotedText{
-											Kind:       types.Marked,
-											Attributes: types.Attributes{types.AttrRole: types.ElementRole{"strikeout"}},
+											Kind: types.Marked,
+											Attributes: types.Attributes{
+												types.AttrRoles: []interface{}{"strikeout"},
+											},
 											Elements: []interface{}{
-												types.StringElement{Content: "was"},
+												types.StringElement{
+													Content: "was",
+												},
 											},
 										},
 										types.QuotedText{
 											Kind: types.Italic,
 											Elements: []interface{}{
-												types.StringElement{Content: "is"},
+												types.StringElement{
+													Content: "is",
+												},
 											},
 										},
 
-										types.StringElement{Content: " single"},
+										types.StringElement{
+											Content: " single",
+										},
 									},
 								},
 							},
@@ -341,7 +351,7 @@ var _ = Describe("quoted strings", func() {
 										},
 									},
 									Attributes: types.Attributes{
-										"positional-1": []interface{}{
+										types.AttrInlineLinkText: []interface{}{
 											types.QuotedString{
 												Kind: types.SingleQuote,
 												Elements: []interface{}{
@@ -375,7 +385,7 @@ var _ = Describe("quoted strings", func() {
 										},
 									},
 									Attributes: types.Attributes{
-										"positional-1": []interface{}{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "an ",
 											},
@@ -575,7 +585,7 @@ var _ = Describe("quoted strings", func() {
 		})
 
 		It("span in double quoted string", func() {
-			source := "\"`curly [strikeout]#was#_is_ single`\""
+			source := "\"`curly [.strikeout]#was#_is_ single`\""
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.Paragraph{
@@ -584,22 +594,31 @@ var _ = Describe("quoted strings", func() {
 								types.QuotedString{
 									Kind: types.DoubleQuote,
 									Elements: []interface{}{
-										types.StringElement{Content: "curly "},
+										types.StringElement{
+											Content: "curly ",
+										},
 										types.QuotedText{
-											Kind:       types.Marked,
-											Attributes: types.Attributes{types.AttrRole: types.ElementRole{"strikeout"}},
+											Kind: types.Marked,
+											Attributes: types.Attributes{
+												types.AttrRoles: []interface{}{"strikeout"},
+											},
 											Elements: []interface{}{
-												types.StringElement{Content: "was"},
+												types.StringElement{
+													Content: "was",
+												},
 											},
 										},
 										types.QuotedText{
 											Kind: types.Italic,
 											Elements: []interface{}{
-												types.StringElement{Content: "is"},
+												types.StringElement{
+													Content: "is",
+												},
 											},
 										},
-
-										types.StringElement{Content: " single"},
+										types.StringElement{
+											Content: " single",
+										},
 									},
 								},
 							},
@@ -781,7 +800,7 @@ var _ = Describe("quoted strings", func() {
 										},
 									},
 									Attributes: types.Attributes{
-										"positional-1": []interface{}{
+										types.AttrInlineLinkText: []interface{}{
 											types.QuotedString{
 												Kind: types.DoubleQuote,
 												Elements: []interface{}{
@@ -817,7 +836,7 @@ var _ = Describe("quoted strings", func() {
 										},
 									},
 									Attributes: types.Attributes{
-										"positional-1": []interface{}{
+										types.AttrInlineLinkText: []interface{}{
 											types.QuotedString{
 												Kind: types.DoubleQuote,
 												Elements: []interface{}{

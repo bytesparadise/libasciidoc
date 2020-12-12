@@ -84,11 +84,10 @@ What is the answer to the Ultimate Question?:: 42`
 			Elements: []interface{}{
 				types.LabeledList{
 					Attributes: types.Attributes{
-						types.AttrTitle:    "Q&A",
-						types.AttrStyle:    "qanda",
-						types.AttrID:       "quiz",
-						types.AttrCustomID: true,
-						types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
+						types.AttrTitle: "Q&A",
+						types.AttrStyle: "qanda",
+						types.AttrID:    "quiz",
+						types.AttrRoles: []interface{}{"role1", "role2"},
 					},
 					Items: []types.LabeledListItem{
 						{

@@ -66,7 +66,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		Href:        img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Alt:         alt,
 		Width:       img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
-		Height:      img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
+		Height:      img.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
 		Path:        path,
 	})
 
@@ -102,7 +102,7 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (s
 		Href:   img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Alt:    alt,
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
-		Height: img.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
+		Height: img.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
 		Path:   path,
 	})
 

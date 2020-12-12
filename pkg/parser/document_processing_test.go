@@ -25,7 +25,7 @@ foo
 				Elements: []interface{}{
 					types.ListingBlock{
 						Attributes: types.Attributes{
-							types.AttrBlockKind: types.Source,
+							types.AttrStyle: types.Source,
 						},
 						Lines: [][]interface{}{
 							{

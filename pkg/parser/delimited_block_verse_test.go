@@ -25,7 +25,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 							},
@@ -67,7 +67,7 @@ ____
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -103,7 +103,7 @@ ____
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:  types.Verse,
+								types.AttrStyle:      types.Verse,
 								types.AttrQuoteTitle: "verse title",
 							},
 							Lines: [][]interface{}{
@@ -132,7 +132,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -179,7 +179,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -209,7 +209,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{},
@@ -229,7 +229,7 @@ foo
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -275,7 +275,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:   types.Verse,
+									types.AttrStyle:       types.Verse,
 									types.AttrQuoteAuthor: "john doe",
 									types.AttrQuoteTitle:  "verse title",
 								},
@@ -390,7 +390,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "normal",
@@ -506,7 +506,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "quotes",
@@ -577,7 +577,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "macros",
@@ -653,7 +653,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "attributes",
@@ -716,7 +716,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "attributes,macros",
@@ -802,7 +802,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "specialchars",
@@ -886,7 +886,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "replacements",
@@ -949,7 +949,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "post_replacements",
@@ -1013,7 +1013,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "quotes,macros",
@@ -1097,7 +1097,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "macros,quotes",
@@ -1181,7 +1181,7 @@ ____
 							types.BlankLine{},
 							types.VerseBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:     types.Verse,
+									types.AttrStyle:         types.Verse,
 									types.AttrQuoteAuthor:   "john doe",
 									types.AttrQuoteTitle:    "verse title",
 									types.AttrSubstitutions: "none",
@@ -1246,7 +1246,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 							},
@@ -1286,7 +1286,7 @@ ____
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1322,7 +1322,7 @@ ____
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:  types.Verse,
+								types.AttrStyle:      types.Verse,
 								types.AttrQuoteTitle: "verse title",
 							},
 							Lines: [][]interface{}{
@@ -1351,7 +1351,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1398,7 +1398,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1428,7 +1428,7 @@ ____`
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{},
@@ -1448,7 +1448,7 @@ foo
 					Elements: []interface{}{
 						types.VerseBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{

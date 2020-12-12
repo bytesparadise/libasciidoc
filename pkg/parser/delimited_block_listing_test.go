@@ -480,7 +480,7 @@ some *listing* content`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Listing,
+								types.AttrStyle: types.Listing,
 							},
 							Lines: [][]interface{}{
 								{
@@ -968,7 +968,7 @@ some *listing* content`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Listing,
+								types.AttrStyle: types.Listing,
 							},
 							Lines: [][]interface{}{
 								{

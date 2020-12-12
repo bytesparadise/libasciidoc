@@ -55,7 +55,7 @@ var _ = Describe("quoted strings", func() {
 
 		})
 		It("span in single quoted string", func() {
-			source := "'`curly [strikeout]#was#_is_ single`'"
+			source := "'`curly [.strikeout]#was#_is_ single`'"
 			expected := `<div class="paragraph">
 <p>&#8216;curly <span class="strikeout">was</span><em>is</em> single&#8217;</p>
 </div>
@@ -224,7 +224,7 @@ var _ = Describe("quoted strings", func() {
 		})
 
 		It("span in double quoted string", func() {
-			source := "\"`curly [strikeout]#was#_is_ single`\""
+			source := "\"`curly [.strikeout]#was#_is_ single`\""
 			expected := `<div class="paragraph">
 <p>&#8220;curly <span class="strikeout">was</span><em>is</em> single&#8221;</p>
 </div>

@@ -2550,7 +2550,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Listing,
+								types.AttrStyle: types.Listing,
 							},
 							Lines: [][]interface{}{
 								{
@@ -2619,7 +2619,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:     types.Listing,
+								types.AttrStyle:         types.Listing,
 								types.AttrSubstitutions: "quotes",
 							},
 							Lines: [][]interface{}{
@@ -2682,7 +2682,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:     types.Listing,
+								types.AttrStyle:         types.Listing,
 								types.AttrSubstitutions: "+quotes",
 							},
 							Lines: [][]interface{}{
@@ -2760,7 +2760,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:     types.Listing,
+								types.AttrStyle:         types.Listing,
 								types.AttrSubstitutions: "macros,+quotes,-quotes", // ie, "macros" only
 							},
 							Lines: [][]interface{}{

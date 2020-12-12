@@ -84,7 +84,7 @@ another line // not a comment`
 						Elements: []interface{}{
 							types.LiteralBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:        types.Literal,
+									types.AttrStyle:            types.Literal,
 									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								},
 								Lines: [][]interface{}{
@@ -108,7 +108,7 @@ another line // not a comment`
 						Elements: []interface{}{
 							types.LiteralBlock{
 								Attributes: types.Attributes{
-									types.AttrBlockKind:        types.Literal,
+									types.AttrStyle:            types.Literal,
 									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								},
 								Lines: [][]interface{}{
@@ -254,7 +254,7 @@ a second paragraph`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -276,7 +276,7 @@ a second paragraph`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{

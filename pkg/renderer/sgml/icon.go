@@ -33,7 +33,7 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) 
 		ID:     r.renderElementID(icon.Attributes),
 		Link:   icon.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Window: icon.Attributes.GetAsStringWithDefault(types.AttrImageWindow, ""),
-		Role:   icon.Attributes.GetAsStringWithDefault(types.AttrRole, ""),
+		Role:   icon.Attributes.GetAsStringWithDefault(types.AttrRoles, ""),
 	})
 
 	if err != nil {
@@ -105,7 +105,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		Alt:        alt,
 		Title:      title,
 		Width:      icon.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
-		Height:     icon.Attributes.GetAsStringWithDefault(types.AttrImageHeight, ""),
+		Height:     icon.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
 		Size:       icon.Attributes.GetAsStringWithDefault(types.AttrIconSize, ""),
 		Rotate:     icon.Attributes.GetAsStringWithDefault(types.AttrIconRotate, ""),
 		Flip:       icon.Attributes.GetAsStringWithDefault(types.AttrIconFlip, ""),

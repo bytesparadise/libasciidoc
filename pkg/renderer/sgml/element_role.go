@@ -5,84 +5,63 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) (string, error) {
-	var roles []string
-	switch role := attrs[types.AttrRole].(type) {
-	case []interface{}:
-		for _, er := range role {
-			switch er := er.(type) {
-			case types.ElementRole:
-				s, err := r.renderElementRole(ctx, er)
-				if err != nil {
-					return "", err
-				}
-				roles = append(roles, s)
-			default:
-				return "", fmt.Errorf("unpected type of element in role: '%T'", er)
+	var result []string
+	if roles, ok := attrs[types.AttrRoles].([]interface{}); ok {
+		for _, e := range roles {
+			s, err := r.renderElementRole(ctx, e)
+			if err != nil {
+				return "", err
 			}
+			result = append(result, s)
 		}
-	case types.ElementRole:
-		s, err := r.renderElementRole(ctx, role)
-		if err != nil {
-			return "", err
-		}
-		roles = append(roles, s)
 	}
-	return strings.Join(roles, " "), nil
+	log.Debugf("rendered roles: '%s'", result)
+	return strings.Join(result, " "), nil
 }
 
 // Image roles add float and alignment attributes -- we turn these into roles.
 func (r *sgmlRenderer) renderImageRoles(ctx *Context, attrs types.Attributes) (string, error) {
-	var roles []string
+	var result []string
 	if val, ok := attrs.GetAsString(types.AttrFloat); ok {
-		roles = append(roles, val)
+		result = append(result, val)
 	}
 	if val, ok := attrs.GetAsString(types.AttrImageAlign); ok {
-		roles = append(roles, "text-"+val)
+		result = append(result, "text-"+val)
 	}
-	switch role := attrs[types.AttrRole].(type) {
-	case []interface{}:
-		for _, er := range role {
-			switch er := er.(type) {
-			case types.ElementRole:
-				s, err := r.renderElementRole(ctx, er)
-				if err != nil {
-					return "", err
-				}
-				roles = append(roles, s)
-			default:
-				return "", fmt.Errorf("unpected type of element in role: '%T'", er)
+	if roles, ok := attrs[types.AttrRoles].([]interface{}); ok {
+		for _, e := range roles {
+			s, err := r.renderElementRole(ctx, e)
+			if err != nil {
+				return "", err
 			}
+			result = append(result, s)
 		}
-	case types.ElementRole:
-		s, err := r.renderElementRole(ctx, role)
-		if err != nil {
-			return "", err
-		}
-		roles = append(roles, s)
 	}
-	return strings.Join(roles, " "), nil
+	log.Debugf("rendered image roles: '%s'", result)
+	return strings.Join(result, " "), nil
 }
 
-func (r *sgmlRenderer) renderElementRole(ctx *Context, role types.ElementRole) (string, error) {
+func (r *sgmlRenderer) renderElementRole(ctx *Context, role interface{}) (string, error) {
 	result := strings.Builder{}
-	for _, e := range role {
-		switch e := e.(type) {
-		case string:
-			result.WriteString(e)
-		case types.StringElement:
-			result.WriteString(e.Content)
-		case types.SpecialCharacter:
-			s, err := r.renderSpecialCharacter(ctx, e)
+	switch role := role.(type) {
+	case string:
+		result.WriteString(role)
+	case []interface{}:
+		// when the role is made of strings and special characters
+		for _, e := range role {
+			s, err := r.renderElement(ctx, e)
 			if err != nil {
 				return "", err
 			}
 			result.WriteString(s)
-		default:
-			return "", fmt.Errorf("unexpected type of element while rendering elemenr role: '%T'", e)
 		}
+	default:
+		return "", fmt.Errorf("unexpected type of element while rendering element role: '%T'", role)
 	}
+	log.Debugf("rendered role: '%s'", result.String())
 	return result.String(), nil
 }

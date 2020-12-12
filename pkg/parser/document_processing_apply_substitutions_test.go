@@ -737,10 +737,16 @@ var _ = Describe("document substitutions", func() {
 				Counters:  map[string]interface{}{},
 			})
 			Expect(err).To(Not(HaveOccurred()))
-			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
-				types.StringElement{
-					Content: "112b35", // elements get concatenated
-				},
+			Expect(result).To(Equal([]interface{}{
+				// elements are not concatenated after calling `applyAttributeSubstitutionsOnElements`
+				types.StringElement{Content: "1"},
+				types.StringElement{Content: "1"},
+				types.StringElement{Content: "2"},
+				types.StringElement{Content: ""},
+				types.StringElement{Content: "b"},
+				types.StringElement{Content: ""},
+				types.StringElement{Content: ""},
+				types.StringElement{Content: "35"},
 			}))
 		})
 	})

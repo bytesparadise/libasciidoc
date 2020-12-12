@@ -30,11 +30,11 @@ var _ = Describe("line ranges", func() {
 
 	Context("multiple ranges", func() {
 
-		ranges := types.NewLineRanges(
+		ranges := types.NewLineRanges([]interface{}{
 			types.LineRange{StartLine: 1, EndLine: 1},
 			types.LineRange{StartLine: 3, EndLine: 4},
 			types.LineRange{StartLine: 6, EndLine: -1},
-		)
+		})
 
 		DescribeTable("match line range",
 			func(line int, expectation bool) {
@@ -56,7 +56,7 @@ var _ = Describe("tag ranges", func() {
 	DescribeTable("single range",
 		func(line int, c types.CurrentRanges, expectation bool) {
 			// given
-			ranges, _ := types.NewTagRanges(types.TagRange{
+			ranges := types.NewTagRanges(types.TagRange{
 				Name:     "foo",
 				Included: true,
 			})
@@ -94,12 +94,14 @@ var _ = Describe("tag ranges", func() {
 	DescribeTable("multiple ranges",
 		func(line int, c types.CurrentRanges, expectation bool) {
 			// given
-			ranges, _ := types.NewTagRanges(types.TagRange{
-				Name:     "foo",
-				Included: true,
-			}, types.TagRange{
-				Name:     "bar",
-				Included: true,
+			ranges := types.NewTagRanges([]interface{}{
+				types.TagRange{
+					Name:     "foo",
+					Included: true,
+				}, types.TagRange{
+					Name:     "bar",
+					Included: true,
+				},
 			})
 			// when
 			match := ranges.Match(line, c)
@@ -159,7 +161,7 @@ var _ = Describe("tag ranges", func() {
 		DescribeTable("** - all lines", // except lines containing a tag directive
 			func(line int, c types.CurrentRanges, expectation bool) {
 				// given
-				ranges, _ := types.NewTagRanges(types.TagRange{
+				ranges := types.NewTagRanges(types.TagRange{
 					Name:     "**",
 					Included: true,
 				})
@@ -193,7 +195,7 @@ var _ = Describe("tag ranges", func() {
 		DescribeTable("* - all tagged regions", // except lines containing a tag directive
 			func(line int, c types.CurrentRanges, expectation bool) {
 				// given
-				ranges, _ := types.NewTagRanges(types.TagRange{
+				ranges := types.NewTagRanges(types.TagRange{
 					Name:     "*",
 					Included: true,
 				})
@@ -228,12 +230,14 @@ var _ = Describe("tag ranges", func() {
 		DescribeTable("**;* - all the lines outside and inside of tagged regions", // except lines containing a tag directive
 			func(line int, c types.CurrentRanges, expectation bool) {
 				// given
-				ranges, _ := types.NewTagRanges(types.TagRange{
-					Name:     "**",
-					Included: true,
-				}, types.TagRange{
-					Name:     "*",
-					Included: true,
+				ranges := types.NewTagRanges([]interface{}{
+					types.TagRange{
+						Name:     "**",
+						Included: true,
+					}, types.TagRange{
+						Name:     "*",
+						Included: true,
+					},
 				})
 				// when
 				match := ranges.Match(line, c)
@@ -265,12 +269,13 @@ var _ = Describe("tag ranges", func() {
 		DescribeTable("foo;!bar - regions tagged foo, but not nested regions tagged bar",
 			func(line int, c types.CurrentRanges, expectation bool) {
 				// given
-				ranges, _ := types.NewTagRanges(types.TagRange{
+				ranges := types.NewTagRanges([]interface{}{types.TagRange{
 					Name:     "foo",
 					Included: true,
 				}, types.TagRange{
 					Name:     "bar",
 					Included: false,
+				},
 				})
 				// when
 				match := ranges.Match(line, c)
@@ -309,12 +314,14 @@ var _ = Describe("tag ranges", func() {
 		DescribeTable("*;!foo — all tagged regions, but excludes any regions tagged foo",
 			func(line int, c types.CurrentRanges, expectation bool) {
 				// given
-				ranges, _ := types.NewTagRanges(types.TagRange{
-					Name:     "*",
-					Included: true,
-				}, types.TagRange{
-					Name:     "foo",
-					Included: false,
+				ranges := types.NewTagRanges([]interface{}{
+					types.TagRange{
+						Name:     "*",
+						Included: true,
+					}, types.TagRange{
+						Name:     "foo",
+						Included: false,
+					},
 				})
 				// when
 				match := ranges.Match(line, c)
@@ -363,12 +370,14 @@ var _ = Describe("tag ranges", func() {
 		DescribeTable("**;!foo — selects all the lines of the document except for regions tagged foo",
 			func(line int, c types.CurrentRanges, expectation bool) {
 				// given
-				ranges, _ := types.NewTagRanges(types.TagRange{
-					Name:     "**",
-					Included: true,
-				}, types.TagRange{
-					Name:     "foo",
-					Included: false,
+				ranges := types.NewTagRanges([]interface{}{
+					types.TagRange{
+						Name:     "**",
+						Included: true,
+					}, types.TagRange{
+						Name:     "foo",
+						Included: false,
+					},
 				})
 				// when
 				match := ranges.Match(line, c)
@@ -417,12 +426,14 @@ var _ = Describe("tag ranges", func() {
 		DescribeTable("**;!* — selects only the regions of the document outside of tags (i.e., non-tagged regions).",
 			func(line int, c types.CurrentRanges, expectation bool) {
 				// given
-				ranges, _ := types.NewTagRanges(types.TagRange{
-					Name:     "**",
-					Included: true,
-				}, types.TagRange{
-					Name:     "*",
-					Included: false,
+				ranges := types.NewTagRanges([]interface{}{
+					types.TagRange{
+						Name:     "**",
+						Included: true,
+					}, types.TagRange{
+						Name:     "*",
+						Included: false,
+					},
 				})
 				// when
 				match := ranges.Match(line, c)
@@ -461,9 +472,9 @@ var _ = Describe("tag ranges", func() {
 
 	It("invalid tage ranges", func() {
 		// when
-		_, err := types.NewTagRanges("foo", "bar")
+		ranges := types.NewTagRanges([]interface{}{"foo", "bar"})
 		// then
-		Expect(err).To(HaveOccurred())
+		Expect(ranges).To(BeEmpty())
 	})
 
 })
@@ -724,8 +735,7 @@ var _ = Describe("element id resolution", func() {
 				section := types.Section{
 					Level: 0,
 					Attributes: types.Attributes{
-						types.AttrCustomID: true,
-						types.AttrID:       "bar",
+						types.AttrID: "bar",
 					},
 					Title: []interface{}{
 						types.StringElement{
@@ -751,8 +761,7 @@ var _ = Describe("element id resolution", func() {
 				section := types.Section{
 					Level: 0,
 					Attributes: types.Attributes{
-						types.AttrCustomID: true,
-						types.AttrID:       "bar",
+						types.AttrID: "bar",
 					},
 					Title: []interface{}{
 						types.StringElement{
@@ -1089,13 +1098,13 @@ var _ = DescribeTable("match for attribute with key and value",
 	func(key string, value interface{}, expected bool) {
 		// given
 		attributes := []interface{}{
-			types.Attribute{
-				Key:   types.AttrBlockKind,
+			types.Attribute{ // single attribute
+				Key:   types.AttrStyle,
 				Value: types.Quote,
 			},
-			types.Attributes{
-				types.AttrBlockKind: types.Verse,
-				types.AttrTitle:     "verse title",
+			types.Attributes{ // multiple attributes
+				types.AttrStyle: types.Verse,
+				types.AttrTitle: "verse title",
 			},
 		}
 		// when
@@ -1105,8 +1114,8 @@ var _ = DescribeTable("match for attribute with key and value",
 		Expect(result).To((Equal(expected)))
 
 	},
-	Entry("match for block-kind: verse", types.AttrBlockKind, types.Verse, true),
-	Entry("match for block-kind: quote", types.AttrBlockKind, types.Quote, true),
+	Entry("match for block-kind: verse", types.AttrStyle, types.Verse, true),
+	Entry("match for block-kind: quote", types.AttrStyle, types.Quote, true),
 	Entry("no match for block-kind: quote", types.AttrID, "unknown", false),
 )
 
@@ -1114,13 +1123,13 @@ var _ = DescribeTable("no match attribute with key",
 	func(key string, expected bool) {
 		// given
 		attributes := []interface{}{
-			types.Attribute{
-				Key:   types.AttrBlockKind,
+			types.Attribute{ // single attribute
+				Key:   types.AttrStyle,
 				Value: types.Quote,
 			},
-			types.Attributes{
-				types.AttrBlockKind: types.Verse,
-				types.AttrTitle:     "verse title",
+			types.Attributes{ // multiple attributes
+				types.AttrStyle: types.Verse,
+				types.AttrTitle: "verse title",
 			},
 		}
 		// when
@@ -1130,7 +1139,7 @@ var _ = DescribeTable("no match attribute with key",
 		Expect(result).To((Equal(expected)))
 
 	},
-	Entry("match for block-kind: verse", types.AttrBlockKind, false),
-	Entry("match for block-kind: quote", types.AttrBlockKind, false),
+	Entry("match for block-kind: verse", types.AttrStyle, false),
+	Entry("match for block-kind: quote", types.AttrStyle, false),
 	Entry("no match for block-kind: quote", types.AttrID, true),
 )

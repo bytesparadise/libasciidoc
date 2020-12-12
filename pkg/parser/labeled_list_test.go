@@ -1905,7 +1905,7 @@ TIP: tip`
 									},
 									types.Paragraph{
 										Attributes: types.Attributes{
-											types.AttrAdmonitionKind: types.Note,
+											types.AttrStyle: types.Note,
 										},
 										Lines: [][]interface{}{
 											{
@@ -1939,7 +1939,7 @@ TIP: tip`
 									},
 									types.Paragraph{
 										Attributes: types.Attributes{
-											types.AttrAdmonitionKind: types.Important,
+											types.AttrStyle: types.Important,
 										},
 										Lines: [][]interface{}{
 											{
@@ -1949,7 +1949,7 @@ TIP: tip`
 									},
 									types.Paragraph{
 										Attributes: types.Attributes{
-											types.AttrAdmonitionKind: types.Tip,
+											types.AttrStyle: types.Tip,
 										},
 										Lines: [][]interface{}{
 											{
@@ -2029,7 +2029,7 @@ TIP: We can embed admonitions too!
 									},
 									types.Paragraph{
 										Attributes: types.Attributes{
-											types.AttrAdmonitionKind: types.Tip,
+											types.AttrStyle: types.Tip,
 										},
 										Lines: [][]interface{}{
 											{

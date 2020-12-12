@@ -63,7 +63,7 @@ var _ = Describe("quoted strings", func() {
 
 		})
 		It("span in single quoted string", func() {
-			source := "'`curly [strikeout]#was#_is_ single`'"
+			source := "'`curly [.strikeout]#was#_is_ single`'"
 			expected := `<div class="paragraph">
 <p>&#8216;curly <span class="strikeout">was</span><em>is</em> single&#8217;</p>
 </div>
@@ -169,7 +169,7 @@ var _ = Describe("quoted strings", func() {
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
-		It("curly in quoted link", func() {
+		It("curly in single quoted link", func() {
 			source := "https://www.example.com/a[\"an '`example`'\"]"
 			expected := `<div class="paragraph">
 <p><a href="https://www.example.com/a">an &#8216;example&#8217;</a></p>
@@ -232,7 +232,7 @@ var _ = Describe("quoted strings", func() {
 		})
 
 		It("span in double quoted string", func() {
-			source := "\"`curly [strikeout]#was#_is_ single`\""
+			source := "\"`curly [.strikeout]#was#_is_ single`\""
 			expected := `<div class="paragraph">
 <p>&#8220;curly <span class="strikeout">was</span><em>is</em> single&#8221;</p>
 </div>
@@ -342,7 +342,7 @@ var _ = Describe("quoted strings", func() {
 		})
 
 		// This is the unambiguous form.
-		It("curly in quoted link", func() {
+		It("curly in double quoted link", func() {
 			source := "https://www.example.com/a[\"\"`example`\"\"]"
 			expected := `<div class="paragraph">
 <p><a href="https://www.example.com/a">&#8220;example&#8221;</a></p>

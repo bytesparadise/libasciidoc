@@ -193,15 +193,12 @@ func (t Table) processColumnWidths() ([]TableColumn, error) {
 }
 
 // NewTable initializes a new table with the given lines and attributes
-func NewTable(header interface{}, lines []interface{}, attributes []interface{}) (Table, error) {
-	attrs, err := NewAttributes(attributes...)
-	if err != nil {
-		return Table{}, errors.Wrap(err, "failed to initialize a Table element")
-	}
+func NewTable(header interface{}, lines []interface{}, attributes interface{}) (Table, error) {
 	t := Table{
-		Attributes: attrs,
+		Attributes: toAttributes(attributes),
 	}
 
+	var err error
 	if t.Columns, err = t.parseColumnsAttr(); err != nil {
 		return Table{}, errors.Wrap(err, "failed to initialize a Table element")
 	}

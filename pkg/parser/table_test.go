@@ -204,11 +204,10 @@ var _ = Describe("tables", func() {
 			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
-						types.AttrTitle:    "table title",
-						types.AttrOptions:  map[string]bool{"autowidth": true},
-						types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"stretch"}},
-						types.AttrID:       "anchor",
-						types.AttrCustomID: true,
+						types.AttrTitle:   "table title",
+						types.AttrOptions: []interface{}{"autowidth"},
+						types.AttrRoles:   []interface{}{"role1", "stretch"},
+						types.AttrID:      "anchor",
 					},
 					Header: types.TableLine{
 						Cells: [][]interface{}{
@@ -226,8 +225,8 @@ var _ = Describe("tables", func() {
 					},
 					Columns: []types.TableColumn{
 						// autowidth clears width
-						{Width: "", HAlign: "left", VAlign: "top"},
-						{Width: "", HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
 					},
 					Lines: []types.TableLine{
 						{
@@ -305,13 +304,13 @@ var _ = Describe("tables", func() {
 			Elements: []interface{}{
 				types.Table{
 					Attributes: types.Attributes{
-						types.AttrOptions: map[string]bool{"autowidth": true},
+						types.AttrOptions: []interface{}{"autowidth"},
 						types.AttrCols:    "3,2,5",
 					},
 					Columns: []types.TableColumn{
-						{Width: "", HAlign: "left", VAlign: "top"},
-						{Width: "", HAlign: "left", VAlign: "top"},
-						{Width: "", HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
 					},
 					Lines: []types.TableLine{},
 				},
@@ -330,8 +329,8 @@ var _ = Describe("tables", func() {
 					},
 					Columns: []types.TableColumn{
 						{Width: "30", HAlign: "left", VAlign: "top"},
-						{Width: "", HAlign: "left", VAlign: "top"},
-						{Width: "", HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
 					},
 					Lines: []types.TableLine{},
 				},
@@ -352,8 +351,8 @@ var _ = Describe("tables", func() {
 						{Width: "10", HAlign: "left", VAlign: "top"},
 						{Width: "10", HAlign: "left", VAlign: "top"},
 						{Width: "10", HAlign: "left", VAlign: "top"},
-						{Width: "", HAlign: "left", VAlign: "top"},
-						{Width: "", HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
+						{HAlign: "left", VAlign: "top"},
 					},
 					Lines: []types.TableLine{},
 				},

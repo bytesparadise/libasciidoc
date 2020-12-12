@@ -236,7 +236,7 @@ some *example* content`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Example,
+								types.AttrStyle: types.Example,
 							},
 							Lines: [][]interface{}{
 								{
@@ -455,7 +455,7 @@ some *example* content`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Example,
+								types.AttrStyle: types.Example,
 							},
 							Lines: [][]interface{}{
 								{

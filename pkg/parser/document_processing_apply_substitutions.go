@@ -570,24 +570,33 @@ func applyAttributeSubstitutionsOnElements(elements []interface{}, attrs types.A
 		}
 		result = append(result, e)
 	}
-	result = types.Merge(result)
+	// result = types.Merge(result)
 	return result, nil
 }
 
 func applyAttributeSubstitutionsOnAttributes(attributes types.Attributes, attrs types.AttributesWithOverrides) (types.Attributes, error) {
 	for key, value := range attributes {
-		if value, ok := value.([]interface{}); ok {
-			value, err := applyAttributeSubstitutionsOnElements(value, attrs)
-			if err != nil {
-				return nil, err
-			}
-			if len(value) == 1 {
-				if v, ok := value[0].(types.StringElement); ok {
-					attributes[key] = v.Content
-					continue
+		switch key {
+		case types.AttrRoles, types.AttrOptions: // multi-value attributes
+			if values, ok := value.([]interface{}); ok {
+				for _, value := range values {
+					if value, ok := value.([]interface{}); ok {
+						value, err := applyAttributeSubstitutionsOnElements(value, attrs)
+						if err != nil {
+							return nil, err
+						}
+						attributes[key] = types.Reduce(value)
+					}
 				}
 			}
-			attributes[key] = value
+		default: // single-value attributes
+			if value, ok := value.([]interface{}); ok {
+				value, err := applyAttributeSubstitutionsOnElements(value, attrs)
+				if err != nil {
+					return nil, err
+				}
+				attributes[key] = types.Reduce(value)
+			}
 		}
 	}
 	return attributes, nil
@@ -599,7 +608,7 @@ func applyAttributeSubstitutionsOnLines(lines [][]interface{}, attrs types.Attri
 		if err != nil {
 			return nil, err
 		}
-		lines[i] = line
+		lines[i] = types.Merge(line)
 	}
 	return lines, nil
 }
@@ -629,7 +638,7 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 		if err != nil {
 			return nil, err
 		}
-		element = e.ReplaceElements(elmts)
+		element = e.ReplaceElements(types.Merge(elmts))
 	case types.WithLineSubstitution:
 		lines, err := applyAttributeSubstitutionsOnLines(e.LinesToSubstitute(), attrs)
 		if err != nil {

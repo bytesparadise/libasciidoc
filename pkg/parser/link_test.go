@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("links", func() {
 
-	Context("draft document", func() {
+	Context("draft documents", func() {
 
 		It("link with special characters", func() {
 			source := `a link to https://example.com?a=1&b=2`
@@ -104,7 +104,8 @@ var _ = Describe("links", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "mailto:",
@@ -115,14 +116,12 @@ var _ = Describe("links", func() {
 											},
 										},
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
-												types.StringElement{
-													Content: "the foo@bar email",
-												},
-											},
+											types.AttrInlineLinkText: "the foo@bar email",
 										},
 									},
-									types.StringElement{Content: "."},
+									types.StringElement{
+										Content: ".",
+									},
 								},
 							},
 						},
@@ -148,12 +147,8 @@ var _ = Describe("links", func() {
 											},
 										},
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
-												types.StringElement{
-													Content: "the foo@bar email",
-												},
-											},
-											"foo": "bar",
+											types.AttrInlineLinkText: "the foo@bar email",
+											"foo":                    "bar",
 										},
 									},
 								},
@@ -290,21 +285,9 @@ next lines`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A",
-													},
-												},
-												"positional-2": []interface{}{
-													types.StringElement{
-														Content: " B",
-													},
-												},
-												"positional-3": []interface{}{
-													types.StringElement{
-														Content: " and C",
-													},
-												},
+												types.AttrInlineLinkText: "A",
+												types.AttrPositional2:    "B",
+												types.AttrPositional3:    "and C",
 											},
 										},
 									},
@@ -333,11 +316,7 @@ next lines`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A, B, and C",
-													},
-												},
+												types.AttrInlineLinkText: "A, B, and C",
 											},
 										},
 									},
@@ -366,12 +345,8 @@ next lines`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A, B, and C",
-													},
-												},
-												types.AttrRole: types.ElementRole{"foo"},
+												types.AttrInlineLinkText: "A, B, and C",
+												types.AttrRoles:          []interface{}{"foo"},
 											},
 										},
 									},
@@ -400,22 +375,10 @@ next lines`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A",
-													},
-												},
-												"positional-2": []interface{}{
-													types.StringElement{
-														Content: " B",
-													},
-												},
-												"positional-3": []interface{}{
-													types.StringElement{
-														Content: " and C",
-													},
-												},
-												types.AttrRole: types.ElementRole{"foo"},
+												types.AttrInlineLinkText: "A",
+												types.AttrPositional2:    "B",
+												types.AttrPositional3:    "and C",
+												types.AttrRoles:          []interface{}{"foo"},
 											},
 										},
 									},
@@ -461,7 +424,7 @@ next lines`
 								{types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
+											types.AttrInlineLinkText: []interface{}{
 												types.QuotedText{
 													Kind: types.Italic,
 													Elements: []interface{}{
@@ -963,11 +926,7 @@ a link to {scheme}://{path} and https://foo.com`
 											},
 										},
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
-												types.StringElement{
-													Content: "foo doc",
-												},
-											},
+											types.AttrInlineLinkText: "foo doc",
 										},
 									},
 								},
@@ -995,11 +954,7 @@ a link to {scheme}://{path} and https://foo.com`
 											},
 										},
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
-												types.StringElement{
-													Content: "foo doc",
-												},
-											},
+											types.AttrInlineLinkText: "foo doc",
 										},
 									},
 								},
@@ -1027,12 +982,8 @@ a link to {scheme}://{path} and https://foo.com`
 											},
 										},
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
-												types.StringElement{
-													Content: "foo doc",
-												},
-											},
-											"foo": "bar",
+											types.AttrInlineLinkText: "foo doc",
+											"foo":                    "bar",
 										},
 									},
 								},
@@ -1104,7 +1055,7 @@ a link to {scheme}://{path} and https://foo.com`
 										},
 									},
 									Attributes: types.Attributes{
-										"positional-1": []interface{}{
+										types.AttrInlineLinkText: []interface{}{
 											types.StringElement{
 												Content: "a ",
 											},
@@ -1172,11 +1123,7 @@ a link to {scheme}://{path} and https://foo.com`
 											},
 										},
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
-												types.StringElement{
-													Content: "as expected",
-												},
-											},
+											types.AttrInlineLinkText: "as expected",
 										},
 									},
 								},
@@ -1211,11 +1158,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 											},
 										},
 										Attributes: types.Attributes{
-											"positional-1": []interface{}{
-												types.StringElement{
-													Content: "with encoded space",
-												},
-											},
+											types.AttrInlineLinkText: "with encoded space",
 										},
 									},
 								},
@@ -1325,21 +1268,9 @@ a link to {scheme}:{path}[] and https://foo.com`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A",
-													},
-												},
-												"positional-2": []interface{}{
-													types.StringElement{
-														Content: " B",
-													},
-												},
-												"positional-3": []interface{}{
-													types.StringElement{
-														Content: " and C",
-													},
-												},
+												types.AttrInlineLinkText: "A",
+												types.AttrPositional2:    "B",
+												types.AttrPositional3:    "and C",
 											},
 										},
 									},
@@ -1368,11 +1299,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A, B, and C",
-													},
-												},
+												types.AttrInlineLinkText: "A, B, and C",
 											},
 										},
 									},
@@ -1401,12 +1328,8 @@ a link to {scheme}:{path}[] and https://foo.com`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A, B, and C",
-													},
-												},
-												types.AttrRole: types.ElementRole{"foo"},
+												types.AttrInlineLinkText: "A, B, and C",
+												types.AttrRoles:          []interface{}{"foo"},
 											},
 										},
 									},
@@ -1435,22 +1358,10 @@ a link to {scheme}:{path}[] and https://foo.com`
 												},
 											},
 											Attributes: types.Attributes{
-												"positional-1": []interface{}{
-													types.StringElement{
-														Content: "A",
-													},
-												},
-												"positional-2": []interface{}{
-													types.StringElement{
-														Content: " B",
-													},
-												},
-												"positional-3": []interface{}{
-													types.StringElement{
-														Content: " and C",
-													},
-												},
-												types.AttrRole: types.ElementRole{"foo"},
+												types.AttrInlineLinkText: "A",
+												types.AttrPositional2:    "B",
+												types.AttrPositional3:    "and C",
+												types.AttrRoles:          []interface{}{"foo"},
 											},
 										},
 									},

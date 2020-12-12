@@ -147,7 +147,7 @@ another paragraph`
 					Elements: []interface{}{
 						types.PassthroughBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Passthrough,
+								types.AttrStyle: types.Passthrough,
 							},
 							Lines: [][]interface{}{
 								{
@@ -231,7 +231,7 @@ another paragraph`
 					Elements: []interface{}{
 						types.PassthroughBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Passthrough,
+								types.AttrStyle: types.Passthrough,
 							},
 							Lines: [][]interface{}{
 								{

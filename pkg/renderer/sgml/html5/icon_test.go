@@ -295,7 +295,7 @@ icon:tip[]:: tip of the day`
 			It("icon in quoted text", func() {
 				source := `:icons: font
 
-here [strikeout]##we go icon:stop[]##`
+here [.strikeout]##we go icon:stop[]##`
 				expected := `<div class="paragraph">
 <p>here <span class="strikeout">we go <span class="icon"><i class="fa fa-stop"></i></span></span></p>
 </div>

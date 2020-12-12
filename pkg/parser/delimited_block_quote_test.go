@@ -23,7 +23,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
@@ -69,7 +69,7 @@ ____
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Elements: []interface{}{
@@ -138,7 +138,7 @@ ____
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:  types.Quote,
+								types.AttrStyle:      types.Quote,
 								types.AttrQuoteTitle: "quote title",
 							},
 							Elements: []interface{}{
@@ -173,7 +173,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
 								types.UnorderedListItem{
@@ -243,7 +243,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 						},
 					},
@@ -260,7 +260,7 @@ foo
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
 								types.Paragraph{
@@ -294,7 +294,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
@@ -338,7 +338,7 @@ ____
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Elements: []interface{}{
@@ -411,7 +411,7 @@ ____
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:  types.Quote,
+								types.AttrStyle:      types.Quote,
 								types.AttrQuoteTitle: "quote title",
 							},
 							Elements: []interface{}{
@@ -440,7 +440,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{},
 						},
@@ -462,7 +462,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
 								types.UnorderedList{
@@ -536,7 +536,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
 								types.UnorderedList{
@@ -606,7 +606,7 @@ ____`
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{},
 						},
@@ -624,7 +624,7 @@ foo
 					Elements: []interface{}{
 						types.QuoteBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
 								types.Paragraph{
