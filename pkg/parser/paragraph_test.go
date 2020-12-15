@@ -1611,7 +1611,7 @@ a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			Context("with substitutions", func() {
+			Context("with custom substitutions", func() {
 
 				// using the same input for all substitution tests
 				source := `:github-url: https://github.com

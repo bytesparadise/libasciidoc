@@ -160,6 +160,20 @@ baz</p>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with multiple substitutions in attributes", func() {
+			source := `:role1: ROLE1
+:role2: ROLE2
+
+[.{role1}.{role2}]
+some content`
+
+			expected := `<div class="paragraph ROLE1 ROLE2">
+<p>some content</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		Context("with custom substitutions", func() {
 
 			It("with attributes substitution", func() {

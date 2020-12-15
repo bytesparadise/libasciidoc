@@ -54,7 +54,8 @@ type ReduceOption func(string) string
 // (ie, return its `Content`), otherwise return the given elements or empty string if the elements
 // is `nil` or an empty `[]interface{}`
 func Reduce(elements interface{}, opts ...ReduceOption) interface{} {
-	if e, ok := elements.([]interface{}); ok {
+	switch e := elements.(type) {
+	case []interface{}:
 		e = Merge(e...)
 		switch len(e) {
 		case 0: // if empty, return nil
@@ -68,12 +69,10 @@ func Reduce(elements interface{}, opts ...ReduceOption) interface{} {
 				elements = c
 			}
 		}
-	}
-	if s, ok := elements.(string); ok {
+	case string:
 		for _, apply := range opts {
-			s = apply(s)
+			e = apply(e)
 		}
-		return s
 	}
 	return elements
 }

@@ -470,10 +470,6 @@ func NewExtraAttributes(extras ...interface{}) (Attributes, error) {
 	if len(options) > 0 {
 		result[AttrOptions] = options
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug("new roles/options attributes:")
-	// 	spew.Fdump(log.StandardLogger().Out, result)
-	// }
 	return result, nil
 }
 

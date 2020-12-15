@@ -288,6 +288,108 @@ var _ = Describe("document substitutions", func() {
 		})
 	})
 
+	Context("paragraph with attributes", func() {
+
+		It("should replace title attribute", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Attributes: types.Attributes{
+						"title": []interface{}{
+							types.AttributeSubstitution{
+								Name: "title",
+							},
+						},
+					},
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "some content.",
+							},
+						},
+					},
+				},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"title": "TITLE",
+				},
+				Overrides: map[string]string{},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Attributes: types.Attributes{
+						"title": "TITLE",
+					},
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "some content.",
+							},
+						},
+					},
+				},
+			}))
+		})
+
+		It("should replace roles attribute", func() {
+			// given
+			elements := []interface{}{
+				types.Paragraph{
+					Attributes: types.Attributes{
+						types.AttrRoles: []interface{}{
+							[]interface{}{
+								types.AttributeSubstitution{
+									Name: "role1",
+								},
+							},
+							[]interface{}{
+								types.AttributeSubstitution{
+									Name: "role2",
+								},
+							},
+						},
+					},
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "some content.",
+							},
+						},
+					},
+				},
+			}
+			// when
+			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
+				Content: map[string]interface{}{
+					"role1": "ROLE1",
+					"role2": "ROLE2",
+				},
+				Overrides: map[string]string{},
+			})
+			// then
+			Expect(err).To(Not(HaveOccurred()))
+			Expect(result).To(Equal([]interface{}{
+				types.Paragraph{
+					Attributes: types.Attributes{
+						types.AttrRoles: []interface{}{"ROLE1", "ROLE2"},
+					},
+					Lines: [][]interface{}{
+						{
+							types.StringElement{
+								Content: "some content.",
+							},
+						},
+					},
+				},
+			}))
+		})
+
+	})
+
 	Context("image blocks", func() {
 
 		It("should substitute inline attribute", func() {

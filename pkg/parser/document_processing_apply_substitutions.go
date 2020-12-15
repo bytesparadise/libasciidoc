@@ -575,19 +575,26 @@ func applyAttributeSubstitutionsOnElements(elements []interface{}, attrs types.A
 }
 
 func applyAttributeSubstitutionsOnAttributes(attributes types.Attributes, attrs types.AttributesWithOverrides) (types.Attributes, error) {
+	log.Debug("applying substitutions on attributes")
 	for key, value := range attributes {
 		switch key {
 		case types.AttrRoles, types.AttrOptions: // multi-value attributes
+			result := []interface{}{}
 			if values, ok := value.([]interface{}); ok {
 				for _, value := range values {
-					if value, ok := value.([]interface{}); ok {
+					switch value := value.(type) {
+					case []interface{}:
 						value, err := applyAttributeSubstitutionsOnElements(value, attrs)
 						if err != nil {
 							return nil, err
 						}
-						attributes[key] = types.Reduce(value)
+						result = append(result, types.Reduce(value))
+					default:
+						result = append(result, value)
 					}
+
 				}
+				attributes[key] = result
 			}
 		default: // single-value attributes
 			if value, ok := value.([]interface{}); ok {
@@ -598,6 +605,10 @@ func applyAttributeSubstitutionsOnAttributes(attributes types.Attributes, attrs 
 				attributes[key] = types.Reduce(value)
 			}
 		}
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("applied substitutions on attributes")
+		spew.Fdump(log.StandardLogger().Out, attributes)
 	}
 	return attributes, nil
 }
