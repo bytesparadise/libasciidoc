@@ -20,7 +20,7 @@ var _ = Describe("literal blocks", func() {
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -44,7 +44,7 @@ lines.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -82,11 +82,11 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								types.AttrID:               "ID",
-								types.AttrCustomID:         true,
-								types.AttrTitle:            "title",
+								// types.AttrCustomID:         true,
+								types.AttrTitle: "title",
 							},
 							Lines: [][]interface{}{
 								{
@@ -113,7 +113,6 @@ a normal paragraph.`
 		Context("literal blocks with block delimiter", func() {
 
 			It("literal block with empty blank line", func() {
-
 				source := `....
 
 some content
@@ -122,7 +121,7 @@ some content
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 							},
 							Lines: [][]interface{}{
@@ -152,11 +151,11 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 								types.AttrID:               "ID",
-								types.AttrCustomID:         true,
-								types.AttrTitle:            "title",
+								// types.AttrCustomID:         true,
+								types.AttrTitle: "title",
 							},
 							Lines: [][]interface{}{
 								{
@@ -190,7 +189,7 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 							},
 							Lines: [][]interface{}{
@@ -226,9 +225,9 @@ a normal paragraph.`
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
-								types.AttrID:               "ID",
-								types.AttrCustomID:         true,
+								types.AttrStyle: types.Literal,
+								types.AttrID:    "ID",
+								// types.AttrCustomID:         true,
 								types.AttrTitle:            "title",
 								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 							},
@@ -290,7 +289,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 							},
 							Lines: [][]interface{}{
@@ -377,7 +376,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 								types.AttrSubstitutions:    "normal",
 							},
@@ -504,7 +503,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithDelimiter,
 								types.AttrSubstitutions:    "quotes,macros",
 							},
@@ -595,7 +594,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 								types.AttrSubstitutions:    "quotes,macros",
 							},
@@ -684,7 +683,7 @@ and <more text> on the +
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
 								types.AttrSubstitutions:    "quotes,macros",
 							},

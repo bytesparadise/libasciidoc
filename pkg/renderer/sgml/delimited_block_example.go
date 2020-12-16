@@ -11,7 +11,7 @@ import (
 )
 
 func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.ExampleBlock) (string, error) {
-	if b.Attributes.Has(types.AttrAdmonitionKind) {
+	if b.Attributes.Has(types.AttrStyle) {
 		return r.renderAdmonitionBlock(ctx, b)
 	}
 	result := &strings.Builder{}

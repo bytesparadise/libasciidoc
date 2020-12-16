@@ -66,11 +66,7 @@ var _ = Describe("footnotes - document", func() {
 					},
 					types.InlineLink{
 						Attributes: types.Attributes{
-							"positional-1": []interface{}{
-								types.StringElement{
-									Content: "content",
-								},
-							},
+							types.AttrInlineLinkText: "content",
 						},
 						Location: types.Location{
 							Scheme: "https://",

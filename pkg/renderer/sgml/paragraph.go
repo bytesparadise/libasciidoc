@@ -11,14 +11,13 @@ import (
 
 func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	result := &strings.Builder{}
-	hardbreaks := p.Attributes.Has(types.AttrHardBreaks) || ctx.Attributes.Has(types.DocumentAttrHardBreaks) || p.Attributes.HasOption(types.AttrHardBreaks)
+	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) ||
+		ctx.Attributes.HasOption(types.DocumentAttrHardBreaks)
 	content, err := r.renderLines(ctx, p.Lines, r.withHardBreaks(hardbreaks))
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph content")
 	}
-	if _, ok := p.Attributes[types.AttrAdmonitionKind]; ok {
-		return r.renderAdmonitionParagraph(ctx, p)
-	} else if k, ok := p.Attributes[types.AttrBlockKind].(types.BlockKind); ok {
+	if k, ok := p.Attributes[types.AttrStyle].(string); ok {
 		switch k {
 		case types.Example:
 			return r.renderExampleParagraph(ctx, p)
@@ -30,11 +29,13 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 			return r.renderVerseParagraph(ctx, p)
 		case types.Quote:
 			return r.renderQuoteParagraph(ctx, p)
+		case types.Tip, types.Note, types.Important, types.Warning, types.Caution:
+			return r.renderAdmonitionParagraph(ctx, p)
+		case "manpage":
+			return r.renderManpageNameParagraph(ctx, p)
 		default:
 			// do nothing, will move to default below
 		}
-	} else if kind, ok := p.Attributes[types.AttrBlockKind]; ok && kind == "manpage" {
-		return r.renderManpageNameParagraph(ctx, p)
 	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
 		return r.renderParagraphWithinDelimitedBlock(ctx, p)
 	}

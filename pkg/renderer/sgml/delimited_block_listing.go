@@ -9,7 +9,7 @@ import (
 )
 
 func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.ListingBlock) (string, error) {
-	if k, found := b.Attributes[types.AttrBlockKind]; found && k == types.Source {
+	if k, found := b.Attributes[types.AttrStyle]; found && k == types.Source {
 		return r.renderSourceBlock(ctx, b)
 	}
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock

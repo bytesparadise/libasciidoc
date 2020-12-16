@@ -291,7 +291,7 @@ func (r *sgmlRenderer) renderDocumentRoles(ctx *Context, doc types.Document) (st
 func (r *sgmlRenderer) renderDocumentID(doc types.Document) string {
 	if header, found := doc.Header(); found {
 		if header.Attributes.Has(types.AttrCustomID) {
-			// We only want to emit a document body ID, if one was explicitly set
+			// We only want to emit a document body ID if one was explicitly set
 			return r.renderElementID(header.Attributes)
 		}
 	}
@@ -362,7 +362,7 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header types.S
 	if description.Attributes == nil {
 		description.Attributes = types.Attributes{}
 	}
-	description.Attributes.AddNonEmpty(types.AttrBlockKind, "manpage")
+	description.Attributes.AddNonEmpty(types.AttrStyle, "manpage")
 	renderedContent, err := r.renderParagraph(ctx, description)
 	if err != nil {
 		return "", err

@@ -56,7 +56,7 @@ type Foo struct{
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
+								types.AttrStyle: types.Source,
 							},
 							Lines: sourceCode,
 						},
@@ -79,7 +79,7 @@ type Foo struct{
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
+								types.AttrStyle: types.Source,
 							},
 							Lines: sourceCode,
 						},
@@ -103,9 +103,9 @@ type Foo struct{
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
-								types.AttrLanguage:  "go",
-								types.AttrTitle:     "foo.go",
+								types.AttrStyle:    types.Source,
+								types.AttrLanguage: "go",
+								types.AttrTitle:    "foo.go",
 							},
 							Lines: sourceCode,
 						},
@@ -130,12 +130,11 @@ type Foo struct{
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
-								types.AttrLanguage:  "go",
-								types.AttrID:        "id-for-source-block",
-								types.AttrCustomID:  true,
-								types.AttrTitle:     "foo.go",
-								types.AttrLineNums:  nil,
+								types.AttrStyle:    types.Source,
+								types.AttrLanguage: "go",
+								types.AttrID:       "id-for-source-block",
+								types.AttrTitle:    "foo.go",
+								types.AttrLineNums: true,
 							},
 							Lines: sourceCode,
 						},
@@ -160,7 +159,7 @@ a note
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
+								types.AttrStyle: types.Source,
 							},
 							Lines: [][]interface{}{
 								{
@@ -190,7 +189,7 @@ a note
 						types.BlankLine{},
 						types.ExampleBlock{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Elements: []interface{}{
 								types.Paragraph{
@@ -218,9 +217,9 @@ const Cookie = "cookie"
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:         types.Source,
-								types.AttrSourceBlockOption: "nowrap",
-								types.AttrLanguage:          "go",
+								types.AttrStyle:    types.Source,
+								types.AttrOptions:  []interface{}{"nowrap"},
+								types.AttrLanguage: "go",
 							},
 							Lines: [][]interface{}{
 								{
@@ -254,7 +253,7 @@ end
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
+								types.AttrStyle: types.Source,
 							},
 							Lines: [][]interface{}{
 								{
@@ -299,9 +298,9 @@ end
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
-								types.AttrLanguage:  "ruby",
-								types.AttrTitle:     "Source block title",
+								types.AttrStyle:    types.Source,
+								types.AttrLanguage: "ruby",
+								types.AttrTitle:    "Source block title",
 							},
 							Lines: [][]interface{}{
 								{
@@ -347,11 +346,10 @@ end
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
-								types.AttrLanguage:  "ruby",
-								types.AttrID:        "id-for-source-block",
-								types.AttrCustomID:  true,
-								types.AttrTitle:     "app.rb",
+								types.AttrStyle:    types.Source,
+								types.AttrLanguage: "ruby",
+								types.AttrID:       "id-for-source-block",
+								types.AttrTitle:    "app.rb",
 							},
 							Lines: [][]interface{}{
 								{
@@ -398,7 +396,7 @@ a note
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Source,
+								types.AttrStyle: types.Source,
 							},
 							Lines: [][]interface{}{
 								{
@@ -431,7 +429,7 @@ a note
 						},
 						types.ExampleBlock{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Elements: []interface{}{
 								types.Paragraph{

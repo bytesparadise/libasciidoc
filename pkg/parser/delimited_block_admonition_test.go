@@ -23,7 +23,7 @@ foo
 					Elements: []interface{}{
 						types.ExampleBlock{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Elements: []interface{}{
 								types.Paragraph{
@@ -54,7 +54,7 @@ paragraphs
 					Elements: []interface{}{
 						types.ListingBlock{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Lines: [][]interface{}{
 								{
@@ -90,7 +90,7 @@ foo
 					Elements: []interface{}{
 						types.ExampleBlock{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Elements: []interface{}{
 								types.Paragraph{
@@ -122,7 +122,7 @@ paragraphs
 					Elements: []interface{}{
 						types.ExampleBlock{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Elements: []interface{}{
 								types.Paragraph{

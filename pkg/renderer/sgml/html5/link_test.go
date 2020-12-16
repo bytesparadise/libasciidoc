@@ -32,8 +32,10 @@ var _ = Describe("links", func() {
 
 		It("with unquoted text having comma", func() {
 			source := "https://foo.com[A, B, and C]"
+			// here, `B` and `and C` are considered as other positional args,
+			// not as part of the link text.
 			expected := `<div class="paragraph">
-<p><a href="https://foo.com">A, B, and C</a></p>
+<p><a href="https://foo.com">A</a></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -179,6 +181,18 @@ a link to {scheme}://{path} and https://foo.baz`
 
 		It("relative link with text having comma", func() {
 			source := "a link to link:foo.adoc[A, B, and C]"
+			expected := `<div class="paragraph">
+<p>a link to <a href="foo.adoc">A</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("relative link with quoted text having comma", func() {
+			// must wrap link text in quotes to retain it all,
+			// otherwise, it's cut after the first comma
+			// TODO: expect `target=b` and `role= 'and C'` attributes
+			source := "a link to link:foo.adoc['A, B, and C']"
 			expected := `<div class="paragraph">
 <p>a link to <a href="foo.adoc">A, B, and C</a></p>
 </div>

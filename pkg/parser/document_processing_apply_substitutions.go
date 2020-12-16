@@ -206,7 +206,6 @@ func (f funcs) remove(other string) funcs {
 }
 
 func applySubstitutionsOnElements(elements []interface{}, subs []elementsSubstitution, attrs types.AttributesWithOverrides) ([]interface{}, error) {
-	// var err error
 	// apply all the substitutions on elements that need to be processed
 	for i, element := range elements {
 		log.Debugf("applying substitution on element of type '%T'", element)
@@ -442,7 +441,6 @@ func parserPlaceHolderElements(elements []interface{}, options ...Option) ([]int
 }
 
 func parseContent(filename string, content string, options ...Option) ([]interface{}, error) {
-	// log.Debugf("parsing content '%s'", content)
 	result, err := ParseReader(filename, strings.NewReader(content), options...)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to parse '%s'", content)
@@ -460,7 +458,6 @@ func restorePlaceholderElements(elements []interface{}, placeholders *placeholde
 		return elements
 	}
 	for i, e := range elements {
-		// log.Debugf("restoring (placeholder) on element of type '%T'", e)
 		//
 		if e, ok := e.(types.ElementPlaceHolder); ok {
 			elements[i] = placeholders.elements[e.Ref]
@@ -570,25 +567,44 @@ func applyAttributeSubstitutionsOnElements(elements []interface{}, attrs types.A
 		}
 		result = append(result, e)
 	}
-	result = types.Merge(result)
 	return result, nil
 }
 
 func applyAttributeSubstitutionsOnAttributes(attributes types.Attributes, attrs types.AttributesWithOverrides) (types.Attributes, error) {
+	log.Debug("applying substitutions on attributes")
 	for key, value := range attributes {
-		if value, ok := value.([]interface{}); ok {
-			value, err := applyAttributeSubstitutionsOnElements(value, attrs)
-			if err != nil {
-				return nil, err
-			}
-			if len(value) == 1 {
-				if v, ok := value[0].(types.StringElement); ok {
-					attributes[key] = v.Content
-					continue
+		switch key {
+		case types.AttrRoles, types.AttrOptions: // multi-value attributes
+			result := []interface{}{}
+			if values, ok := value.([]interface{}); ok {
+				for _, value := range values {
+					switch value := value.(type) {
+					case []interface{}:
+						value, err := applyAttributeSubstitutionsOnElements(value, attrs)
+						if err != nil {
+							return nil, err
+						}
+						result = append(result, types.Reduce(value))
+					default:
+						result = append(result, value)
+					}
+
 				}
+				attributes[key] = result
 			}
-			attributes[key] = value
+		default: // single-value attributes
+			if value, ok := value.([]interface{}); ok {
+				value, err := applyAttributeSubstitutionsOnElements(value, attrs)
+				if err != nil {
+					return nil, err
+				}
+				attributes[key] = types.Reduce(value)
+			}
 		}
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("applied substitutions on attributes")
+		spew.Fdump(log.StandardLogger().Out, attributes)
 	}
 	return attributes, nil
 }
@@ -599,7 +615,7 @@ func applyAttributeSubstitutionsOnLines(lines [][]interface{}, attrs types.Attri
 		if err != nil {
 			return nil, err
 		}
-		lines[i] = line
+		lines[i] = types.Merge(line)
 	}
 	return lines, nil
 }
@@ -629,7 +645,7 @@ func applyAttributeSubstitutionsOnElement(element interface{}, attrs types.Attri
 		if err != nil {
 			return nil, err
 		}
-		element = e.ReplaceElements(elmts)
+		element = e.ReplaceElements(types.Merge(elmts))
 	case types.WithLineSubstitution:
 		lines, err := applyAttributeSubstitutionsOnLines(e.LinesToSubstitute(), attrs)
 		if err != nil {

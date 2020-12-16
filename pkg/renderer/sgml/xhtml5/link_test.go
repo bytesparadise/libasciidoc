@@ -31,9 +31,9 @@ var _ = Describe("links", func() {
 		})
 
 		It("external link with unquoted text having comma", func() {
-			source := "https://foo.com[A, B, and C]"
+			source := "https://foo.com[A, B, and C]" // `B` and `and C` are considered as other positional attributes
 			expected := `<div class="paragraph">
-<p><a href="https://foo.com">A, B, and C</a></p>
+<p><a href="https://foo.com">A</a></p>
 </div>
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -169,7 +169,16 @@ a link to {scheme}://{path} and https://foo.baz`
 		})
 
 		It("relative link with text having comma", func() {
-			source := "a link to link:foo.adoc[A, B, and C]"
+			source := `a link to link:foo.adoc[A, B, and C]` // `B` and `and C` are considered as other positional attributes
+			expected := `<div class="paragraph">
+<p>a link to <a href="foo.adoc">A</a></p>
+</div>
+`
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("relative link with quoted text having comma", func() {
+			source := `a link to link:foo.adoc["A, B, and C"]`
 			expected := `<div class="paragraph">
 <p>a link to <a href="foo.adoc">A, B, and C</a></p>
 </div>

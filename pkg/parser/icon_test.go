@@ -124,8 +124,7 @@ var _ = Describe("icons", func() {
 									types.Icon{
 										Class: "caution",
 										Attributes: types.Attributes{
-											types.AttrID:       "anchor",
-											types.AttrCustomID: true,
+											types.AttrID: "anchor",
 										},
 									},
 								},
@@ -146,9 +145,8 @@ var _ = Describe("icons", func() {
 									types.Icon{
 										Class: "caution",
 										Attributes: types.Attributes{
-											types.AttrID:       "anchor",
-											types.AttrCustomID: true,
-											types.AttrTitle:    "White Fang",
+											types.AttrID:    "anchor",
+											types.AttrTitle: "White Fang",
 										},
 									},
 								},
@@ -170,7 +168,6 @@ var _ = Describe("icons", func() {
 										Class: "caution",
 										Attributes: types.Attributes{
 											types.AttrID:       "anchor",
-											types.AttrCustomID: true,
 											types.AttrTitle:    "White Fang",
 											types.AttrIconSize: "fw",
 										},

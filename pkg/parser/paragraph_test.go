@@ -52,7 +52,7 @@ baz`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrOptions: map[string]bool{"hardbreaks": true},
+								types.AttrOptions: []interface{}{"hardbreaks"},
 							},
 							Lines: [][]interface{}{
 								{
@@ -241,7 +241,7 @@ baz`
 				Expect(result).To(MatchDraftDocument(expected))
 			})
 
-			It("with paragraph multiple attributes", func() {
+			It("with multiple attributes without blanklines in-between", func() {
 				source := `[%hardbreaks.role1.role2]
 [#anchor]
 foo
@@ -250,10 +250,9 @@ baz`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrCustomID: true,
-								types.AttrID:       "anchor",
-								types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
-								types.AttrOptions:  map[string]bool{"hardbreaks": true},
+								types.AttrID:      "anchor",
+								types.AttrRoles:   []interface{}{"role1", "role2"},
+								types.AttrOptions: []interface{}{"hardbreaks"},
 							},
 							Lines: [][]interface{}{
 								{
@@ -269,7 +268,7 @@ baz`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("with paragraph multiple attributes and blanklines in-between", func() {
+			It("with multiple attributes and blanklines in-between", func() {
 				source := `[%hardbreaks.role1.role2]
 
 [#anchor]
@@ -280,10 +279,9 @@ baz`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrCustomID: true,
-								types.AttrID:       "anchor",
-								types.AttrRole:     []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
-								types.AttrOptions:  map[string]bool{"hardbreaks": true},
+								types.AttrID:      "anchor",
+								types.AttrRoles:   []interface{}{"role1", "role2"},
+								types.AttrOptions: []interface{}{"hardbreaks"},
 							},
 							Lines: [][]interface{}{
 								{
@@ -308,8 +306,8 @@ baz`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrOptions: map[string]bool{"hardbreaks": true},
-								types.AttrRole:    []interface{}{types.ElementRole{"role1"}, types.ElementRole{"role2"}},
+								types.AttrOptions: []interface{}{"hardbreaks"},
+								types.AttrRoles:   []interface{}{"role1", "role2"},
 							},
 							Lines: [][]interface{}{
 								{
@@ -348,20 +346,55 @@ foo`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("with counters", func() {
-				source := `foo{counter:foo} bar{counter2:foo} baz{counter:foo} bob{counter:bob}`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "foo1 bar baz3 bob1"},
+			Context("with counters", func() {
+
+				It("default", func() {
+					source := `foo{counter:foo} bar{counter2:foo} baz{counter:foo} bob{counter:bob}`
+					expected := types.DraftDocument{
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "foo1 bar baz3 bob1"},
+									},
 								},
 							},
 						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
+
+				It("with numeric start", func() {
+					source := `foo{counter:foo:2} bar{counter2:foo} baz{counter:foo} bob{counter:bob:10}`
+					expected := types.DraftDocument{
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "foo2 bar baz4 bob10"},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
+
+				It("with alphanumeric start", func() {
+					source := `foo{counter:foo:b} bar{counter2:foo} baz{counter:foo} bob{counter:bob:z}`
+					expected := types.DraftDocument{
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "foob bar bazd bobz"},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
 			})
 
 			Context("with custom substitutions", func() {
@@ -980,7 +1013,7 @@ another one using attribute substitution: {github-url}[]...
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1000,7 +1033,7 @@ warning!`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Warning,
+								types.AttrStyle: types.Warning,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1024,10 +1057,9 @@ NOTE: this is a note.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
-								types.AttrID:             "foo",
-								types.AttrCustomID:       true,
-								types.AttrTitle:          "bar",
+								types.AttrStyle: types.Note,
+								types.AttrID:    "foo",
+								types.AttrTitle: "bar",
 							},
 							Lines: [][]interface{}{
 								{
@@ -1047,7 +1079,7 @@ this is a caution!`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Caution,
+								types.AttrStyle: types.Caution,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1070,10 +1102,9 @@ this is a
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Caution,
-								types.AttrID:             "foo",
-								types.AttrCustomID:       true,
-								types.AttrTitle:          "bar",
+								types.AttrStyle: types.Caution,
+								types.AttrID:    "foo",
+								types.AttrTitle: "bar",
 							},
 							Lines: [][]interface{}{
 								{
@@ -1109,7 +1140,7 @@ And no space after [CAUTION] either.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Note,
+								types.AttrStyle: types.Note,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1120,7 +1151,7 @@ And no space after [CAUTION] either.`
 						types.BlankLine{},
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrAdmonitionKind: types.Caution,
+								types.AttrStyle: types.Caution,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1145,7 +1176,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 							},
@@ -1169,12 +1200,12 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 								types.AttrID:          "universal",
-								types.AttrCustomID:    true,
-								types.AttrTitle:       "universe",
+								// types.AttrCustomID:    true,
+								types.AttrTitle: "universe",
 							},
 							Lines: [][]interface{}{
 								{
@@ -1194,7 +1225,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1215,7 +1246,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1236,7 +1267,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1256,7 +1287,7 @@ I am a verse paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Verse,
+								types.AttrStyle: types.Verse,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1277,7 +1308,7 @@ image::foo.png[]`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Verse,
+								types.AttrStyle:       types.Verse,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "verse title",
 							},
@@ -1304,7 +1335,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
@@ -1328,12 +1359,12 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 								types.AttrID:          "universal",
-								types.AttrCustomID:    true,
-								types.AttrTitle:       "universe",
+								// types.AttrCustomID:    true,
+								types.AttrTitle: "universe",
 							},
 							Lines: [][]interface{}{
 								{
@@ -1353,7 +1384,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1374,7 +1405,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Lines: [][]interface{}{
@@ -1395,7 +1426,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1415,7 +1446,7 @@ I am a quote paragraph.`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind: types.Quote,
+								types.AttrStyle: types.Quote,
 							},
 							Lines: [][]interface{}{
 								{
@@ -1440,9 +1471,9 @@ image::foo.png[]`
 								Path:   []interface{}{types.StringElement{Content: "foo.png"}},
 							},
 							Attributes: types.Attributes{
-								types.AttrImageAlt:    "quote",
-								types.AttrWidth:       "john doe",
-								types.AttrImageHeight: "quote title",
+								types.AttrImageAlt: "quote",
+								types.AttrWidth:    "john doe",
+								types.AttrHeight:   "quote title",
 							},
 						},
 					},
@@ -1592,7 +1623,9 @@ a paragraph`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				result, err := ParseDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDocument(expected))
 			})
 
 			It("paragraph with predefined attribute", func() {
@@ -1613,7 +1646,7 @@ a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			Context("with substitutions", func() {
+			Context("with custom substitutions", func() {
 
 				// using the same input for all substitution tests
 				source := `:github-url: https://github.com
@@ -1977,7 +2010,7 @@ a foo image:foo.png[]`
 					Elements: []interface{}{
 						types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:   types.Quote,
+								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},

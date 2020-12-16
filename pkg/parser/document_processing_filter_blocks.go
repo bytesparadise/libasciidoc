@@ -12,6 +12,7 @@ import (
 // - single line comments and comment blocks
 // - standalone attributes
 func filter(elements []interface{}, matchers ...filterMatcher) []interface{} {
+	log.Debug("filtering elements out")
 	result := make([]interface{}, 0, len(elements))
 elements:
 	for _, element := range elements {
@@ -26,9 +27,6 @@ elements:
 
 		// also, process the content if the element to retain
 		switch e := element.(type) {
-		case types.Preamble:
-			e.Elements = filter(e.Elements, matchers...)
-			result = append(result, e)
 		case types.Paragraph:
 			log.Debug("filtering on paragraph")
 			lines := make([][]interface{}, 0, len(e.Lines))
@@ -82,20 +80,10 @@ elements:
 }
 
 // AllMatchers all the matchers needed to remove the unneeded blocks/elements from the final document
-var allMatchers = []filterMatcher{emptyPreambleMatcher, attributeMatcher, singleLineCommentMatcher, commentBlockMatcher}
+var allMatchers = []filterMatcher{attributeMatcher, singleLineCommentMatcher, commentBlockMatcher}
 
 // filterMatcher returns true if the given element is to be filtered out
 type filterMatcher func(element interface{}) bool
-
-// emptyPreambleMatcher filters the element if it is an empty preamble
-var emptyPreambleMatcher filterMatcher = func(element interface{}) bool {
-	result := false
-	if p, match := element.(types.Preamble); match {
-		result = p.Elements == nil || len(p.Elements) == 0
-	}
-	// log.Debugf(" element of type '%T' is an empty preamble: %t", element, result)
-	return result
-}
 
 // attributeMatcher filters the element if it is a AttributeDeclaration,
 // a AttributeSubstitution, a AttributeReset or a standalone Attribute

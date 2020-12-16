@@ -101,13 +101,13 @@ image::images/foo.png[the foo.png image, 600, 400]`
 				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
-							types.AttrID:          "img-foobar",
-							types.AttrCustomID:    true,
-							types.AttrTitle:       "A title to foobar",
-							types.AttrInlineLink:  "http://foo.bar",
-							types.AttrImageAlt:    "the foo.png image",
-							types.AttrWidth:       "600",
-							types.AttrImageHeight: "400",
+							types.AttrID: "img-foobar",
+							// types.AttrCustomID: true,    true,
+							types.AttrTitle:      "A title to foobar",
+							types.AttrInlineLink: "http://foo.bar",
+							types.AttrImageAlt:   "the foo.png image",
+							types.AttrWidth:      "600",
+							types.AttrHeight:     "400",
 						},
 						Location: types.Location{
 							Path: []interface{}{
@@ -126,13 +126,10 @@ image::images/foo.png[the foo.png image, 600, 400]`
 				Elements: []interface{}{
 					types.ImageBlock{
 						Attributes: types.Attributes{
-							types.AttrImageAlt:    "the foo.png image",
-							types.AttrWidth:       "600",
-							types.AttrImageHeight: "400",
-							types.AttrRole: []interface{}{
-								types.ElementRole{"role1"},
-								types.ElementRole{"role2"},
-							},
+							types.AttrImageAlt: "the foo.png image",
+							types.AttrWidth:    "600",
+							types.AttrHeight:   "400",
+							types.AttrRoles:    []interface{}{"role1", "role2"},
 						},
 						Location: types.Location{
 							Path: []interface{}{
@@ -507,9 +504,9 @@ var _ = Describe("inline images", func() {
 							{
 								types.InlineImage{
 									Attributes: types.Attributes{
-										types.AttrImageAlt:    "the foo.png image",
-										types.AttrWidth:       "600",
-										types.AttrImageHeight: "400",
+										types.AttrImageAlt: "the foo.png image",
+										types.AttrWidth:    "600",
+										types.AttrHeight:   "400",
 									},
 									Location: types.Location{
 										Path: []interface{}{
@@ -559,8 +556,7 @@ var _ = Describe("inline images", func() {
 							{
 								types.InlineImage{
 									Attributes: types.Attributes{
-										types.AttrID:       "myid",
-										types.AttrCustomID: true,
+										types.AttrID: "myid",
 									},
 									Location: types.Location{
 										Path: []interface{}{
@@ -585,10 +581,9 @@ var _ = Describe("inline images", func() {
 							{
 								types.InlineImage{
 									Attributes: types.Attributes{
-										types.AttrID:       "myid",
-										types.AttrCustomID: true,
-										types.AttrTitle:    "mytitle",
-										types.AttrRole:     types.ElementRole{"myrole"},
+										types.AttrID:    "myid",
+										types.AttrTitle: "mytitle",
+										types.AttrRoles: []interface{}{"myrole"},
 									},
 									Location: types.Location{
 										Path: []interface{}{
@@ -605,7 +600,7 @@ var _ = Describe("inline images", func() {
 		})
 
 		It("with alt, width, height and other attributes", func() {
-			source := "image:images/foo.png[ foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
+			source := "image:images/foo.png[foo, 600, 400, id=myid, title=mytitle, role=myrole ]"
 			expected := types.DraftDocument{
 				Elements: []interface{}{
 					types.Paragraph{
@@ -613,13 +608,13 @@ var _ = Describe("inline images", func() {
 							{
 								types.InlineImage{
 									Attributes: types.Attributes{
-										types.AttrImageAlt:    "foo",
-										types.AttrWidth:       "600",
-										types.AttrImageHeight: "400",
-										types.AttrID:          "myid",
-										types.AttrCustomID:    true,
-										types.AttrTitle:       "mytitle",
-										types.AttrRole:        types.ElementRole{"myrole"},
+										types.AttrImageAlt: "foo",
+										types.AttrWidth:    "600",
+										types.AttrHeight:   "400",
+										types.AttrID:       "myid",
+										// types.AttrCustomID: true,    true,
+										types.AttrTitle: "mytitle",
+										types.AttrRoles: []interface{}{"myrole"},
 									},
 									Location: types.Location{
 										Path: []interface{}{

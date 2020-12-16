@@ -49,9 +49,17 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref types.ExternalCrossReference) (string, error) {
 	log.Debugf("rendering cross reference with ID: %s", xref.Location)
 	result := &strings.Builder{}
-	label, err := r.renderInlineElements(ctx, xref.Label)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render external cross reference")
+	var label string
+	var err error
+	switch l := xref.Label.(type) {
+	case string:
+		label = l
+	case []interface{}:
+		if label, err = r.renderInlineElements(ctx, l); err != nil {
+			return "", errors.Wrap(err, "unable to render external cross reference")
+		}
+	default:
+		return "", errors.Errorf("unable to render external cross reference label of type '%T'", xref.Label)
 	}
 	err = r.externalCrossReference.Execute(result, struct {
 		Href  string

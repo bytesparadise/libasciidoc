@@ -12,6 +12,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
@@ -28,7 +29,6 @@ func ParseRawSource(r io.Reader, config configuration.Configuration, options ...
 }
 
 func parseRawSource(r io.Reader, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
-	// log.Debugf("parsing raw document '%s'", config.Filename)
 	lines, err := ParseReader(config.Filename, r, options...)
 	if err != nil {
 		log.Errorf("failed to parse raw document: %s", err)
@@ -135,7 +135,6 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 	}
 	path := incl.Location.Stringify()
 	currentDir := filepath.Dir(config.Filename)
-	// log.Debugf("parsing '%s' from current dir '%s' (%s)", path, currentDir, config.Filename)
 	f, absPath, done, err := open(filepath.Join(currentDir, path))
 	defer done()
 	if err != nil {
@@ -143,13 +142,17 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
-	if lineRanges, ok := incl.LineRanges(); ok {
-		if err := readWithinLines(scanner, content, lineRanges); err != nil {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("parsing file to include")
+		spew.Fdump(log.StandardLogger().Out, incl)
+	}
+	if lr, ok := lineRanges(incl, config); ok {
+		if err := readWithinLines(scanner, content, lr); err != nil {
 			return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
 		}
-	} else if tagRanges, ok := incl.TagRanges(); ok {
-		if err := readWithinTags(path, scanner, content, tagRanges); err != nil {
-			return nil, err
+	} else if tr, ok := tagRanges(incl, config); ok {
+		if err := readWithinTags(path, scanner, content, tr); err != nil {
+			return nil, err // keep the underlying error here
 		}
 	} else {
 		if err := readAll(scanner, content); err != nil {
@@ -183,12 +186,38 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 	return parseRawSource(content, attrs, levelOffsets, inclConfig, options...)
 }
 
+// lineRanges parses the `lines` attribute if it exists in the given FileInclusion, and returns
+// a corresponding `LineRanges` (or `false` if parsing failed to invalid input)
+func lineRanges(incl types.FileInclusion, config configuration.Configuration) (types.LineRanges, bool) {
+	if lineRanges, exists := incl.Attributes.GetAsString(types.AttrLineRanges); exists {
+		lr, err := Parse("", []byte(lineRanges), Entrypoint("LineRanges"))
+		if err != nil {
+			log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+			return types.LineRanges{}, false
+		}
+		return types.NewLineRanges(lr), true
+	}
+	return types.LineRanges{}, false
+}
+
+// tagRanges parses the `tags` attribute if it exists in the given FileInclusion, and returns
+// a corresponding `TagRanges` (or `false` if parsing failed to invalid input)
+func tagRanges(incl types.FileInclusion, config configuration.Configuration) (types.TagRanges, bool) {
+	if tagRanges, exists := incl.Attributes.GetAsString(types.AttrTagRanges); exists {
+		tr, err := Parse("", []byte(tagRanges), Entrypoint("TagRanges"))
+		if err != nil {
+			log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+			return types.TagRanges{}, false
+		}
+		return types.NewTagRanges(tr), true
+	}
+	return types.TagRanges{}, false
+}
+
 func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges types.LineRanges) error {
-	log.Debugf("limiting to line ranges: %v", lineRanges)
 	line := 0
 	for scanner.Scan() {
 		line++
-		log.Debugf("line %d: '%s' (matching range: %t)", line, scanner.Text(), lineRanges.Match(line))
 		// parse the line in search for the `tag::<tag>[]` or `end:<tag>[]` macros
 		l, err := Parse("", scanner.Bytes(), Entrypoint("IncludedFileLine"))
 		if err != nil {

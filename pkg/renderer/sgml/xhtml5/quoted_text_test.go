@@ -299,7 +299,7 @@ var _ = Describe("quoted texts", func() {
 		})
 
 		It("span content within italic quote in sentence", func() {
-			source := "some *bold and [strikeout]#span content#* together."
+			source := "some *bold and [.strikeout]#span content#* together."
 			expected := `<div class="paragraph">
 <p>some <strong>bold and <span class="strikeout">span content</span></strong> together.</p>
 </div>

@@ -139,7 +139,9 @@ and a paragraph`
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				result, err := ParseDraftDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDraftDocument(expected))
 			})
 
 			It("section level 1 with custom idseparator", func() {
@@ -787,7 +789,7 @@ a short preamble
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -825,7 +827,7 @@ a short preamble
 						types.BlankLine{},
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -1944,7 +1946,7 @@ a short preamble
 					Elements: []interface{}{
 						types.LiteralBlock{
 							Attributes: types.Attributes{
-								types.AttrBlockKind:        types.Literal,
+								types.AttrStyle:            types.Literal,
 								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 							},
 							Lines: [][]interface{}{
@@ -1981,7 +1983,7 @@ a short preamble
 							Elements: []interface{}{
 								types.LiteralBlock{
 									Attributes: types.Attributes{
-										types.AttrBlockKind:        types.Literal,
+										types.AttrStyle:            types.Literal,
 										types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
 									},
 									Lines: [][]interface{}{

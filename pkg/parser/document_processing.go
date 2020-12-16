@@ -41,7 +41,7 @@ func ParseDocument(r io.Reader, config configuration.Configuration, options ...O
 	doc.Footnotes = footnotes
 	// insert the preamble at the right location
 	doc = includePreamble(doc)
-	doc.Attributes = doc.Attributes.Add(draftDoc.Attributes)
+	doc.Attributes = doc.Attributes.SetAll(draftDoc.Attributes)
 	// also insert the table of contents
 	doc = includeTableOfContentsPlaceHolder(doc)
 	// finally

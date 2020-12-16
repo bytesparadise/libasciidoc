@@ -10,8 +10,9 @@ import (
 )
 
 func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.ExampleBlock) (string, error) {
-	kind, _ := b.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
-	icon, err := r.renderIcon(ctx, types.Icon{Class: string(kind), Attributes: b.Attributes}, true)
+	kind, _ := b.Attributes.GetAsString(types.AttrStyle)
+	kind = strings.ToLower(kind)
+	icon, err := r.renderIcon(ctx, types.Icon{Class: strings.ToLower(kind), Attributes: b.Attributes}, true)
 	if err != nil {
 		return "", err
 	}
@@ -29,7 +30,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Exam
 		Context *renderer.Context
 		ID      string
 		Title   string
-		Kind    types.AdmonitionKind
+		Kind    string
 		Roles   string
 		Icon    string
 		Content string
@@ -48,11 +49,12 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Exam
 func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debug("rendering admonition paragraph...")
 	result := &strings.Builder{}
-	k, ok := p.Attributes[types.AttrAdmonitionKind].(types.AdmonitionKind)
+	kind, ok := p.Attributes.GetAsString(types.AttrStyle)
 	if !ok {
-		return "", errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrAdmonitionKind])
+		return "", errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrStyle])
 	}
-	icon, err := r.renderIcon(ctx, types.Icon{Class: string(k), Attributes: p.Attributes}, true)
+	kind = strings.ToLower(kind)
+	icon, err := r.renderIcon(ctx, types.Icon{Class: kind, Attributes: p.Attributes}, true)
 	if err != nil {
 		return "", err
 	}
@@ -77,10 +79,10 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
 		Title:   r.renderElementTitle(p.Attributes),
-		Kind:    string(k),
+		Kind:    kind,
 		Roles:   roles,
 		Icon:    icon,
-		Content: string(content),
+		Content: content,
 		Lines:   p.Lines,
 	})
 

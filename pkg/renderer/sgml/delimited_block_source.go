@@ -25,14 +25,22 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.ListingB
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render source block roles")
 	}
-	option := b.Attributes.GetAsStringWithDefault(types.AttrSourceBlockOption, "")
+	var nowrap bool
+	if options, ok := b.Attributes[types.AttrOptions].([]interface{}); ok {
+		for _, opt := range options {
+			if opt == "nowrap" {
+				nowrap = true
+				break
+			}
+		}
+	}
 	result := &bytes.Buffer{}
 	err = r.sourceBlock.Execute(result, struct {
 		ID                string
 		Title             string
 		Roles             string
 		Language          string
-		Option            string
+		Nowrap            bool
 		SyntaxHighlighter string
 		Content           string
 	}{
@@ -41,7 +49,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.ListingB
 		SyntaxHighlighter: highlighter,
 		Roles:             roles,
 		Language:          language,
-		Option:            option,
+		Nowrap:            nowrap,
 		Content:           content,
 	})
 
@@ -52,7 +60,7 @@ func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p types.Para
 	lines := make([][]interface{}, len(p.Lines))
 	copy(lines, p.Lines)
 	attributes := p.Attributes
-	attributes[types.AttrBlockKind] = types.Source
+	attributes[types.AttrStyle] = types.Source
 	return r.renderSourceBlock(ctx, types.ListingBlock{
 		Attributes: attributes,
 		Lines:      lines,
@@ -106,7 +114,6 @@ func (r *sgmlRenderer) renderSourceLines(ctx *renderer.Context, b types.ListingB
 				return "", "", "", err
 			}
 			highlightedLineBuf := &strings.Builder{}
-			// iterator, err := lexer.Tokenise(nil, content)
 			iterator, err := lexer.Tokenise(nil, renderedLine)
 			if err != nil {
 				return "", "", "", err
