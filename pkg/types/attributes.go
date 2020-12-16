@@ -259,10 +259,7 @@ func NewAttributeGroup(attributes ...interface{}) (Attributes, error) {
 			switch k {
 			case AttrID:
 				// The first ID set wins.
-				// if !result.Has(AttrID) {
 				result[AttrID] = v
-				// result[AttrCustomID] = true
-				// }
 			case AttrRoles:
 				result.append(AttrRoles, v)
 			case AttrOptions, AttrOpts: // TODO handle the split in the `NewOptionAttribute` func
@@ -352,24 +349,6 @@ func NewPositionalAttribute(index int, value interface{}) (Attribute, error) {
 	return result, nil
 }
 
-// // NewIDAttribute initializes a new attribute map with a single entry for the ID using the given value
-// func NewIDAttribute(id interface{}) (Attributes, error) {
-// 	// log.Debugf("initializing a new ElementID with ID=%s", id)
-// 	return Attributes{
-// 		AttrID:       Reduce(id),
-// 		AttrCustomID: true,
-// 	}, nil
-// }
-
-// // NewIDAttribute initializes a new attribute map with a single entry for the ID using the given value
-// func NewIDAttribute(id interface{}) (Attribute, error) {
-// 	// log.Debugf("initializing a new ElementID with ID=%s", id)
-// 	return Attribute{
-// 		Key:   AttrID,
-// 		Value: Reduce(id),
-// 	}, nil
-// }
-
 // NewOptionAttribute sets a boolean option.
 func NewOptionAttribute(options interface{}) (Attribute, error) {
 	return Attribute{
@@ -384,9 +363,6 @@ func NewNamedAttribute(key string, value interface{}) (Attribute, error) {
 	if key == AttrOpts { // Handle the alias
 		key = AttrOptions
 	}
-	// if key == AttrRoles {
-	// 	value = []interface{}{value} // wrap value in an `[]interface{}`
-	// }
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("new named attribute '%s':", key)
 		spew.Fdump(log.StandardLogger().Out, value)
@@ -417,7 +393,6 @@ func NewTitleAttribute(title interface{}) (Attribute, error) {
 
 // NewRoleAttribute initializes a new attribute map with a single entry for the title using the given value
 func NewRoleAttribute(role interface{}) (Attribute, error) {
-	// log.Debugf("initializing a new ElementRoles with content=%s", role)
 	role = Reduce(role)
 	return Attribute{
 		Key:   AttrRole,
@@ -588,9 +563,6 @@ func (a Attributes) SetAll(attr interface{}) Attributes {
 			a = Attributes{}
 		}
 		a[attr.Key] = attr.Value
-		// if attr.Key == AttrID {
-		// 	a[AttrCustomID] = true
-		// }
 	case Attributes:
 		if len(attr) == 0 {
 			return a
@@ -600,9 +572,6 @@ func (a Attributes) SetAll(attr interface{}) Attributes {
 		}
 		for k, v := range attr {
 			a[k] = v
-			// if k == AttrID {
-			// 	a[AttrCustomID] = true
-			// }
 		}
 	case []interface{}:
 		for i := range attr {

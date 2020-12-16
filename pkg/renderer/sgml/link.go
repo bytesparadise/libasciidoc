@@ -16,24 +16,6 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 	text := ""
 	class := ""
 	// TODO; support `mailto:` positional attributes
-	// positionals := l.Attributes.Positionals()
-	// if len(positionals) > 0 {
-	// 	buf := &strings.Builder{}
-	// 	for i, arg := range positionals {
-	// 		t, err := r.renderInlineElements(ctx, arg)
-	// 		if err != nil {
-	// 			return "", errors.Wrap(err, "unable to render link")
-	// 		}
-	// 		buf.WriteString(t)
-	// 		if i < len(positionals)-1 {
-	// 			buf.WriteString(",")
-	// 		}
-	// 	}
-	// 	text = buf.String()
-	// } else {
-	// 	class = "bare"
-	// 	text = html.EscapeString(location)
-	// }
 	if t, exists := l.Attributes[types.AttrInlineLinkText]; exists {
 		switch t := t.(type) {
 		case string:

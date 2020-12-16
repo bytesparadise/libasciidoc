@@ -86,6 +86,5 @@ func Apply(source string, fs ...applyFunc) string {
 	for _, f := range fs {
 		result = f(result)
 	}
-	// log.Debugf("applied '%s' -> '%s' (%v characters)", source, result, len(result))
 	return result
 }

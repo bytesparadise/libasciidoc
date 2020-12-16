@@ -206,7 +206,6 @@ func (f funcs) remove(other string) funcs {
 }
 
 func applySubstitutionsOnElements(elements []interface{}, subs []elementsSubstitution, attrs types.AttributesWithOverrides) ([]interface{}, error) {
-	// var err error
 	// apply all the substitutions on elements that need to be processed
 	for i, element := range elements {
 		log.Debugf("applying substitution on element of type '%T'", element)
@@ -442,7 +441,6 @@ func parserPlaceHolderElements(elements []interface{}, options ...Option) ([]int
 }
 
 func parseContent(filename string, content string, options ...Option) ([]interface{}, error) {
-	// log.Debugf("parsing content '%s'", content)
 	result, err := ParseReader(filename, strings.NewReader(content), options...)
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to parse '%s'", content)
@@ -460,7 +458,6 @@ func restorePlaceholderElements(elements []interface{}, placeholders *placeholde
 		return elements
 	}
 	for i, e := range elements {
-		// log.Debugf("restoring (placeholder) on element of type '%T'", e)
 		//
 		if e, ok := e.(types.ElementPlaceHolder); ok {
 			elements[i] = placeholders.elements[e.Ref]
@@ -570,7 +567,6 @@ func applyAttributeSubstitutionsOnElements(elements []interface{}, attrs types.A
 		}
 		result = append(result, e)
 	}
-	// result = types.Merge(result)
 	return result, nil
 }
 

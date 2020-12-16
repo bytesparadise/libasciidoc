@@ -202,6 +202,7 @@ AttrSub <- "{" name:AttributeName "}" {
     return types.NewAttributeSubstitution(name.(string))
 }
 
+// TODO: simplify the 'start' optional attribute
 CounterSub <- CounterSub1 / CounterSub2 / CounterSubAlpha / CounterSubAlpha2 / CounterSubStart / CounterSubStart2
 
 CounterSub1 <- "{counter:" name:AttributeName "}" {

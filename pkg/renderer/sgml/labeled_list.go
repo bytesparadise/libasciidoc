@@ -46,7 +46,6 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledL
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render labeled list")
 	}
-	// log.Debugf("rendered labeled list: %s", result.Bytes())
 	return result.String(), nil
 }
 

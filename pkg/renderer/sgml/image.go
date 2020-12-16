@@ -73,7 +73,6 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
-	// log.Debugf("rendered block image: %s", result.Bytes())
 	return result.String(), nil
 }
 

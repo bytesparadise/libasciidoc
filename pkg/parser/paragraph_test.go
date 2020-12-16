@@ -346,20 +346,55 @@ foo`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("with counters", func() {
-				source := `foo{counter:foo} bar{counter2:foo} baz{counter:foo} bob{counter:bob}`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "foo1 bar baz3 bob1"},
+			Context("with counters", func() {
+
+				It("default", func() {
+					source := `foo{counter:foo} bar{counter2:foo} baz{counter:foo} bob{counter:bob}`
+					expected := types.DraftDocument{
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "foo1 bar baz3 bob1"},
+									},
 								},
 							},
 						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
+
+				It("with numeric start", func() {
+					source := `foo{counter:foo:2} bar{counter2:foo} baz{counter:foo} bob{counter:bob:10}`
+					expected := types.DraftDocument{
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "foo2 bar baz4 bob10"},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
+
+				It("with alphanumeric start", func() {
+					source := `foo{counter:foo:b} bar{counter2:foo} baz{counter:foo} bob{counter:bob:z}`
+					expected := types.DraftDocument{
+						Elements: []interface{}{
+							types.Paragraph{
+								Lines: [][]interface{}{
+									{
+										types.StringElement{Content: "foob bar bazd bobz"},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				})
 			})
 
 			Context("with custom substitutions", func() {

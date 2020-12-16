@@ -29,7 +29,6 @@ func ParseRawSource(r io.Reader, config configuration.Configuration, options ...
 }
 
 func parseRawSource(r io.Reader, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
-	// log.Debugf("parsing raw document '%s'", config.Filename)
 	lines, err := ParseReader(config.Filename, r, options...)
 	if err != nil {
 		log.Errorf("failed to parse raw document: %s", err)
@@ -136,7 +135,6 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 	}
 	path := incl.Location.Stringify()
 	currentDir := filepath.Dir(config.Filename)
-	// log.Debugf("parsing '%s' from current dir '%s' (%s)", path, currentDir, config.Filename)
 	f, absPath, done, err := open(filepath.Join(currentDir, path))
 	defer done()
 	if err != nil {
@@ -192,7 +190,6 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 // a corresponding `LineRanges` (or `false` if parsing failed to invalid input)
 func lineRanges(incl types.FileInclusion, config configuration.Configuration) (types.LineRanges, bool) {
 	if lineRanges, exists := incl.Attributes.GetAsString(types.AttrLineRanges); exists {
-		log.Debugf("parsing line ranges: '%s'", lineRanges)
 		lr, err := Parse("", []byte(lineRanges), Entrypoint("LineRanges"))
 		if err != nil {
 			log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
@@ -207,7 +204,6 @@ func lineRanges(incl types.FileInclusion, config configuration.Configuration) (t
 // a corresponding `TagRanges` (or `false` if parsing failed to invalid input)
 func tagRanges(incl types.FileInclusion, config configuration.Configuration) (types.TagRanges, bool) {
 	if tagRanges, exists := incl.Attributes.GetAsString(types.AttrTagRanges); exists {
-		// log.Debugf("parsing tag ranges: '%s'", tagRanges)
 		tr, err := Parse("", []byte(tagRanges), Entrypoint("TagRanges"))
 		if err != nil {
 			log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
@@ -219,11 +215,9 @@ func tagRanges(incl types.FileInclusion, config configuration.Configuration) (ty
 }
 
 func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges types.LineRanges) error {
-	log.Debugf("limiting to line ranges: %v", lineRanges)
 	line := 0
 	for scanner.Scan() {
 		line++
-		log.Debugf("line %d: '%s' (matching range: %t)", line, scanner.Text(), lineRanges.Match(line))
 		// parse the line in search for the `tag::<tag>[]` or `end:<tag>[]` macros
 		l, err := Parse("", scanner.Bytes(), Entrypoint("IncludedFileLine"))
 		if err != nil {

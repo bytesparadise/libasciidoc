@@ -226,14 +226,6 @@ func (d Document) Authors() ([]DocumentAuthor, bool) {
 	return []DocumentAuthor{}, false
 }
 
-// Revision retrieves the document revision from the document header, or empty array if no revision was found
-func (d Document) Revision() (DocumentRevision, bool) {
-	if rev, ok := d.Attributes[AttrRevision].(DocumentRevision); ok {
-		return rev, true
-	}
-	return DocumentRevision{}, false
-}
-
 // Header returns the header, i.e., the section with level 0 if it found as the first element of the document
 // For manpage documents, this also includes the first section (`Name` along with its first paragraph)
 func (d Document) Header() (Section, bool) {
@@ -712,7 +704,6 @@ func (s Section) SubstituteFootnotes(notes *Footnotes) interface{} {
 
 // NewDocumentHeader initializes a new Section with level 0 which can have authors and a revision, among other attributes
 func NewDocumentHeader(title []interface{}, authors interface{}, revision interface{}) (Section, error) {
-	// log.Debugf("new Section level 0 with authors '%v' and revision '%v'", authors, revision)
 	section, err := NewSection(0, title, nil, nil)
 	if err != nil {
 		return Section{}, err
@@ -2066,16 +2057,6 @@ func NewListingBlock(lines []interface{}, attributes interface{}) (ListingBlock,
 			AttrPositional2: AttrLanguage,
 			AttrPositional3: AttrLineNums,
 		})
-		// // positional attribute #2 is the "language" associated with the source block
-		// if lang, ok := attrs[AttrPositionalIndex+"2"]; ok {
-		// 	attrs[AttrLanguage] = lang
-		// }
-		// delete(attrs, AttrPositionalIndex+"2") // no-op if there is no such element
-		// // positional attribute #3 is the "linenums" flag
-		// if _, ok := attrs[AttrPositionalIndex+"3"]; ok {
-		// 	attrs[AttrLineNums] = true
-		// }
-		// delete(attrs, AttrPositionalIndex+"3") // no-op if there is no such element
 	}
 	return ListingBlock{
 		Attributes: attrs,
@@ -2524,11 +2505,6 @@ func NewVerbatimLine(elements []interface{}, callouts []interface{}) (VerbatimLi
 func (s VerbatimLine) IsEmpty() bool {
 	return len(s.Elements) == 0 // || emptyStringRE.MatchString(s.Content)
 }
-
-// // String return the content of this VerbatimLine
-// func (s VerbatimLine) String() string {
-// 	return s.Content
-// }
 
 // ------------------------------------------
 // Explicit line breaks

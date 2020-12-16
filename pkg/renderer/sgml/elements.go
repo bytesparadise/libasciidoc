@@ -35,7 +35,6 @@ func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interfac
 		}
 		buff.WriteString(renderedElement)
 	}
-	// log.Debugf("rendered elements: '%s'", buff.String())
 	return buff.String(), nil
 }
 
@@ -57,7 +56,6 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 		}
 		buff.WriteString(renderedElement)
 	}
-	// log.Debugf("rendered elements: '%s'", buff.String())
 	return buff.String(), nil
 }
 
@@ -156,8 +154,6 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 	switch element := element.(type) {
 	case []interface{}:
 		return r.renderInlineElements(ctx, element, r.withVerbatim())
-	// case []interface{}:
-	// 	return r.renderLines(ctx, element, r.withPlainText())
 	case types.QuotedText:
 		return r.renderPlainText(ctx, element.Elements)
 	case types.Icon:

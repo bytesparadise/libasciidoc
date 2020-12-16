@@ -114,7 +114,6 @@ func (r *sgmlRenderer) renderSourceLines(ctx *renderer.Context, b types.ListingB
 				return "", "", "", err
 			}
 			highlightedLineBuf := &strings.Builder{}
-			// iterator, err := lexer.Tokenise(nil, content)
 			iterator, err := lexer.Tokenise(nil, renderedLine)
 			if err != nil {
 				return "", "", "", err
