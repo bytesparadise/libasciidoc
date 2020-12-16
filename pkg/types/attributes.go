@@ -172,6 +172,10 @@ func NewAttributes(attributes ...interface{}) (Attributes, error) {
 			return nil, fmt.Errorf("unexpected type of attribute: '%[1]T' (%[1]v)", attr)
 		}
 	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("initialized attributes:")
+		spew.Fdump(log.StandardLogger().Out, result)
+	}
 	return result, nil
 }
 
@@ -539,9 +543,21 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 	switch key {
 	case AttrRole:
 		if roles, ok := a[AttrRoles].([]interface{}); ok {
+			log.Debugf("appending role to existin one(s): %v", value)
 			a[AttrRoles] = append(roles, value)
 		} else {
+			log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
 			a[AttrRoles] = []interface{}{value}
+		}
+	case AttrRoles:
+		if r, ok := value.([]interface{}); ok { // value should be an []interface{}
+			if roles, ok := a[AttrRoles].([]interface{}); ok {
+				log.Debugf("appending role to existin one(s): %v", value)
+				a[AttrRoles] = append(roles, r...)
+			} else {
+				log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
+				a[AttrRoles] = r
+			}
 		}
 	case AttrOption:
 		if options, ok := a[AttrOptions].([]interface{}); ok {
@@ -552,11 +568,16 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 	default:
 		a[key] = value
 	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		spew.Fdump(log.StandardLogger().Out, a)
+
+	}
 	return a
 }
 
 // SetAll adds the given attributes to the current ones
 func (a Attributes) SetAll(attr interface{}) Attributes {
+	log.Debug("setting attributes")
 	switch attr := attr.(type) {
 	case Attribute:
 		if a == nil {
@@ -571,7 +592,7 @@ func (a Attributes) SetAll(attr interface{}) Attributes {
 			a = Attributes{}
 		}
 		for k, v := range attr {
-			a[k] = v
+			a.Set(k, v)
 		}
 	case []interface{}:
 		for i := range attr {

@@ -505,6 +505,11 @@ var _ = DescribeTable("valid block attributes",
 			types.AttrPositional2: `go.not_a_role`,
 		},
 	),
+	Entry("multiple roles", "[.role1]\n[.role2]",
+		types.Attributes{
+			types.AttrRoles: []interface{}{`role1`, `role2`},
+		},
+	),
 
 	// option shorthand
 	Entry(`[%hardbreaks]`, `[%hardbreaks]`,
