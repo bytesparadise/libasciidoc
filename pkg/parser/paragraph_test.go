@@ -297,8 +297,38 @@ baz`
 				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 			})
 
-			It("with paragraph roles and attribute", func() {
+			It("with paragraph roles and attribute - case 1", func() {
 				source := `[.role1%hardbreaks.role2]
+foo
+bar
+baz`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrOptions: []interface{}{"hardbreaks"},
+								types.AttrRoles:   []interface{}{"role1", "role2"},
+							},
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "foo"},
+								},
+								{
+									types.StringElement{Content: "bar"},
+								},
+								{
+									types.StringElement{Content: "baz"},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("with paragraph roles - case 2", func() {
+				source := `[.role1%hardbreaks]
+[.role2]
 foo
 bar
 baz`
