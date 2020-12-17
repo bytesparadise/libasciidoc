@@ -462,15 +462,8 @@ type CounterSubstitution struct {
 
 // NewCounterSubstitution returns a counter substitution.
 func NewCounterSubstitution(name string, hidden bool, val interface{}) (CounterSubstitution, error) {
-	if val != nil {
-		switch v := val.(type) {
-		case string:
-			val = rune(v[0])
-		case []uint8:
-			val = rune(v[0])
-		case uint8:
-			val = rune(v)
-		}
+	if v, ok := val.(string); ok {
+		val = rune(v[0])
 	}
 	return CounterSubstitution{
 		Name:   name,
