@@ -196,38 +196,30 @@ AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {
     return types.NewAttributeReset(name.(string))
 }
 
-AttributeSubstitution <- CounterSub / AttrSub
+AttributeSubstitution <- CounterSubstitution / AttrSub
 
 AttrSub <- "{" name:AttributeName "}" {
     return types.NewAttributeSubstitution(name.(string))
 }
 
 // TODO: simplify the 'start' optional attribute
-CounterSub <- CounterSub1 / CounterSub2 / CounterSubAlpha / CounterSubAlpha2 / CounterSubStart / CounterSubStart2
+CounterSubstitution <- CounterSubstitution1 / CounterSubstitution2  // / CounterSubstitutionAlpha / CounterSubstitutionAlpha2 / CounterSubstitutionStart / CounterSubstitutionStart2
 
-CounterSub1 <- "{counter:" name:AttributeName "}" {
-    return types.NewCounterSubstitution(name.(string), false, nil)
-}
-
-CounterSub2 <- "{counter2:" name:AttributeName "}" {
-    return types.NewCounterSubstitution(name.(string), true, nil)
-}
-
-CounterSubAlpha <- "{counter:" name:AttributeName ":" start:[A-Za-z] "}" {
+CounterSubstitution1 <- "{counter:" name:AttributeName start:(CounterStart)? "}" {
     return types.NewCounterSubstitution(name.(string), false, start)
 }
 
-CounterSubAlpha2 <- "{counter2:" name:AttributeName ":" start:[A-Za-z] "}" {
-    return types.NewCounterSubstitution(name.(string), true, start)
+CounterSubstitution2 <- "{counter2:" name:AttributeName start:(CounterStart)? "}" {
+    return types.NewCounterSubstitution(name.(string), true, nil)
 }
 
-CounterSubStart <- "{counter:" name:AttributeName ":" num:([0-9]+ { return strconv.Atoi(string(c.text)) }) "}" {
-    return types.NewCounterSubstitution(name.(string), false, num.(int))
-}
-
-CounterSubStart2 <- "{counter2:" name:AttributeName ":" num:([0-9]+ { return strconv.Atoi(string(c.text)) }) "}" {
-    return types.NewCounterSubstitution(name.(string), true, num.(int))
-}
+CounterStart <- ":" start:([A-Za-z] {
+        return string(c.text), nil
+    } / [0-9]+ { 
+        return strconv.Atoi(string(c.text)) 
+    }) {
+        return start, nil
+    }
 
 InlineElementID <- "[[" id:(Id) "]]" Space* { // no EOL here since there can be multiple InlineElementID on the same line
     return types.NewInlineIDAttribute(id.(string))
