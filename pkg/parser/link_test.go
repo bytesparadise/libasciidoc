@@ -12,25 +12,28 @@ var _ = Describe("links", func() {
 
 	Context("draft documents", func() {
 
-		It("link with special characters", func() {
-			source := `a link to https://example.com?a=1&b=2`
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{types.StringElement{Content: "a link to "},
-								types.InlineLink{
-									Location: types.Location{
-										Scheme: "https://",
-										Path: []interface{}{
-											types.StringElement{
-												Content: "example.com?a=1",
-											},
-											types.SpecialCharacter{
-												Name: "&",
-											},
-											types.StringElement{
-												Content: "b=2",
+		Context("external link", func() {
+
+			It("with special characters", func() {
+				source := `a link to https://example.com?a=1&b=2`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{types.StringElement{Content: "a link to "},
+									types.InlineLink{
+										Location: types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "example.com?a=1",
+												},
+												types.SpecialCharacter{
+													Name: "&",
+												},
+												types.StringElement{
+													Content: "b=2",
+												},
 											},
 										},
 									},
@@ -38,9 +41,42 @@ var _ = Describe("links", func() {
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+		})
+
+		Context("relative link", func() {
+
+			It("with text, target and role", func() {
+				source := `a link to link:https://example.com[example,window=mytarget,role=myrole]`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{types.StringElement{Content: "a link to "},
+									types.InlineLink{
+										Attributes: types.Attributes{
+											types.AttrInlineLinkText:   "example",
+											types.AttrInlineLinkTarget: "mytarget",
+											types.AttrRoles:            []interface{}{"myrole"},
+										},
+										Location: types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "example.com",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
 		})
 	})
 

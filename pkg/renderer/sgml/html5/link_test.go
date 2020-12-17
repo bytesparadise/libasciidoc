@@ -71,6 +71,24 @@ next lines</p>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with text, target and role", func() {
+			source := `a link to https://example.com[example,window=mytarget,role=myrole]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="myrole" target="mytarget">example</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with target and role", func() {
+			source := `a link to https://example.com[window=mytarget,role=myrole]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="bare myrole" target="mytarget">https://example.com</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		Context("with document attribute substitutions", func() {
 
 			It("with a document attribute substitution for the whole URL", func() {
@@ -222,6 +240,24 @@ a link to {scheme}://{path} and https://foo.baz`
 			source := "link:/[_a_ *b* `c`]"
 			expected := `<div class="paragraph">
 <p><a href="/"><em>a</em> <strong>b</strong> <code>c</code></a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text, target and role", func() {
+			source := `a link to link:https://example.com[example,window=mytarget,role=myrole]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="myrole" target="mytarget">example</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with target and role", func() {
+			source := `a link to link:https://example.com[window=mytarget,role=myrole]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="bare myrole" target="mytarget">https://example.com</a></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))

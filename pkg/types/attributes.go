@@ -100,6 +100,8 @@ const (
 	AttrStyle = "style"
 	// AttrInlineLinkText the text attribute (first positional) of links
 	AttrInlineLinkText = "text"
+	// AttrInlineLinkTarget the 'window' attribute
+	AttrInlineLinkTarget = "window"
 	// AttrWidth the `width` attribute used ior images, tables, and so forth
 	AttrWidth = "width"
 	// AttrFrame the frame used mostly for tables (all, topbot, sides, none)
