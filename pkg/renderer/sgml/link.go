@@ -15,6 +15,10 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 	location := l.Location.Stringify()
 	text := ""
 	class := ""
+	roles, err := r.renderElementRoles(ctx, l.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render link")
+	}
 	// TODO; support `mailto:` positional attributes
 	if t, exists := l.Attributes[types.AttrInlineLinkText]; exists {
 		switch t := t.(type) {
@@ -26,19 +30,25 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 				return "", errors.Wrap(err, "unable to render link")
 			}
 		}
+		class = roles // can be empty (and it's fine)
 	} else {
-		class = "bare"
 		text = html.EscapeString(location)
+		if len(roles) > 0 {
+			class = "bare " + roles
+		} else {
+			class = "bare"
+		}
 	}
-
-	err := r.link.Execute(result, struct {
-		URL   string
-		Text  string
-		Class string
+	err = r.link.Execute(result, struct {
+		URL    string
+		Text   string
+		Class  string
+		Target string
 	}{
-		URL:   location,
-		Text:  text,
-		Class: class,
+		URL:    location,
+		Text:   text,
+		Class:  class,
+		Target: l.Attributes.GetAsStringWithDefault(types.AttrInlineLinkTarget, ""),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render link")
