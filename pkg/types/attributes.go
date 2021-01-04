@@ -66,8 +66,11 @@ const (
 	AttrLanguage = "language"
 	// AttrLineNums the `linenums` attribute for a source block or a source paragraph
 	AttrLineNums = "linenums"
-	// AttrCheckStyle the attribute to mark the first element of an unordered list itemd as a checked or not
+	// AttrCheckStyle the attribute to mark the first element of an unordered list item as a checked or not
 	AttrCheckStyle = "checkstyle"
+	// AttrInteractive the attribute to mark the first element of an unordered list item as n interactive checkbox or not
+	// (paired with `AttrCheckStyle`)
+	AttrInteractive = "interactive"
 	// AttrStart the `start` attribute in an ordered list
 	AttrStart = "start"
 	// AttrLevelOffset the `leveloffset` attribute used in file inclusions

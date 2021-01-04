@@ -999,13 +999,18 @@ var _ List = &UnorderedList{}
 
 // NewUnorderedList returns a new UnorderedList with 1 item
 // The attributes of the given item are moved to the resulting list
-func NewUnorderedList(item *UnorderedListItem) *UnorderedList {
+func NewUnorderedList(item UnorderedListItem) *UnorderedList {
 	attrs := item.Attributes
-	item.Attributes = nil
+	item.Attributes = nil // move the item's attributes to the list level
+	// convert the checkstyle attribute if the list is interactive
+	log.Debugf("interactive list: %t", attrs.HasOption(AttrInteractive))
+	if attrs.HasOption(AttrInteractive) {
+		item = item.toInteractiveListItem()
+	}
 	list := &UnorderedList{
 		Attributes: attrs, // move the item's attributes to the list level
 		Items: []UnorderedListItem{
-			*item,
+			item,
 		},
 	}
 	return list
@@ -1013,6 +1018,9 @@ func NewUnorderedList(item *UnorderedListItem) *UnorderedList {
 
 // AddItem adds the given item
 func (l *UnorderedList) AddItem(item UnorderedListItem) {
+	if l.Attributes.HasOption(AttrInteractive) {
+		item = item.toInteractiveListItem()
+	}
 	l.Items = append(l.Items, item)
 }
 
@@ -1033,7 +1041,6 @@ type UnorderedListItem struct {
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
 func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes interface{}) (UnorderedListItem, error) {
 	log.Debugf("new UnorderedListItem with %d elements", len(elements))
-	// log.Debugf("new UnorderedListItem with '%d' lines (%T) and input level '%d'", len(elements), elements, lvl.Len())
 	cs := toCheckStyle(checkstyle)
 	if cs != NoCheck && len(elements) > 0 {
 		if p, ok := elements[0].(Paragraph); ok {
@@ -1051,6 +1058,20 @@ func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}
 		CheckStyle:  cs,
 		Elements:    elements,
 	}, nil
+}
+
+func (i UnorderedListItem) toInteractiveListItem() UnorderedListItem {
+	i.CheckStyle = i.CheckStyle.toInteractive()
+	if i.CheckStyle != NoCheck && len(i.Elements) > 0 {
+		if p, ok := i.Elements[0].(Paragraph); ok {
+			if p.Attributes == nil {
+				p.Attributes = Attributes{}
+				i.Elements[0] = p // need to update the element in the slice
+			}
+			p.Attributes[AttrCheckStyle] = i.CheckStyle
+		}
+	}
+	return i
 }
 
 // GetAttributes returns the elements of this UnorderedListItem
@@ -1095,11 +1116,26 @@ type UnorderedListItemCheckStyle string
 const (
 	// Checked when the unordered list item is checked
 	Checked UnorderedListItemCheckStyle = "checked"
+	// CheckedInteractive when the unordered list item is checked (with an interactive checkbox)
+	CheckedInteractive UnorderedListItemCheckStyle = "checked-interactive"
 	// Unchecked when the unordered list item is not checked
 	Unchecked UnorderedListItemCheckStyle = "unchecked"
+	// UncheckedInteractive when the unordered list item is not checked (with an interactive checkbox)
+	UncheckedInteractive UnorderedListItemCheckStyle = "unchecked-interactive"
 	// NoCheck when the unodered list item has no specific check annotation
 	NoCheck UnorderedListItemCheckStyle = "nocheck"
 )
+
+func (s UnorderedListItemCheckStyle) toInteractive() UnorderedListItemCheckStyle {
+	switch s {
+	case Checked, CheckedInteractive:
+		return CheckedInteractive
+	case Unchecked, UncheckedInteractive:
+		return UncheckedInteractive
+	default:
+		return NoCheck
+	}
+}
 
 func toCheckStyle(checkstyle interface{}) UnorderedListItemCheckStyle {
 	if cs, ok := checkstyle.(UnorderedListItemCheckStyle); ok {

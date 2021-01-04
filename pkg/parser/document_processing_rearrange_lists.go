@@ -211,7 +211,7 @@ func (a *listArranger) appendUnorderedListItem(item *types.UnorderedListItem) er
 			item.BulletStyle = item.BulletStyle.NextLevel(parentItem.BulletStyle)
 		}
 	}
-	a.appendList(types.NewUnorderedList(item))
+	a.appendList(types.NewUnorderedList(*item))
 	return nil
 }
 
