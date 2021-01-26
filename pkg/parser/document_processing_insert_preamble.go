@@ -21,7 +21,7 @@ func includePreamble(doc types.Document) types.Document {
 func doInsertPreamble(blocks []interface{}) []interface{} {
 	log.Debugf("generating preamble from %d blocks", len(blocks))
 	preamble := types.Preamble{
-		Elements: make([]interface{}, 0),
+		Elements: make([]interface{}, 0, len(blocks)),
 	}
 	for _, block := range blocks {
 		switch block.(type) {
