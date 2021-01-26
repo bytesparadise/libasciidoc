@@ -213,7 +213,7 @@ func NewTable(header interface{}, lines []interface{}, attributes interface{}) (
 		}
 	}
 	// need to regroup columns of all lines, they dispatch on lines
-	cells := make([][]interface{}, 0)
+	cells := make([][]interface{}, 0, len(lines))
 	for _, l := range lines {
 		if l, ok := l.(TableLine); ok {
 			// if no header line was set, inspect the first line to determine the number of columns per line
@@ -260,7 +260,7 @@ type TableLine struct {
 
 // NewTableLine initializes a new TableLine with the given columns
 func NewTableLine(columns []interface{}) (TableLine, error) {
-	c := make([][]interface{}, 0)
+	c := make([][]interface{}, 0, len(columns))
 	for _, column := range columns {
 		if e, ok := column.([]interface{}); ok {
 			c = append(c, e)

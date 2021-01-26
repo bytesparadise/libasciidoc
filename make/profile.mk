@@ -5,7 +5,7 @@ profile: generate-optimized
 	@go test -cpuprofile=tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).cpu.prof \
 		-memprofile tmp/bench/reports/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).mem.prof \
 		-bench=. \
-		-benchtime=1x \
+		-benchtime=10x \
 		github.com/bytesparadise/libasciidoc \
 		-run=XXX
 	@echo "generate CPU reports..."

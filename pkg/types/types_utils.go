@@ -6,7 +6,7 @@ import (
 
 // Merge merge string elements together
 func Merge(elements ...interface{}) []interface{} {
-	result := make([]interface{}, 0)
+	result := make([]interface{}, 0, len(elements))
 	buf := bytes.NewBuffer(nil)
 	for _, element := range elements {
 		if element == nil {
