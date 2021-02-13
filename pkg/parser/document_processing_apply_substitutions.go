@@ -61,8 +61,9 @@ func applySubstitutions(ctx substitutionContext, elements []interface{}) ([]inte
 		log.Debug("applying substitutions on:")
 		spew.Fdump(log.StandardLogger().Out, elements)
 	}
-	result := make([]interface{}, 0, len(elements))
-	for _, e := range elements {
+	result := make([]interface{}, len(elements))
+	for i, e := range elements {
+		log.Debugf("applying substitution on attributes of element of type '%T'", e)
 		if a, ok := e.(types.WithAttributesToSubstitute); ok {
 			attrs, err := applyAttributeSubstitutionsOnAttributes(ctx, a.AttributesToSubstitute())
 			if err != nil {
@@ -81,7 +82,7 @@ func applySubstitutions(ctx substitutionContext, elements []interface{}) ([]inte
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, e.ReplaceElements(elements))
+			result[i] = e.ReplaceElements(elements)
 		case types.WithLineSubstitution:
 			subs, err := substitutionsFor(e)
 			if err != nil {
@@ -91,37 +92,37 @@ func applySubstitutions(ctx substitutionContext, elements []interface{}) ([]inte
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, e.SubstituteLines(elements))
+			result[i] = e.SubstituteLines(elements)
 		case types.MarkdownQuoteBlock: // slightly different since there is an extraction for the author attributions
 			e, err := applySubstitutionsOnMarkdownQuoteBlock(ctx, e)
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, e)
+			result[i] = e
 		case types.ContinuedListItemElement:
 			r, err := applySubstitutions(ctx, []interface{}{e.Element})
 			if err != nil {
 				return nil, err
 			}
 			e.Element = r[0]
-			result = append(result, e)
+			result[i] = e
 		case types.ImageBlock:
 			if e.Location, err = applySubstitutionsOnLocation(ctx, e.Location); err != nil {
 				return nil, err
 			}
-			result = append(result, e)
+			result[i] = e
 		case types.Section:
 			if e, err = applySubstitutionsOnSection(ctx, e); err != nil {
 				return nil, err
 			}
-			result = append(result, e)
+			result[i] = e
 		default:
 			// no support for element substitution here
 			// so let's proceed with attribute substitutions
 			if e, err = applyAttributeSubstitutionsOnElement(ctx, e); err != nil {
 				return nil, err
 			}
-			result = append(result, e)
+			result[i] = e
 		}
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
@@ -149,7 +150,7 @@ var substitutions = map[string]elementsSubstitution{
 }
 
 func substitutionsFor(block types.WithCustomSubstitutions) ([]elementsSubstitution, error) {
-	subs := funcs{}
+	subs := make(funcs, 0, len(substitutions))
 	for _, s := range block.SubstitutionsToApply() {
 		switch s {
 		case "normal":
@@ -414,18 +415,16 @@ func newElementsSubstitution(rule string) elementsSubstitution {
 				placeholders.elements[ref] = placeholder
 			}
 		}
-		result := make([][]interface{}, 0, len(lines))
 		elmts, err := parseContent("", s, imagesdirOption, usermacrosOptions, Entrypoint(rule))
 		if err != nil {
 			return nil, err
 		}
 		elmts = restorePlaceholderElements(elmts, placeholders)
-		result = append(result, elmts)
 		// if log.IsLevelEnabled(log.DebugLevel) {
 		// 	// log.Debugf("applied the '%s' rule:", rule)
 		// 	spew.Fdump(log.StandardLogger().Out, result)
 		// }
-		return result, nil
+		return [][]interface{}{elmts}, nil
 	}
 }
 
@@ -525,11 +524,7 @@ func serializeLines(lines [][]interface{}, placeholders *placeholders) string {
 }
 
 func splitLines(_ substitutionContext, lines [][]interface{}) ([][]interface{}, error) {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug("splitting lines on")
-	// 	spew.Fdump(log.StandardLogger().Out, lines)
-	// }
-	result := [][]interface{}{}
+	result := make([][]interface{}, 0, len(lines))
 	for _, line := range lines {
 		pendingLine := []interface{}{}
 		for _, element := range line {
@@ -565,13 +560,13 @@ func splitLines(_ substitutionContext, lines [][]interface{}) ([][]interface{}, 
 // ----------------------------------------------------------------------------
 
 func applyAttributeSubstitutionsOnElements(ctx substitutionContext, elements []interface{}) ([]interface{}, error) {
-	result := make([]interface{}, 0, len(elements)) // maximum capacity should exceed initial input
-	for _, element := range elements {
+	result := make([]interface{}, len(elements)) // maximum capacity should exceed initial input
+	for i, element := range elements {
 		e, err := applyAttributeSubstitutionsOnElement(ctx, element)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, e)
+		result[i] = e
 	}
 	return result, nil
 }
