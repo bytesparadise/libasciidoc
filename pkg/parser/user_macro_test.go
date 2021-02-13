@@ -1,6 +1,9 @@
 package parser_test
 
 import (
+	texttemplate "text/template"
+
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -12,9 +15,11 @@ var _ = Describe("user macros", func() {
 
 	Context("final documents", func() {
 
+		userTmpl := &texttemplate.Template{}
+
 		Context("inline macros", func() {
 
-			It("inline macro empty", func() {
+			It("without attributes", func() {
 				source := "AAA hello:[]"
 				expected := types.Document{
 					Elements: []interface{}{
@@ -35,10 +40,10 @@ var _ = Describe("user macros", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("hello", userTmpl))).To(MatchDocument(expected))
 			})
 
-			It("inline macro with double quoted attributes", func() {
+			It("with double quoted attributes", func() {
 				source := `AAA hello:[prefix="hello ",suffix="!!"]`
 				expected := types.Document{
 					Elements: []interface{}{
@@ -62,10 +67,10 @@ var _ = Describe("user macros", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("hello", userTmpl))).To(MatchDocument(expected))
 			})
 
-			It("inline macro with value", func() {
+			It("with value", func() {
 				source := `AAA hello:JohnDoe[]`
 				expected := types.Document{
 					Elements: []interface{}{
@@ -85,18 +90,19 @@ var _ = Describe("user macros", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("hello", userTmpl))).To(MatchDocument(expected))
 			})
 
-			It("inline user macro with value and attributes", func() {
+			It("with value and attributes", func() {
 				source := "repository: git:some/url.git[key1=value1,key2=value2]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "repository: ",
-								},
+								{
+									types.StringElement{
+										Content: "repository: ",
+									},
 									types.UserMacro{
 										Kind:  types.InlineMacro,
 										Name:  "git",
@@ -112,13 +118,31 @@ var _ = Describe("user macros", func() {
 						},
 					},
 				}
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("git", userTmpl))).To(MatchDocument(expected))
+			})
+
+			It("unknown", func() {
+				source := "AAA hello:[]"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "AAA hello:[]",
+									},
+								},
+							},
+						},
+					},
+				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
-		Context("user macros", func() {
+		Context("block macros", func() {
 
-			It("user macro block without value", func() {
+			It("without value", func() {
 
 				source := "git::[]"
 				expected := types.Document{
@@ -131,10 +155,10 @@ var _ = Describe("user macros", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("git", userTmpl))).To(MatchDocument(expected))
 			})
 
-			It("user block macro with value and attributes", func() {
+			It("with value and attributes", func() {
 				source := "git::some/url.git[key1=value1,key2=value2]"
 				expected := types.Document{
 					Elements: []interface{}{
@@ -150,10 +174,10 @@ var _ = Describe("user macros", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("git", userTmpl))).To(MatchDocument(expected))
 			})
 
-			It("user macro block with attribute", func() {
+			It("with attribute", func() {
 				source := `git::[key1="value1"]`
 				expected := types.Document{
 					Elements: []interface{}{
@@ -168,10 +192,10 @@ var _ = Describe("user macros", func() {
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("git", userTmpl))).To(MatchDocument(expected))
 			})
 
-			It("user macro block with value", func() {
+			It("with value", func() {
 				source := `git::some/url.git[]`
 				expected := types.Document{
 					Elements: []interface{}{
@@ -180,6 +204,25 @@ var _ = Describe("user macros", func() {
 							Name:    "git",
 							Value:   "some/url.git",
 							RawText: "git::some/url.git[]",
+						},
+					},
+				}
+				Expect(ParseDocument(source, configuration.WithMacroTemplate("git", userTmpl))).To(MatchDocument(expected))
+			})
+
+			It("unknown", func() {
+
+				source := "git::[]"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{
+										Content: "git::[]",
+									},
+								},
+							},
 						},
 					},
 				}

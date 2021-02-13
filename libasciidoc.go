@@ -67,7 +67,7 @@ func Convert(r io.Reader, output io.Writer, config configuration.Configuration) 
 		duration := time.Since(start)
 		log.Debugf("rendered the output in %v", duration)
 	}()
-	log.Debugf("parsing the asciidoc source...")
+	// log.Debugf("parsing the asciidoc source...")
 	doc, err := parser.ParseDocument(r, config)
 	if err != nil {
 		return types.Metadata{}, err
@@ -88,7 +88,7 @@ func Convert(r io.Reader, output io.Writer, config configuration.Configuration) 
 	if err != nil {
 		return types.Metadata{}, err
 	}
-	log.Debugf("Done processing document")
+	// log.Debugf("Done processing document")
 	return metadata, nil
 
 }

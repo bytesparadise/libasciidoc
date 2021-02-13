@@ -2045,7 +2045,9 @@ TIP: We can embed admonitions too!
 					},
 				},
 			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
+			result, err := ParseDocument(source)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDocument(expected))
 		})
 	})
 

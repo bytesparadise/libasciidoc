@@ -58,7 +58,7 @@ some *example* content
 					Elements: []interface{}{
 						types.ExampleBlock{
 							Elements: []interface{}{
-								types.Attributes{
+								types.StandaloneAttributes{
 									types.AttrTitle: "foo",
 								},
 							},

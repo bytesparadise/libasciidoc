@@ -2,12 +2,11 @@ package sgml
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	log "github.com/sirupsen/logrus"
 )
 
 func discardEmptyLines(lines [][]interface{}) [][]interface{} {
 	// discard blank elements at the end
-	log.Debugf("discarding empty lines on %d elements...", len(lines))
+	// log.Debugf("discarding empty lines on %d elements...", len(lines))
 	filteredLines := make([][]interface{}, len(lines))
 	copy(filteredLines, lines)
 	// heading empty lines
@@ -39,7 +38,7 @@ func discardEmptyLines(lines [][]interface{}) [][]interface{} {
 
 func discardBlankLines(lines []interface{}) []interface{} {
 	// discard blank elements at the end
-	log.Debugf("discarding blank lines on %d elements...", len(lines))
+	// log.Debugf("discarding blank lines on %d elements...", len(lines))
 	filteredLines := make([]interface{}, len(lines))
 	copy(filteredLines, lines)
 	// heading empty lines

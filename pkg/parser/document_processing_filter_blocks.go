@@ -19,11 +19,11 @@ elements:
 		// check if filter option applies to the element
 		for _, match := range matchers {
 			if match(element) {
-				log.Debugf("discarding element of type '%T'", element)
+				// log.Debugf("discarding element of type '%T'", element)
 				continue elements
 			}
 		}
-		log.Debugf("keeping element of type '%T'", element)
+		// log.Debugf("keeping element of type '%T'", element)
 
 		// also, process the content if the element to retain
 		switch e := element.(type) {
@@ -31,7 +31,7 @@ elements:
 			log.Debug("filtering on paragraph")
 			lines := make([][]interface{}, 0, len(e.Lines))
 			for _, l := range e.Lines {
-				log.Debugf("filtering on paragraph line of type '%T'", l)
+				// log.Debugf("filtering on paragraph line of type '%T'", l)
 				l = filter(l, matchers...)
 				if len(l) > 0 {
 					lines = append(lines, l)
@@ -89,7 +89,7 @@ type filterMatcher func(element interface{}) bool
 // a AttributeSubstitution, a AttributeReset or a standalone Attribute
 var attributeMatcher filterMatcher = func(element interface{}) bool {
 	switch element.(type) {
-	case types.AttributeDeclaration, types.AttributeSubstitution, types.AttributeReset, types.Attributes, types.CounterSubstitution:
+	case types.AttributeDeclaration, types.AttributeSubstitution, types.AttributeReset, types.Attributes, types.CounterSubstitution, types.StandaloneAttributes:
 		return true
 	default:
 		return false

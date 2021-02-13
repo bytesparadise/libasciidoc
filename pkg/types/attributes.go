@@ -3,7 +3,6 @@ package types
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
@@ -192,10 +191,10 @@ func toAttributes(attrs interface{}) Attributes {
 }
 
 func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attributes {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("processing attributes with mapping on")
-		spew.Fdump(log.StandardLogger().Out, attrs)
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debug("processing attributes with mapping on")
+	// 	spew.Fdump(log.StandardLogger().Out, attrs)
+	// }
 	if attrs, ok := attrs.(Attributes); ok {
 		for source, target := range mapping {
 			if v, exists := attrs[source]; exists {
@@ -219,10 +218,10 @@ func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attri
 				delete(attrs, source)
 			}
 		}
-		if log.IsLevelEnabled(log.DebugLevel) {
-			log.Debug("processed attributes with mapping:")
-			spew.Fdump(log.StandardLogger().Out, attrs)
-		}
+		// if log.IsLevelEnabled(log.DebugLevel) {
+		// 	log.Debug("processed attributes with mapping:")
+		// 	spew.Fdump(log.StandardLogger().Out, attrs)
+		// }
 		if len(attrs) == 0 {
 			return nil
 		}
@@ -232,74 +231,74 @@ func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attri
 	return nil
 }
 
-// NewAttributeGroup initializes an AttributeGroup
-// We always pass in an array of Attributes.  Special handling for certain attributes:
-//
-// AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
-// AttrRoles - these are strings, we append them into an array
-// AttrOptions - comma separated list, we split and put into a map
-func NewAttributeGroup(attributes ...interface{}) (Attributes, error) {
-	if len(attributes) == 0 {
-		return nil, nil
-	}
-	result := Attributes{}
-	for _, item := range attributes {
-		if item == nil {
-			continue
-		}
-		var attrs Attributes
-		var err error
-		switch item := item.(type) {
-		case Attribute:
-			attrs = Attributes{
-				item.Key: item.Value,
-			}
-		case Attributes:
-			attrs = item
-		case []interface{}:
-			attrs, err = NewAttributeGroup(item...)
-			if err != nil {
-				return nil, err
-			}
-		default:
-			return nil, fmt.Errorf("unexpected type of attributes: %T", item)
-		}
-		for k, v := range attrs {
-			switch k {
-			case AttrID:
-				// The first ID set wins.
-				result[AttrID] = v
-			case AttrRoles:
-				result.append(AttrRoles, v)
-			case AttrOptions, AttrOpts: // TODO handle the split in the `NewOptionAttribute` func
-				if !result.Has(AttrOptions) {
-					result[AttrOptions] = map[string]bool{}
-				}
-				m := result[AttrOptions].(map[string]bool)
-				switch v := v.(type) {
-				case string:
-					for _, o := range strings.Split(v, ",") {
-						m[o] = true
-					}
-				case map[string]bool:
-					for o := range v {
-						m[o] = v[o]
-					}
-				}
-			default:
-				result[k] = v
-			}
-		}
-	}
-	if len(result) == 0 {
-		return nil, nil // don't retain groups with no attribute
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("new attribute group:")
-		spew.Fdump(log.StandardLogger().Out, result)
-	}
-	return result, nil
-}
+// // NewAttributeGroup initializes an AttributeGroup
+// // We always pass in an array of Attributes.  Special handling for certain attributes:
+// //
+// // AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
+// // AttrRoles - these are strings, we append them into an array
+// // AttrOptions - comma separated list, we split and put into a map
+// func NewAttributeGroup(attributes ...interface{}) (Attributes, error) {
+// 	if len(attributes) == 0 {
+// 		return nil, nil
+// 	}
+// 	result := Attributes{}
+// 	for _, item := range attributes {
+// 		if item == nil {
+// 			continue
+// 		}
+// 		var attrs Attributes
+// 		var err error
+// 		switch item := item.(type) {
+// 		case Attribute:
+// 			attrs = Attributes{
+// 				item.Key: item.Value,
+// 			}
+// 		case Attributes:
+// 			attrs = item
+// 		case []interface{}:
+// 			attrs, err = NewAttributeGroup(item...)
+// 			if err != nil {
+// 				return nil, err
+// 			}
+// 		default:
+// 			return nil, fmt.Errorf("unexpected type of attributes: %T", item)
+// 		}
+// 		for k, v := range attrs {
+// 			switch k {
+// 			case AttrID:
+// 				// The first ID set wins.
+// 				result[AttrID] = v
+// 			case AttrRoles:
+// 				result.append(AttrRoles, v)
+// 			case AttrOptions, AttrOpts: // TODO handle the split in the `NewOptionAttribute` func
+// 				if !result.Has(AttrOptions) {
+// 					result[AttrOptions] = map[string]bool{}
+// 				}
+// 				m := result[AttrOptions].(map[string]bool)
+// 				switch v := v.(type) {
+// 				case string:
+// 					for _, o := range strings.Split(v, ",") {
+// 						m[o] = true
+// 					}
+// 				case map[string]bool:
+// 					for o := range v {
+// 						m[o] = v[o]
+// 					}
+// 				}
+// 			default:
+// 				result[k] = v
+// 			}
+// 		}
+// 	}
+// 	if len(result) == 0 {
+// 		return nil, nil // don't retain groups with no attribute
+// 	}
+// 	if log.IsLevelEnabled(log.DebugLevel) {
+// 		log.Debug("new attribute group:")
+// 		spew.Fdump(log.StandardLogger().Out, result)
+// 	}
+// 	return result, nil
+// }
 
 // HasAttributeWithValue checks that there is an entry for the given key/value pair
 func HasAttributeWithValue(attributes interface{}, key string, value interface{}) bool {
@@ -320,7 +319,7 @@ func HasAttributeWithValue(attributes interface{}, key string, value interface{}
 		}
 	}
 	// make sure we return false here in case there was no match, so we can print the log msg
-	log.Debugf("no attribute '%s:%v' found in %v", key, value, attributes)
+	// log.Debugf("no attribute '%s:%v' found in %v", key, value, attributes)
 	return false
 }
 
@@ -373,7 +372,7 @@ func NewNamedAttribute(key string, value interface{}) (Attribute, error) {
 		key = AttrOptions
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("new named attribute '%s':", key)
+		// log.Debugf("new named attribute '%s':", key)
 		spew.Fdump(log.StandardLogger().Out, value)
 	}
 	return Attribute{
@@ -384,7 +383,7 @@ func NewNamedAttribute(key string, value interface{}) (Attribute, error) {
 
 // NewInlineIDAttribute initializes a new attribute map with a single entry for the ID using the given value
 func NewInlineIDAttribute(id string) (Attribute, error) {
-	log.Debugf("initializing a new inline ElementID with ID=%s", id)
+	// log.Debugf("initializing a new inline ElementID with ID=%s", id)
 	return Attribute{
 		Key:   AttrID,
 		Value: id,
@@ -393,7 +392,7 @@ func NewInlineIDAttribute(id string) (Attribute, error) {
 
 // NewTitleAttribute initializes a new attribute map with a single entry for the title using the given value
 func NewTitleAttribute(title interface{}) (Attribute, error) {
-	log.Debugf("initializing a new Title attribute with content=%v", title)
+	// log.Debugf("initializing a new Title attribute with content=%v", title)
 	return Attribute{
 		Key:   AttrTitle,
 		Value: title,
@@ -411,156 +410,36 @@ func NewRoleAttribute(role interface{}) (Attribute, error) {
 
 // NewIDAttribute initializes a new attribute map with a single entry for the ID using the given value
 func NewIDAttribute(id interface{}) (Attribute, error) {
-	log.Debugf("initializing a new ID attribute with ID='%v'", id)
+	// log.Debugf("initializing a new ID attribute with ID='%v'", id)
 	return Attribute{
 		Key:   AttrID,
 		Value: id,
 	}, nil
 }
 
-// NewStyleAttribute initializes a new attribute map with a single entry for the style
-// TODO: remove the `extras` parameter
-func NewStyleAttribute(style interface{}, extras ...interface{}) (Attributes, error) {
-	result := Attributes{
-		AttrStyle: style,
-	}
-	extraAttrs, _ := NewExtraAttributes(extras...)
-	result.SetAll(extraAttrs)
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("new style/roles/options attributes:")
-		spew.Fdump(log.StandardLogger().Out, result)
-	}
-	return result, nil
-}
-
-// NewExtraAttributes return all the "extra" role and option attributes in an `Attributes` object
-func NewExtraAttributes(extras ...interface{}) (Attributes, error) {
-	roles := make([]interface{}, 0, len(extras))
-	options := make([]interface{}, 0, len(extras))
-	for _, extra := range extras {
-		if a, ok := extra.(Attribute); ok {
-			switch a.Key {
-			case AttrRole:
-				roles = append(roles, a.Value)
-			case AttrOption:
-				options = append(options, a.Value)
-			}
-		}
-	}
-	result := Attributes{}
-	if len(roles) > 0 {
-		result[AttrRoles] = roles
-	}
-	if len(options) > 0 {
-		result[AttrOptions] = options
-	}
-	return result, nil
-}
-
-// NewAdmonitionAttribute initializes a new attribute map with a single entry for the admonition kind using the given value
-func NewAdmonitionAttribute(kind string) (Attribute, error) {
-	return Attribute{
-		Key:   AttrStyle,
-		Value: kind,
-	}, nil
-}
-
-// NewQuoteAttributes initializes a new map of attributes for a verse paragraph
-func NewQuoteAttributes(kind string, author, title interface{}) (Attributes, error) {
-	result := make(map[string]interface{}, 3)
-	switch kind {
-	case "verse":
-		result[AttrStyle] = Verse
-	default:
-		result[AttrStyle] = Quote
-	}
-	if author, ok := author.(string); ok {
-		author = strings.TrimSpace(author)
-		if len(author) > 0 {
-			result[AttrQuoteAuthor] = author
-		}
-	}
-	if title, ok := title.(string); ok {
-		title = strings.TrimSpace(title)
-		if len(title) > 0 {
-			result[AttrQuoteTitle] = title
-		}
-	}
-	return result, nil
-}
-
-// NewLiteralBlockAttribute initializes a new attribute map with a single entry for the `literal` kind of block
-func NewLiteralBlockAttribute() (Attribute, error) {
-	return Attribute{
-		Key:   AttrStyle,
-		Value: Literal,
-	}, nil
-}
-
-// NewPassthroughBlockAttribute initializes a new attribute map with a single entry for the `passthrough` kind of block
-func NewPassthroughBlockAttribute() (Attribute, error) {
-	return Attribute{
-		Key:   AttrStyle,
-		Value: Passthrough,
-	}, nil
-}
-
-// NewExampleBlockAttribute initializes a new attribute map with a single entry for the `example`` kind of block
-func NewExampleBlockAttribute() (Attribute, error) {
-	return Attribute{
-		Key:   AttrStyle,
-		Value: Example,
-	}, nil
-}
-
-// NewListingBlockAttribute initializes a new attribute map with a single entry for the `listing`` kind of block
-func NewListingBlockAttribute() (Attribute, error) {
-	return Attribute{
-		Key:   AttrStyle,
-		Value: Listing,
-	}, nil
-}
-
-// NewSourceAttributes initializes a new attribute map with two entries, one for the kind of element ("source") and another optional one for the language of the source code
-func NewSourceAttributes(language interface{}, option interface{}, others ...interface{}) (Attributes, error) {
-	result := Attributes{
-		AttrStyle: Source,
-	}
-	if language := Reduce(language); language != nil {
-		result[AttrLanguage] = language
-	}
-	if option, ok := option.(string); ok {
-		result[AttrSourceBlockOption] = strings.TrimSpace(option)
-	}
-	for _, other := range others {
-		result = result.SetAll(other)
-	}
-	return result, nil
-}
-
 // Set adds the given attribute to the current ones
 // with some `key` replacements/grouping (Role->Roles and Option->Options)
 func (a Attributes) Set(key string, value interface{}) Attributes {
-	log.Debugf("setting attribute %s=%v", key, value)
+	// log.Debugf("setting attribute %s=%v", key, value)
 	if a == nil {
 		a = Attributes{}
 	}
 	switch key {
 	case AttrRole:
 		if roles, ok := a[AttrRoles].([]interface{}); ok {
-			log.Debugf("appending role to existin one(s): %v", value)
+			// log.Debugf("appending role to existin one(s): %v", value)
 			a[AttrRoles] = append(roles, value)
 		} else {
-			log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
+			// log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
 			a[AttrRoles] = []interface{}{value}
 		}
 	case AttrRoles:
 		if r, ok := value.([]interface{}); ok { // value should be an []interface{}
 			if roles, ok := a[AttrRoles].([]interface{}); ok {
-				log.Debugf("appending role to existin one(s): %v", value)
+				// log.Debugf("appending role to existin one(s): %v", value)
 				a[AttrRoles] = append(roles, r...)
 			} else {
-				log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
+				// log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
 				a[AttrRoles] = r
 			}
 		}
@@ -629,32 +508,6 @@ func (a Attributes) HasOption(key string) bool {
 		return true
 	}
 	return false
-}
-
-// sets the value as a singular string value if it did not exist yet,
-// or move the existing value in a slice and append the new one
-func (a Attributes) append(key string, value interface{}) {
-	v, found := a[key]
-	if !found {
-		a[key] = value
-		return
-	}
-	switch v := v.(type) {
-	case []interface{}:
-		switch value := value.(type) {
-		case []interface{}:
-			a[key] = append(v, value...)
-		default:
-			a[key] = append(v, value) // just append the new value into the slice
-		}
-	default:
-		switch value := value.(type) {
-		case []interface{}:
-			a[key] = append([]interface{}{v}, value...)
-		default:
-			a[key] = []interface{}{v, value} // move existing value in a slice, along with the new one
-		}
-	}
 }
 
 // GetAsString gets the string value for the given key (+ `true`),

@@ -7,11 +7,10 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.LiteralBlock) (string, error) {
-	log.Debugf("rendering literal block with content: %s", b.Lines)
+	// log.Debugf("rendering literal block with content: %s", b.Lines)
 	lines := make([]string, len(b.Lines))
 	var err error
 	for i, line := range b.Lines {
@@ -34,7 +33,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 					spaceCount = int(math.Min(float64(spaceCount), float64(len(line)-len(l))))
 				}
 			}
-			log.Debugf("trimming %d space(s) on each line", int(spaceCount))
+			// log.Debugf("trimming %d space(s) on each line", int(spaceCount))
 			// then remove the same number of spaces on each line
 			spaces := strings.Repeat(" ", spaceCount)
 			for i, line := range lines {

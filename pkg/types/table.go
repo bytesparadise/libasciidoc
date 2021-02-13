@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 // ------------------------------------------
@@ -233,15 +232,15 @@ func NewTable(header interface{}, lines []interface{}, attributes interface{}) (
 
 	t.Lines = make([]TableLine, 0, len(cells))
 	if len(lines) > 0 {
-		log.Debugf("buffered %d columns for the table", len(cells))
+		// log.Debugf("buffered %d columns for the table", len(cells))
 		l := TableLine{
 			Cells: make([][]interface{}, len(t.Columns)),
 		}
 		for i, c := range cells {
-			log.Debugf("adding cell with content '%v' in table line at offset %d", c, i%len(t.Columns))
+			// log.Debugf("adding cell with content '%v' in table line at offset %d", c, i%len(t.Columns))
 			l.Cells[i%len(t.Columns)] = c
 			if (i+1)%len(t.Columns) == 0 { // switch to next line
-				log.Debugf("adding line with content '%v' in table", l)
+				// log.Debugf("adding line with content '%v' in table", l)
 				t.Lines = append(t.Lines, l)
 				l = TableLine{
 					Cells: make([][]interface{}, len(t.Columns)),

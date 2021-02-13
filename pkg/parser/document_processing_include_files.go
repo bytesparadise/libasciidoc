@@ -20,16 +20,19 @@ import (
 
 // ParseRawSource parses a document's content and applies the preprocessing directives (file inclusions)
 func ParseRawSource(r io.Reader, config configuration.Configuration, options ...Option) ([]byte, error) {
-	attrs := types.AttributesWithOverrides{
-		Content:   map[string]interface{}{},
-		Overrides: map[string]string{},
-		Counters:  map[string]interface{}{},
+	ctx := substitutionContext{
+		attributes: types.AttributesWithOverrides{
+			Content:   map[string]interface{}{},
+			Overrides: map[string]string{},
+			Counters:  map[string]interface{}{},
+		},
+		config: config,
 	}
-	return parseRawSource(r, attrs, []levelOffset{}, config, append(options, Entrypoint("RawSource"))...)
+	return parseRawSource(ctx, r, []levelOffset{}, append(options, Entrypoint("RawSource"))...)
 }
 
-func parseRawSource(r io.Reader, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
-	lines, err := ParseReader(config.Filename, r, options...)
+func parseRawSource(ctx substitutionContext, r io.Reader, levelOffsets []levelOffset, options ...Option) ([]byte, error) {
+	lines, err := ParseReader(ctx.config.Filename, r, options...)
 	if err != nil {
 		log.Errorf("failed to parse raw document: %s", err)
 		return nil, err
@@ -38,11 +41,11 @@ func parseRawSource(r io.Reader, attrs types.AttributesWithOverrides, levelOffse
 	if !ok {
 		return nil, fmt.Errorf("unexpected type of raw lines: '%T'", lines)
 	}
-	return processFileInclusions(l, attrs, levelOffsets, config, options...)
+	return processFileInclusions(ctx, l, levelOffsets, options...)
 }
 
 // processFileInclusions processes the file inclusions in the given lines and returns a serialized content which can be parsed again
-func processFileInclusions(lines []interface{}, globalAttrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
+func processFileInclusions(ctx substitutionContext, lines []interface{}, levelOffsets []levelOffset, options ...Option) ([]byte, error) {
 	result := bytes.NewBuffer(nil)
 	for _, line := range lines {
 		switch l := line.(type) {
@@ -72,12 +75,12 @@ func processFileInclusions(lines []interface{}, globalAttrs types.AttributesWith
 			// append linefeed
 			result.WriteString("\n")
 		case types.AttributeDeclaration:
-			globalAttrs.Set(l.Name, l.Value)
+			ctx.attributes.Set(l.Name, l.Value)
 			result.WriteString(l.Stringify())
 			// append linefeed
 			result.WriteString("\n")
 		case types.FileInclusion:
-			includedLines, err := parseFileToInclude(l, globalAttrs, levelOffsets, config, options...)
+			includedLines, err := parseFileToInclude(ctx, l, levelOffsets, options...)
 			if err != nil {
 				return nil, err
 			}
@@ -118,9 +121,9 @@ func absoluteOffset(offset int) levelOffset {
 }
 
 // applies the elements and attributes substitutions on the given image block.
-func applySubstitutionsOnFileInclusion(f types.FileInclusion, attrs types.AttributesWithOverrides) (types.FileInclusion, error) {
+func applySubstitutionsOnFileInclusion(ctx substitutionContext, f types.FileInclusion) (types.FileInclusion, error) {
 	elements := [][]interface{}{f.Location.Path} // wrap to
-	elements, err := substituteAttributes(elements, attrs)
+	elements, err := substituteAttributes(ctx, elements)
 	if err != nil {
 		return types.FileInclusion{}, err
 	}
@@ -128,17 +131,17 @@ func applySubstitutionsOnFileInclusion(f types.FileInclusion, attrs types.Attrib
 	return f, nil
 }
 
-func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOverrides, levelOffsets []levelOffset, config configuration.Configuration, options ...Option) ([]byte, error) {
-	incl, err := applySubstitutionsOnFileInclusion(incl, attrs)
+func parseFileToInclude(ctx substitutionContext, incl types.FileInclusion, levelOffsets []levelOffset, options ...Option) ([]byte, error) {
+	incl, err := applySubstitutionsOnFileInclusion(ctx, incl)
 	if err != nil {
 		return nil, err
 	}
 	path := incl.Location.Stringify()
-	currentDir := filepath.Dir(config.Filename)
+	currentDir := filepath.Dir(ctx.config.Filename)
 	f, absPath, done, err := open(filepath.Join(currentDir, path))
 	defer done()
 	if err != nil {
-		return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+		return nil, fmt.Errorf("Unresolved directive in %s - %s", ctx.config.Filename, incl.RawText)
 	}
 	content := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
@@ -146,21 +149,21 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 		log.Debug("parsing file to include")
 		spew.Fdump(log.StandardLogger().Out, incl)
 	}
-	if lr, ok := lineRanges(incl, config); ok {
+	if lr, ok := lineRanges(incl, ctx.config); ok {
 		if err := readWithinLines(scanner, content, lr); err != nil {
-			return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+			return nil, fmt.Errorf("Unresolved directive in %s - %s", ctx.config.Filename, incl.RawText)
 		}
-	} else if tr, ok := tagRanges(incl, config); ok {
+	} else if tr, ok := tagRanges(incl, ctx.config); ok {
 		if err := readWithinTags(path, scanner, content, tr); err != nil {
 			return nil, err // keep the underlying error here
 		}
 	} else {
 		if err := readAll(scanner, content); err != nil {
-			return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+			return nil, fmt.Errorf("Unresolved directive in %s - %s", ctx.config.Filename, incl.RawText)
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+		return nil, fmt.Errorf("Unresolved directive in %s - %s", ctx.config.Filename, incl.RawText)
 	}
 	// just include the file content if the file to include is not an Asciidoc document.
 	if !IsAsciidoc(absPath) {
@@ -180,10 +183,14 @@ func parseFileToInclude(incl types.FileInclusion, attrs types.AttributesWithOver
 		}
 	}
 
-	inclConfig := config.Clone()
-	inclConfig.Filename = absPath
+	actualFilename := ctx.config.Filename
+	defer func() {
+		// restore actual filename after exiting
+		ctx.config.Filename = actualFilename
+	}()
+	ctx.config.Filename = absPath
 	// now, let's parse this content and process nested file inclusions
-	return parseRawSource(content, attrs, levelOffsets, inclConfig, options...)
+	return parseRawSource(ctx, content, levelOffsets, options...)
 }
 
 // lineRanges parses the `lines` attribute if it exists in the given FileInclusion, and returns
@@ -247,7 +254,7 @@ func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges t
 }
 
 func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, expectedRanges types.TagRanges) error {
-	log.Debugf("limiting to tag ranges: %v", expectedRanges)
+	// log.Debugf("limiting to tag ranges: %v", expectedRanges)
 	currentRanges := make(map[string]*types.CurrentTagRange, len(expectedRanges)) // ensure capacity
 	lineNumber := 0
 	for scanner.Scan() {
@@ -285,7 +292,7 @@ func readWithinTags(path string, scanner *bufio.Scanner, content *bytes.Buffer, 
 	}
 	// after the file has been processed, let's check if all tags were "found"
 	for _, tag := range expectedRanges {
-		log.Debugf("checking if tag '%s' was found...", tag.Name)
+		// log.Debugf("checking if tag '%s' was found...", tag.Name)
 		switch tag.Name {
 		case "*", "**":
 			continue
@@ -335,7 +342,7 @@ func open(path string) (*os.File, string, func(), error) {
 	absPath, err := filepath.Abs(path)
 	if err != nil {
 		return nil, "", func() {
-			log.Debugf("restoring current working dir to: %s", wd)
+			// log.Debugf("restoring current working dir to: %s", wd)
 			if err := os.Chdir(wd); err != nil { // restore the previous working directory
 				log.WithError(err).Error("failed to restore previous working directory")
 			}
@@ -345,25 +352,25 @@ func open(path string) (*os.File, string, func(), error) {
 	err = os.Chdir(dir)
 	if err != nil {
 		return nil, "", func() {
-			log.Debugf("restoring current working dir to: %s", wd)
+			// log.Debugf("restoring current working dir to: %s", wd)
 			if err := os.Chdir(wd); err != nil { // restore the previous working directory
 				log.WithError(err).Error("failed to restore previous working directory")
 			}
 		}, err
 	}
 	// read the file per-se
-	log.Debugf("opening '%s'", absPath)
+	// log.Debugf("opening '%s'", absPath)
 	f, err := os.Open(absPath)
 	if err != nil {
 		return nil, absPath, func() {
-			log.Debugf("restoring current working dir to: %s", wd)
+			// log.Debugf("restoring current working dir to: %s", wd)
 			if err := os.Chdir(wd); err != nil { // restore the previous working directory
 				log.WithError(err).Error("failed to restore previous working directory")
 			}
 		}, err
 	}
 	return f, absPath, func() {
-		log.Debugf("restoring current working dir to: %s", wd)
+		// log.Debugf("restoring current working dir to: %s", wd)
 		if err := os.Chdir(wd); err != nil { // restore the previous working directory
 			log.WithError(err).Error("failed to restore previous working directory")
 		}

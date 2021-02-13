@@ -15,11 +15,9 @@ func includeTableOfContentsPlaceHolder(doc types.Document) types.Document {
 }
 
 func doInsertTableOfContentsPlaceHolder(doc types.Document, location interface{}) types.Document {
-	log.Debugf("inserting a table of contents at location `%s`", location)
 	// insert a TableOfContentsPlaceHolder element if `toc` value is:
 	// - "auto" (or `nil`)
 	// - "preamble"
-	log.Debugf("inserting ToC macro with placement: '%s'", location)
 	toc := types.TableOfContentsPlaceHolder{}
 	switch location {
 	case "auto", nil:

@@ -7,6 +7,8 @@ import (
     "strings"
     "unicode"
     "github.com/bytesparadise/libasciidoc/pkg/types"
+
+    log "github.com/sirupsen/logrus"
 )
 
 }
@@ -45,14 +47,14 @@ RawLine <- !EOF content:([^\r\n]* {
 // ----------------------------------------------------------------
 // RawDocument - fully parsed document with raw blocks
 // ----------------------------------------------------------------
-RawDocument <- frontmatter:(FrontMatter?) blocks:(RawBlocks) EOF {
+RawDocument <- frontmatter:(FrontMatter?) blocks:(DocumentBlocks) EOF {
     return types.NewRawDocument(frontmatter, blocks.([]interface{}))
 }
 
 // ------------------------------------------
 // Document blocks
 // ------------------------------------------
-RawBlocks <- Newline* header:(DocumentHeader?) blocks:(DocumentRawBlock*) {
+DocumentBlocks <- Newline* header:(DocumentHeader?) blocks:(DocumentBlock*) {
     if header != nil && blocks != nil {
         return append([]interface{}{header}, blocks.([]interface{})...), nil
     } else if blocks != nil {
@@ -61,8 +63,15 @@ RawBlocks <- Newline* header:(DocumentHeader?) blocks:(DocumentRawBlock*) {
     return []interface{}{}, nil
 }
 
-DocumentRawBlock <- 
-        block:(LabeledListItem // must appear before simple paragraph
+DocumentBlock <- 
+    !EOF
+    attributes:(BlockAttributes)?
+    #{
+        c.globalStore.pushAttributes(attributes)
+        return nil
+    } 
+    block:(
+        LabeledListItem // must appear before simple paragraph
         / SimpleRawParagraph
         / BlankLine // must be before LiteralBlock 
         / Section
@@ -81,10 +90,13 @@ DocumentRawBlock <-
         / TableOfContentsPlaceHolder
         / UserMacroBlock
         / RawParagraph
-        / StandaloneAttributes) {
-    log.Debugf("new raw block of kind '%T'", block)
-    return block, nil
-}
+        / EOF { // for standalone attributes at the end of the doc 
+            return types.NewStandaloneAttributes(c.globalStore.getAttributes()) // will be discarded anyways
+        }
+    ) {
+        c.globalStore.discardAttributes()
+        return block, nil
+    }
 
 // ------------------------------------------
 // Front Matter
@@ -235,20 +247,20 @@ StandaloneAttributeKey <- !"quote" !"verse" !"literal" key:(NamedAttributeKey) (
 BlockAttributes <- 
     attributes:(
         // shorthand syntax for anchors. Eg: `[[an_id]]`
-        (anchor:(ShortHandAnchor) (Space* Newline)+ {
+        (anchor:(ShortHandAnchor) Space* Newline {
             return anchor, nil
         })
         // shorthand syntax for titles. Eg: `.a title`
-        / (title:(ShortHandTitle) (Space* Newline)+ {
+        / (title:(ShortHandTitle) Space* Newline {
             return title, nil
         })
         // default syntax
-        / (attributes:(LongHandAttributes) (Space* Newline)+ {
+        / (attributes:(LongHandAttributes) Space* Newline {
             return attributes, nil
         })
     )+ {
         return types.NewAttributes(attributes.([]interface{})...)
-    }
+    }  
 
 InlineAttributes <-
     #{
@@ -259,11 +271,6 @@ InlineAttributes <-
     "]" {
         return types.NewAttributes(attributes.([]interface{})...)
     }
-
-// standalone attributes, i.e., no attached to a block
-StandaloneAttributes <- attributes:(BlockAttributes) BlankLine* { 
-    return attributes, nil
-}
 
 // shorthand syntax for anchors. Eg: `[[An ID]]`
 ShortHandAnchor <-
@@ -502,7 +509,7 @@ UnquotedAttributeValue <-
 // ------------------------------------------
 // Sections
 // ------------------------------------------
-Section <- attributes:(BlockAttributes)?
+Section <- 
     level:(("=")+ {   
         // `=` is level 0, etc.
         return (len(c.text)-1), nil 
@@ -512,7 +519,7 @@ Section <- attributes:(BlockAttributes)?
         return level.(int) <= 5, nil 
     } 
     Space+ title:(TitleElements) id:(InlineElementID*) EOL {
-    return types.NewSection(level.(int), title.([]interface{}), id.([]interface{}), attributes) 
+    return types.NewSection(level.(int), title.([]interface{}), id.([]interface{}), c.globalStore.getAttributes()) 
 }
 
 TitleElements <- elements:(!Newline !InlineElementID TitleElement)+ { // absorbs heading and trailing spaces
@@ -535,15 +542,31 @@ TableOfContentsPlaceHolder <- "toc::[]" EOL
 // ------------------------------------------
 // User Macro
 // ------------------------------------------
-UserMacroBlock <- name:(UserMacroName) "::" value:(UserMacroValue) inlineAttributes:(InlineAttributes) {
-    return types.NewUserMacroBlock(name.(string), value.(string), inlineAttributes, string(c.text))
-}
+UserMacroBlock <- 
+    name:(UserMacroName) 
+    &{
+        // skip if no macro was registered under the given name 
+      return c.globalStore.hasUserMacro(name.(string)), nil  
+    }
+    "::" 
+    value:(UserMacroValue) 
+    inlineAttributes:(InlineAttributes) {
+        return types.NewUserMacroBlock(name.(string), value.(string), inlineAttributes, string(c.text))
+    }
 
-InlineUserMacro <- name:(UserMacroName) ":" value:(UserMacroValue) inlineAttributes:(InlineAttributes) {
-    return types.NewInlineUserMacro(name.(string), value.(string), inlineAttributes, string(c.text))
-}
+InlineUserMacro <- 
+    name:(UserMacroName) 
+    &{
+        // skip if no macro was registered under the given name 
+      return c.globalStore.hasUserMacro(name.(string)), nil  
+    }
+    ":" 
+    value:(UserMacroValue) 
+    inlineAttributes:(InlineAttributes) {
+        return types.NewInlineUserMacro(name.(string), value.(string), inlineAttributes, string(c.text))
+    }
 
-UserMacroName <- !"include" ([\pL0-9_-]+) {
+UserMacroName <- ([\pL0-9_-]+) {
     return string(c.text), nil
 }
 
@@ -691,8 +714,8 @@ ContinuedListItemContent <- !EOF
 // ------------------------------------------
 // Ordered List Items
 // ------------------------------------------
-OrderedListItem <- attributes:(BlockAttributes)? prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) {
-    return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}), attributes)
+OrderedListItem <- prefix:(OrderedListItemPrefix) content:(OrderedListItemContent) {
+    return types.NewOrderedListItem(prefix.(types.OrderedListItemPrefix), content.([]interface{}), c.globalStore.getAttributes())
 }
 
 OrderedListItemPrefix <- 
@@ -743,11 +766,10 @@ OrderedListItemContent <- elements:(ListParagraph+) {
 // Unordered List Items
 // ------------------------------------------
 UnorderedListItem <- 
-    attributes:(BlockAttributes)? 
     prefix:(UnorderedListItemPrefix) 
     checkstyle:(UnorderedListItemCheckStyle)? 
     content:(UnorderedListItemContent) {
-        return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), checkstyle, content.([]interface{}), attributes)
+        return types.NewUnorderedListItem(prefix.(types.UnorderedListItemPrefix), checkstyle, content.([]interface{}), c.globalStore.getAttributes())
     }
 
 UnorderedListItemPrefix <- 
@@ -795,8 +817,8 @@ UnorderedListItemContent <- elements:(ListParagraph+) { // Another list or a lit
 // ------------------------------------------
 // Labeled List Items
 // ------------------------------------------
-LabeledListItem <- attributes:(BlockAttributes)? term:(VerbatimLabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription)? {
-    return types.NewLabeledListItem(len(separator.(string)) - 1, term.([]interface{}), description, attributes)
+LabeledListItem <- term:(VerbatimLabeledListItemTerm) separator:(LabeledListItemSeparator) description:(LabeledListItemDescription)? {
+    return types.NewLabeledListItem(len(separator.(string)) - 1, term.([]interface{}), description, c.globalStore.getAttributes())
 }
 
 LabeledListItemPrefix <- VerbatimLabeledListItemTerm LabeledListItemSeparator
@@ -868,30 +890,31 @@ AdmonitionKind <- "TIP" {
 // Paragraphs
 // ------------------------------------------
 
+// Paragraphs with special treatment, such as 
+// OpenParagraph <- 
+
 // a "raw paragraph" is the intermediate representation of a paragraph (see below),
 // but with "raw line", ie, content which has not been substituted yet.
-// 
-// TODO: refactor to avoid multiple 'Attributes?' rule evaluations?
 RawParagraph <- 
     // admonition paragraph 
-     attributes:(BlockAttributes)? t:(AdmonitionKind) ": " lines:(SingleLineComment / RawParagraphLine)+ { 
-        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(string), attributes)
+     t:(AdmonitionKind) ": " lines:(SingleLineComment / RawParagraphLine)+ { 
+        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(string), c.globalStore.getAttributes())
     } / 
     // markdown-style blockquote paragraph
     // TODO: move with other Delimited block rules?
-    attributes:(BlockAttributes)? "> " content:(MarkdownQuoteBlockRawContent) {
-        return types.NewMarkdownQuoteBlock(content.([]interface{}), attributes)
+    "> " content:(MarkdownQuoteBlockRawContent) {
+        return types.NewMarkdownQuoteBlock(content.([]interface{}), c.globalStore.getAttributes())
     } /
     // passthrough open block: requires `[pass]`
-    attributes:(BlockAttributes)? &{
+    &{
         // verify that one of the attributes is `kind:passthrough`
-        return types.HasAttributeWithValue(attributes, types.AttrPositional1, types.Passthrough), nil
+        return types.HasAttributeWithValue(c.globalStore.getAttributes(), types.AttrPositional1, types.Passthrough), nil
     } content:(RawParagraphLine)+ { 
-        return types.NewPassthroughBlock(content.([]interface{}), attributes)
+        return types.NewPassthroughBlock(content.([]interface{}), c.globalStore.getAttributes())
     } /
     // other kind of paragraph (verse, regular, etc.)
-    attributes:(BlockAttributes)? lines:(SingleLineComment / RawParagraphLine)+ { 
-        return types.NewParagraph(lines.([]interface{}), attributes)
+    lines:(SingleLineComment / RawParagraphLine)+ { 
+        return types.NewParagraph(lines.([]interface{}), c.globalStore.getAttributes())
     }
 
 MarkdownQuoteBlockRawContent <- (!BlankLine "> "? content:(RawLine) { 
@@ -914,14 +937,14 @@ RawParagraphLineContent <- [^\r\n]+ {
 }
 
 // a paragraph whose first line begins with a word followed by spaces
-SimpleRawParagraph <- attributes:(BlockAttributes)? 
-    &{
-        return !types.HasAttributeWithValue(attributes, types.AttrPositional1, types.Literal), nil
+SimpleRawParagraph <- 
+    !{
+        return types.HasAttributeWithValue(c.globalStore.getAttributes(), types.AttrPositional1, types.Literal), nil
     }
     firstLine: FirstParagraphRawLine
     otherLines:(SingleLineComment / RawParagraphLine)* { 
-    return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...), attributes)
-}
+        return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...), c.globalStore.getAttributes())
+    }
 
 FirstParagraphRawLine <- 
     content:(elements:Word [^\r\n]* { return string(c.text), nil}) EOL { 
@@ -937,12 +960,12 @@ FirstParagraphRawLine <-
 // same as RawParagraph, but without allowing for ListItemContinuation (`+`)
 ContinuedRawParagraph <- 
     // admonition paragraph 
-    attributes:(BlockAttributes)? t:(AdmonitionKind) ": " lines:(ContinuedRawParagraphLines) { 
-        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(string), attributes)
+    t:(AdmonitionKind) ": " lines:(ContinuedRawParagraphLines) { 
+        return types.NewAdmonitionParagraph(lines.([]interface{}), t.(string), c.globalStore.getAttributes())
     } / 
     // other kind of paragraph (verse, regular, etc.)
-    attributes:(BlockAttributes)? lines:(ContinuedRawParagraphLines) { 
-        return types.NewParagraph(lines.([]interface{}), attributes)
+    lines:(ContinuedRawParagraphLines) { 
+        return types.NewParagraph(lines.([]interface{}), c.globalStore.getAttributes())
 } 
 
 ContinuedRawParagraphLines <- firstLine:(FirstParagraphRawLine) otherLines:(!ListItemContinuation line:(SingleLineComment / RawParagraphLine) { return line, nil })* {
@@ -1502,14 +1525,13 @@ ExternalLink <- url:(LocationWithScheme) inlineAttributes:(InlineAttributes)? {
 // Images
 // ------------------------------------------
 ImageBlock <- 
-    attributes:(BlockAttributes)? 
     &{
         // AttrPositional1 must not be set
-        return types.HasNotAttribute(attributes, types.AttrPositional1), nil
+        return types.HasNotAttribute(c.globalStore.getAttributes(), types.AttrPositional1), nil
     }
     "image::" path:(Location) inlineAttributes:(InlineAttributes) Space* EOL {
     // 'imagesdir' attribute is added after applying the attribute substitutions on the image location
-    return types.NewImageBlock(path.(types.Location), inlineAttributes.(types.Attributes), attributes)
+    return types.NewImageBlock(path.(types.Location), inlineAttributes.(types.Attributes), c.globalStore.getAttributes())
 }
 
 InlineImage <- "image:" !":" path:(Location) inlineAttributes:(InlineAttributes) {
@@ -1593,9 +1615,24 @@ BlockDelimiter <- !(Alphanum) LiteralBlockDelimiter //TODO: use "start" delimite
 // -------------------------------------------------------------------------------------
 // Example blocks
 // -------------------------------------------------------------------------------------
-ExampleBlock <- attributes:(BlockAttributes)? ExampleBlockStartDelimiter blocks:(ExampleBlockRawContent) ExampleBlockEndDelimiter {
-    return types.NewExampleBlock(blocks.([]interface{}), attributes)
-}
+ExampleBlock <- 
+    ExampleBlockStartDelimiter 
+    // #{
+    //     if log.IsLevelEnabled(log.DebugLevel) {
+    //         log.Debug("current state attributes before processing ExampleBlock content:")
+    //         spew.Fdump(log.StandardLogger().Out, c.state)
+    //     }
+    //     return nil
+    // }
+    blocks:(ExampleBlockRawContent) 
+    ExampleBlockEndDelimiter 
+    {
+        // if log.IsLevelEnabled(log.DebugLevel) {
+        //     log.Debugf("current state attributes before initializing ExampleBlock'")
+        //     spew.Fdump(log.StandardLogger().Out, c.state)
+        // }
+        return types.NewExampleBlock(blocks.([]interface{}), c.globalStore.getAttributes())
+    }
 
 ExampleBlockDelimiter <- "====" Space* EOL
 
@@ -1603,9 +1640,19 @@ ExampleBlockStartDelimiter <- "====" Space* EOL
 
 ExampleBlockEndDelimiter <- ("====" Space* EOL) / EOF
 
-ExampleBlockRawContent <- (
-       !ExampleBlockEndDelimiter 
-       element:(BlankLine
+ExampleBlockRawContent <- 
+    elements:(
+        !ExampleBlockEndDelimiter 
+        attributes:(BlockAttributes)?
+        #{
+            c.globalStore.pushAttributes(attributes)
+            // if log.IsLevelEnabled(log.DebugLevel) {
+            //     log.Debugf("added exampleblock block attributes to state:")
+            //     spew.Fdump(log.StandardLogger().Out, c.state)
+            // }
+            return nil
+        } 
+        element:(BlankLine
             / ImageBlock
             / ThematicBreak
             / OrderedListItem 
@@ -1623,24 +1670,32 @@ ExampleBlockRawContent <- (
             / CommentBlock
             / LiteralBlock 
             / RawParagraph
-            / StandaloneAttributes) {
-        return element, nil
-    })* 
+            / ExampleBlockDelimiter { // for standalone attributes at the end of the delomited block 
+                return types.NewStandaloneAttributes(c.globalStore.getAttributes()) // will be discarded anyways
+            }
+        ) {
+            c.globalStore.discardAttributes()
+            return element, nil
+        }
+    )* {
+        return elements, nil
+    }
 
 // -------------------------------------------------------------------------------------
 // Quote blocks
 // -------------------------------------------------------------------------------------
-QuoteBlock <- attributes:(BlockAttributes)? 
+QuoteBlock <- 
     &{
         // AttrPositional1 may be missing or must be equal to `quote`
-        if types.HasNotAttribute(attributes, types.AttrPositional1) || 
-            types.HasAttributeWithValue(attributes, types.AttrPositional1, types.Quote) {
+        attrs := c.globalStore.getAttributes()
+        if types.HasNotAttribute(attrs, types.AttrPositional1) || 
+            types.HasAttributeWithValue(attrs, types.AttrPositional1, types.Quote) {
             return true, nil
         }
         return false, nil
     }
     QuoteBlockStartDelimiter content:(QuoteBlockRawContent) QuoteBlockEndDelimiter {
-        return types.NewQuoteBlock(content.([]interface{}), attributes)
+        return types.NewQuoteBlock(content.([]interface{}), c.globalStore.getAttributes())
     }
 
 QuoteBlockDelimiter <- "____" Space* EOL // same for verse blocks
@@ -1649,9 +1704,15 @@ QuoteBlockStartDelimiter <- "____" Space* EOL // same for verse blocks
 
 QuoteBlockEndDelimiter <- ("____" Space* EOL) / EOF // same for verse blocks
 
-QuoteBlockRawContent <- (
-       !QuoteBlockEndDelimiter 
-       element:(BlankLine
+QuoteBlockRawContent <-
+    elements:(
+        !QuoteBlockEndDelimiter 
+        attributes:(BlockAttributes)?
+        #{
+            c.globalStore.pushAttributes(attributes)
+            return nil
+        } 
+        element:(BlankLine
             / ImageBlock
             / ThematicBreak
             / OrderedListItem 
@@ -1669,15 +1730,23 @@ QuoteBlockRawContent <- (
             / CommentBlock
             / LiteralBlock 
             / RawParagraph
-            / StandaloneAttributes) {
-        return element, nil
-    })* 
+            / QuoteBlockEndDelimiter { // for standalone attributes at the end of the delomited block 
+                return types.NewStandaloneAttributes(c.globalStore.getAttributes()) // will be discarded anyways
+            }
+        ) {
+            c.globalStore.discardAttributes()
+            return element, nil
+        }
+    )* {
+        return elements, nil
+    }
+
 
 // -------------------------------------------------------------------------------------
 // Sidebar blocks
 // -------------------------------------------------------------------------------------
-SidebarBlock <- attributes:(BlockAttributes)? SidebarBlockStartDelimiter content:(SidebarBlockRawContent) SidebarBlockEndDelimiter {
-    return types.NewSidebarBlock(content.([]interface{}), attributes)
+SidebarBlock <- SidebarBlockStartDelimiter content:(SidebarBlockRawContent) SidebarBlockEndDelimiter {
+    return types.NewSidebarBlock(content.([]interface{}), c.globalStore.getAttributes())
 }
 
 SidebarBlockDelimiter <- "****" Space* EOL
@@ -1686,9 +1755,15 @@ SidebarBlockStartDelimiter <- "****" Space* EOL
 
 SidebarBlockEndDelimiter <- ("****" Space* EOL) / EOF
 
-SidebarBlockRawContent <- (
-       !SidebarBlockEndDelimiter 
-       element:(BlankLine
+SidebarBlockRawContent <-
+    elements:(
+        !SidebarBlockEndDelimiter 
+        attributes:(BlockAttributes)?
+        #{
+            c.globalStore.pushAttributes(attributes)
+            return nil
+        } 
+        element:(BlankLine
             / ImageBlock
             / ThematicBreak
             / OrderedListItem 
@@ -1706,15 +1781,22 @@ SidebarBlockRawContent <- (
             / CommentBlock
             / LiteralBlock 
             / RawParagraph
-            / StandaloneAttributes) {
-        return element, nil
-    })* 
+            / SidebarBlockEndDelimiter { // for standalone attributes at the end of the delomited block 
+                return types.NewStandaloneAttributes(c.globalStore.getAttributes()) // will be discarded anyways
+            }
+        ) {
+            c.globalStore.discardAttributes()
+            return element, nil
+        }
+    )* {
+        return elements, nil
+    }
 
 // -------------------------------------------------------------------------------------
 // Fenced blocks
 // -------------------------------------------------------------------------------------
-FencedBlock <- attributes:(BlockAttributes)? FencedBlockStartDelimiter content:(FencedBlockRawContent) FencedBlockEndDelimiter {
-    return types.NewFencedBlock(content.([]interface{}), attributes)
+FencedBlock <- FencedBlockStartDelimiter content:(FencedBlockRawContent) FencedBlockEndDelimiter {
+    return types.NewFencedBlock(content.([]interface{}), c.globalStore.getAttributes())
 }
 
 FencedBlockDelimiter <- "```" Space* EOL // Deprecated: use 'FencedBlockStartDelimiter' instead
@@ -1730,8 +1812,8 @@ FencedBlockRawContent <- (!FencedBlockEndDelimiter line:(RawLine) {
 // -------------------------------------------------------------------------------------
 // Listing blocks
 // -------------------------------------------------------------------------------------
-ListingBlock <- attributes:(BlockAttributes)? ListingBlockStartDelimiter content:(ListingBlockRawContent) ListingBlockEndDelimiter {
-    return types.NewListingBlock(content.([]interface{}), attributes)
+ListingBlock <- ListingBlockStartDelimiter content:(ListingBlockRawContent) ListingBlockEndDelimiter {
+    return types.NewListingBlock(content.([]interface{}), c.globalStore.getAttributes())
 }
 
 ListingBlockDelimiter <- "----" Space* EOL
@@ -1747,13 +1829,13 @@ ListingBlockRawContent <- (!ListingBlockEndDelimiter line:(RawLine) {
 // -------------------------------------------------------------------------------------
 // Verse blocks
 // -------------------------------------------------------------------------------------
-VerseBlock <- attributes:(BlockAttributes)? 
+VerseBlock <- 
     &{
         // AttrPositional1 must be equal to `verse`
-        return types.HasAttributeWithValue(attributes, types.AttrPositional1, types.Verse), nil
+        return types.HasAttributeWithValue(c.globalStore.getAttributes(), types.AttrPositional1, types.Verse), nil
     }
     QuoteBlockStartDelimiter content:(VerseBlockRawContent) QuoteBlockEndDelimiter {
-        return types.NewVerseBlock(content.([]interface{}), attributes)
+        return types.NewVerseBlock(content.([]interface{}), c.globalStore.getAttributes())
     }
 
 VerseBlockRawContent <- (!QuoteBlockEndDelimiter line:(RawLine) { 
@@ -1763,8 +1845,8 @@ VerseBlockRawContent <- (!QuoteBlockEndDelimiter line:(RawLine) {
 // -------------------------------------------------------------------------------------
 // Passthrough blocks
 // -------------------------------------------------------------------------------------
-PassthroughBlock <- attributes:(BlockAttributes)? PassthroughBlockStartDelimiter content:(PassthroughBlockRawContent) PassthroughBlockEndDelimiter {
-    return types.NewPassthroughBlock(content.([]interface{}), attributes)
+PassthroughBlock <- PassthroughBlockStartDelimiter content:(PassthroughBlockRawContent) PassthroughBlockEndDelimiter {
+    return types.NewPassthroughBlock(content.([]interface{}), c.globalStore.getAttributes())
 }
 
 PassthroughBlockDelimiter <- "++++" Space* EOL
@@ -1925,11 +2007,11 @@ NoneSubs <- (
 // -------------------------------------------------------------------------------------
 // Tables
 // -------------------------------------------------------------------------------------
-Table <- attributes:(BlockAttributes)? TableDelimiter
+Table <- TableDelimiter
     header:(TableLineHeader)?
     lines:(TableLine)*
     (TableDelimiter / EOF) { // end delimiter or end of file
-        return types.NewTable(header, lines.([]interface{}), attributes)
+        return types.NewTable(header, lines.([]interface{}), c.globalStore.getAttributes())
     }
 
 TableCellSeparator <- "|" Space*
@@ -1957,8 +2039,8 @@ LiteralBlock <- ParagraphWithLiteralAttribute / ParagraphWithHeadingSpaces / Par
 LiteralBlockDelimiter <- "...."
 
 // paragraph indented with one or more spaces on the first line
-ParagraphWithHeadingSpaces <- attributes:(BlockAttributes)? lines:(ParagraphWithHeadingSpacesLines) {
-    return types.NewLiteralBlock(types.LiteralBlockWithSpacesOnFirstLine, lines.([]interface{}), attributes)
+ParagraphWithHeadingSpaces <- lines:(ParagraphWithHeadingSpacesLines) {
+    return types.NewLiteralBlock(types.LiteralBlockWithSpacesOnFirstLine, lines.([]interface{}), c.globalStore.getAttributes())
 }
 
 // first line MUST start with one (or more) space. Stop when reaching a blank line
@@ -1975,9 +2057,8 @@ ParagraphWithHeadingSpacesLine <- line:(Space+ [^\r\n]+ {
 }
 
 // paragraph with the literal block delimiter (`....`)
-ParagraphWithLiteralBlockDelimiter <- attributes:(BlockAttributes)?
-        LiteralBlockDelimiter Space* Newline lines:(ParagraphWithLiteralBlockDelimiterLines) ((LiteralBlockDelimiter Space* EOL) / EOF) {
-    return types.NewLiteralBlock(types.LiteralBlockWithDelimiter, lines.([]interface{}), attributes)
+ParagraphWithLiteralBlockDelimiter <- LiteralBlockDelimiter Space* Newline lines:(ParagraphWithLiteralBlockDelimiterLines) ((LiteralBlockDelimiter Space* EOL) / EOF) {
+    return types.NewLiteralBlock(types.LiteralBlockWithDelimiter, lines.([]interface{}), c.globalStore.getAttributes())
 }
 
 // include all lines until delimiter is reached
@@ -1994,12 +2075,12 @@ ParagraphWithLiteralBlockDelimiterLine <-
 
 // paragraph with the literal attribute (`[literal]`)
 ParagraphWithLiteralAttribute <- 
-    attributes:(BlockAttributes)?
     &{
-        return types.HasAttributeWithValue(attributes, types.AttrPositional1, types.Literal), nil
+        attrs := c.globalStore.getAttributes()
+        return types.HasAttributeWithValue(attrs, types.AttrPositional1, types.Literal), nil
     }
     lines:(LiteralParagraphLine)+ {
-        return types.NewLiteralBlock(types.LiteralBlockWithAttribute, lines.([]interface{}), attributes)
+        return types.NewLiteralBlock(types.LiteralBlockWithAttribute, lines.([]interface{}), c.globalStore.getAttributes())
     }
 
 LiteralKind <- "literal" {

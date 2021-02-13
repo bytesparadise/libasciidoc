@@ -7,11 +7,10 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref types.InternalCrossReference) (string, error) {
-	log.Debugf("rendering cross reference with ID: %s", xref.ID)
+	// log.Debugf("rendering cross reference with ID: %s", xref.ID)
 	result := &strings.Builder{}
 	var label string
 	xrefID, ok := xref.ID.(string)
@@ -47,7 +46,7 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 }
 
 func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref types.ExternalCrossReference) (string, error) {
-	log.Debugf("rendering cross reference with ID: %s", xref.Location)
+	// log.Debugf("rendering cross reference with ID: %s", xref.Location)
 	result := &strings.Builder{}
 	var label string
 	var err error
@@ -77,6 +76,6 @@ func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref 
 func getCrossReferenceLocation(xref types.ExternalCrossReference) string {
 	loc := xref.Location.Stringify()
 	ext := filepath.Ext(xref.Location.Stringify())
-	log.Debugf("ext of '%s': '%s'", loc, ext)
+	// log.Debugf("ext of '%s': '%s'", loc, ext)
 	return loc[:len(loc)-len(ext)] + ".html" // TODO output extension
 }

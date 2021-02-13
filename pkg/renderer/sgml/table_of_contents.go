@@ -57,7 +57,7 @@ func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sect
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render document ToC")
 	}
-	log.Debugf("retrieved sections for ToC: %+v", sections)
+	// log.Debugf("retrieved sections for ToC: %+v", sections)
 	return resultBuf.String(), nil //nolint: gosec
 }
 
@@ -114,7 +114,7 @@ func (r *sgmlRenderer) visitSection(ctx *renderer.Context, section types.Section
 		return []types.ToCSection{}, err
 	}
 	children := make([]types.ToCSection, 0, len(section.Elements))
-	log.Debugf("visiting children section: %t (%d < %d)", currentLevel < tocLevels, currentLevel, tocLevels)
+	// log.Debugf("visiting children section: %t (%d < %d)", currentLevel < tocLevels, currentLevel, tocLevels)
 	if currentLevel <= tocLevels {
 		for _, e := range section.Elements {
 			if s, ok := e.(types.Section); ok {
@@ -147,9 +147,9 @@ func (r *sgmlRenderer) visitSection(ctx *renderer.Context, section types.Section
 }
 
 func getTableOfContentsLevels(ctx *renderer.Context) (int, error) {
-	log.Debugf("doc attributes: %v", ctx.Attributes)
+	// log.Debugf("doc attributes: %v", ctx.Attributes)
 	if l, found := ctx.Attributes.GetAsString(types.AttrTableOfContentsLevels); found {
-		log.Debugf("ToC levels: '%s'", l)
+		// log.Debugf("ToC levels: '%s'", l)
 		return strconv.Atoi(l)
 	}
 	log.Debug("ToC levels: '2' (default)")

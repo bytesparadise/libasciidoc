@@ -41,6 +41,7 @@ second paragraph`
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
+
 		It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
 			source := `first paragraph
 		 
@@ -74,6 +75,20 @@ second paragraph
 				},
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
+		It("blank line with attributes", func() {
+			source := `.ignored
+ 
+`
+			expected := types.DraftDocument{
+				Elements: []interface{}{
+					types.BlankLine{},
+				},
+			}
+			result, err := ParseDraftDocument(source) // , parser.Debug(true))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(MatchDraftDocument(expected))
 		})
 	})
 

@@ -9,10 +9,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ParseDocumentBlock parses the actual source with the `DocumentRawBlock` entrypoint in the grammar
+// ParseDocumentBlock parses the actual source with the `DocumentBlock` entrypoint in the grammar
 func ParseDocumentBlock(actual string, opts ...parser.Option) (interface{}, error) {
 	r := strings.NewReader(actual)
-	result, err := parser.ParseReader("", r, append(opts, parser.Entrypoint("DocumentRawBlock"))...)
+	result, err := parser.ParseReader("", r, append(opts, parser.Entrypoint("DocumentBlock"))...)
 	if err == nil && log.IsLevelEnabled(log.DebugLevel) {
 		spew.Fdump(log.StandardLogger().Out, result)
 	}

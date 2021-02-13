@@ -5,7 +5,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderPredefinedAttribute(a types.PredefinedAttribute) (string, error) {
@@ -17,6 +16,6 @@ func (r *sgmlRenderer) renderPredefinedAttribute(a types.PredefinedAttribute) (s
 	}); err != nil {
 		return "", errors.Wrap(err, "error while rendering predefined attribute")
 	}
-	log.Debugf("rendered predefined attribute for '%s': '%s'", a.Name, result.String())
+	// log.Debugf("rendered predefined attribute for '%s': '%s'", a.Name, result.String())
 	return result.String(), nil
 }

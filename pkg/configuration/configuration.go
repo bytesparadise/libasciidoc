@@ -1,15 +1,14 @@
 package configuration
 
 import (
-	"errors"
 	"time"
 )
 
 // NewConfiguration returns a new configuration
 func NewConfiguration(settings ...Setting) Configuration {
 	config := Configuration{
-		AttributeOverrides: make(map[string]string),
-		macros:             make(map[string]MacroTemplate),
+		AttributeOverrides: map[string]string{},
+		Macros:             map[string]MacroTemplate{},
 	}
 	for _, set := range settings {
 		set(&config)
@@ -26,27 +25,7 @@ type Configuration struct {
 	WrapInHTMLBodyElement bool
 	CSS                   string
 	BackEnd               string
-	macros                map[string]MacroTemplate
-}
-
-// Clone return a clone of the current configuration
-func (c Configuration) Clone() Configuration {
-	return Configuration{
-		CSS:                   c.CSS,
-		AttributeOverrides:    c.AttributeOverrides,
-		Filename:              c.Filename,
-		WrapInHTMLBodyElement: c.WrapInHTMLBodyElement,
-		LastUpdated:           c.LastUpdated,
-	}
-}
-
-// MacroTemplate finds and returns a user macro function by specified name.
-func (c Configuration) MacroTemplate(name string) (MacroTemplate, error) {
-	macro, ok := c.macros[name]
-	if ok {
-		return macro, nil
-	}
-	return nil, errors.New("unknown user macro: " + name)
+	Macros                map[string]MacroTemplate
 }
 
 const (
@@ -109,6 +88,6 @@ func WithFilename(filename string) Setting {
 // WithMacroTemplate defines the given template to a user macro with the given name
 func WithMacroTemplate(name string, t MacroTemplate) Setting {
 	return func(config *Configuration) {
-		config.macros[name] = t
+		config.Macros[name] = t
 	}
 }

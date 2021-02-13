@@ -6,11 +6,10 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p types.Preamble) (string, error) {
-	log.Debugf("rendering preamble...")
+	// log.Debugf("rendering preamble...")
 	result := &strings.Builder{}
 	// the <div id="preamble"> wrapper is only necessary
 	// if the document has a section 0
@@ -36,7 +35,7 @@ func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p types.Preamble) (
 }
 
 func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (string, error) {
-	log.Debugf("rendering section level %d", s.Level)
+	// log.Debugf("rendering section level %d", s.Level)
 	title, err := r.renderSectionTitle(ctx, s)
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering section title")
