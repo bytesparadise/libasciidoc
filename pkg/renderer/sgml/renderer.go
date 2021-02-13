@@ -102,7 +102,7 @@ var predefinedAttributes = map[string]string{
 }
 
 func predefinedAttribute(a string) string {
-	log.Debugf("predefined attribute '%s': '%s", a, predefinedAttributes[a])
+	// log.Debugf("predefined attribute '%s': '%s", a, predefinedAttributes[a])
 	return predefinedAttributes[a]
 }
 
@@ -171,7 +171,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc types.Document, output 
 		return metadata, errors.Wrap(err, "unable to render fenced block content")
 	}
 	if ctx.Config.WrapInHTMLBodyElement {
-		log.Debugf("Rendering full document...")
+		// log.Debugf("Rendering full document...")
 		err = r.article.Execute(output, struct {
 			Generator             string
 			Doctype               string

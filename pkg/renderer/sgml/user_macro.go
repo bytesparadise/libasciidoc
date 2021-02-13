@@ -9,8 +9,8 @@ import (
 
 func (r *sgmlRenderer) renderUserMacro(ctx *renderer.Context, um types.UserMacro) (string, error) {
 	buf := &strings.Builder{}
-	macro, err := ctx.Config.MacroTemplate(um.Name)
-	if err != nil {
+	macro, ok := ctx.Config.Macros[um.Name]
+	if !ok {
 		if um.Kind == types.BlockMacro {
 			// fallback to paragraph
 			p, _ := types.NewParagraph([]interface{}{
@@ -21,11 +21,9 @@ func (r *sgmlRenderer) renderUserMacro(ctx *renderer.Context, um types.UserMacro
 			return r.renderParagraph(ctx, p)
 		}
 		// fallback to render raw text
-		_, err = buf.WriteString(um.RawText)
-	} else {
-		err = macro.Execute(buf, um)
+		return um.RawText, nil
 	}
-	if err != nil {
+	if err := macro.Execute(buf, um); err != nil {
 		return "", err
 	}
 	return buf.String(), nil

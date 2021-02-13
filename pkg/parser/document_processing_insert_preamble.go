@@ -2,8 +2,6 @@ package parser
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // includePreamble wraps all document elements before the first section in a `Preamble`,
@@ -19,7 +17,6 @@ func includePreamble(doc types.Document) types.Document {
 }
 
 func doInsertPreamble(blocks []interface{}) []interface{} {
-	log.Debugf("generating preamble from %d blocks", len(blocks))
 	preamble := types.Preamble{
 		Elements: make([]interface{}, 0, len(blocks)),
 	}
@@ -33,7 +30,6 @@ func doInsertPreamble(blocks []interface{}) []interface{} {
 	}
 	// no element in the preamble, or no section in the document, so no preamble to generate
 	if len(preamble.Elements) == 0 || len(preamble.Elements) == len(blocks) {
-		log.Debugf("skipping preamble (%d vs %d)", len(preamble.Elements), len(blocks))
 		return blocks
 	}
 	// now, insert the preamble instead of the 'n' blocks that belong to the preamble
@@ -41,6 +37,5 @@ func doInsertPreamble(blocks []interface{}) []interface{} {
 	result := make([]interface{}, len(blocks)-len(preamble.Elements)+1)
 	result[0] = preamble
 	copy(result[1:], blocks[len(preamble.Elements):])
-	log.Debugf("generated preamble with %d blocks", len(preamble.Elements))
 	return result
 }

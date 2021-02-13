@@ -9,14 +9,13 @@ import (
 )
 
 // ParseDraftDocument parses the actual source with the options
-func ParseDraftDocument(actual string) (types.DraftDocument, error) {
+func ParseDraftDocument(actual string, options ...parser.Option) (types.DraftDocument, error) {
 	r := strings.NewReader(actual)
 	c := &draftDocumentParserConfig{
 		filename: "test.adoc",
 	}
-	parserOptions := []parser.Option{}
 	config := configuration.NewConfiguration(configuration.WithFilename(c.filename))
-	rawDoc, err := parser.ParseRawDocument(r, config, parserOptions...)
+	rawDoc, err := parser.ParseRawDocument(r, config, options...)
 	if err != nil {
 		return types.DraftDocument{}, err
 	}

@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	. "github.com/onsi/ginkgo" //nolint golint
@@ -27,13 +28,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -68,13 +73,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -109,11 +118,15 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content:   map[string]interface{}{},
+					Overrides: map[string]string{},
+				},
+				config: configuration.NewConfiguration(),
+			}
 			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content:   map[string]interface{}{},
-				Overrides: map[string]string{},
-			})
+			result, err := applySubstitutions(ctx, elements)
 
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -149,11 +162,15 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content:   map[string]interface{}{},
+					Overrides: map[string]string{},
+				},
+				config: configuration.NewConfiguration(),
+			}
 			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content:   map[string]interface{}{},
-				Overrides: map[string]string{},
-			})
+			result, err := applySubstitutions(ctx, elements)
 
 			// then
 			Expect(err).To(Not(HaveOccurred()))
@@ -195,16 +212,19 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo":    "bar",
-					"scheme": "https",
-					"host":   "example.com",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo":    "bar",
+						"scheme": "https",
+						"host":   "example.com",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
-
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -262,13 +282,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"title": "cookie",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"title": "cookie",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -310,13 +334,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"title": "TITLE",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"title": "TITLE",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -362,14 +390,18 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"role1": "ROLE1",
-					"role2": "ROLE2",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"role1": "ROLE1",
+						"role2": "ROLE2",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -409,13 +441,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"alt": "cookie",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"alt": "cookie",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -444,13 +480,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"path": "cookie.png",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"path": "cookie.png",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -488,13 +528,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -534,13 +578,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -580,13 +628,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -629,13 +681,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -686,13 +742,17 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{},
 				},
-				Overrides: map[string]string{},
-			})
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
@@ -746,15 +806,19 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content: map[string]interface{}{
+						"foo": "bar",
+					},
+					Overrides: map[string]string{
+						"foo": "BAR",
+					},
+				},
+				config: configuration.NewConfiguration(),
+			}
 			// when
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content: map[string]interface{}{
-					"foo": "bar",
-				},
-				Overrides: map[string]string{
-					"foo": "BAR",
-				},
-			})
+			result, err := applySubstitutions(ctx, elements)
 			// then
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
@@ -787,11 +851,16 @@ var _ = Describe("document substitutions", func() {
 					Name: "foo",
 				},
 			}
-			result, err := applySubstitutions(elements, types.AttributesWithOverrides{
-				Content:   map[string]interface{}{},
-				Overrides: map[string]string{},
-				Counters:  map[string]interface{}{},
-			})
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content:   map[string]interface{}{},
+					Overrides: map[string]string{},
+					Counters:  map[string]interface{}{},
+				},
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
 				types.StringElement{
@@ -833,11 +902,16 @@ var _ = Describe("document substitutions", func() {
 					Name: "set",
 				},
 			}
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-				Content:   map[string]interface{}{},
-				Overrides: map[string]string{},
-				Counters:  map[string]interface{}{},
-			})
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content:   map[string]interface{}{},
+					Overrides: map[string]string{},
+					Counters:  map[string]interface{}{},
+				},
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{
 				// elements are not concatenated after calling `applyAttributeSubstitutionsOnElements`
@@ -882,11 +956,16 @@ var _ = Describe("document substitutions", func() {
 					},
 				},
 			}
-			result, err := applyAttributeSubstitutionsOnElements(elements, types.AttributesWithOverrides{
-				Content:   map[string]interface{}{},
-				Overrides: map[string]string{},
-				Counters:  map[string]interface{}{},
-			})
+			ctx := substitutionContext{
+				attributes: types.AttributesWithOverrides{
+					Content:   map[string]interface{}{},
+					Overrides: map[string]string{},
+					Counters:  map[string]interface{}{},
+				},
+				config: configuration.NewConfiguration(),
+			}
+			// when
+			result, err := applySubstitutions(ctx, elements)
 			Expect(err).To(Not(HaveOccurred()))
 			Expect(result).To(Equal([]interface{}{ // at this stage, AttributeDeclaration and AttributeReset are still present
 				types.AttributeDeclaration{

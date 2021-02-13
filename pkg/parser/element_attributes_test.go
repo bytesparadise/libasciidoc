@@ -358,10 +358,8 @@ a paragraph`
 a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
+						// attribute was attached to blankline, which was filtered out in the final doc
 						types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrRoles: []interface{}{"a_role"},
-							},
 							Lines: [][]interface{}{
 								{types.StringElement{
 									Content: "a paragraph",
@@ -371,9 +369,7 @@ a paragraph`
 						},
 					},
 				}
-				result, err := ParseDocument(source)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(result).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("blank lines after id, role and title attributes", func() {
@@ -385,12 +381,8 @@ a paragraph`
 a paragraph`
 				expected := types.Document{
 					Elements: []interface{}{
+						// attributes were attached to blankline, which was filtered out in the final doc
 						types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrRoles: []interface{}{"a_role"},
-								types.AttrTitle: "title",
-								types.AttrID:    "ID",
-							},
 							Lines: [][]interface{}{
 								{types.StringElement{
 									Content: "a paragraph",
@@ -435,9 +427,10 @@ a paragraph`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "a paragraph",
-								},
+								{
+									types.StringElement{
+										Content: "a paragraph",
+									},
 								},
 							},
 						},

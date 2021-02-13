@@ -446,7 +446,9 @@ ____`
 						},
 					},
 				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				result, err := ParseDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDocument(expected))
 			})
 
 			It("multi-line quote with rendered lists and block and without author and title", func() {

@@ -7,11 +7,10 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
-	log.Debugf("rendering %d elements(s)...", len(elements))
+	// log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := &strings.Builder{}
 	if !ctx.Config.WrapInHTMLBodyElement && len(elements) > 0 {
 		if s, ok := elements[0].(types.Section); ok && s.Level == 0 {
@@ -41,7 +40,7 @@ func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interfac
 // renderListElements is similar to the `renderElements` func above,
 // but it sets the `withinList` context flag to true for the first element only
 func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []interface{}) (string, error) {
-	log.Debugf("rendering list with %d element(s)...", len(elements))
+	// log.Debugf("rendering list with %d element(s)...", len(elements))
 	buff := &strings.Builder{}
 	for i, element := range elements {
 		if i == 0 {
@@ -61,7 +60,7 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 
 // nolint: gocyclo
 func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{}) (string, error) {
-	log.Debugf("rendering element of type `%T`", element)
+	// log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
 	case []interface{}:
 		return r.renderElements(ctx, e)
@@ -150,7 +149,7 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 
 // nolint: gocyclo
 func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) (string, error) {
-	log.Debugf("rendering plain string for element of type %T", element)
+	// log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case []interface{}:
 		return r.renderInlineElements(ctx, element, r.withVerbatim())

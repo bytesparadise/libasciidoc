@@ -7,7 +7,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (string, error) { //nolint: unparam
@@ -53,6 +52,6 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l types.InlineLink) (st
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render link")
 	}
-	log.Debugf("rendered link: %s", result.String())
+	// log.Debugf("rendered link: %s", result.String())
 	return result.String(), nil
 }

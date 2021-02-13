@@ -72,7 +72,6 @@ type listArranger struct {
 // then only append this block to the result
 func (a *listArranger) appendBlock(block interface{}) {
 	if len(a.lists) > 0 {
-		log.Debugf("appending %d lists before processing element of type %T", len(a.lists), block)
 		a.pruneLists(0)
 		for _, list := range a.lists {
 			a.blocks = append(a.blocks, unPtr(list))
@@ -100,7 +99,7 @@ func (a *listArranger) appendBlankline(l types.BlankLine) {
 func (a *listArranger) appendContinuedListItemElement(item types.ContinuedListItemElement) {
 	item.Offset = a.blanklineCounter
 	a.pruneLists(len(a.lists) - 1 - item.Offset)
-	log.Debugf("appending continued list item element with offset=%d (depth=%d)", item.Offset, len(a.lists))
+	// log.Debugf("appending continued list item element with offset=%d (depth=%d)", item.Offset, len(a.lists))
 	// lookup the list at which the item should be attached
 	parentList := &(a.lists[len(a.lists)-1])
 	parentItem := (*parentList).LastItem()
@@ -125,7 +124,7 @@ func (a *listArranger) appendListItem(item interface{}) error {
 
 func (a *listArranger) appendPendingLists() {
 	if len(a.lists) > 0 {
-		log.Debugf("processing the remaining %d lists...", len(a.lists))
+		// log.Debugf("processing the remaining %d lists...", len(a.lists))
 		a.pruneLists(0)
 		for _, list := range a.lists {
 			a.blocks = append(a.blocks, unPtr(list))
@@ -136,13 +135,13 @@ func (a *listArranger) appendPendingLists() {
 
 func (a *listArranger) appendOrderedListItem(item *types.OrderedListItem) error {
 	maxLevel := 0
-	log.Debugf("looking-up list for ordered list having items with level=%d and number style=%v", item.Level, item.Style)
+	// log.Debugf("looking-up list for ordered list having items with level=%d and number style=%v", item.Level, item.Style)
 	for i, list := range a.lists {
 		if list, ok := list.(*types.OrderedList); ok {
 			// assume we can't have empty lists
 			maxLevel++
 			if list.Items[0].Style == item.Style {
-				log.Debugf("found a matching ordered list at level %d", list.Items[0].Level)
+				// log.Debugf("found a matching ordered list at level %d", list.Items[0].Level)
 				// prune items of "deeper/lower" level
 				a.pruneLists(i)
 				// apply the same level
@@ -156,7 +155,7 @@ func (a *listArranger) appendOrderedListItem(item *types.OrderedListItem) error 
 	// no match found: create a new list and if needed, adjust the level of the item
 	// force the current item level to (last seen level + 1)
 	item.Level = maxLevel + 1
-	log.Debugf("adding a new ordered list")
+	// log.Debugf("adding a new ordered list")
 	a.appendList(types.NewOrderedList(item))
 	return nil
 }
@@ -165,7 +164,7 @@ func (a *listArranger) appendCalloutListItem(item types.CalloutListItem) error {
 	for i, list := range a.lists {
 		if list, ok := list.(*types.CalloutList); ok {
 			// assume we can't have empty lists
-			log.Debugf("found a matching callout list")
+			// log.Debugf("found a matching callout list")
 			// prune items of "deeper/lower" level
 			a.pruneLists(i)
 			// apply the same level
@@ -175,20 +174,20 @@ func (a *listArranger) appendCalloutListItem(item types.CalloutListItem) error {
 		}
 	}
 	// no match found: create a new list and if needed, adjust the level of the item
-	log.Debugf("adding a new callout list")
+	// log.Debugf("adding a new callout list")
 	a.appendList(types.NewCalloutList(item))
 	return nil
 }
 
 func (a *listArranger) appendUnorderedListItem(item *types.UnorderedListItem) error {
 	maxLevel := 0
-	log.Debugf("looking-up list for unordered list item with level=%d and bullet style=%v", item.Level, item.BulletStyle)
+	// log.Debugf("looking-up list for unordered list item with level=%d and bullet style=%v", item.Level, item.BulletStyle)
 	for i, list := range a.lists {
 		if list, ok := list.(*types.UnorderedList); ok {
 			// assume we can't have empty lists
 			maxLevel++
 			if list.Items[0].BulletStyle == item.BulletStyle {
-				log.Debugf("found a matching unordered list at level %d", list.Items[0].Level)
+				// log.Debugf("found a matching unordered list at level %d", list.Items[0].Level)
 				// prune items of "deeper/lower" level
 				a.pruneLists(i)
 				// apply the same level
@@ -199,7 +198,7 @@ func (a *listArranger) appendUnorderedListItem(item *types.UnorderedListItem) er
 		}
 	}
 	// no match found: create a new list and if needed, adjust the level of the item
-	log.Debugf("adding a new unordered list")
+	// log.Debugf("adding a new unordered list")
 	// also, force the current item level to (last seen level + 1)
 	item.Level = maxLevel + 1
 	// also, force the bullet-style based on the list on the level above (if it exists)
@@ -227,24 +226,24 @@ func (a *listArranger) appendLabeledListItem(item types.LabeledListItem) error {
 		}
 	}
 	maxLevel := 0
-	log.Debugf("looking-up list for labeled list item with level=%d and term=%s", item.Level, item.Term)
+	// log.Debugf("looking-up list for labeled list item with level=%d and term=%s", item.Level, item.Term)
 	for i, list := range a.lists {
-		log.Debugf("  comparing with list of type %T at level %d", list, i)
+		// log.Debugf("  comparing with list of type %T at level %d", list, i)
 		if list, ok := list.(*types.LabeledList); ok {
 			// assume we can't have empty lists
 			maxLevel++
-			log.Debugf("  comparing with list item level %d vs %d", list.Items[0].Level, item.Level)
+			// log.Debugf("  comparing with list item level %d vs %d", list.Items[0].Level, item.Level)
 			if list.Items[0].Level == item.Level {
-				log.Debugf("found a matching labeled list")
+				// log.Debugf("found a matching labeled list")
 				a.pruneLists(i)
 				list.AddItem(item)
-				log.Debugf("labeled list at level %d now has %d items", maxLevel, len(list.Items))
+				// log.Debugf("labeled list at level %d now has %d items", maxLevel, len(list.Items))
 				return nil
 			}
 		}
 	}
 	// no match found: create a new list and if needed, adjust the level of the item
-	log.Debugf("adding a new labeled list")
+	// log.Debugf("adding a new labeled list")
 	// also, force the current item level to (last seen level + 1)
 	item.Level = maxLevel + 1
 	a.appendList(types.NewLabeledList(item))
@@ -258,18 +257,18 @@ func parseLabeledListItemTerm(term string) ([]interface{}, error) {
 	if err != nil {
 		return []interface{}{}, errors.Wrap(err, "error while parsing content for inline links")
 	}
-	log.Debugf("parsed labeled list item term: '%+v'", elements)
+	// log.Debugf("parsed labeled list item term: '%+v'", elements)
 	result = append(result, elements.([]interface{})...)
 	return result, nil
 }
 
 func (a *listArranger) pruneLists(level int) {
 	if level+1 < len(a.lists) {
-		log.Debugf("pruning the list path from %d to %d level(s) deep", len(a.lists), level+1)
+		// log.Debugf("pruning the list path from %d to %d level(s) deep", len(a.lists), level+1)
 		// add the last list(s) as children of their parent, in reverse order,
 		// because we copy the value, not the pointers
 		for i := len(a.lists) - 1; i > level; i-- {
-			log.Debugf("appending list at depth %d to the last item of the parent list...", (i + 1))
+			// log.Debugf("appending list at depth %d to the last item of the parent list...", (i + 1))
 			parentList := &(a.lists[i-1])
 			parentItem := (*parentList).LastItem()
 			switch childList := a.lists[i].(type) {

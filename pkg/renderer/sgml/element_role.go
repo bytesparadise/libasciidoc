@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) (string, error) {
@@ -19,7 +18,7 @@ func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) 
 			result = append(result, s)
 		}
 	}
-	log.Debugf("rendered roles: '%s'", result)
+	// log.Debugf("rendered roles: '%s'", result)
 	return strings.Join(result, " "), nil
 }
 
@@ -41,7 +40,7 @@ func (r *sgmlRenderer) renderImageRoles(ctx *Context, attrs types.Attributes) (s
 			result = append(result, s)
 		}
 	}
-	log.Debugf("rendered image roles: '%s'", result)
+	// log.Debugf("rendered image roles: '%s'", result)
 	return strings.Join(result, " "), nil
 }
 
@@ -62,6 +61,6 @@ func (r *sgmlRenderer) renderElementRole(ctx *Context, role interface{}) (string
 	default:
 		return "", fmt.Errorf("unexpected type of element while rendering element role: '%T'", role)
 	}
-	log.Debugf("rendered role: '%s'", result.String())
+	// log.Debugf("rendered role: '%s'", result.String())
 	return result.String(), nil
 }

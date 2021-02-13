@@ -86,7 +86,7 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types
 }
 
 func (r *sgmlRenderer) renderParagraphWithinDelimitedBlock(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
+	// log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
 	result := &strings.Builder{}
 
 	content, err := r.renderLines(ctx, p.Lines)
@@ -130,7 +130,7 @@ func renderCheckStyle(style interface{}) string {
 func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) string {
 	if title, found := attrs.GetAsString(types.AttrTitle); found {
 		result := EscapeString(strings.TrimSpace(title))
-		log.Debugf("rendered title: '%s'", result)
+		// log.Debugf("rendered title: '%s'", result)
 		return result
 	}
 	log.Debug("no title to render")
@@ -199,7 +199,7 @@ func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines [][]interface{},
 			}
 		}
 	}
-	log.Debugf("rendered lines: '%s'", buf.String())
+	// log.Debugf("rendered lines: '%s'", buf.String())
 	return buf.String(), nil
 }
 

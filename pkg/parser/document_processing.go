@@ -70,7 +70,8 @@ func ParseRawDocument(r io.Reader, config configuration.Configuration, options .
 		fmt.Fprintf(log.StandardLogger().Out, "'%s'\n", source)
 	}
 	// then let's parse the "source" to detect raw blocks
-	if result, err := Parse(config.Filename, source, append(options, Entrypoint("RawDocument"))...); err != nil {
+	options = append(options, Entrypoint("RawDocument"), GlobalStore(usermacrosKey, config.Macros))
+	if result, err := Parse(config.Filename, source, options...); err != nil {
 		return types.RawDocument{}, err
 	} else if doc, ok := result.(types.RawDocument); ok {
 		return doc, nil

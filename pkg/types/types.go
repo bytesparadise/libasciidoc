@@ -23,7 +23,7 @@ type RawDocument struct {
 
 // NewRawDocument initializes a new `RawDocument` from the given lines
 func NewRawDocument(frontMatter interface{}, elements []interface{}) (RawDocument, error) {
-	log.Debugf("new RawDocument with %d block element(s)", len(elements))
+	// log.Debugf("new RawDocument with %d block element(s)", len(elements))
 	result := RawDocument{
 		Elements: elements,
 	}
@@ -63,7 +63,7 @@ elements:
 			break elements
 		}
 	}
-	log.Debugf("document attributes: %+v", result)
+	// log.Debugf("document attributes: %+v", result)
 	return result
 }
 
@@ -77,7 +77,7 @@ type RawSection struct {
 
 // NewRawSection returns a new RawSection
 func NewRawSection(level int, title string) (RawSection, error) {
-	log.Debugf("new rawsection: '%s' (%d)", title, level)
+	// log.Debugf("new rawsection: '%s' (%d)", title, level)
 	return RawSection{
 		Level: level,
 		Title: title,
@@ -97,7 +97,7 @@ func (s RawSection) Stringify() string {
 
 // NewRawLine returns a new slice containing a single StringElement with the given content
 func NewRawLine(content string) ([]interface{}, error) {
-	log.Debugf("new line: '%v'", content)
+	// log.Debugf("new line: '%v'", content)
 	return []interface{}{
 		StringElement{
 			Content: content,
@@ -285,7 +285,7 @@ type DocumentAuthor struct {
 
 // NewDocumentAuthors converts the given authors into an array of `DocumentAuthor`
 func NewDocumentAuthors(authors []interface{}) ([]DocumentAuthor, error) {
-	log.Debugf("new array of document authors from `%+v`", authors)
+	// log.Debugf("new array of document authors from `%+v`", authors)
 	result := make([]DocumentAuthor, len(authors))
 	for i, author := range authors {
 		switch author := author.(type) {
@@ -323,7 +323,7 @@ type DocumentRevision struct {
 
 // NewDocumentRevision intializes a new DocumentRevision
 func NewDocumentRevision(revnumber, revdate, revremark interface{}) (DocumentRevision, error) {
-	log.Debugf("initializing document revision with revnumber=%v, revdate=%v, revremark=%v", revnumber, revdate, revremark)
+	// log.Debugf("initializing document revision with revnumber=%v, revdate=%v, revremark=%v", revnumber, revdate, revremark)
 	// remove the "v" prefix and trim spaces
 	var number, date, remark string
 	if revnumber, ok := revnumber.(string); ok {
@@ -373,7 +373,7 @@ type AttributeDeclaration struct {
 // NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
 func NewAttributeDeclaration(name string, value interface{}) (AttributeDeclaration, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("new AttributeDeclaration: '%s'", name)
+		// log.Debugf("new AttributeDeclaration: '%s'", name)
 		spew.Fdump(log.StandardLogger().Out, value)
 	}
 	return AttributeDeclaration{
@@ -430,7 +430,7 @@ type AttributeReset struct {
 
 // NewAttributeReset initializes a new Document Attribute Resets.
 func NewAttributeReset(attrName string) (AttributeReset, error) {
-	log.Debugf("new AttributeReset: '%s'", attrName)
+	// log.Debugf("new AttributeReset: '%s'", attrName)
 	return AttributeReset{Name: attrName}, nil
 }
 
@@ -448,7 +448,7 @@ func NewAttributeSubstitution(name string) (interface{}, error) {
 	if isPrefedinedAttribute(name) {
 		return PredefinedAttribute{Name: name}, nil
 	}
-	log.Debugf("new AttributeSubstitution: '%s'", name)
+	// log.Debugf("new AttributeSubstitution: '%s'", name)
 	return AttributeSubstitution{Name: name}, nil
 }
 
@@ -470,6 +470,18 @@ func NewCounterSubstitution(name string, hidden bool, val interface{}) (CounterS
 		Hidden: hidden,
 		Value:  val,
 	}, nil
+}
+
+// StandaloneAttributes are attributes at the end of
+// a delimited block or at the end of the doc, ie, not
+// associated with any block. They shall be ignored/discarded
+// in the final document
+type StandaloneAttributes Attributes
+
+// NewStandaloneAttributes returns a new StandaloneAttributes element
+func NewStandaloneAttributes(attributes interface{}) (StandaloneAttributes, error) {
+	log.Debug("new standalone attributes")
+	return StandaloneAttributes(toAttributes(attributes)), nil
 }
 
 // ------------------------------------------
@@ -597,7 +609,7 @@ func NewYamlFrontMatter(content string) (FrontMatter, error) {
 	if err != nil {
 		return FrontMatter{}, errors.Wrapf(err, "failed to parse yaml content in front-matter of document")
 	}
-	log.Debugf("new FrontMatter with attributes: %+v", attributes)
+	// log.Debugf("new FrontMatter with attributes: %+v", attributes)
 	return FrontMatter{Content: attributes}, nil
 }
 
@@ -659,12 +671,12 @@ func (s Section) ReplaceAttributes(attributes Attributes) interface{} {
 // ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
 func (s Section) ResolveID(docAttributes AttributesWithOverrides) (Section, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("section attributes:")
+		// log.Debugf("section attributes:")
 		spew.Fdump(log.StandardLogger().Out, s.Attributes)
 	}
 
 	if !s.Attributes.Has(AttrID) {
-		log.Debugf("resolving section id")
+		// log.Debugf("resolving section id")
 		separator := docAttributes.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
 		replacement, err := ReplaceNonAlphanumerics(s.Title, separator)
 		if err != nil {
@@ -672,7 +684,7 @@ func (s Section) ResolveID(docAttributes AttributesWithOverrides) (Section, erro
 		}
 		idPrefix := docAttributes.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
 		s.Attributes = s.Attributes.Set(AttrID, idPrefix+replacement)
-		log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
+		// log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
 	}
 	return s, nil
 }
@@ -778,7 +790,7 @@ func expandAuthors(authors []DocumentAuthor) Attributes {
 		})
 	}
 	result[AttrAuthors] = s
-	log.Debugf("authors: %v", result)
+	// log.Debugf("authors: %v", result)
 	return result
 }
 
@@ -805,7 +817,7 @@ func expandRevision(revision DocumentRevision) Attributes {
 	result.AddNonEmpty("revremark", revision.Revremark)
 	// also add the revision itself
 	result.AddNonEmpty(AttrRevision, revision)
-	log.Debugf("revision: %v", result)
+	// log.Debugf("revision: %v", result)
 	return result
 }
 
@@ -926,7 +938,7 @@ var _ ListItem = &OrderedListItem{}
 
 // NewOrderedListItem initializes a new `orderedListItem` from the given content
 func NewOrderedListItem(prefix OrderedListItemPrefix, elements []interface{}, attributes interface{}) (OrderedListItem, error) {
-	log.Debugf("new OrderedListItem")
+	// log.Debugf("new OrderedListItem")
 	return OrderedListItem{
 		Attributes: toAttributesWithMapping(attributes, map[string]string{AttrPositional1: AttrStyle}),
 		Style:      prefix.Style,
@@ -1003,7 +1015,7 @@ func NewUnorderedList(item UnorderedListItem) *UnorderedList {
 	attrs := item.Attributes
 	item.Attributes = nil // move the item's attributes to the list level
 	// convert the checkstyle attribute if the list is interactive
-	log.Debugf("interactive list: %t", attrs.HasOption(AttrInteractive))
+	// log.Debugf("interactive list: %t", attrs.HasOption(AttrInteractive))
 	if attrs.HasOption(AttrInteractive) {
 		item = item.toInteractiveListItem()
 	}
@@ -1040,7 +1052,7 @@ type UnorderedListItem struct {
 
 // NewUnorderedListItem initializes a new `UnorderedListItem` from the given content
 func NewUnorderedListItem(prefix UnorderedListItemPrefix, checkstyle interface{}, elements []interface{}, attributes interface{}) (UnorderedListItem, error) {
-	log.Debugf("new UnorderedListItem with %d elements", len(elements))
+	// log.Debugf("new UnorderedListItem with %d elements", len(elements))
 	cs := toCheckStyle(checkstyle)
 	if cs != NoCheck && len(elements) > 0 {
 		if p, ok := elements[0].(Paragraph); ok {
@@ -1272,7 +1284,7 @@ var _ ListItem = &LabeledListItem{}
 
 // NewLabeledListItem initializes a new LabeledListItem
 func NewLabeledListItem(level int, term []interface{}, description interface{}, attributes interface{}) (LabeledListItem, error) {
-	log.Debugf("new LabeledListItem")
+	// log.Debugf("new LabeledListItem")
 	var elements []interface{}
 	if description, ok := description.([]interface{}); ok {
 		elements = description
@@ -1342,7 +1354,7 @@ const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(lines []interface{}, attributes interface{}) (Paragraph, error) {
-	log.Debugf("new paragraph with attributes: '%v'", attributes)
+	// log.Debugf("new paragraph with attributes: '%v'", attributes)
 	l, err := toLines(lines)
 	if err != nil {
 		return Paragraph{}, errors.Wrapf(err, "failed to initialize a Paragraph")
@@ -1462,7 +1474,7 @@ func (p Paragraph) SubstituteFootnotes(notes *Footnotes) interface{} {
 
 // NewAdmonitionParagraph returns a new Paragraph with an extra admonition attribute
 func NewAdmonitionParagraph(lines []interface{}, admonitionKind string, attributes interface{}) (Paragraph, error) {
-	log.Debugf("new admonition paragraph")
+	// log.Debugf("new admonition paragraph")
 	p, err := NewParagraph(lines, attributes)
 	if err != nil {
 		return Paragraph{}, err
@@ -1507,7 +1519,7 @@ type InternalCrossReference struct {
 
 // NewInternalCrossReference initializes a new `InternalCrossReference` from the given ID
 func NewInternalCrossReference(id, label interface{}) (InternalCrossReference, error) {
-	log.Debugf("new InternalCrossReference with ID=%s", id)
+	// log.Debugf("new InternalCrossReference with ID=%s", id)
 	return InternalCrossReference{
 		ID:    Reduce(id),
 		Label: Reduce(label),
@@ -1527,7 +1539,7 @@ func NewExternalCrossReference(location Location, attributes interface{}) (Exter
 	if l, ok := attrs[AttrPositional1]; ok {
 		label = l
 	}
-	log.Debugf("new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attrs[AttrInlineLinkText])
+	// log.Debugf("new ExternalCrossReference with Location=%v and label='%s' (attrs=%v / %T)", location, label, attributes, attrs[AttrInlineLinkText])
 	return ExternalCrossReference{
 		Location: location,
 		Label:    label,
@@ -1838,7 +1850,7 @@ type ExampleBlock struct {
 
 // NewExampleBlock initializes a new `ExampleBlock` with the given elements
 func NewExampleBlock(elements []interface{}, attributes interface{}) (ExampleBlock, error) {
-	log.Debugf("new ExampleBlock with %d blocks", len(elements))
+	// log.Debugf("new ExampleBlock with %d blocks", len(elements))
 	attrs := toAttributesWithMapping(attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 	})
@@ -1895,7 +1907,7 @@ type QuoteBlock struct {
 
 // NewQuoteBlock initializes a new `QuoteBlock` with the given elements
 func NewQuoteBlock(elements []interface{}, attributes interface{}) (QuoteBlock, error) {
-	log.Debugf("new QuoteBlock with %d blocks", len(elements))
+	// log.Debugf("new QuoteBlock with %d blocks", len(elements))
 	attrs := toAttributesWithMapping(attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 		AttrPositional2: AttrQuoteAuthor,
@@ -1954,7 +1966,7 @@ type SidebarBlock struct {
 
 // NewSidebarBlock initializes a new `SidebarBlock` with the given elements
 func NewSidebarBlock(elements []interface{}, attributes interface{}) (SidebarBlock, error) {
-	log.Debugf("new SidebarBlock with %d blocks", len(elements))
+	// log.Debugf("new SidebarBlock with %d blocks", len(elements))
 	attrs := toAttributesWithMapping(attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 	})
@@ -2011,7 +2023,7 @@ type FencedBlock struct {
 
 // NewFencedBlock initializes a new `FencedBlock` with the given lines
 func NewFencedBlock(lines []interface{}, attributes interface{}) (FencedBlock, error) {
-	log.Debugf("new FencedBlock with %d lines", len(lines))
+	// log.Debugf("new FencedBlock with %d lines", len(lines))
 	l, err := toLines(lines)
 	if err != nil {
 		return FencedBlock{}, errors.Wrapf(err, "failed to initialize a new fenced block")
@@ -2072,7 +2084,7 @@ type ListingBlock struct {
 
 // NewListingBlock initializes a new `ListingBlock` with the given lines
 func NewListingBlock(lines []interface{}, attributes interface{}) (ListingBlock, error) {
-	log.Debugf("new ListingBlock with %d lines", len(lines))
+	// log.Debugf("new ListingBlock with %d lines", len(lines))
 	l, err := toLines(lines)
 	if err != nil {
 		return ListingBlock{}, errors.Wrapf(err, "failed to initialize a new listing block")
@@ -2140,7 +2152,7 @@ type VerseBlock struct {
 
 // NewVerseBlock initializes a new `VerseBlock` with the given lines
 func NewVerseBlock(lines []interface{}, attributes interface{}) (VerseBlock, error) {
-	log.Debugf("new VerseBlock with %d lines", len(lines))
+	// log.Debugf("new VerseBlock with %d lines", len(lines))
 	l, err := toLines(lines)
 	if err != nil {
 		return VerseBlock{}, errors.Wrapf(err, "failed to initialize a new verse block")
@@ -2203,7 +2215,7 @@ type MarkdownQuoteBlock struct {
 
 // NewMarkdownQuoteBlock initializes a new `MarkdownQuoteBlock` with the given lines
 func NewMarkdownQuoteBlock(lines []interface{}, attributes interface{}) (MarkdownQuoteBlock, error) {
-	log.Debugf("new MarkdownQuoteBlock with %d lines", len(lines))
+	// log.Debugf("new MarkdownQuoteBlock with %d lines", len(lines))
 	l, err := toLines(lines)
 	if err != nil {
 		return MarkdownQuoteBlock{}, errors.Wrapf(err, "failed to initialize a new markdown quote block")
@@ -2225,7 +2237,7 @@ type PassthroughBlock struct {
 
 // NewPassthroughBlock initializes a new `PassthroughBlock` with the given lines
 func NewPassthroughBlock(lines []interface{}, attributes interface{}) (PassthroughBlock, error) {
-	log.Debugf("new PassthroughBlock with %d lines", len(lines))
+	// log.Debugf("new PassthroughBlock with %d lines", len(lines))
 	l, err := toLines(lines)
 	if err != nil {
 		return PassthroughBlock{}, errors.Wrapf(err, "failed to initialize a new passthrough block")
@@ -2286,7 +2298,7 @@ type CommentBlock struct {
 
 // NewCommentBlock initializes a new `CommentBlock` with the given lines
 func NewCommentBlock(lines []interface{}, attributes interface{}) (CommentBlock, error) {
-	log.Debugf("new CommentBlock with %d lines", len(lines))
+	// log.Debugf("new CommentBlock with %d lines", len(lines))
 	l, err := toLines(lines)
 	if err != nil {
 		return CommentBlock{}, errors.Wrapf(err, "failed to initialize a new comment block")
@@ -2472,7 +2484,7 @@ type BlankLine struct {
 
 // NewBlankLine initializes a new `BlankLine`
 func NewBlankLine() (BlankLine, error) {
-	log.Debug("new BlankLine")
+	// log.Debug("new BlankLine")
 	return BlankLine{}, nil
 }
 
@@ -2487,7 +2499,7 @@ type SingleLineComment struct {
 
 // NewSingleLineComment initializes a new single line content
 func NewSingleLineComment(content string) (SingleLineComment, error) {
-	log.Debugf("initializing a single line comment with content: '%s'", content)
+	// log.Debugf("initializing a single line comment with content: '%s'", content)
 	return SingleLineComment{
 		Content: content,
 	}, nil
@@ -2758,13 +2770,13 @@ func (l InlineLink) ReplaceElements(path []interface{}) interface{} {
 
 // NewInlineLinkAttributes returns a map of link attributes
 func NewInlineLinkAttributes(attributes []interface{}) (Attributes, error) {
-	log.Debugf("new inline link attributes: %v", attributes)
+	// log.Debugf("new inline link attributes: %v", attributes)
 	if len(attributes) == 0 {
 		return nil, nil
 	}
 	result := Attributes{}
 	for i, attr := range attributes {
-		log.Debugf("new inline link attribute: '%[1]v' (%[1]T)", attr)
+		// log.Debugf("new inline link attribute: '%[1]v' (%[1]T)", attr)
 		switch attr := attr.(type) {
 		case Attribute:
 			result[attr.Key] = attr.Value
@@ -2776,7 +2788,7 @@ func NewInlineLinkAttributes(attributes []interface{}) (Attributes, error) {
 			result["positional-"+strconv.Itoa(i+1)] = attr
 		}
 	}
-	log.Debugf("new inline link attributes: %v", result)
+	// log.Debugf("new inline link attributes: %v", result)
 	return result, nil
 }
 
@@ -2958,7 +2970,7 @@ func NewTagRanges(ranges interface{}) TagRanges {
 // Match checks if the given tag matches one of the range
 func (tr TagRanges) Match(line int, currentRanges CurrentRanges) bool {
 	match := false
-	log.Debugf("checking line %d", line)
+	// log.Debugf("checking line %d", line)
 
 	// compare with expected tag ranges
 	for _, t := range tr {
@@ -2967,7 +2979,7 @@ func (tr TagRanges) Match(line int, currentRanges CurrentRanges) bool {
 			continue
 		}
 		for n, r := range currentRanges {
-			log.Debugf("checking if range %s (%v) matches one of %v", n, r, tr)
+			// log.Debugf("checking if range %s (%v) matches one of %v", n, r, tr)
 			if r.EndLine != -1 {
 				// tag range is closed, skip
 				continue
@@ -3089,7 +3101,7 @@ type Location struct {
 // NewLocation return a new location with the given elements
 func NewLocation(scheme interface{}, path []interface{}) (Location, error) {
 	path = Merge(path)
-	log.Debugf("new location: scheme='%v' path='%+v", scheme, path)
+	// log.Debugf("new location: scheme='%v' path='%+v", scheme, path)
 	s := ""
 	if scheme, ok := scheme.([]byte); ok {
 		s = string(scheme)
@@ -3202,7 +3214,7 @@ func NewString(v interface{}) (string, error) {
 
 // NewInlineAttribute returns a new InlineAttribute if the value is a string (or an error otherwise)
 func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
-	log.Debugf("new inline attribute: '%s':'%v'", name, value)
+	// log.Debugf("new inline attribute: '%s':'%v'", name, value)
 	if value == nil {
 		return nil, nil
 	}

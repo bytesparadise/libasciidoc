@@ -5,7 +5,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	log "github.com/sirupsen/logrus"
 )
 
 type linesRenderer struct {
@@ -24,7 +23,7 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 	if len(elements) == 0 {
 		return "", nil
 	}
-	log.Debugf("rendering line with %d element(s)...", len(elements))
+	// log.Debugf("rendering line with %d element(s)...", len(elements))
 	lr := linesRenderer{
 		render: r.renderElement,
 	}
@@ -49,9 +48,9 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 			buf.WriteString(renderedElement)
 		}
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("rendered inline elements: '%s'", buf.String())
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// log.Debugf("rendered inline elements: '%s'", buf.String())
+	// }
 	return buf.String(), nil
 }
 

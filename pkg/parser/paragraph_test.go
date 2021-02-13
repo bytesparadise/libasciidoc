@@ -277,12 +277,9 @@ foo
 baz`
 				expected := types.DraftDocument{
 					Elements: []interface{}{
+						types.BlankLine{}, // attribute not retained in blankline
+						types.BlankLine{}, // attribute not retained in blankline
 						types.Paragraph{
-							Attributes: types.Attributes{
-								types.AttrID:      "anchor",
-								types.AttrRoles:   []interface{}{"role1", "role2"},
-								types.AttrOptions: []interface{}{"hardbreaks"},
-							},
 							Lines: [][]interface{}{
 								{
 									types.StringElement{Content: "foo"},

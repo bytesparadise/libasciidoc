@@ -6,7 +6,6 @@ import (
 	"unicode"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
@@ -56,7 +55,7 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 		}
 	}
 
-	log.Debugf("normalized '%+v' to '%s'", elements, buf.String())
+	// log.Debugf("normalized '%+v' to '%s'", elements, buf.String())
 	return buf.String(), nil
 }
 
@@ -83,6 +82,6 @@ func replaceNonAlphanumerics(content, replacement string) (string, error) {
 		}
 	}
 	result := strings.TrimSuffix(buf.String(), replacement)
-	log.Debugf("normalized '%s' to '%s'", content, result)
+	// log.Debugf("normalized '%s' to '%s'", content, result)
 	return result, nil
 }
