@@ -1652,12 +1652,14 @@ ExampleBlockRawContent <-
             // }
             return nil
         } 
-        element:(BlankLine
+        element:(
+            LabeledListItem // must appear before simple paragraph
+            / SimpleRawParagraph
+            / BlankLine
             / ImageBlock
             / ThematicBreak
             / OrderedListItem 
             / UnorderedListItem 
-            / LabeledListItem 
             / ContinuedListItemElement
             / FencedBlock 
             / ListingBlock 
@@ -1712,12 +1714,13 @@ QuoteBlockRawContent <-
             c.globalStore.pushAttributes(attributes)
             return nil
         } 
-        element:(BlankLine
+        element:(LabeledListItem // must appear before simple paragraph
+            / SimpleRawParagraph
+            / BlankLine
             / ImageBlock
             / ThematicBreak
             / OrderedListItem 
             / UnorderedListItem 
-            / LabeledListItem 
             / ContinuedListItemElement
             / FencedBlock 
             / ListingBlock 
@@ -1763,12 +1766,13 @@ SidebarBlockRawContent <-
             c.globalStore.pushAttributes(attributes)
             return nil
         } 
-        element:(BlankLine
+        element:(LabeledListItem // must appear before simple paragraph
+            / SimpleRawParagraph
+            / BlankLine
             / ImageBlock
             / ThematicBreak
             / OrderedListItem 
             / UnorderedListItem 
-            / LabeledListItem 
             / ContinuedListItemElement
             / FencedBlock 
             / ListingBlock
