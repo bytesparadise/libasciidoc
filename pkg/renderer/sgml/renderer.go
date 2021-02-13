@@ -388,7 +388,7 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header types.S
 // renderDocumentElements renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
 func (r *sgmlRenderer) renderDocumentElements(ctx *renderer.Context, source []interface{}, footnotes []types.Footnote) (string, error) {
-	elements := []interface{}{}
+	elements := make([]interface{}, 0, len(source))
 	for i, e := range source {
 		switch e := e.(type) {
 		case types.Preamble:

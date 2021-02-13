@@ -8,18 +8,18 @@ import (
 )
 
 func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) (string, error) {
-	var result []string
 	if roles, ok := attrs[types.AttrRoles].([]interface{}); ok {
-		for _, e := range roles {
+		result := make([]string, len(roles))
+		for i, e := range roles {
 			s, err := r.renderElementRole(ctx, e)
 			if err != nil {
 				return "", err
 			}
-			result = append(result, s)
+			result[i] = s
 		}
+		return strings.Join(result, " "), nil
 	}
-	// log.Debugf("rendered roles: '%s'", result)
-	return strings.Join(result, " "), nil
+	return "", nil
 }
 
 // Image roles add float and alignment attributes -- we turn these into roles.

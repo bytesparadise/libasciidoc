@@ -1,13 +1,13 @@
 package types
 
 import (
-	"bytes"
+	"strings"
 )
 
 // Merge merge string elements together
 func Merge(elements ...interface{}) []interface{} {
 	result := make([]interface{}, 0, len(elements))
-	buf := bytes.NewBuffer(nil)
+	buf := &strings.Builder{}
 	for _, element := range elements {
 		if element == nil {
 			continue
@@ -18,8 +18,7 @@ func Merge(elements ...interface{}) []interface{} {
 		case []byte:
 			buf.Write(element)
 		case StringElement:
-			content := element.Content
-			buf.WriteString(content)
+			buf.WriteString(element.Content)
 		case []interface{}:
 			if len(element) > 0 {
 				f := Merge(element...)
@@ -39,10 +38,10 @@ func Merge(elements ...interface{}) []interface{} {
 
 // appendBuffer appends the content of the given buffer to the given array of elements,
 // and returns a new buffer, or returns the given arguments if the buffer was empty
-func appendBuffer(elements []interface{}, buf *bytes.Buffer) ([]interface{}, *bytes.Buffer) {
+func appendBuffer(elements []interface{}, buf *strings.Builder) ([]interface{}, *strings.Builder) {
 	if buf.Len() > 0 {
 		s, _ := NewStringElement(buf.String())
-		return append(elements, s), bytes.NewBuffer(nil)
+		return append(elements, s), &strings.Builder{}
 	}
 	return elements, buf
 }

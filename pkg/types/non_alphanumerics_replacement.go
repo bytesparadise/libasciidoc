@@ -1,7 +1,6 @@
 package types
 
 import (
-	"bytes"
 	"strings"
 	"unicode"
 
@@ -10,7 +9,7 @@ import (
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
 func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string, error) {
-	buf := bytes.NewBuffer(nil)
+	buf := &strings.Builder{}
 	for _, element := range elements {
 		switch element := element.(type) {
 		case QuotedText:
@@ -60,7 +59,7 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 }
 
 func replaceNonAlphanumerics(content, replacement string) (string, error) {
-	buf := bytes.NewBuffer(nil)
+	buf := &strings.Builder{}
 	lastCharIsSpace := false
 
 	// Drop the :// from links.

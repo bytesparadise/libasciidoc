@@ -49,26 +49,26 @@ elements:
 			e.Elements = filter(e.Elements, matchers...)
 			result = append(result, e)
 		case types.OrderedList:
-			items := make([]types.OrderedListItem, 0, len(e.Items))
-			for _, i := range e.Items {
-				i.Elements = filter(i.Elements, matchers...)
-				items = append(items, i)
+			items := make([]types.OrderedListItem, len(e.Items))
+			for i, item := range e.Items {
+				item.Elements = filter(item.Elements, matchers...)
+				items[i] = item
 			}
 			e.Items = items
 			result = append(result, e)
 		case types.UnorderedList:
-			items := make([]types.UnorderedListItem, 0, len(e.Items))
-			for _, i := range e.Items {
-				i.Elements = filter(i.Elements, matchers...)
-				items = append(items, i)
+			items := make([]types.UnorderedListItem, len(e.Items))
+			for i, item := range e.Items {
+				item.Elements = filter(item.Elements, matchers...)
+				items[i] = item
 			}
 			e.Items = items
 			result = append(result, e)
 		case types.LabeledList:
-			items := make([]types.LabeledListItem, 0, len(e.Items))
-			for _, i := range e.Items {
-				i.Elements = filter(i.Elements, matchers...)
-				items = append(items, i)
+			items := make([]types.LabeledListItem, len(e.Items))
+			for i, item := range e.Items {
+				item.Elements = filter(item.Elements, matchers...)
+				items[i] = item
 			}
 			e.Items = items
 			result = append(result, e)

@@ -1,7 +1,6 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"net/url"
 	"sort"
@@ -726,7 +725,7 @@ func NewDocumentHeader(title []interface{}, authors interface{}, revision interf
 // those attributes can be used in attribute substitutions in the document
 func expandAuthors(authors []DocumentAuthor) Attributes {
 	result := make(map[string]interface{}, 1+6*len(authors)) // each author may add up to 6 fields in the result map
-	s := make([]DocumentAuthor, 0, len(authors))
+	s := make([]DocumentAuthor, len(authors))
 	for i, author := range authors {
 		var part1, part2, part3, email string
 		author.FullName = strings.ReplaceAll(author.FullName, "  ", " ")
@@ -784,10 +783,10 @@ func expandAuthors(authors []DocumentAuthor) Attributes {
 			result[key("email", i)] = email
 		}
 		// also include a "string" version of the given author
-		s = append(s, DocumentAuthor{
+		s[i] = DocumentAuthor{
 			FullName: result[key("author", i)].(string),
 			Email:    email,
-		})
+		}
 	}
 	result[AttrAuthors] = s
 	// log.Debugf("authors: %v", result)
@@ -1217,7 +1216,7 @@ func NewUnorderedListItemPrefix(s BulletStyle, l int) (UnorderedListItemPrefix, 
 // NewListItemContent initializes a new `UnorderedListItemContent`
 func NewListItemContent(content []interface{}) ([]interface{}, error) {
 	// log.Debugf("new ListItemContent with %d line(s)", len(content))
-	elements := make([]interface{}, 0)
+	elements := make([]interface{}, 0, len(content))
 	for _, element := range content {
 		// log.Debugf("Processing line element of type %T", element)
 		switch element := element.(type) {
@@ -3136,7 +3135,7 @@ func (l Location) WithPathPrefix(p interface{}) Location {
 
 // Stringify returns a string representation of the location
 func (l Location) Stringify() string {
-	result := bytes.NewBuffer(nil)
+	result := &strings.Builder{}
 	result.WriteString(l.Scheme)
 	for _, e := range l.Path {
 		if s, ok := e.(StringElement); ok {
@@ -3198,7 +3197,7 @@ func NewString(v interface{}) (string, error) {
 	case string:
 		return v, nil
 	case []interface{}:
-		res := &strings.Builder{}
+		res := strings.Builder{}
 		for _, item := range v {
 			s, e := NewString(item)
 			if e != nil {

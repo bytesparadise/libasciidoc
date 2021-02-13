@@ -15,7 +15,7 @@ func rearrangeListItems(blocks []interface{}, withinDelimitedBlock bool) ([]inte
 	log.Debug("rearranging list items...")
 	a := &listArranger{
 		blocks:               make([]interface{}, 0, len(blocks)),
-		lists:                []types.List{},
+		lists:                make([]types.List, 0, len(blocks)),
 		blanklineCounter:     0,
 		withinDelimitedBlock: withinDelimitedBlock,
 	}
@@ -252,14 +252,12 @@ func (a *listArranger) appendLabeledListItem(item types.LabeledListItem) error {
 
 // a labeled list item term may contain links, images, quoted text, footnotes, etc.
 func parseLabeledListItemTerm(term string) ([]interface{}, error) {
-	result := []interface{}{}
+	// result := []interface{}{}
 	elements, err := ParseReader("", strings.NewReader(term), Entrypoint("LabeledListItemTerm"))
 	if err != nil {
 		return []interface{}{}, errors.Wrap(err, "error while parsing content for inline links")
 	}
-	// log.Debugf("parsed labeled list item term: '%+v'", elements)
-	result = append(result, elements.([]interface{})...)
-	return result, nil
+	return elements.([]interface{}), nil
 }
 
 func (a *listArranger) pruneLists(level int) {
