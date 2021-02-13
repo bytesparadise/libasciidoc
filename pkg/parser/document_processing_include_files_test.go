@@ -1681,7 +1681,9 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 							},
 						},
 					}
-					Expect(ParseRawDocument(source)).To(MatchRawDocument(expected))
+					result, err := ParseRawDocument(source)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result).To(MatchRawDocument(expected))
 				})
 			})
 		})
