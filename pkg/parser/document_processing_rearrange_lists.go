@@ -219,6 +219,7 @@ func (a *listArranger) appendLabeledListItem(item types.LabeledListItem) error {
 	if len(item.Term) == 1 {
 		if term, ok := item.Term[0].(types.StringElement); ok {
 			var err error
+			// TODO: do we really need that?
 			item.Term, err = parseLabeledListItemTerm(term.Content)
 			if err != nil {
 				return err
