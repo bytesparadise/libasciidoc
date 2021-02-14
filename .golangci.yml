@@ -3,7 +3,8 @@ run:
     - test/includes
   skip-files:
     - pkg/parser/parser.go # generated
-
+  timeout: 5m
+  
 linters:
   enable:
     - megacheck
