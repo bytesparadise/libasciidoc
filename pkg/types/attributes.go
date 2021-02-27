@@ -164,8 +164,13 @@ func NewAttributes(attributes ...interface{}) (Attributes, error) {
 		return nil, nil
 	}
 	result := Attributes{}
+	positionalIndex := 0
 	for _, attr := range attributes {
 		switch attr := attr.(type) {
+		case PositionalAttribute:
+			positionalIndex++
+			attr.Index = positionalIndex
+			result.Set(attr.Key(), attr.Value)
 		case Attribute:
 			result.Set(attr.Key, attr.Value)
 		case Attributes: // when an there were multiple attributes, eg: `[quote,author,title]`
@@ -344,10 +349,21 @@ func HasNotAttribute(attributes interface{}, key string) bool {
 	return true
 }
 
+// PositionalAttribute an attribute whose key will be determined by its position,
+// and which depends on the element it applies to.
+type PositionalAttribute struct {
+	Index int
+	Value interface{}
+}
+
+// Key returns the "temporary" key, based on the attribute index.
+func (a PositionalAttribute) Key() string {
+	return AttrPositionalIndex + strconv.Itoa(a.Index)
+}
+
 // NewPositionalAttribute returns a new attribute who key is the position in the group
-func NewPositionalAttribute(index int, value interface{}) (Attribute, error) {
-	result := Attribute{
-		Key:   AttrPositionalIndex + strconv.Itoa(index),
+func NewPositionalAttribute(value interface{}) (PositionalAttribute, error) {
+	result := PositionalAttribute{
 		Value: value,
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
