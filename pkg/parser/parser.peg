@@ -263,9 +263,6 @@ BlockAttributes <-
     }  
 
 InlineAttributes <-
-    #{
-        return initPositionalIndex(c)
-    }
     "["
     attributes:(PositionalAttribute/NamedAttribute)*
     "]" {
@@ -313,9 +310,6 @@ ShortHandTitle <- `.` title:(
 // LongHandAttributes. Eg: `[positional1,positional2,...,named1,named2,...]
 // positional attributes are optional, and `positional1` can be combined with options and roles ("extras")
 LongHandAttributes <-
-    #{
-        return initPositionalIndex(c)
-    }
     "[" 
     // !Space // no space allowed on the first character
     firstPositionalAttribute:(FirstPositionalAttribute)?
@@ -355,19 +349,11 @@ FirstPositionalAttribute <-
 
 // an `id` must be prefixed with a `#` 
 ShortHandIDAttribute <- "#" id:(ShortHandAttributeValue) {
-    _, err := incrementPositionalIndex(c)
-	if err != nil {
-		return types.Attribute{}, err
-    }
     return types.NewIDAttribute(id)
 }
 
 ShortHandAttribute <- value:(ShortHandAttributeValue) {
-    i, err := incrementPositionalIndex(c)
-	if err != nil {
-		return types.Attribute{}, err
-    }
-    return types.NewPositionalAttribute(i, value)
+    return types.NewPositionalAttribute(value)
 }
 
 // a `role` must be prefixed with a `.` 
@@ -400,11 +386,7 @@ ShortHandAttributeValue <-
 
 PositionalAttribute <- (
     value:(AttributeValue) (("," Space*)? / &"]") { 
-    	i, err := incrementPositionalIndex(c)
-    	if err != nil {
-    		return types.Attribute{}, err
-        }
-        return types.NewPositionalAttribute(i, value)
+    	return types.NewPositionalAttribute(value)
     }) 
     / 
     // empty value. Eg: `[ ]`, `[, a, b]`, `[a, ,b]`, etc.
@@ -417,18 +399,10 @@ PositionalAttribute <- (
         return len(v) > 0, nil
     }
     { 
-        i, err := incrementPositionalIndex(c)
-    	if err != nil {
-            return types.Attribute{}, err
-        }
-        return types.NewPositionalAttribute(i, nil)
+        return types.NewPositionalAttribute(nil)
     })
 
 NamedAttribute <- key:(NamedAttributeKey) "=" Space* value:(AttributeValue) ("," Space*)? { // TODO: include `,` or expect `]`
-    _, err := incrementPositionalIndex(c)
-	if err != nil {
-		return types.Attribute{}, err
-    }
     return types.NewNamedAttribute(key.(string), value)
 }
 
