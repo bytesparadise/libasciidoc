@@ -2598,15 +2598,20 @@ const (
 )
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
-func NewQuotedText(kind QuotedTextKind, attributes interface{}, elements ...interface{}) (QuotedText, error) {
-	attrs := toAttributesWithMapping(attributes, map[string]string{
+func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (QuotedText, error) {
+	return QuotedText{
+		Kind:     kind,
+		Elements: Merge(elements),
+	}, nil
+}
+
+// WithAttributes returns a _new_ QuotedText with the given attributes (with some mapping)
+func (t QuotedText) WithAttributes(attributes interface{}) (QuotedText, error) {
+	log.Debugf("adding attributes on quoted text")
+	t.Attributes = toAttributesWithMapping(attributes, map[string]string{
 		AttrPositional1: AttrRoles,
 	})
-	return QuotedText{
-		Kind:       kind,
-		Elements:   Merge(elements),
-		Attributes: attrs,
-	}, nil
+	return t, nil
 }
 
 var _ WithPlaceholdersInAttributes = QuotedText{}
