@@ -170,7 +170,11 @@ func parseFileToInclude(ctx substitutionContext, incl types.FileInclusion, level
 		return content.Bytes(), nil
 	}
 	// parse the content, and returns the corresponding elements
-	if l, found := incl.Attributes.GetAsString(types.AttrLevelOffset); found {
+	l, found, err := incl.Attributes.GetAsString(types.AttrLevelOffset)
+	if err != nil {
+		return nil, err
+	}
+	if found {
 		offset, err := strconv.Atoi(l)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to read file to include")
@@ -196,7 +200,12 @@ func parseFileToInclude(ctx substitutionContext, incl types.FileInclusion, level
 // lineRanges parses the `lines` attribute if it exists in the given FileInclusion, and returns
 // a corresponding `LineRanges` (or `false` if parsing failed to invalid input)
 func lineRanges(incl types.FileInclusion, config configuration.Configuration) (types.LineRanges, bool) {
-	if lineRanges, exists := incl.Attributes.GetAsString(types.AttrLineRanges); exists {
+	lineRanges, exists, err := incl.Attributes.GetAsString(types.AttrLineRanges)
+	if err != nil {
+		log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+		return types.LineRanges{}, false
+	}
+	if exists {
 		lr, err := Parse("", []byte(lineRanges), Entrypoint("LineRanges"))
 		if err != nil {
 			log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
@@ -210,7 +219,13 @@ func lineRanges(incl types.FileInclusion, config configuration.Configuration) (t
 // tagRanges parses the `tags` attribute if it exists in the given FileInclusion, and returns
 // a corresponding `TagRanges` (or `false` if parsing failed to invalid input)
 func tagRanges(incl types.FileInclusion, config configuration.Configuration) (types.TagRanges, bool) {
-	if tagRanges, exists := incl.Attributes.GetAsString(types.AttrTagRanges); exists {
+	tagRanges, exists, err := incl.Attributes.GetAsString(types.AttrTagRanges)
+	if err != nil {
+		log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)
+		return types.TagRanges{}, false
+	}
+	log.Debugf("tag ranges to include: %v", spew.Sdump(tagRanges))
+	if exists {
 		tr, err := Parse("", []byte(tagRanges), Entrypoint("TagRanges"))
 		if err != nil {
 			log.Errorf("Unresolved directive in %s - %s", config.Filename, incl.RawText)

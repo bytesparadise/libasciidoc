@@ -24,6 +24,11 @@ func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l types.CalloutL
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
+	title, err := r.renderElementTitle(l.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.calloutList.Execute(result, struct {
 		Context *renderer.Context
 		ID      string
@@ -34,7 +39,7 @@ func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l types.CalloutL
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(l.Attributes),
-		Title:   r.renderElementTitle(l.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: string(content.String()),
 		Items:   l.Items,

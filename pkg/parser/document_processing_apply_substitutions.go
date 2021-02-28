@@ -153,7 +153,11 @@ var substitutions = map[string]elementsSubstitution{
 
 func substitutionsFor(block types.WithCustomSubstitutions) ([]elementsSubstitution, error) {
 	subs := make(funcs, 0, len(substitutions))
-	for _, s := range block.SubstitutionsToApply() {
+	subsitutionsToApply, err := block.SubstitutionsToApply()
+	if err != nil {
+		return nil, err
+	}
+	for _, s := range subsitutionsToApply {
 		switch s {
 		case "normal":
 			subs = subs.append(

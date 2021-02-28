@@ -143,7 +143,7 @@ type RawText interface {
 
 // WithCustomSubstitutions base interface for types on which custom substitutions apply
 type WithCustomSubstitutions interface {
-	SubstitutionsToApply() []string
+	SubstitutionsToApply() ([]string, error)
 	DefaultSubstitutions() []string
 }
 
@@ -1422,11 +1422,13 @@ func (p Paragraph) ReplaceAttributes(attributes Attributes) interface{} {
 var _ WithLineSubstitution = Paragraph{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (p Paragraph) SubstitutionsToApply() []string {
-	if subs, found := p.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (p Paragraph) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := p.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return p.DefaultSubstitutions()
+	return p.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -1875,11 +1877,13 @@ func NewExampleBlock(elements []interface{}, attributes interface{}) (ExampleBlo
 var _ WithNestedElementSubstitution = ExampleBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b ExampleBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b ExampleBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -1934,11 +1938,13 @@ func NewQuoteBlock(elements []interface{}, attributes interface{}) (QuoteBlock, 
 var _ WithNestedElementSubstitution = QuoteBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b QuoteBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b QuoteBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -1991,11 +1997,13 @@ func NewSidebarBlock(elements []interface{}, attributes interface{}) (SidebarBlo
 var _ WithNestedElementSubstitution = SidebarBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b SidebarBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b SidebarBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -2052,11 +2060,13 @@ func NewFencedBlock(lines []interface{}, attributes interface{}) (FencedBlock, e
 var _ WithLineSubstitution = FencedBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b FencedBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b FencedBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -2104,7 +2114,9 @@ func NewListingBlock(lines []interface{}, attributes interface{}) (ListingBlock,
 	attrs := toAttributesWithMapping(attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 	})
-	if style, ok := attrs.GetAsString(AttrStyle); ok && style == AttrSource {
+	if style, ok, err := attrs.GetAsString(AttrStyle); err != nil {
+		return ListingBlock{}, errors.Wrapf(err, "failed to initialize a new listing block")
+	} else if ok && style == AttrSource {
 		attrs = toAttributesWithMapping(attributes, map[string]string{
 			AttrPositional1: AttrStyle,
 			AttrPositional2: AttrLanguage,
@@ -2120,11 +2132,13 @@ func NewListingBlock(lines []interface{}, attributes interface{}) (ListingBlock,
 var _ WithLineSubstitution = ListingBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b ListingBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b ListingBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -2183,11 +2197,13 @@ func NewVerseBlock(lines []interface{}, attributes interface{}) (VerseBlock, err
 var _ WithLineSubstitution = VerseBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b VerseBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b VerseBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -2266,11 +2282,13 @@ func NewPassthroughBlock(lines []interface{}, attributes interface{}) (Passthrou
 var _ WithLineSubstitution = PassthroughBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b PassthroughBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b PassthroughBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph
@@ -2364,11 +2382,13 @@ func NewLiteralBlock(origin string, lines []interface{}, attributes interface{})
 var _ WithLineSubstitution = LiteralBlock{}
 
 // SubstitutionsToApply returns the name of the substitutions to apply
-func (b LiteralBlock) SubstitutionsToApply() []string {
-	if subs, found := b.Attributes.GetAsString(AttrSubstitutions); found {
-		return strings.Split(subs, ",")
+func (b LiteralBlock) SubstitutionsToApply() ([]string, error) {
+	if subs, found, err := b.Attributes.GetAsString(AttrSubstitutions); err != nil {
+		return nil, err
+	} else if found {
+		return strings.Split(subs, ","), nil
 	}
-	return b.DefaultSubstitutions()
+	return b.DefaultSubstitutions(), nil
 }
 
 // DefaultSubstitutions the default substitutions for the paragraph

@@ -24,6 +24,10 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.FencedBl
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block roles")
 	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 
 	err = r.fencedBlock.Execute(result, struct {
 		Context *renderer.Context
@@ -34,7 +38,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.FencedBl
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(b.Attributes),
-		Title:   r.renderElementTitle(b.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: content,
 	})

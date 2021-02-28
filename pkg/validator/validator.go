@@ -8,12 +8,13 @@ import (
 
 // Validate validates the given document
 // May also alter some attributes (eg: doctype from `manpage` to `article`)
-func Validate(doc *types.Document) []Problem {
-	problems := []Problem{}
-	if doctype, found := doc.Attributes.GetAsString(types.AttrDocType); found && doctype == "manpage" {
-		problems = append(problems, validateManpage(doc)...)
+func Validate(doc *types.Document) ([]Problem, error) {
+	if doctype, found, err := doc.Attributes.GetAsString(types.AttrDocType); err != nil {
+		return nil, err
+	} else if found && doctype == "manpage" {
+		return validateManpage(doc), nil
 	}
-	return problems
+	return nil, nil
 }
 
 // Problem a problem detected during validation

@@ -22,6 +22,14 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render ordered list roles")
 	}
+	style, err := getNumberingStyle(l)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render ordered list roles")
+	}
+	title, err := r.renderElementTitle(l.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 	err = r.orderedList.Execute(result, struct {
 		Context   *renderer.Context
 		ID        string
@@ -35,10 +43,10 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 		Items     []types.OrderedListItem
 	}{
 		ID:        r.renderElementID(l.Attributes),
-		Title:     r.renderElementTitle(l.Attributes),
+		Title:     title,
 		Roles:     roles,
-		Style:     getNumberingStyle(l),
-		ListStyle: r.numberingType(getNumberingStyle(l)),
+		Style:     style,
+		ListStyle: r.numberingType(style),
 		Start:     l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),
 		Content:   string(content.String()),
 		Reversed:  l.Attributes.HasOption("reversed"),
@@ -50,11 +58,13 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l types.OrderedL
 	return result.String(), nil
 }
 
-func getNumberingStyle(l types.OrderedList) string {
-	if s, found := l.Attributes.GetAsString(types.AttrStyle); found {
-		return s
+func getNumberingStyle(l types.OrderedList) (string, error) {
+	if s, found, err := l.Attributes.GetAsString(types.AttrStyle); err != nil {
+		return "", err
+	} else if found {
+		return s, nil
 	}
-	return l.Items[0].Style
+	return l.Items[0].Style, nil
 }
 
 // this numbering style is only really relevant to HTML

@@ -18,9 +18,18 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*string, er
 		}
 		documentDetailsBuff := &bytes.Buffer{}
 		revLabel := ctx.Attributes.GetAsStringWithDefault("version-label", "version")
-		revNumber, _ := ctx.Attributes.GetAsString("revnumber")
-		revDate, _ := ctx.Attributes.GetAsString("revdate")
-		revRemark, _ := ctx.Attributes.GetAsString("revremark")
+		revNumber, _, err := ctx.Attributes.GetAsString("revnumber")
+		if err != nil {
+			return nil, errors.Wrap(err, "error while rendering the document details")
+		}
+		revDate, _, err := ctx.Attributes.GetAsString("revdate")
+		if err != nil {
+			return nil, errors.Wrap(err, "error while rendering the document details")
+		}
+		revRemark, _, err := ctx.Attributes.GetAsString("revremark")
+		if err != nil {
+			return nil, errors.Wrap(err, "error while rendering the document details")
+		}
 		err = r.documentDetails.Execute(documentDetailsBuff, struct {
 			Authors   string
 			RevLabel  string
@@ -60,12 +69,17 @@ func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*str
 			emailKey = "email_" + index
 		}
 		// having at least one author is the minimal requirement for document details
-		if author, ok := ctx.Attributes.GetAsString(authorKey); ok {
+		if author, ok, err := ctx.Attributes.GetAsString(authorKey); err != nil {
+			return nil, errors.Wrap(err, "error while rendering the document details")
+		} else if ok {
 			if i > 1 {
 				authorsDetailsBuff.WriteString("\n")
 			}
-			email, _ := ctx.Attributes.GetAsString(emailKey)
-			err := r.documentAuthorDetails.Execute(authorsDetailsBuff, struct {
+			email, _, err := ctx.Attributes.GetAsString(emailKey)
+			if err != nil {
+				return nil, errors.Wrap(err, "error while rendering the document details")
+			}
+			err = r.documentAuthorDetails.Execute(authorsDetailsBuff, struct {
 				Index string
 				Name  string
 				Email string

@@ -24,6 +24,14 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.VerseBloc
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse block")
 	}
+	attribution, err := verseBlockAttribution(b)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render verse block")
+	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 
 	err = r.verseBlock.Execute(result, struct {
 		Context     *renderer.Context
@@ -35,9 +43,9 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b types.VerseBloc
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(b.Attributes),
-		Title:       r.renderElementTitle(b.Attributes),
+		Title:       title,
 		Roles:       roles,
-		Attribution: verseBlockAttribution(b),
+		Attribution: attribution,
 		Content:     string(content),
 	})
 	return result.String(), err
@@ -51,6 +59,15 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Parag
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse paragraph lines")
 	}
+	attribution, err := paragraphAttribution(p)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render verse block")
+	}
+	title, err := r.renderElementTitle(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.verseParagraph.Execute(result, struct {
 		Context     *renderer.Context
 		ID          string
@@ -61,8 +78,8 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p types.Parag
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
-		Title:       r.renderElementTitle(p.Attributes),
-		Attribution: paragraphAttribution(p),
+		Title:       title,
+		Attribution: attribution,
 		Content:     string(content),
 		Lines:       p.Lines,
 	})

@@ -20,6 +20,11 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Sidebar
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.sidebarBlock.Execute(result, struct {
 		Context *renderer.Context
 		ID      string
@@ -29,7 +34,7 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.Sidebar
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(b.Attributes),
-		Title:   r.renderElementTitle(b.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: content,
 	})

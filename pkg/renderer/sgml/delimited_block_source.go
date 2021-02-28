@@ -34,6 +34,11 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.ListingB
 			}
 		}
 	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	result := &bytes.Buffer{}
 	err = r.sourceBlock.Execute(result, struct {
 		ID                string
@@ -45,7 +50,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b types.ListingB
 		Content           string
 	}{
 		ID:                r.renderElementID(b.Attributes),
-		Title:             r.renderElementTitle(b.Attributes),
+		Title:             title,
 		SyntaxHighlighter: highlighter,
 		Roles:             roles,
 		Language:          language,
@@ -75,8 +80,14 @@ func (r *sgmlRenderer) renderSourceLines(ctx *renderer.Context, b types.ListingB
 	ctx.WithinDelimitedBlock = true
 
 	lines := discardEmptyLines(b.Lines)
-	highlighter, _ := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
-	language, found := b.Attributes.GetAsString(types.AttrLanguage)
+	highlighter, _, err := ctx.Attributes.GetAsString(types.AttrSyntaxHighlighter)
+	if err != nil {
+		return "", "", "", err
+	}
+	language, found, err := b.Attributes.GetAsString(types.AttrLanguage)
+	if err != nil {
+		return "", "", "", err
+	}
 	if found && (highlighter == "chroma" || highlighter == "pygments") {
 		ctx.EncodeSpecialChars = false
 		defer func() {
@@ -89,7 +100,9 @@ func (r *sgmlRenderer) renderSourceLines(ctx *renderer.Context, b types.ListingB
 		}
 		lexer = chroma.Coalesce(lexer)
 		style := styles.Fallback
-		if s, found := ctx.Attributes.GetAsString(highlighter + "-style"); found {
+		if s, found, err := ctx.Attributes.GetAsString(highlighter + "-style"); err != nil {
+			return "", "", "", err
+		} else if found {
 			style = styles.Get(s)
 		}
 		options := []html.Option{

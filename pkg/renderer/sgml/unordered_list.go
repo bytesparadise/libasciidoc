@@ -29,6 +29,10 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render unordered list roles")
 	}
+	title, err := r.renderElementTitle(l.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 
 	// here we must preserve the HTML tags
 	err = r.unorderedList.Execute(result, struct {
@@ -43,7 +47,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l types.Unorde
 	}{
 		Context:   ctx,
 		ID:        r.renderElementID(l.Attributes),
-		Title:     r.renderElementTitle(l.Attributes),
+		Title:     title,
 		Checklist: checkList,
 		Items:     l.Items,
 		Content:   string(content.String()),

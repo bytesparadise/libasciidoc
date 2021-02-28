@@ -59,6 +59,17 @@ var _ = Describe("images", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with quoted text in attribute alt", func() {
+			// alt text is rendered as-is, even if it's rich
+			source := `image::images/foo.png[*alt text*, 600, 400]`
+			expected := `<div class="imageblock">
+<div class="content">
+<img src="images/foo.png" alt="*alt text*" width="600" height="400">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 		It("with custom caption", func() {
 			// TODO: split on multiple lines for readability
 			source := ".Image Title\nimage::foo.png[foo image, 600, 400,caption=\"Bar A. \"]"

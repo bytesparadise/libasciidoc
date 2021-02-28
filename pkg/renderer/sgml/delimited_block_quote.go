@@ -19,6 +19,15 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.QuoteBloc
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
+	attribution, err := quoteBlockAttribution(b)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.quoteBlock.Execute(result, struct {
 		Context     *renderer.Context
 		ID          string
@@ -29,9 +38,9 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.QuoteBloc
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(b.Attributes),
-		Title:       r.renderElementTitle(b.Attributes),
+		Title:       title,
 		Roles:       roles,
-		Attribution: quoteBlockAttribution(b),
+		Attribution: attribution,
 		Content:     content,
 	})
 	return result.String(), err
@@ -45,6 +54,15 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Parag
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote paragraph lines")
 	}
+	attribution, err := paragraphAttribution(p)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render quote paragraph lines")
+	}
+	title, err := r.renderElementTitle(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.quoteParagraph.Execute(result, struct {
 		Context     *renderer.Context
 		ID          string
@@ -55,8 +73,8 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Parag
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
-		Title:       r.renderElementTitle(p.Attributes),
-		Attribution: paragraphAttribution(p),
+		Title:       title,
+		Attribution: attribution,
 		Content:     string(content),
 		Lines:       p.Lines,
 	})

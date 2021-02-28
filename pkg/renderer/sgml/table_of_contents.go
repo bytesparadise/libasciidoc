@@ -148,7 +148,9 @@ func (r *sgmlRenderer) visitSection(ctx *renderer.Context, section types.Section
 
 func getTableOfContentsLevels(ctx *renderer.Context) (int, error) {
 	// log.Debugf("doc attributes: %v", ctx.Attributes)
-	if l, found := ctx.Attributes.GetAsString(types.AttrTableOfContentsLevels); found {
+	if l, found, err := ctx.Attributes.GetAsString(types.AttrTableOfContentsLevels); err != nil {
+		return -1, err
+	} else if found {
 		// log.Debugf("ToC levels: '%s'", l)
 		return strconv.Atoi(l)
 	}

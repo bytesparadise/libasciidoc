@@ -92,6 +92,34 @@ image::images/foo.png[{alt}]`
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
 
+		It("with quoted text in attribute alt", func() {
+			source := `image::images/foo.png[*alt text*]`
+			expected := types.DraftDocument{
+				Elements: []interface{}{
+					types.ImageBlock{
+						Attributes: types.Attributes{
+							types.AttrImageAlt: []interface{}{
+								types.QuotedText{
+									Kind: types.SingleQuoteBold,
+									Elements: []interface{}{
+										types.StringElement{
+											Content: "alt text",
+										},
+									},
+								},
+							},
+						},
+						Location: types.Location{
+							Path: []interface{}{
+								types.StringElement{Content: "images/foo.png"},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+		})
+
 		It("with dimensions and id link title meta", func() {
 			source := `[#img-foobar]
 .A title to foobar

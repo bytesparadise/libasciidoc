@@ -27,7 +27,10 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Example
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	c, ok := b.Attributes.GetAsString(types.AttrCaption)
+	c, ok, err := b.Attributes.GetAsString(types.AttrCaption)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
 	if !ok {
 		c = ctx.Attributes.GetAsStringWithDefault(types.AttrExampleCaption, "Example")
 		if c != "" {
@@ -38,6 +41,10 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Example
 	if strings.Contains(c, "{counter:example-number}") {
 		number = ctx.GetAndIncrementExampleBlockCounter()
 		c = strings.ReplaceAll(c, "{counter:example-number}", strconv.Itoa(number))
+	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
 	caption.WriteString(c)
 	err = r.exampleBlock.Execute(result, struct {
@@ -51,7 +58,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Example
 	}{
 		Context:       ctx,
 		ID:            r.renderElementID(b.Attributes),
-		Title:         r.renderElementTitle(b.Attributes),
+		Title:         title,
 		Caption:       caption.String(),
 		Roles:         roles,
 		ExampleNumber: number,
@@ -71,6 +78,10 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p types.Par
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
+	title, err := r.renderElementTitle(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 	err = r.exampleBlock.Execute(result, struct {
 		Context       *renderer.Context
 		ID            string
@@ -83,7 +94,7 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p types.Par
 		Context: ctx,
 		Roles:   roles,
 		ID:      r.renderElementID(p.Attributes),
-		Title:   r.renderElementTitle(p.Attributes),
+		Title:   title,
 		Content: string(content) + "\n",
 	})
 

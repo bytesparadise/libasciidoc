@@ -48,7 +48,10 @@ func (t Table) parseNum(c string) (int, string) {
 }
 
 func (t Table) parseColumnsAttr() ([]TableColumn, error) {
-	attr, ok := t.Attributes.GetAsString(AttrCols)
+	attr, ok, err := t.Attributes.GetAsString(AttrCols)
+	if err != nil {
+		return nil, err
+	}
 	if !ok {
 		return nil, nil
 	}

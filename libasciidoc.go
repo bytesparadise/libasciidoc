@@ -73,7 +73,10 @@ func Convert(r io.Reader, output io.Writer, config configuration.Configuration) 
 		return types.Metadata{}, err
 	}
 	// validate the document
-	problems := validator.Validate(&doc)
+	problems, err := validator.Validate(&doc)
+	if err != nil {
+		return types.Metadata{}, err
+	}
 	for _, problem := range problems {
 		switch problem.Severity {
 		case validator.Error:

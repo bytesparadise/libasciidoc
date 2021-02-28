@@ -425,7 +425,8 @@ AttributeValue <-
 SingleQuotedAttributeValue <- 
     "'" 
     elements:(
-        ([^'\r\n\uFFFD\\{]+ { // = and , signs are allowed within ' quotes 
+        QuotedText 
+        / ([^'\r\n\uFFFD\\{]+ { // = and , signs are allowed within ' quotes 
             return types.NewStringElement(string(c.text))
         })
         / ElementPlaceHolder
@@ -444,7 +445,8 @@ SingleQuotedAttributeValue <-
 DoubleQuotedAttributeValue <- 
     "\"" 
     elements:(
-        ([^\r\n\uFFFD"\\{]+ { // = and , signs are allowed within " quotes
+        QuotedText 
+        / ([^\r\n\uFFFD"\\{]+ { // = and , signs are allowed within " quotes
             return types.NewStringElement(string(c.text))
         }) 
         / ElementPlaceHolder
@@ -464,7 +466,8 @@ DoubleQuotedAttributeValue <-
 UnquotedAttributeValue <- 
     !Space
     elements:(
-        ([^,=\r\n\uFFFD{\]]+ {
+        QuotedText
+        / ([^,=\r\n\uFFFD{\]]+ {
             return types.NewStringElement(string(c.text))
         }) 
         / ElementPlaceHolder
