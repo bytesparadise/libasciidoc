@@ -180,7 +180,7 @@ var _ = Describe("quoted strings", func() {
 			}
 			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
 		})
-		It("curly in monospace  string", func() {
+		It("curly in monospace string", func() {
 			source := "'`curly `is` single`'"
 			expected := types.DraftDocument{
 				Elements: []interface{}{

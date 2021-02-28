@@ -63,8 +63,8 @@ func applySubstitutions(ctx substitutionContext, elements []interface{}) ([]inte
 	}
 	result := make([]interface{}, len(elements))
 	for i, e := range elements {
-		log.Debugf("applying substitution on attributes of element of type '%T'", e)
 		if a, ok := e.(types.WithAttributesToSubstitute); ok {
+			log.Debugf("applying substitution on attributes of element of type '%T'", e)
 			attrs, err := applyAttributeSubstitutionsOnAttributes(ctx, a.AttributesToSubstitute())
 			if err != nil {
 				return nil, err
@@ -74,6 +74,7 @@ func applySubstitutions(ctx substitutionContext, elements []interface{}) ([]inte
 		var err error
 		switch e := e.(type) {
 		case types.WithNestedElementSubstitution:
+			log.Debugf("applying substitution on nested elements of element of type '%T'", e)
 			subs, err := substitutionsFor(e)
 			if err != nil {
 				return nil, err
@@ -84,6 +85,7 @@ func applySubstitutions(ctx substitutionContext, elements []interface{}) ([]inte
 			}
 			result[i] = e.ReplaceElements(elements)
 		case types.WithLineSubstitution:
+			log.Debugf("applying substitution on lines of element of type '%T'", e)
 			subs, err := substitutionsFor(e)
 			if err != nil {
 				return nil, err
@@ -390,7 +392,7 @@ type elementsSubstitution func(ctx substitutionContext, lines [][]interface{}) (
 
 func newElementsSubstitution(rule string) elementsSubstitution {
 	return func(ctx substitutionContext, lines [][]interface{}) ([][]interface{}, error) {
-		// log.Debugf("applying the '%s' rule on elements", rule)
+		log.Debugf("applying the '%s' rule on elements", rule)
 		placeholders := &placeholders{
 			seq:      0,
 			elements: map[string]interface{}{},
@@ -420,10 +422,10 @@ func newElementsSubstitution(rule string) elementsSubstitution {
 			return nil, err
 		}
 		elmts = restorePlaceholderElements(elmts, placeholders)
-		// if log.IsLevelEnabled(log.DebugLevel) {
-		// 	// log.Debugf("applied the '%s' rule:", rule)
-		// 	spew.Fdump(log.StandardLogger().Out, result)
-		// }
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debugf("applied the '%s' rule:", rule)
+			spew.Fdump(log.StandardLogger().Out, [][]interface{}{elmts})
+		}
 		return [][]interface{}{elmts}, nil
 	}
 }
