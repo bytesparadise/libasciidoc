@@ -29,7 +29,7 @@ some *example* content
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "example",
@@ -90,7 +90,7 @@ with _italic content_
 												Content: "some listing ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "bold code",
@@ -103,7 +103,7 @@ with _italic content_
 												Content: "with ",
 											},
 											types.QuotedText{
-												Kind: types.Italic,
+												Kind: types.SingleQuoteItalic,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "italic content",
@@ -244,7 +244,7 @@ some *example* content`
 										Content: "some ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "example",
@@ -283,7 +283,7 @@ some *example* content
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "example",
@@ -344,7 +344,7 @@ with *bold content*
 												Content: "with ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "bold content",
@@ -463,7 +463,7 @@ some *example* content`
 										Content: "some ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "example",

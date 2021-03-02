@@ -280,7 +280,7 @@ var _ = Describe("passthroughs", func() {
 										Content: "+",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "hello",
@@ -310,7 +310,7 @@ var _ = Describe("passthroughs", func() {
 										Content: "+ ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "hello",
@@ -339,7 +339,7 @@ var _ = Describe("passthroughs", func() {
 										Content: "+ ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "hello",
@@ -393,7 +393,7 @@ var _ = Describe("passthroughs", func() {
 											Content: "The text + ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "hello",
@@ -539,7 +539,7 @@ var _ = Describe("passthroughs", func() {
 										Kind: types.PassthroughMacro,
 										Elements: []interface{}{
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "hello",
@@ -569,7 +569,7 @@ var _ = Describe("passthroughs", func() {
 												Content: " a ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "hello",

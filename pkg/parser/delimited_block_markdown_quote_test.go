@@ -33,7 +33,7 @@ with a link to https://example.com[]`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",
@@ -83,7 +83,7 @@ with a link to https://example.com[]`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",
@@ -121,7 +121,7 @@ with a link to https://example.com[]`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",
@@ -159,7 +159,7 @@ with a link to https://example.com[]`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",
@@ -212,7 +212,7 @@ on *multiple lines*`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",
@@ -244,7 +244,7 @@ on *multiple lines*`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",
@@ -280,7 +280,7 @@ on *multiple lines*`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",
@@ -318,7 +318,7 @@ on *multiple lines*`
 										Content: "on ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "multiple lines",

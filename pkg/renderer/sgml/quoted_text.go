@@ -24,17 +24,17 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedTex
 	}
 	var tmpl *textTemplate
 	switch t.Kind {
-	case types.Bold:
+	case types.SingleQuoteBold, types.DoubleQuoteBold:
 		tmpl = r.boldText
-	case types.Italic:
+	case types.SingleQuoteItalic, types.DoubleQuoteItalic:
 		tmpl = r.italicText
-	case types.Marked:
+	case types.SingleQuoteMarked, types.DoubleQuoteMarked:
 		tmpl = r.markedText
-	case types.Monospace:
+	case types.SingleQuoteMonospace, types.DoubleQuoteMonospace:
 		tmpl = r.monospaceText
-	case types.Subscript:
+	case types.SingleQuoteSubscript:
 		tmpl = r.subscriptText
-	case types.Superscript:
+	case types.SingleQuoteSuperscript:
 		tmpl = r.superscriptText
 	default:
 		return "", errors.Errorf("unsupported quoted text kind: '%v'", t.Kind)

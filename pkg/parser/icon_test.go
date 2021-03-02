@@ -310,7 +310,7 @@ item 2:: two`
 										Content: "an ",
 									},
 									types.QuotedText{
-										Kind: types.Italic,
+										Kind: types.SingleQuoteItalic,
 										Elements: []interface{}{
 											types.StringElement{Content: "italicized "},
 											types.Icon{Class: "warning"},
@@ -332,7 +332,7 @@ item 2:: two`
 							Lines: [][]interface{}{
 								{
 									types.QuotedText{
-										Kind: types.Marked,
+										Kind: types.SingleQuoteMarked,
 										Elements: []interface{}{
 											types.StringElement{Content: "marked "},
 											types.Icon{Class: "warning"},
@@ -355,7 +355,7 @@ item 2:: two`
 								{
 									types.StringElement{Content: "in "},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{Content: "bold "},
 											types.Icon{Class: "warning"},
@@ -378,7 +378,7 @@ item 2:: two`
 								{
 									types.StringElement{Content: "in "},
 									types.QuotedText{
-										Kind: types.Monospace,
+										Kind: types.SingleQuoteMonospace,
 										Elements: []interface{}{
 											types.StringElement{Content: "monospace "},
 											types.Icon{Class: "warning"},

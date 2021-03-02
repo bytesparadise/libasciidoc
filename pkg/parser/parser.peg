@@ -1049,7 +1049,7 @@ TwoOrMoreBackslashes <- `\\` `\`* {
 BoldText <- DoubleQuoteBoldText / SingleQuoteBoldText // double punctuation must be evaluated first
 
 DoubleQuoteBoldText <- "**" elements:(DoubleQuoteBoldTextElements) "**" {
-    return types.NewQuotedText(types.Bold, elements.([]interface{}))
+    return types.NewQuotedText(types.DoubleQuoteBold, elements.([]interface{}))
 } 
 
 DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement*  
@@ -1083,9 +1083,9 @@ DoubleQuoteBoldTextFallbackCharacter <-
 
 SingleQuoteBoldText <- 
     ("*" !"*") elements:(SingleQuoteBoldTextElements) "*" &(!Alphanum) { // single punctuation cannot be followed by a character (needs '**' to emphazise a portion of a word)
-        return types.NewQuotedText(types.Bold, elements.([]interface{}))
+        return types.NewQuotedText(types.SingleQuoteBold, elements.([]interface{}))
     } / "*" elements:("*" SingleQuoteBoldTextElements) "*" { // unbalanced `**` vs `*` punctuation.
-        return types.NewQuotedText(types.Bold, elements.([]interface{})) // include the second heading `*` as a regular StringElement in the bold content
+        return types.NewQuotedText(types.SingleQuoteBold, elements.([]interface{})) // include the second heading `*` as a regular StringElement in the bold content
     } 
 
 SingleQuoteBoldTextElements <- !Space SingleQuoteBoldTextElement+
@@ -1132,7 +1132,7 @@ EscapedBoldText <-
 ItalicText <- DoubleQuoteItalicText / SingleQuoteItalicText
 
 DoubleQuoteItalicText <- "__" elements:(DoubleQuoteItalicTextElements) "__" { // double punctuation must be evaluated first
-    return types.NewQuotedText(types.Italic, elements.([]interface{}))
+    return types.NewQuotedText(types.DoubleQuoteItalic, elements.([]interface{}))
 }
 
 DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement* 
@@ -1167,9 +1167,9 @@ DoubleQuoteItalicTextFallbackCharacter <-
 
 SingleQuoteItalicText <- 
     ("_" !"_") elements:(SingleQuoteItalicTextElements) "_" { // single punctuation cannot be followed by a character (needs '__' to emphazise a portion of a word)
-        return types.NewQuotedText(types.Italic, elements.([]interface{}))
+        return types.NewQuotedText(types.SingleQuoteItalic, elements.([]interface{}))
     } / "_" elements:("_" SingleQuoteItalicTextElements) "_" { // unbalanced `__` vs `_` punctuation.
-        return types.NewQuotedText(types.Italic, elements.([]interface{})) // include the second heading `_` as a regular StringElement in the italic content
+        return types.NewQuotedText(types.SingleQuoteItalic, elements.([]interface{})) // include the second heading `_` as a regular StringElement in the italic content
     } 
 
 SingleQuoteItalicTextElements <- !Space SingleQuoteItalicTextElement+
@@ -1216,7 +1216,7 @@ EscapedItalicText <-
 MonospaceText <- DoubleQuoteMonospaceText / SingleQuoteMonospaceText
 
 DoubleQuoteMonospaceText <- "``" elements:(DoubleQuoteMonospaceTextElements) "``" { // double punctuation must be evaluated first
-    return types.NewQuotedText(types.Monospace, elements.([]interface{}))
+    return types.NewQuotedText(types.DoubleQuoteMonospace, elements.([]interface{}))
 }
 
 DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement* // may start and end with spaces
@@ -1252,9 +1252,9 @@ DoubleQuoteMonospaceTextFallbackCharacter <-
 
 SingleQuoteMonospaceText <- 
     ("`" !"`") elements:(SingleQuoteMonospaceTextElements) "`" { // single punctuation cannot be followed by a character (needs "``" to emphazise a portion of a word)
-        return types.NewQuotedText(types.Monospace, elements.([]interface{}))
+        return types.NewQuotedText(types.SingleQuoteMonospace, elements.([]interface{}))
     } / "`" elements:("`" SingleQuoteMonospaceTextElements) "`" { // unbalanced "``" vs "`" punctuation.
-       return types.NewQuotedText(types.Monospace, elements.([]interface{})) // include the second heading "`" as a regular StringElement in the monospace content
+       return types.NewQuotedText(types.SingleQuoteMonospace, elements.([]interface{})) // include the second heading "`" as a regular StringElement in the monospace content
     }
 
 SingleQuoteMonospaceTextElements <- !Space SingleQuoteMonospaceTextElement+
@@ -1387,7 +1387,7 @@ DoubleQuotedStringFallbackCharacter <-  ([^\r\n\t `] / "`" !"\"") {
 MarkedText <- DoubleQuoteMarkedText / SingleQuoteMarkedText
 
 DoubleQuoteMarkedText <- "##" elements:(DoubleQuoteMarkedTextElements) "##" { // double punctuation must be evaluated first
-    return types.NewQuotedText(types.Marked, elements.([]interface{}))
+    return types.NewQuotedText(types.DoubleQuoteMarked, elements.([]interface{}))
 }
 
 DoubleQuoteMarkedTextElements <- DoubleQuoteMarkedTextElement (!("##") (Space / DoubleQuoteMarkedTextElement))*  // may start and end with spaces
@@ -1417,9 +1417,9 @@ DoubleQuoteMarkedTextFallbackCharacter <-
 }
 
 SingleQuoteMarkedText <- ("#" !"#") elements:(SingleQuoteMarkedTextElements) "#" { // single punctuation cannot be followed by a character (needs '##' to emphazise a portion of a word)
-    return types.NewQuotedText(types.Marked, elements.([]interface{}))
+    return types.NewQuotedText(types.SingleQuoteMarked, elements.([]interface{}))
 } / "#" elements:("#" SingleQuoteMarkedTextElements) "#" { // unbalanced `##` vs `#` punctuation.
-    return types.NewQuotedText(types.Marked, elements.([]interface{})) // include the second heading `_` as a regular StringElement in the italic content
+    return types.NewQuotedText(types.SingleQuoteMarked, elements.([]interface{})) // include the second heading `_` as a regular StringElement in the italic content
 }
 
 SingleQuoteMarkedTextElements <- !Space SingleQuoteMarkedTextElement+
@@ -1460,7 +1460,7 @@ EscapedMarkedText <-
 
 
 SubscriptText <- "~" element:(SubscriptTextElement) "~" { // wraps a single word
-    return types.NewQuotedText(types.Subscript, element)
+    return types.NewQuotedText(types.SingleQuoteSubscript, element)
 }
 
 SubscriptTextElement <- QuotedText / NonSubscriptText 
@@ -1474,7 +1474,7 @@ EscapedSubscriptText <- backslashes:(OneOrMoreBackslashes) "~" element:(Subscrip
 } 
 
 SuperscriptText <- "^" element:(SuperscriptTextElement) "^" { // wraps a single word
-    return types.NewQuotedText(types.Superscript, element)
+    return types.NewQuotedText(types.SingleQuoteSuperscript, element)
 }
 
 SuperscriptTextElement <- QuotedText / NonSuperscriptText 

@@ -462,7 +462,7 @@ next lines`
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: []interface{}{
 												types.QuotedText{
-													Kind: types.Italic,
+													Kind: types.SingleQuoteItalic,
 													Elements: []interface{}{
 														types.StringElement{
 															Content: "a",
@@ -473,7 +473,7 @@ next lines`
 													Content: " ",
 												},
 												types.QuotedText{
-													Kind: types.Bold,
+													Kind: types.SingleQuoteBold,
 													Elements: []interface{}{
 														types.StringElement{
 															Content: "b",
@@ -484,7 +484,7 @@ next lines`
 													Content: " ",
 												},
 												types.QuotedText{
-													Kind: types.Monospace,
+													Kind: types.SingleQuoteMonospace,
 													Elements: []interface{}{
 														types.StringElement{
 															Content: "c",
@@ -519,7 +519,7 @@ next lines`
 							Lines: [][]interface{}{
 								{types.StringElement{Content: "a link to "},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.InlineLink{
 												Location: types.Location{
@@ -575,7 +575,7 @@ next lines`
 							Lines: [][]interface{}{
 								{types.StringElement{Content: "a link to "},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.InlineLink{
 												Location: types.Location{
@@ -606,7 +606,7 @@ next lines`
 							Lines: [][]interface{}{
 								{types.StringElement{Content: "a link to "},
 									types.QuotedText{
-										Kind: types.Italic,
+										Kind: types.SingleQuoteItalic,
 										Elements: []interface{}{
 											types.InlineLink{
 												Location: types.Location{
@@ -730,7 +730,7 @@ a link to *{scheme}://{path}[] and https://foo.com[]*`
 									{
 										types.StringElement{Content: "a link to "},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.InlineLink{
 													Location: types.Location{
@@ -1096,7 +1096,7 @@ a link to {scheme}://{path} and https://foo.com`
 												Content: "a ",
 											},
 											types.QuotedText{
-												Kind: types.Italic,
+												Kind: types.SingleQuoteItalic,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "a",
@@ -1107,7 +1107,7 @@ a link to {scheme}://{path} and https://foo.com`
 												Content: " b ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "b",
@@ -1118,7 +1118,7 @@ a link to {scheme}://{path} and https://foo.com`
 												Content: " c ",
 											},
 											types.QuotedText{
-												Kind: types.Monospace,
+												Kind: types.SingleQuoteMonospace,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "c",
@@ -1263,7 +1263,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 						types.Paragraph{
 							Lines: [][]interface{}{
 								{types.QuotedText{
-									Kind: types.Bold,
+									Kind: types.SingleQuoteBold,
 									Elements: []interface{}{
 										types.InlineLink{
 											Location: types.Location{
