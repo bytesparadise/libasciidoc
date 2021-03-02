@@ -178,7 +178,7 @@ and a paragraph`
 				source := `==  *2 spaces and bold content*`
 				sectionTitle := []interface{}{
 					types.QuotedText{
-						Kind: types.Bold,
+						Kind: types.SingleQuoteBold,
 						Elements: []interface{}{
 							types.StringElement{Content: "2 spaces and bold content"},
 						},
@@ -622,7 +622,7 @@ a paragraph with *bold content*`
 												{
 													types.StringElement{Content: "a paragraph with "},
 													types.QuotedText{
-														Kind: types.Bold,
+														Kind: types.SingleQuoteBold,
 														Elements: []interface{}{
 															types.StringElement{Content: "bold content"},
 														},
@@ -1033,7 +1033,7 @@ and a paragraph`
 				source := `==  *2 spaces and bold content*`
 				sectionTitle := []interface{}{
 					types.QuotedText{
-						Kind: types.Bold,
+						Kind: types.SingleQuoteBold,
 						Elements: []interface{}{
 							types.StringElement{Content: "2 spaces and bold content"},
 						},

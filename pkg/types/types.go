@@ -131,6 +131,12 @@ type WithPlaceholdersInLocation interface {
 	RestoreLocation(placeholders map[string]interface{}) interface{}
 }
 
+// RawText interface for the elements that can provide the raw text representation of this element
+// as it was (supposedly) written in the source document
+type RawText interface {
+	RawText() (string, error)
+}
+
 // ------------------------------------------
 // Substitution support
 // ------------------------------------------
@@ -436,6 +442,13 @@ func NewAttributeReset(attrName string) (AttributeReset, error) {
 // AttributeSubstitution the type for AttributeSubstitution
 type AttributeSubstitution struct {
 	Name string
+}
+
+var _ RawText = AttributeSubstitution{}
+
+// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+func (s AttributeSubstitution) RawText() (string, error) {
+	return "{" + s.Name + "}", nil
 }
 
 // PredefinedAttribute a special kind of attribute substitution, which
@@ -2518,6 +2531,11 @@ func NewStringElement(content string) (StringElement, error) {
 	return StringElement{Content: content}, nil
 }
 
+// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+func (s StringElement) RawText() (string, error) {
+	return s.Content, nil
+}
+
 // ------------------------------------------
 // VerbatimLine
 // ------------------------------------------
@@ -2570,31 +2588,29 @@ type QuotedText struct {
 }
 
 // QuotedTextKind the type for
-type QuotedTextKind int
+type QuotedTextKind string
 
 const (
-	// Bold bold quoted text (wrapped with '*' or '**')
-	Bold QuotedTextKind = iota
-	// Italic italic quoted text (wrapped with '_' or '__')
-	Italic
-	// Marked text (highlighter, wrapped with '#' or '##')
-	Marked
-	// Monospace monospace quoted text (wrapped with '`' or '``')
-	Monospace
-	// Subscript subscript quoted text (wrapped with '~' or '~~')
-	Subscript
-	// Superscript superscript quoted text (wrapped with '^' or '^^')
-	Superscript
-)
-
-// QuotedStringKind indicates whether this is 'single' or "double" quoted.
-type QuotedStringKind int
-
-const (
-	// SingleQuote means single quotes (')
-	SingleQuote QuotedStringKind = iota
-	// DoubleQuote means double quotes (")
-	DoubleQuote
+	// SingleQuoteBold bold quoted text (wrapped with '*')
+	SingleQuoteBold = QuotedTextKind("*")
+	// DoubleQuoteBold bold quoted text (wrapped with '**')
+	DoubleQuoteBold = QuotedTextKind("**")
+	// SingleQuoteItalic italic quoted text (wrapped with '_')
+	SingleQuoteItalic = QuotedTextKind("_")
+	// DoubleQuoteItalic italic quoted text (wrapped with '__')
+	DoubleQuoteItalic = QuotedTextKind("__")
+	// SingleQuoteMarked text highlighter (wrapped with '#')
+	SingleQuoteMarked = QuotedTextKind("#")
+	// DoubleQuoteMarked text highlighter (wrapped '##')
+	DoubleQuoteMarked = QuotedTextKind("##")
+	// SingleQuoteMonospace monospace quoted text (wrapped with '`')
+	SingleQuoteMonospace = QuotedTextKind("`")
+	// DoubleQuoteMonospace monospace quoted text (wrapped with '``')
+	DoubleQuoteMonospace = QuotedTextKind("``")
+	// SingleQuoteSubscript subscript quoted text (wrapped with '~')
+	SingleQuoteSubscript = QuotedTextKind("~")
+	// SingleQuoteSuperscript superscript quoted text (wrapped with '^')
+	SingleQuoteSuperscript = QuotedTextKind("^")
 )
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
@@ -2603,6 +2619,37 @@ func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (QuotedText, er
 		Kind:     kind,
 		Elements: Merge(elements),
 	}, nil
+}
+
+var _ RawText = QuotedText{}
+
+// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+func (t QuotedText) RawText() (string, error) {
+	result := strings.Builder{}
+	result.WriteString(string(t.Kind)) // opening delimiter
+	s, err := toRawText(t.Elements)
+	if err != nil {
+		return "", err
+	}
+	result.WriteString(s)
+	result.WriteString(string(t.Kind)) // closing delimiter
+	return result.String(), nil
+}
+
+func toRawText(elements []interface{}) (string, error) {
+	result := strings.Builder{}
+	for _, e := range elements {
+		r, ok := e.(RawText)
+		if !ok {
+			return "", fmt.Errorf("element of type '%T' cannot be converted to raw text", e)
+		}
+		s, err := r.RawText()
+		if err != nil {
+			return "", err
+		}
+		result.WriteString(s)
+	}
+	return result.String(), nil
 }
 
 // WithAttributes returns a _new_ QuotedText with the given attributes (with some mapping)
@@ -2672,6 +2719,20 @@ func NewEscapedQuotedText(backslashes string, punctuation string, content interf
 	}, nil
 }
 
+// -------------------------------------------------------
+// Quoted Strings
+// -------------------------------------------------------
+
+// QuotedStringKind indicates whether this is 'single' or "double" quoted.
+type QuotedStringKind string
+
+const (
+	// SingleQuote means single quotes (')
+	SingleQuote = QuotedStringKind("'")
+	// DoubleQuote means double quotes (")
+	DoubleQuote = QuotedStringKind("\"")
+)
+
 // QuotedString a quoted string
 type QuotedString struct {
 	Kind     QuotedStringKind
@@ -2681,6 +2742,23 @@ type QuotedString struct {
 // NewQuotedString returns a new QuotedString
 func NewQuotedString(kind QuotedStringKind, elements []interface{}) (QuotedString, error) {
 	return QuotedString{Kind: kind, Elements: elements}, nil
+}
+
+var _ RawText = QuotedString{}
+
+// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+func (s QuotedString) RawText() (string, error) {
+	result := strings.Builder{}
+	result.WriteString("`")            // opening delimiter
+	result.WriteString(string(s.Kind)) // opening delimiter
+	e, err := toRawText(s.Elements)
+	if err != nil {
+		return "", err
+	}
+	result.WriteString(e)
+	result.WriteString(string(s.Kind)) // closing delimiter
+	result.WriteString("`")            // closing delimiter
+	return result.String(), nil
 }
 
 var _ WithPlaceholdersInElements = QuotedString{}
@@ -2698,19 +2776,19 @@ func (s QuotedString) RestoreElements(placeholders map[string]interface{}) inter
 // InlinePassthrough the structure for Passthroughs
 type InlinePassthrough struct {
 	Kind     PassthroughKind
-	Elements []interface{}
+	Elements []interface{} // TODO: refactor to `Content string` ?
 }
 
 // PassthroughKind the kind of passthrough
-type PassthroughKind int
+type PassthroughKind string
 
 const (
 	// SinglePlusPassthrough a passthrough with a single `+` punctuation
-	SinglePlusPassthrough PassthroughKind = iota
+	SinglePlusPassthrough = PassthroughKind("+")
 	// TriplePlusPassthrough a passthrough with a triple `+++` punctuation
-	TriplePlusPassthrough
+	TriplePlusPassthrough = PassthroughKind("+++")
 	// PassthroughMacro a passthrough with the `pass:[]` macro
-	PassthroughMacro
+	PassthroughMacro = PassthroughKind("pass:[]")
 )
 
 // NewInlinePassthrough returns a new passthrough
@@ -2719,7 +2797,31 @@ func NewInlinePassthrough(kind PassthroughKind, elements []interface{}) (InlineP
 		Kind:     kind,
 		Elements: Merge(elements...),
 	}, nil
+}
 
+var _ RawText = InlinePassthrough{}
+
+// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+func (p InlinePassthrough) RawText() (string, error) {
+	result := strings.Builder{}
+	switch p.Kind {
+	case PassthroughMacro:
+		result.WriteString("pass:[") // opening delimiter
+	default:
+		result.WriteString(string(p.Kind)) // opening delimiter
+	}
+	e, err := toRawText(p.Elements)
+	if err != nil {
+		return "", err
+	}
+	result.WriteString(e)
+	switch p.Kind {
+	case PassthroughMacro:
+		result.WriteString("]") // closing delimiter
+	default:
+		result.WriteString(string(p.Kind)) // closing delimiter
+	}
+	return result.String(), nil
 }
 
 // ------------------------------------------
@@ -3241,6 +3343,13 @@ func NewSpecialCharacter(name string) (SpecialCharacter, error) {
 	return SpecialCharacter{
 		Name: name,
 	}, nil
+}
+
+var _ RawText = SpecialCharacter{}
+
+// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+func (c SpecialCharacter) RawText() (string, error) {
+	return c.Name, nil
 }
 
 // ------------------------------------------------------------------------------------

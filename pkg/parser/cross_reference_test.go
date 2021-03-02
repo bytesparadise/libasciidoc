@@ -134,7 +134,7 @@ with some content linked to <<thetitle,a label to the title>>!`
 										},
 										Label: []interface{}{
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "another doc",

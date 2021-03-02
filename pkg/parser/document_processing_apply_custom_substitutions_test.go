@@ -101,7 +101,7 @@ and <more text> on the +
 										},
 										{
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "next",
@@ -229,7 +229,7 @@ and <more text> on the +
 										},
 										{
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "next",
@@ -322,7 +322,7 @@ and <more text> on the +
 										},
 										{
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "next",
@@ -926,7 +926,7 @@ and <more text> on the +
 										},
 										{
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "next",
@@ -1022,7 +1022,7 @@ and <more text> on the +
 										},
 										{
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "next",
@@ -1308,7 +1308,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -1386,7 +1386,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -1885,7 +1885,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -1966,7 +1966,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -2083,7 +2083,7 @@ _foo_
 							Lines: [][]interface{}{
 								{
 									types.QuotedText{
-										Kind: types.Italic,
+										Kind: types.SingleQuoteItalic,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "foo",
@@ -2094,7 +2094,7 @@ _foo_
 								{},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "bar",
@@ -2154,7 +2154,7 @@ _foo_
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -2403,7 +2403,7 @@ _foo_
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -2635,7 +2635,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -2713,7 +2713,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",

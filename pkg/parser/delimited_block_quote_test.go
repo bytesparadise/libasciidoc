@@ -35,7 +35,7 @@ ____`
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "quote",
@@ -306,7 +306,7 @@ ____`
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "quote",

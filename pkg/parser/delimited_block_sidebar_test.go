@@ -29,7 +29,7 @@ some *bold* content
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "bold",
@@ -73,7 +73,7 @@ bar
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "bold",
@@ -136,7 +136,7 @@ bar
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "bold",
@@ -192,7 +192,7 @@ some *verse* content
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "verse",
@@ -236,7 +236,7 @@ bar
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "verse",
@@ -306,7 +306,7 @@ some *verse* content
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "verse",
@@ -350,7 +350,7 @@ bar
 												Content: "some ",
 											},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "verse",

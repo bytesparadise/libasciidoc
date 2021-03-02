@@ -35,7 +35,7 @@ ____`
 										Content: "some ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "verse",
@@ -327,7 +327,7 @@ ____
 									},
 									{
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "next",
@@ -443,7 +443,7 @@ ____
 									},
 									{
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "next",
@@ -524,7 +524,7 @@ ____
 									},
 									{
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "next",
@@ -1044,7 +1044,7 @@ ____
 									},
 									{
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "next",
@@ -1128,7 +1128,7 @@ ____
 									},
 									{
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "next",
@@ -1256,7 +1256,7 @@ ____`
 										Content: "some ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "verse",

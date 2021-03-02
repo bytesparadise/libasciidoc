@@ -49,7 +49,7 @@ var _ = Describe("normalizing string", func() {
 		source := []interface{}{
 			types.StringElement{Content: "a section title, with"},
 			types.QuotedText{
-				Kind: types.Bold,
+				Kind: types.SingleQuoteBold,
 				Elements: []interface{}{
 					types.StringElement{Content: "bold content"},
 				},

@@ -473,7 +473,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: "using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",
@@ -556,7 +556,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: "using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",
@@ -620,7 +620,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: "a link to https://github.com[] <using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",
@@ -906,7 +906,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: " <using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",
@@ -969,7 +969,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: " <using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",
@@ -1139,7 +1139,7 @@ this is a
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "caution",
@@ -1726,7 +1726,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: "a link to https://github.com[] <using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",
@@ -1952,7 +1952,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: " <using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",
@@ -2005,7 +2005,7 @@ another one using attribute substitution: {github-url}[]...
 											Content: " <using the ",
 										},
 										types.QuotedText{
-											Kind: types.Bold,
+											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "inline link macro",

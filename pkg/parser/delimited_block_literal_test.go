@@ -428,7 +428,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -533,7 +533,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -627,7 +627,7 @@ and <more text> on the +
 										Content: "  ",
 									},
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",
@@ -713,7 +713,7 @@ and <more text> on the +
 								},
 								{
 									types.QuotedText{
-										Kind: types.Bold,
+										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "next",

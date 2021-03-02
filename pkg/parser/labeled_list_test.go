@@ -81,7 +81,7 @@ on 2 lines`
 											Content: "This function is ",
 										},
 										types.QuotedText{
-											Kind: types.Italic,
+											Kind: types.SingleQuoteItalic,
 											Elements: []interface{}{
 												types.StringElement{
 													Content: "untyped",
@@ -893,7 +893,7 @@ on 2 lines`
 							{
 								Term: []interface{}{
 									types.QuotedText{
-										Kind: types.Monospace,
+										Kind: types.SingleQuoteMonospace,
 										Elements: []interface{}{
 											types.StringElement{
 												Content: "foo()",
@@ -910,7 +910,7 @@ on 2 lines`
 													Content: "This function is ",
 												},
 												types.QuotedText{
-													Kind: types.Italic,
+													Kind: types.SingleQuoteItalic,
 													Elements: []interface{}{
 														types.StringElement{
 															Content: "untyped",
@@ -943,7 +943,7 @@ on 2 lines`
 									types.IndexTerm{
 										Term: []interface{}{
 											types.QuotedText{
-												Kind: types.Monospace,
+												Kind: types.SingleQuoteMonospace,
 												Elements: []interface{}{
 													types.StringElement{
 														Content: "foo",
@@ -962,7 +962,7 @@ on 2 lines`
 													Content: "This function is ",
 												},
 												types.QuotedText{
-													Kind: types.Italic,
+													Kind: types.SingleQuoteItalic,
 													Elements: []interface{}{
 														types.StringElement{
 															Content: "untyped",
@@ -1007,7 +1007,7 @@ on 2 lines`
 													Content: "This function is ",
 												},
 												types.QuotedText{
-													Kind: types.Italic,
+													Kind: types.SingleQuoteItalic,
 													Elements: []interface{}{
 														types.StringElement{
 															Content: "untyped",

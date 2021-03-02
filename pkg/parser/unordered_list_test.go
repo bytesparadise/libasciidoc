@@ -156,7 +156,7 @@ var _ = Describe("unordered lists", func() {
 										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{Content: "bold content"},
 												},
@@ -332,7 +332,7 @@ var _ = Describe("unordered lists", func() {
 										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{Content: "bold content"},
 												},
@@ -462,7 +462,7 @@ var _ = Describe("unordered lists", func() {
 										{
 											types.StringElement{Content: "a second item with "},
 											types.QuotedText{
-												Kind: types.Bold,
+												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
 													types.StringElement{Content: "bold content"},
 												},
@@ -1634,7 +1634,7 @@ paragraph attached to parent list item`
 												{
 													types.StringElement{Content: "a second item with "},
 													types.QuotedText{
-														Kind: types.Bold,
+														Kind: types.SingleQuoteBold,
 														Elements: []interface{}{
 															types.StringElement{Content: "bold content"},
 														},
@@ -1830,7 +1830,7 @@ paragraph attached to parent list item`
 												{
 													types.StringElement{Content: "a second item with "},
 													types.QuotedText{
-														Kind: types.Bold,
+														Kind: types.SingleQuoteBold,
 														Elements: []interface{}{
 															types.StringElement{Content: "bold content"},
 														},
@@ -1979,7 +1979,7 @@ paragraph attached to parent list item`
 												{
 													types.StringElement{Content: "a second item with "},
 													types.QuotedText{
-														Kind: types.Bold,
+														Kind: types.SingleQuoteBold,
 														Elements: []interface{}{
 															types.StringElement{Content: "bold content"},
 														},
