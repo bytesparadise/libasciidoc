@@ -44,6 +44,10 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph roles")
 	}
+	title, err := r.renderElementTitle(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render paragraph roles")
+	}
 	log.Debug("rendering a standalone paragraph")
 	err = r.paragraph.Execute(result, struct {
 		Context *renderer.Context
@@ -54,7 +58,7 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
-		Title:   r.renderElementTitle(p.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: string(content),
 	})
@@ -93,6 +97,11 @@ func (r *sgmlRenderer) renderParagraphWithinDelimitedBlock(ctx *renderer.Context
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
 	}
+	title, err := r.renderElementTitle(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
+	}
+
 	err = r.delimitedBlockParagraph.Execute(result, struct {
 		Context    *renderer.Context
 		ID         string
@@ -103,7 +112,7 @@ func (r *sgmlRenderer) renderParagraphWithinDelimitedBlock(ctx *renderer.Context
 	}{
 		Context:    ctx,
 		ID:         r.renderElementID(p.Attributes),
-		Title:      r.renderElementTitle(p.Attributes),
+		Title:      title,
 		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 		Content:    string(content),
 		Lines:      p.Lines,
@@ -127,14 +136,16 @@ func renderCheckStyle(style interface{}) string {
 	}
 }
 
-func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) string {
-	if title, found := attrs.GetAsString(types.AttrTitle); found {
+func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) (string, error) {
+	if title, found, err := attrs.GetAsString(types.AttrTitle); err != nil {
+		return "", err
+	} else if found {
 		result := EscapeString(strings.TrimSpace(title))
 		// log.Debugf("rendered title: '%s'", result)
-		return result
+		return result, nil
 	}
 	log.Debug("no title to render")
-	return ""
+	return "", nil
 }
 
 // RenderLinesConfig the config to use when rendering paragraph lines

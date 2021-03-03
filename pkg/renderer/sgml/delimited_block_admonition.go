@@ -10,7 +10,10 @@ import (
 )
 
 func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.ExampleBlock) (string, error) {
-	kind, _ := b.Attributes.GetAsString(types.AttrStyle)
+	kind, _, err := b.Attributes.GetAsString(types.AttrStyle)
+	if err != nil {
+		return "", err
+	}
 	kind = strings.ToLower(kind)
 	icon, err := r.renderIcon(ctx, types.Icon{Class: strings.ToLower(kind), Attributes: b.Attributes}, true)
 	if err != nil {
@@ -26,6 +29,11 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Exam
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.admonitionBlock.Execute(result, struct {
 		Context *renderer.Context
 		ID      string
@@ -39,7 +47,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Exam
 		ID:      r.renderElementID(b.Attributes),
 		Kind:    kind,
 		Roles:   roles,
-		Title:   r.renderElementTitle(b.Attributes),
+		Title:   title,
 		Icon:    icon,
 		Content: content,
 	})
@@ -49,7 +57,10 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Exam
 func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
 	log.Debug("rendering admonition paragraph...")
 	result := &strings.Builder{}
-	kind, ok := p.Attributes.GetAsString(types.AttrStyle)
+	kind, ok, err := p.Attributes.GetAsString(types.AttrStyle)
+	if err != nil {
+		return "", err
+	}
 	if !ok {
 		return "", errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrStyle])
 	}
@@ -66,6 +77,11 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
+	title, err := r.renderElementTitle(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.admonitionParagraph.Execute(result, struct {
 		Context *renderer.Context
 		ID      string
@@ -78,7 +94,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
-		Title:   r.renderElementTitle(p.Attributes),
+		Title:   title,
 		Kind:    kind,
 		Roles:   roles,
 		Icon:    icon,

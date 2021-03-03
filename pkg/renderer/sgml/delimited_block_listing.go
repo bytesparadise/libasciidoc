@@ -27,6 +27,10 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Listing
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block roles")
 	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 
 	err = r.listingBlock.Execute(result, struct {
 		Context *renderer.Context
@@ -37,7 +41,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Listing
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(b.Attributes),
-		Title:   r.renderElementTitle(b.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: content,
 	})
@@ -54,6 +58,10 @@ func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p types.Par
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block roles")
 	}
+	title, err := r.renderElementTitle(p.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 
 	err = r.listingBlock.Execute(result, struct {
 		Context *renderer.Context
@@ -64,7 +72,7 @@ func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p types.Par
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
-		Title:   r.renderElementTitle(p.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: content,
 	})

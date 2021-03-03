@@ -317,21 +317,21 @@ var _ = DescribeTable("valid block attributes",
 	},
 
 	// named attributes
-	Entry(`[foo1=bar1]`, `[foo1=bar1]`,
+	Entry(`[attr1=cookie]`, `[attr1=cookie]`,
 		types.Attributes{
-			`foo1`: `bar1`,
+			`attr1`: `cookie`,
 		},
 	),
-	Entry(`[foo1=bar1,foo2='bar2']`, `[foo1=bar1,foo2='bar2']`,
+	Entry(`[attr1=cookie,foo2='bar2']`, `[attr1=cookie,foo2='bar2']`,
 		types.Attributes{
-			`foo1`: `bar1`,
-			`foo2`: `bar2`,
+			`attr1`: `cookie`,
+			`foo2`:  `bar2`,
 		},
 	),
-	Entry(`[foo1=bar1,foo2=bar2]`, `[foo1=bar1,foo2="bar2"]`,
+	Entry(`[attr1=cookie,foo2=bar2]`, `[attr1=cookie,foo2="bar2"]`,
 		types.Attributes{
-			`foo1`: `bar1`,
-			`foo2`: `bar2`,
+			`attr1`: `cookie`,
+			`foo2`:  `bar2`,
 		},
 	),
 
@@ -572,6 +572,135 @@ var _ = DescribeTable("valid block attributes",
 	// TODO: attributes with substitutions
 )
 
+var _ = DescribeTable("valid inline attributes",
+
+	func(source string, expected types.Attributes) {
+		// given
+		log.Debugf("processing '%s'", source)
+		content := strings.NewReader(source + "\n")
+		// when parsing only (ie, no substitution applied)
+		result, err := parser.ParseReader("", content, parser.Entrypoint("InlineAttributes"))
+		// then
+		Expect(err).NotTo(HaveOccurred())
+		Expect(result).To(Equal(expected))
+	},
+
+	// ---------------------
+	// named attributes
+	// ---------------------
+	// named attributes with plain text value
+	Entry(`[attr1=cookie]`, `[attr1=cookie]`,
+		types.Attributes{
+			`attr1`: `cookie`,
+		},
+	),
+	Entry(`[attr1=cookie,attr2=chocolate]`, `[attr1=cookie,attr2=chocolate]`,
+		types.Attributes{
+			`attr1`: `cookie`,
+			"attr2": "chocolate",
+		},
+	),
+	// named attributes with single quoted values
+	Entry(`[attr1='cookie',attr2='chocolate']`, `[attr1='cookie',attr2='chocolate']`,
+		types.Attributes{
+			`attr1`: `cookie`,
+			"attr2": "chocolate",
+		},
+	),
+	// named attributes with double quoted values
+	Entry(`[attr1="cookie",attr2="chocolate"]`, `[attr1="cookie",attr2="chocolate"]`,
+		types.Attributes{
+			`attr1`: `cookie`,
+			"attr2": "chocolate",
+		},
+	),
+	// ---------------------
+	// positional attributes
+	// ---------------------
+	// unquoted positional attributes with plain text value
+	Entry(`[cookie,chocolate]`, `[cookie,chocolate]`,
+		types.Attributes{
+			types.AttrPositional1: "cookie",
+			types.AttrPositional2: "chocolate",
+		},
+	),
+	// unquoted positional attributes with quoted text value
+	Entry(`[*cookie*,_chocolate_]`, `[*cookie*,_chocolate_]`,
+		types.Attributes{
+			types.AttrPositional1: []interface{}{
+				types.QuotedText{
+					Kind: types.SingleQuoteBold,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "cookie",
+						},
+					},
+				},
+			},
+			types.AttrPositional2: []interface{}{
+				types.QuotedText{
+					Kind: types.SingleQuoteItalic,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "chocolate",
+						},
+					},
+				},
+			},
+		},
+	),
+	// single-quoted positional attributes with quoted text value
+	Entry(`[*cookie*,_chocolate_]`, `[*cookie*,_chocolate_]`,
+		types.Attributes{
+			types.AttrPositional1: []interface{}{
+				types.QuotedText{
+					Kind: types.SingleQuoteBold,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "cookie",
+						},
+					},
+				},
+			},
+			types.AttrPositional2: []interface{}{
+				types.QuotedText{
+					Kind: types.SingleQuoteItalic,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "chocolate",
+						},
+					},
+				},
+			},
+		},
+	),
+	// double-quoted positional attributes with quoted text value
+	Entry(`["*cookie*","_chocolate_"]`, `["*cookie*","_chocolate_"]`,
+		types.Attributes{
+			types.AttrPositional1: []interface{}{
+				types.QuotedText{
+					Kind: types.SingleQuoteBold,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "cookie",
+						},
+					},
+				},
+			},
+			types.AttrPositional2: []interface{}{
+				types.QuotedText{
+					Kind: types.SingleQuoteItalic,
+					Elements: []interface{}{
+						types.StringElement{
+							Content: "chocolate",
+						},
+					},
+				},
+			},
+		},
+	),
+)
+
 var _ = DescribeTable("invalid block attributes",
 
 	func(source string) {
@@ -584,7 +713,7 @@ var _ = DescribeTable("invalid block attributes",
 	},
 
 	// space after `[` is not allowed if more content exists
-	Entry(`[ foo1=bar1]`, `[ foo1=bar1]`),
+	Entry(`[ attr1=cookie]`, `[ attr1=cookie]`),
 
-	Entry(`[ foo1=bar1 ]`, `[ foo1=bar1 ]`),
+	Entry(`[ attr1=cookie ]`, `[ attr1=cookie ]`),
 )

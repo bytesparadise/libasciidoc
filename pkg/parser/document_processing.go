@@ -36,7 +36,10 @@ func ParseDocument(r io.Reader, config configuration.Configuration, options ...O
 
 	blocks, footnotes := processFootnotes(blocks)
 	// now, rearrange elements in a hierarchical manner
-	doc := rearrangeSections(blocks)
+	doc, err := rearrangeSections(blocks)
+	if err != nil {
+		return types.Document{}, err
+	}
 	// also, set the footnotes
 	doc.Footnotes = footnotes
 	// insert the preamble at the right location

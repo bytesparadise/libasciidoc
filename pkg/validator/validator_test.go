@@ -31,9 +31,10 @@ var _ = Describe("document validator", func() {
 			}
 
 			// when
-			problems := Validate(&doc)
+			problems, err := Validate(&doc)
 
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(problems).To(BeEmpty()) // no problem found
 		})
 	})
@@ -95,9 +96,10 @@ var _ = Describe("document validator", func() {
 			}
 
 			// when
-			problems := Validate(&doc)
+			problems, err := Validate(&doc)
 
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(problems).To(BeEmpty())                                                            // no problem found
 			Expect(doc.Attributes.GetAsStringWithDefault(types.AttrDocType, "")).To(Equal("manpage")) // unchanged
 		})
@@ -159,9 +161,10 @@ var _ = Describe("document validator", func() {
 				}
 
 				// when
-				problems := Validate(&doc)
+				problems, err := Validate(&doc)
 
 				// then
+				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
 					Message:  "manpage document is missing a header",
@@ -224,9 +227,10 @@ var _ = Describe("document validator", func() {
 				}
 
 				// when
-				problems := Validate(&doc)
+				problems, err := Validate(&doc)
 
 				// then
+				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
 					Message:  "manpage document is missing the 'Name' section'",
@@ -289,9 +293,10 @@ var _ = Describe("document validator", func() {
 				}
 
 				// when
-				problems := Validate(&doc)
+				problems, err := Validate(&doc)
 
 				// then
+				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
 					Message:  "manpage document is missing the 'Name' section'",
@@ -343,9 +348,10 @@ var _ = Describe("document validator", func() {
 				}
 
 				// when
-				problems := Validate(&doc)
+				problems, err := Validate(&doc)
 
 				// then
+				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
 					Message:  "'Name' section' should contain a single paragraph",
@@ -408,9 +414,10 @@ var _ = Describe("document validator", func() {
 				}
 
 				// when
-				problems := Validate(&doc)
+				problems, err := Validate(&doc)
 
 				// then
+				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
 					Message:  "manpage document is missing the 'Synopsis' section'",
@@ -473,9 +480,10 @@ var _ = Describe("document validator", func() {
 				}
 
 				// when
-				problems := Validate(&doc)
+				problems, err := Validate(&doc)
 
 				// then
+				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
 					Message:  "manpage document is missing the 'Synopsis' section'",

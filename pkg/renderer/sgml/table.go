@@ -41,8 +41,10 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	}
 
 	if t.Attributes.Has(types.AttrTitle) {
-		c, ok := t.Attributes.GetAsString(types.AttrCaption)
-		if !ok {
+		c, ok, err := t.Attributes.GetAsString(types.AttrCaption)
+		if err != nil {
+			return "", err
+		} else if !ok {
 			c = ctx.Attributes.GetAsStringWithDefault(types.AttrTableCaption, "Table")
 			if c != "" {
 				// We always append the figure number, unless the caption is disabled.
@@ -50,7 +52,6 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 				c += " {counter:table-number}. "
 			}
 		}
-
 		// TODO: This is a very primitive and incomplete replacement of the counter attribute only.
 		// This should be removed when attribute values are allowed to contain attributes.
 		// Also this expansion should be limited to just singly quoted strings in the Attribute list,
@@ -75,6 +76,10 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render table roles")
 	}
+	title, err := r.renderElementTitle(t.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 
 	err = r.table.Execute(result, struct {
 		Context     *renderer.Context
@@ -93,7 +98,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		Body        string
 	}{
 		Context:     ctx,
-		Title:       r.renderElementTitle(t.Attributes),
+		Title:       title,
 		Columns:     t.Columns,
 		TableNumber: number,
 		Caption:     caption.String(),

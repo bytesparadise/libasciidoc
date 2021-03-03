@@ -18,6 +18,15 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b types.M
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
+	attribution, err := markdownQuoteBlockAttribution(b)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render fenced block content")
+	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	err = r.markdownQuoteBlock.Execute(result, struct {
 		Context     *renderer.Context
 		ID          string
@@ -28,9 +37,9 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b types.M
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(b.Attributes),
-		Title:       r.renderElementTitle(b.Attributes),
+		Title:       title,
 		Roles:       roles,
-		Attribution: markdownQuoteBlockAttribution(b),
+		Attribution: attribution,
 		Content:     content,
 	})
 	return result.String(), err

@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
@@ -528,15 +529,35 @@ func (a Attributes) HasOption(key string) bool {
 
 // GetAsString gets the string value for the given key (+ `true`),
 // or empty string (+ `false`) if none was found
-func (a Attributes) GetAsString(key string) (string, bool) {
+func (a Attributes) GetAsString(key string) (string, bool, error) {
 	if value, found := a[key]; found {
-		if value, ok := value.(string); ok {
-			return value, true
-		} else if v, ok := a[key]; ok {
-			return fmt.Sprintf("%v", v), true
-		}
+		result, err := asString(value)
+		return result, true, err
 	}
-	return "", false
+	return "", false, nil
+}
+
+func asString(v interface{}) (string, error) {
+	switch v := v.(type) {
+	case string:
+		return v, nil
+	case RawText:
+		s, err := v.RawText()
+		return s, err
+	case []interface{}: // complex attributes are wrapped in an []interface{}
+		result := strings.Builder{}
+		for _, value := range v {
+			s, err := asString(value)
+			if err != nil {
+				return "", err
+			}
+			result.WriteString(s)
+		}
+		return result.String(), nil
+	default:
+		return fmt.Sprintf("%v", v), nil
+	}
+
 }
 
 // GetAsStringWithDefault gets the string value for the given key,

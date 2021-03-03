@@ -7,7 +7,7 @@ import (
 )
 
 // rearrangeSections moves elements into section to obtain a hierarchical document instead of a flat thing
-func rearrangeSections(blocks []interface{}) types.Document {
+func rearrangeSections(blocks []interface{}) (types.Document, error) {
 
 	// use same logic as with list items:
 	// only append a child section to her parent section when
@@ -21,7 +21,9 @@ func rearrangeSections(blocks []interface{}) types.Document {
 	for _, element := range blocks {
 		if e, ok := element.(types.Section); ok {
 			// avoid duplicate IDs in sections
-			referenceSection(&e, elementRefs)
+			if err := referenceSection(&e, elementRefs); err != nil {
+				return types.Document{}, err
+			}
 			if previous == nil { // set first parent
 				// log.Debugf("setting section with title %v as a top-level element", e.Title)
 				sections = append(sections, e)
@@ -61,13 +63,16 @@ func rearrangeSections(blocks []interface{}) types.Document {
 	return types.Document{
 		Elements:          tle,
 		ElementReferences: elementRefs,
-	}
+	}, nil
 }
 
-func referenceSection(e *types.Section, elementRefs types.ElementReferences) {
-	attrID, found := e.Attributes.GetAsString(types.AttrID)
+func referenceSection(e *types.Section, elementRefs types.ElementReferences) error {
+	attrID, found, err := e.Attributes.GetAsString(types.AttrID)
+	if err != nil {
+		return err
+	}
 	if !found {
-		return
+		return nil
 	}
 	for i := 1; ; i++ {
 		var id string
@@ -84,6 +89,7 @@ func referenceSection(e *types.Section, elementRefs types.ElementReferences) {
 		}
 	}
 	elementRefs[attrID] = e.Title
+	return nil
 }
 
 func pruneSections(sections []types.Section, level int) []types.Section {

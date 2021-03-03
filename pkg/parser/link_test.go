@@ -14,7 +14,7 @@ var _ = Describe("links", func() {
 
 		Context("external link", func() {
 
-			It("with special characters", func() {
+			It("with special characters in URL", func() {
 				source := `a link to https://example.com?a=1&b=2`
 				expected := types.DraftDocument{
 					Elements: []interface{}{
@@ -33,6 +33,43 @@ var _ = Describe("links", func() {
 												},
 												types.StringElement{
 													Content: "b=2",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			})
+
+			It("with quoted text in attributes", func() {
+				source := `a link to https://example.com[*alt text*]`
+				expected := types.DraftDocument{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{types.StringElement{Content: "a link to "},
+									types.InlineLink{
+										Attributes: types.Attributes{
+											types.AttrInlineLinkText: []interface{}{
+												types.QuotedText{
+													Kind: types.SingleQuoteBold,
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "alt text",
+														},
+													},
+												},
+											},
+										},
+										Location: types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "example.com",
 												},
 											},
 										},

@@ -45,6 +45,11 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render literal block roles")
 	}
+	title, err := r.renderElementTitle(b.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
+
 	result := &strings.Builder{}
 	err = r.literalBlock.Execute(result, struct {
 		Context *renderer.Context
@@ -55,7 +60,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b types.Literal
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(b.Attributes),
-		Title:   r.renderElementTitle(b.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: strings.Join(lines, "\n"),
 	})

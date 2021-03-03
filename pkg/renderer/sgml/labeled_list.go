@@ -26,6 +26,10 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledL
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render labeled list roles")
 	}
+	title, err := r.renderElementTitle(l.Attributes)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render callout list roles")
+	}
 	result := &strings.Builder{}
 	// here we must preserve the HTML tags
 	err = tmpl.Execute(result, struct {
@@ -38,7 +42,7 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l types.LabeledL
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(l.Attributes),
-		Title:   r.renderElementTitle(l.Attributes),
+		Title:   title,
 		Roles:   roles,
 		Content: string(content.String()),
 		Items:   l.Items,
