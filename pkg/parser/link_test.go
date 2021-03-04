@@ -20,7 +20,8 @@ var _ = Describe("links", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -51,7 +52,8 @@ var _ = Describe("links", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: []interface{}{
@@ -91,7 +93,8 @@ var _ = Describe("links", func() {
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText:   "example",
@@ -121,13 +124,14 @@ var _ = Describe("links", func() {
 
 		Context("external links", func() {
 
-			It("external link without text", func() {
+			It("without text", func() {
 				source := "a link to https://example.com"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -146,13 +150,14 @@ var _ = Describe("links", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link with empty text", func() {
+			It("with empty text", func() {
 				source := "a link to https://example.com[]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -171,7 +176,7 @@ var _ = Describe("links", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link with text only", func() {
+			It("with text only", func() {
 				source := "a link to mailto:foo@bar[the foo@bar email]."
 				expected := types.Document{
 					Elements: []interface{}{
@@ -203,13 +208,14 @@ var _ = Describe("links", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link with text and extra attributes", func() {
+			It("with text and extra attributes", func() {
 				source := "a link to mailto:foo@bar[the foo@bar email, foo=bar]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "mailto:",
@@ -232,7 +238,7 @@ var _ = Describe("links", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link inside a multiline paragraph -  without attributes", func() {
+			It("inside a multiline paragraph -  without attributes", func() {
 				source := `a http://website.com
 and more text on the
 next lines`
@@ -241,9 +247,10 @@ next lines`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "a ",
-								},
+								{
+									types.StringElement{
+										Content: "a ",
+									},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "http://",
@@ -272,7 +279,7 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link inside a multiline paragraph -  with attributes", func() {
+			It("inside a multiline paragraph -  with attributes", func() {
 				source := `a http://website.com[]
 and more text on the
 next lines`
@@ -281,9 +288,10 @@ next lines`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "a ",
-								},
+								{
+									types.StringElement{
+										Content: "a ",
+									},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "http://",
@@ -312,13 +320,14 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link with more text afterwards", func() {
+			It("with more text afterwards", func() {
 				source := `a link to https://example.com and more text`
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -340,7 +349,7 @@ next lines`
 
 			Context("text attribute with comma", func() {
 
-				It("external link only with text having comma", func() {
+				It("only with text having comma", func() {
 					source := `a link to http://website.com[A, B, and C]`
 					expected := types.Document{
 						Elements: []interface{}{
@@ -371,7 +380,7 @@ next lines`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link only with doublequoted text having comma", func() {
+				It("only with doublequoted text having comma", func() {
 					source := `a link to http://website.com["A, B, and C"]`
 					expected := types.Document{
 						Elements: []interface{}{
@@ -400,7 +409,7 @@ next lines`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link with doublequoted text having comma and other attrs", func() {
+				It("with doublequoted text having comma and other attrs", func() {
 					source := `a link to http://website.com["A, B, and C", role=foo]`
 					expected := types.Document{
 						Elements: []interface{}{
@@ -430,7 +439,7 @@ next lines`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link with text having comma and other attributes", func() {
+				It("with text having comma and other attributes", func() {
 					source := `a link to http://website.com[A, B, and C, role=foo]`
 					expected := types.Document{
 						Elements: []interface{}{
@@ -463,13 +472,14 @@ next lines`
 				})
 			})
 
-			It("external link with special characters", func() {
+			It("with special characters", func() {
 				source := "a link to https://foo*_.com"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -488,13 +498,14 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link with quoted text", func() {
+			It("with quoted text", func() {
 				source := "a link to https://example.com[_a_ *b* `c`]"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: []interface{}{
@@ -547,14 +558,125 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link in bold text", func() {
+			It("with quoted text with attributes", func() {
+				source := "a link to https://example.com[[.myrole1]_a_]"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.InlineLink{
+										Attributes: types.Attributes{
+											types.AttrInlineLinkText: []interface{}{
+												types.QuotedText{
+													Kind: types.SingleQuoteItalic,
+													Attributes: types.Attributes{
+														types.AttrRoles: []interface{}{"myrole1"},
+													},
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "a",
+														},
+													},
+												},
+											},
+										},
+										Location: types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "example.com",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with quoted texts with attributes", func() {
+				source := "a link to https://example.com[[.myrole1]_a_ [.myrole2]*b* [.myrole3]`c`]"
+				expected := types.Document{
+					Elements: []interface{}{
+						types.Paragraph{
+							Lines: [][]interface{}{
+								{
+									types.StringElement{Content: "a link to "},
+									types.InlineLink{
+										Attributes: types.Attributes{
+											types.AttrInlineLinkText: []interface{}{
+												types.QuotedText{
+													Kind: types.SingleQuoteItalic,
+													Attributes: types.Attributes{
+														types.AttrRoles: []interface{}{"myrole1"},
+													},
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "a",
+														},
+													},
+												},
+												types.StringElement{
+													Content: " ",
+												},
+												types.QuotedText{
+													Kind: types.SingleQuoteBold,
+													Attributes: types.Attributes{
+														types.AttrRoles: []interface{}{"myrole2"},
+													},
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "b",
+														},
+													},
+												},
+												types.StringElement{
+													Content: " ",
+												},
+												types.QuotedText{
+													Kind: types.SingleQuoteMonospace,
+													Attributes: types.Attributes{
+														types.AttrRoles: []interface{}{"myrole3"},
+													},
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "c",
+														},
+													},
+												},
+											},
+										},
+										Location: types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "example.com",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("in bold text", func() {
 				source := `a link to *https://example.com[]*`
 
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.QuotedText{
 										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
@@ -578,13 +700,14 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link with special characters", func() {
+			It("with special characters", func() {
 				source := "a link to https://foo*_.com"
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -603,14 +726,15 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link in bold text", func() {
+			It("in bold text", func() {
 				source := `a link to *https://example.com[]*`
 
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.QuotedText{
 										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
@@ -634,14 +758,15 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external link in italic text", func() {
+			It("in italic text", func() {
 				source := `a link to _https://example.com[]_`
 
 				expected := types.Document{
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.QuotedText{
 										Kind: types.SingleQuoteItalic,
 										Elements: []interface{}{
@@ -667,7 +792,7 @@ next lines`
 
 			Context("with document attribute substitutions", func() {
 
-				It("external link with a document attribute substitution for the whole URL", func() {
+				It("with a document attribute substitution for the whole URL", func() {
 					source := `
 :url: https://example.com
 :url: https://foo2.bar
@@ -703,7 +828,7 @@ a link to {url}`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link with two document attribute substitutions only", func() {
+				It("with two document attribute substitutions only", func() {
 					source := `
 :scheme: https
 :path: example.com
@@ -749,7 +874,7 @@ a link to {scheme}://{path} and https://foo.com`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link with two document attribute substitutions in bold text", func() {
+				It("with two document attribute substitutions in bold text", func() {
 					source := `
 :scheme: https
 :path: example.com
@@ -802,7 +927,7 @@ a link to *{scheme}://{path}[] and https://foo.com[]*`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link with two document attribute substitutions and a reset", func() {
+				It("with two document attribute substitutions and a reset", func() {
 					source := `
 :scheme: https
 :path: example.com
@@ -850,7 +975,7 @@ a link to {scheme}://{path} and https://foo.com`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link with document attribute in section 0 title", func() {
+				It("with document attribute in section 0 title", func() {
 					source := `= a title to {scheme}://{path} and https://foo.com
 :scheme: https
 :path: example.com`
@@ -901,7 +1026,7 @@ a link to {scheme}://{path} and https://foo.com`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("external link with document attribute in section 1 title", func() {
+				It("with document attribute in section 1 title", func() {
 					source := `:scheme: https
 :path: example.com
 	
@@ -963,7 +1088,8 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "",
@@ -988,7 +1114,8 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "",
@@ -1016,7 +1143,8 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -1044,7 +1172,8 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -1073,7 +1202,8 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "https://",
@@ -1101,9 +1231,10 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{
-									Content: "a link to link:foo.adoc",
-								},
+								{
+									types.StringElement{
+										Content: "a link to link:foo.adoc",
+									},
 								},
 							},
 						},
@@ -1118,53 +1249,54 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.InlineLink{
-									Location: types.Location{
-										Scheme: "",
-										Path: []interface{}{
-											types.StringElement{
-												Content: "/",
-											},
-										},
-									},
-									Attributes: types.Attributes{
-										types.AttrInlineLinkText: []interface{}{
-											types.StringElement{
-												Content: "a ",
-											},
-											types.QuotedText{
-												Kind: types.SingleQuoteItalic,
-												Elements: []interface{}{
-													types.StringElement{
-														Content: "a",
-													},
-												},
-											},
-											types.StringElement{
-												Content: " b ",
-											},
-											types.QuotedText{
-												Kind: types.SingleQuoteBold,
-												Elements: []interface{}{
-													types.StringElement{
-														Content: "b",
-													},
-												},
-											},
-											types.StringElement{
-												Content: " c ",
-											},
-											types.QuotedText{
-												Kind: types.SingleQuoteMonospace,
-												Elements: []interface{}{
-													types.StringElement{
-														Content: "c",
-													},
+								{
+									types.InlineLink{
+										Location: types.Location{
+											Scheme: "",
+											Path: []interface{}{
+												types.StringElement{
+													Content: "/",
 												},
 											},
 										},
+										Attributes: types.Attributes{
+											types.AttrInlineLinkText: []interface{}{
+												types.StringElement{
+													Content: "a ",
+												},
+												types.QuotedText{
+													Kind: types.SingleQuoteItalic,
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "a",
+														},
+													},
+												},
+												types.StringElement{
+													Content: " b ",
+												},
+												types.QuotedText{
+													Kind: types.SingleQuoteBold,
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "b",
+														},
+													},
+												},
+												types.StringElement{
+													Content: " c ",
+												},
+												types.QuotedText{
+													Kind: types.SingleQuoteMonospace,
+													Elements: []interface{}{
+														types.StringElement{
+															Content: "c",
+														},
+													},
+												},
+											},
+										},
 									},
-								},
 								},
 							},
 						},
@@ -1179,7 +1311,8 @@ a link to {scheme}://{path} and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.StringElement{Content: "a link to "},
+								{
+									types.StringElement{Content: "a link to "},
 									types.InlineLink{
 										Location: types.Location{
 											Scheme: "",
@@ -1299,20 +1432,21 @@ a link to {scheme}:{path}[] and https://foo.com`
 					Elements: []interface{}{
 						types.Paragraph{
 							Lines: [][]interface{}{
-								{types.QuotedText{
-									Kind: types.SingleQuoteBold,
-									Elements: []interface{}{
-										types.InlineLink{
-											Location: types.Location{
-												Path: []interface{}{
-													types.StringElement{
-														Content: "foo",
+								{
+									types.QuotedText{
+										Kind: types.SingleQuoteBold,
+										Elements: []interface{}{
+											types.InlineLink{
+												Location: types.Location{
+													Path: []interface{}{
+														types.StringElement{
+															Content: "foo",
+														},
 													},
 												},
 											},
 										},
 									},
-								},
 								},
 							},
 						},

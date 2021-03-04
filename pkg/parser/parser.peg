@@ -311,22 +311,22 @@ ShortHandTitle <- `.` title:(
 // LongHandAttributes. Eg: `[positional1,positional2,...,named1,named2,...]
 // positional attributes are optional, and `positional1` can be combined with options and roles ("extras")
 LongHandAttributes <-
-    "[" 
+    "[" !"[" // prevent processing nested attributes at this point (parser will need to move forward by 1 char first)
     // !Space // no space allowed on the first character
-    firstPositionalAttribute:(FirstPositionalAttribute)?
+    firstPositionalAttributes:(FirstPositionalAttributes)?
     otherAttributes:(PositionalAttribute / NamedAttribute)*
     "]" {
         attributes:=[]interface{}{}
-        if firstPositionalAttribute != nil {
-            attributes=append(attributes, firstPositionalAttribute.([]interface{})...)
+        if firstPositionalAttributes != nil {
+            attributes=append(attributes, firstPositionalAttributes.([]interface{})...)
         }
         attributes=append(attributes, otherAttributes.([]interface{})...)
         return types.NewAttributes(attributes...)
     }
 
-// First Positional Attribute may be an ID or a style, with extra roles and options.
+// First positional attributes may be an ID or a style, with extra roles and options.
 // Or sometimes, it's just 1 or more roles or options...
-FirstPositionalAttribute <- 
+FirstPositionalAttributes <- 
     main:(
         ShortHandAttribute
     )?
@@ -377,6 +377,7 @@ ShortHandAttributeValue <-
     ([^,=.%# \r\n\uFFFD{\]]+ {
         return types.NewStringElement(string(c.text))
     }) / 
+    QuotedText /
     ElementPlaceHolder /
     AttrSub /
     ("{" { 
@@ -386,11 +387,11 @@ ShortHandAttributeValue <-
     }
 
 PositionalAttribute <- (
-    value:(AttributeValue) (("," Space*)? / &"]") { 
+    value:(AttributeValue) (("," Space*)? / &"]") { // TODO: see if we can just use `((",")? / &"]")` instead (ie, no need to check for Space*)
     	return types.NewPositionalAttribute(value)
     }) 
     / 
-    // empty value. Eg: `[ ]`, `[, a, b]`, `[a, ,b]`, etc.
+    // empty/edge-case values. Eg: `[ ]`, `[, a, b]`, `[a, ,b]`, etc.
     (value:(Space* (("," Space*) / &"]"))
     &{
         // here we can't rely on `c.text` if the content is empty 
@@ -1664,20 +1665,9 @@ BlockDelimiter <- !(Alphanum) LiteralBlockDelimiter //TODO: use "start" delimite
 // -------------------------------------------------------------------------------------
 ExampleBlock <- 
     ExampleBlockStartDelimiter 
-    // #{
-    //     if log.IsLevelEnabled(log.DebugLevel) {
-    //         log.Debug("current state attributes before processing ExampleBlock content:")
-    //         spew.Fdump(log.StandardLogger().Out, c.state)
-    //     }
-    //     return nil
-    // }
     blocks:(ExampleBlockRawContent) 
     ExampleBlockEndDelimiter 
     {
-        // if log.IsLevelEnabled(log.DebugLevel) {
-        //     log.Debugf("current state attributes before initializing ExampleBlock'")
-        //     spew.Fdump(log.StandardLogger().Out, c.state)
-        // }
         return types.NewExampleBlock(blocks.([]interface{}), c.globalStore.getAttributes())
     }
 
@@ -1693,10 +1683,6 @@ ExampleBlockRawContent <-
         attributes:(BlockAttributes)?
         #{
             c.globalStore.pushAttributes(attributes)
-            // if log.IsLevelEnabled(log.DebugLevel) {
-            //     log.Debugf("added exampleblock block attributes to state:")
-            //     spew.Fdump(log.StandardLogger().Out, c.state)
-            // }
             return nil
         } 
         element:(
@@ -1975,7 +1961,7 @@ SpecialCharacterSubs <-
 
 // standalone rule for the "quotes" substitution
 QuotedTextSubs <- 
-    (InlineWord // more permissive than the 'Word' rule
+    (InlineWord // more permissive than the 'Word' rule // TODO: find something even more permissive, based on QuotedText/QuotedString delimiters
     / Space+ 
     / QuotedText 
     / QuotedString
