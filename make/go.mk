@@ -34,14 +34,23 @@ install-pigeon:
 .PHONY: generate
 ## generate the .go file based on the asciidoc grammar
 generate: install-pigeon
-	@echo "generating the parser..."
-	@pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go
+	@if [ "pkg/parser/parser.go" -ot "pkg/parser/parser.peg" ]; then \
+		echo "generating the parser..."; \
+		pigeon ./pkg/parser/parser.peg > ./pkg/parser/parser.go; \
+	else \
+		echo "no need to regenerate the parser."; \
+	fi;
 
 .PHONY: generate-optimized
 ## generate the .go file based on the asciidoc grammar
 generate-optimized: install-pigeon
-	@echo "generating the parser (optimized)..."
-	@go generate ./...
+	@if [ "pkg/parser/parser.go" -ot "pkg/parser/parser.peg" ]; then \
+		echo "generating the parser (optimized)..."; \
+		go generate ./...; \
+	else \
+		echo "no need to regenerate the parser."; \
+	fi;
+
 
 .PHONY: build
 ## build the binary executable from CLI
