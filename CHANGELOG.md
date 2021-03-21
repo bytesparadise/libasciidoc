@@ -1,4 +1,4 @@
-# [](https://github.com/bytesparadise/libasciidoc/compare/v0.5.1...v0.6.0) (2021-03-21)
+# [0.6.0](https://github.com/bytesparadise/libasciidoc/compare/v0.5.1...v0.6.0) (2021-03-21)
 
 
 ### Bug Fixes
