@@ -1,3 +1,51 @@
+# [](https://github.com/bytesparadise/libasciidoc/compare/v0.5.1...v0.6.0) (2021-03-21)
+
+
+### Bug Fixes
+
+* **parser:** check for letters in roman numbering of list item ([#787](https://github.com/bytesparadise/libasciidoc/issues/787)) ([e7a8907](https://github.com/bytesparadise/libasciidoc/commit/e7a8907aeaddedc17d4145fb93576330fea314c3)), closes [#747](https://github.com/bytesparadise/libasciidoc/issues/747)
+* **parser:** rearranging lists with delimited blocks afterwards ([#789](https://github.com/bytesparadise/libasciidoc/issues/789)) ([d547fd0](https://github.com/bytesparadise/libasciidoc/commit/d547fd05c68ce67b3a5e1593387744a9b5d36493)), closes [#785](https://github.com/bytesparadise/libasciidoc/issues/785)
+* support multiple roles on blocks ([#807](https://github.com/bytesparadise/libasciidoc/issues/807)) ([50fb873](https://github.com/bytesparadise/libasciidoc/commit/50fb873ee8118d1812ab0a1a154ac5fe33856929)), closes [#602](https://github.com/bytesparadise/libasciidoc/issues/602)
+* **parser:** support nested attributes in links ([#836](https://github.com/bytesparadise/libasciidoc/issues/836)) ([7307f2f](https://github.com/bytesparadise/libasciidoc/commit/7307f2f6fce1276e17883b4f189253b2b200e561)), closes [#826](https://github.com/bytesparadise/libasciidoc/issues/826)
+* **parser/renderer:** encode URL in links when no text is provided ([#788](https://github.com/bytesparadise/libasciidoc/issues/788)) ([ad8fee6](https://github.com/bytesparadise/libasciidoc/commit/ad8fee61bc34fb24a1b6cd5b482ac5d105a3f32a)), closes [#745](https://github.com/bytesparadise/libasciidoc/issues/745)
+
+
+### Code Refactoring
+
+* **parser:** simplified grammar rules for attributes ([#804](https://github.com/bytesparadise/libasciidoc/issues/804)) ([1a08657](https://github.com/bytesparadise/libasciidoc/commit/1a086575fa0fdf617940283599fd602d92ec6965)), closes [#750](https://github.com/bytesparadise/libasciidoc/issues/750)
+
+
+### Features
+
+* **parser:** support attribute substitution in attribute declaration ([#801](https://github.com/bytesparadise/libasciidoc/issues/801)) ([b0e80f5](https://github.com/bytesparadise/libasciidoc/commit/b0e80f5cb96af2fa178294ac539e4aae32d48132)), closes [#800](https://github.com/bytesparadise/libasciidoc/issues/800)
+* **parser:** support attribute substitution in element attributes ([#799](https://github.com/bytesparadise/libasciidoc/issues/799)) ([62ddfce](https://github.com/bytesparadise/libasciidoc/commit/62ddfced96638632da7aae8168e59326ed1f68f7)), closes [#604](https://github.com/bytesparadise/libasciidoc/issues/604)
+* **parser:** support custom substitutions on literal blocks ([#774](https://github.com/bytesparadise/libasciidoc/issues/774)) ([826d5db](https://github.com/bytesparadise/libasciidoc/commit/826d5db4c8b67c75c7d36aa32b2daff66360d7b3)), closes [#770](https://github.com/bytesparadise/libasciidoc/issues/770)
+* **parser:** support for 'idseparator' attribute ([#786](https://github.com/bytesparadise/libasciidoc/issues/786)) ([cd386b8](https://github.com/bytesparadise/libasciidoc/commit/cd386b870f224e86cfe3f88f91679efc799eb1e5)), closes [#783](https://github.com/bytesparadise/libasciidoc/issues/783)
+* **parser:** support incremental substitutions ([#782](https://github.com/bytesparadise/libasciidoc/issues/782)) ([fb1e1fd](https://github.com/bytesparadise/libasciidoc/commit/fb1e1fd0bb89918cc54ea615db6a2b24770f2a77)), closes [#761](https://github.com/bytesparadise/libasciidoc/issues/761)
+* **parser:** support substitutions on passthrough blocks ([#773](https://github.com/bytesparadise/libasciidoc/issues/773)) ([68a9843](https://github.com/bytesparadise/libasciidoc/commit/68a984375984183a89808eaba465985c153b360b)), closes [#772](https://github.com/bytesparadise/libasciidoc/issues/772)
+* **parser/renderer:** support 'listing' paragraphs ([#781](https://github.com/bytesparadise/libasciidoc/issues/781)) ([87b53b3](https://github.com/bytesparadise/libasciidoc/commit/87b53b3abffe1436c8de73523d212edbc28d8143)), closes [#778](https://github.com/bytesparadise/libasciidoc/issues/778)
+* **parser/renderer:** support 'nowrap' option on source blocks ([#795](https://github.com/bytesparadise/libasciidoc/issues/795)) ([6fa3065](https://github.com/bytesparadise/libasciidoc/commit/6fa306570f6dfbee19548a55398800f5bf705342)), closes [#784](https://github.com/bytesparadise/libasciidoc/issues/784)
+* **parser/renderer:** support 'target' and 'role' attributes in link ([#810](https://github.com/bytesparadise/libasciidoc/issues/810)) ([e86a252](https://github.com/bytesparadise/libasciidoc/commit/e86a25286a38def77a04b4c67ef7b379052c350d)), closes [#803](https://github.com/bytesparadise/libasciidoc/issues/803)
+* **parser/renderer:** support example paragraphs ([#779](https://github.com/bytesparadise/libasciidoc/issues/779)) ([d642854](https://github.com/bytesparadise/libasciidoc/commit/d642854399a7e56b326b7826b5a0ba1dfe303e06)), closes [#728](https://github.com/bytesparadise/libasciidoc/issues/728)
+* **parser/renderer:** support quoted text in element attributes ([#835](https://github.com/bytesparadise/libasciidoc/issues/835)) ([ce36ad6](https://github.com/bytesparadise/libasciidoc/commit/ce36ad6381a0b825333ab0bcc7d488b984f4772e)), closes [#829](https://github.com/bytesparadise/libasciidoc/issues/829)
+* **renderer:** default HTML title ([#798](https://github.com/bytesparadise/libasciidoc/issues/798)) ([6b43b68](https://github.com/bytesparadise/libasciidoc/commit/6b43b681cd6ad8c2692760429e629118f072231d)), closes [#627](https://github.com/bytesparadise/libasciidoc/issues/627)
+* support interactive checklists ([#811](https://github.com/bytesparadise/libasciidoc/issues/811)) ([158988e](https://github.com/bytesparadise/libasciidoc/commit/158988e7b41649458d2a71bd866dfc5a31e80faa)), closes [#629](https://github.com/bytesparadise/libasciidoc/issues/629)
+
+
+### BREAKING CHANGES
+
+* **parser:** for images and links, positional attributes are delimited
+with commas, so if a link text should contain such a comma, it is necessary
+that the text be wrapped in single or double quotes. This makes the syntax
+(and thus, the parsing) consistent between block attributes and inline
+attributes.
+Eg: `link:http://example.com["a description, with comma"]`
+* **parser:** inline attributes content must not start with spaces, as
+it is the case with block attributes.
+Eg: `image::cookie.png[ cookie ]` is not valid.
+
+
+
 # [0.5.1](https://github.com/bytesparadise/libasciidoc/compare/v0.5.0...v0.5.1) (2020-10-04)
 
 This is a patch-release to solve a bug in the passthrough block substitutions. 
