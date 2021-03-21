@@ -1,6 +1,9 @@
 # [0.6.0](https://github.com/bytesparadise/libasciidoc/compare/v0.5.1...v0.6.0) (2021-03-21)
 
+Version 0.6.0 focused on improved support for substitutions. It also includes a few extra features
+and fixes for bugs discovered while working on the main theme.
 
+  
 ### Bug Fixes
 
 * **parser:** check for letters in roman numbering of list item ([#787](https://github.com/bytesparadise/libasciidoc/issues/787)) ([e7a8907](https://github.com/bytesparadise/libasciidoc/commit/e7a8907aeaddedc17d4145fb93576330fea314c3)), closes [#747](https://github.com/bytesparadise/libasciidoc/issues/747)
