@@ -52,13 +52,16 @@ Using `-b` (or `--backend`) the following formats are supported:
 
 == Installation
 
-This is a standard Go package, and it installs like you might expect.
+To build libasciidoc and make it available on the command line, do this:
 
-To install it in your `$GOPATH` (assuming `$GOPATH/bin` is on your path), just use `go install`:
+    $ git checkout github.com/bytesparadise/libasciidoc
+    $ cd libasciidoc
+    $ make install
+    $ sudo ln -s  ./bin/libasciidoc /usr/bin/libasciidoc
+
+Libasciidoc is a standard Go package, so if you want to use it as a library in your Go project & install it in your `$GOPATH` (assuming `$GOPATH/bin` is on your path), just use `go install`:
 
     $ go get -u github.com/bytesparadise/libasciidoc
-    $ cd $GOPATH/src/github.com/bytesparadise/libasciidoc
-    $ make install
 
 == Usage
 
