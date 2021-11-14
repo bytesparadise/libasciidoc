@@ -9,20 +9,10 @@ import (
 )
 
 // ParseDocumentFragments parses the actual source with the options
-func ParseDocumentFragments(actual string, options ...interface{}) ([]types.DocumentFragment, error) {
+func ParseDocumentFragments(actual string, options ...parser.Option) ([]types.DocumentFragment, error) {
 	r := strings.NewReader(actual)
-	c := &rawDocumentParserConfig{
-		filename: "test.adoc",
-	}
 	ctx := parser.NewParseContext(configuration.NewConfiguration())
-	for _, o := range options {
-		switch set := o.(type) {
-		case FilenameOption:
-			set(c)
-		case parser.Option:
-			ctx.Opts = append(ctx.Opts, set)
-		}
-	}
+	ctx.Opts = append(ctx.Opts, options...)
 	done := make(chan interface{})
 	defer close(done)
 	// ctx.Opts = append(ctx.Opts, parser.Debug(true))
@@ -32,12 +22,4 @@ func ParseDocumentFragments(actual string, options ...interface{}) ([]types.Docu
 		result = append(result, f)
 	}
 	return result, nil
-}
-
-type rawDocumentParserConfig struct {
-	filename string
-}
-
-func (c *rawDocumentParserConfig) setFilename(f string) {
-	c.filename = f
 }

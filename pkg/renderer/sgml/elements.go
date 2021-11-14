@@ -55,8 +55,6 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderSection(ctx, e)
 	case *types.Preamble:
 		return r.renderPreamble(ctx, e)
-	case *types.BlankLine:
-		return r.renderBlankLine(ctx, e)
 	case *types.List:
 		return r.renderList(ctx, e)
 	case *types.Callout:
