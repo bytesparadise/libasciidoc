@@ -93,8 +93,6 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderIndexTerm(ctx, e)
 	case *types.ConcealedIndexTerm:
 		return r.renderConcealedIndexTerm(e)
-	// case types.VerbatimLine:
-	// 	return r.renderVerbatimLine(e)
 	case *types.QuotedString:
 		return r.renderQuotedString(ctx, e)
 	case *types.ThematicBreak:
@@ -108,6 +106,9 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return "", nil
 	case *types.AttributeReset:
 		delete(ctx.Attributes, e.Name)
+		return "", nil
+	case *types.FrontMatter:
+		ctx.Attributes.AddAll(e.Attributes)
 		return "", nil
 	case *types.AttributeSubstitution:
 		return r.renderAttributeSubstitution(ctx, e)
