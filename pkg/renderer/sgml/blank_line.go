@@ -6,7 +6,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderBlankLine(ctx *Context, _ types.BlankLine) (string, error) {
+func (r *sgmlRenderer) renderBlankLine(ctx *Context, _ *types.BlankLine) (string, error) {
 	return "", nil
 }
 

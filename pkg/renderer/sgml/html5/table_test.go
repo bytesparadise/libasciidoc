@@ -258,7 +258,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("autowidth ", func() {
-		source := "[%autowidth]\n|===\n|==="
+		source := `[%autowidth]
+|===
+|===`
 		expected := `<table class="tableblock frame-all grid-all fit-content">
 </table>
 `
@@ -266,7 +268,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("fixed width (number)", func() {
-		source := "[width=75]\n|===\n|==="
+		source := `[width=75]
+|===
+|===`
 		expected := `<table class="tableblock frame-all grid-all" style="width: 75%;">
 </table>
 `
@@ -274,7 +278,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("fixed width (percent)", func() {
-		source := "[width=75%]\n|===\n|==="
+		source := `[width=75%]
+|===
+|===`
 		expected := `<table class="tableblock frame-all grid-all" style="width: 75%;">
 </table>
 `
@@ -282,7 +288,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("fixed width (100 percent)", func() {
-		source := "[width=100%]\n|===\n|==="
+		source := `[width=100%]
+|===
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 </table>
 `
@@ -290,7 +298,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("fixed width (> 100 percent)", func() {
-		source := "[width=205]\n|===\n|==="
+		source := `[width=205]
+|===
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 </table>
 `
@@ -298,7 +308,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("fixed width overrides fit", func() {
-		source := "[%autowidth,width=25]\n|===\n|==="
+		source := `[%autowidth,width=25]
+|===
+|===`
 		expected := `<table class="tableblock frame-all grid-all" style="width: 25%;">
 </table>
 `
@@ -306,7 +318,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("fixed width overrides fit (> 100 percent)", func() {
-		source := "[%autowidth,width=205]\n|===\n|==="
+		source := `[%autowidth,width=205]
+|===
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 </table>
 `
@@ -314,7 +328,9 @@ var _ = Describe("tables", func() {
 	})
 
 	It("grid, frames, float, stripes", func() {
-		source := "[%autowidth,grid=rows,frame=sides,stripes=hover,float=right]\n|===\n|==="
+		source := `[%autowidth,grid=rows,frame=sides,stripes=hover,float=right]
+|===
+|===`
 		expected := `<table class="tableblock frame-sides grid-rows stripes-hover fit-content right">
 </table>
 `
@@ -322,7 +338,10 @@ var _ = Describe("tables", func() {
 	})
 
 	It("table with cols relative widths", func() {
-		source := "[cols=\"3,2,5\"]\n|===\n|one|two|three\n|==="
+		source := `[cols="3,2,5"]
+|===
+|one|two|three
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 30%;">
@@ -342,7 +361,12 @@ var _ = Describe("tables", func() {
 	})
 
 	It("table with cols relative widths and header", func() {
-		source := "[cols=\"3,2,5\"]\n|===\n|h1|h2|h3\n\n|one|two|three\n|==="
+		source := `[cols="3,2,5"]
+|===
+|h1|h2|h3
+
+|one|two|three
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 30%;">
@@ -369,7 +393,12 @@ var _ = Describe("tables", func() {
 	})
 
 	It("autowidth overrides column widths", func() {
-		source := "[%autowidth,cols=\"3,2,5\"]\n|===\n|h1|h2|h3\n\n|one|two|three\n|==="
+		source := `[%autowidth,cols="3,2,5"]
+|===
+|h1|h2|h3
+
+|one|two|three
+|===`
 		expected := `<table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -396,7 +425,12 @@ var _ = Describe("tables", func() {
 	})
 
 	It("column auto-width", func() {
-		source := "[cols=\"30,~,~\"]\n|===\n|h1|h2|h3\n\n|one|two|three\n|==="
+		source := `[cols="30,~,~"]
+|===
+|h1|h2|h3
+
+|one|two|three
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 30%;">
@@ -423,7 +457,12 @@ var _ = Describe("tables", func() {
 	})
 
 	It("columns with repeat", func() {
-		source := "[cols=\"3*10,2*~\"]\n|===\n|h1|h2|h3|h4|h5\n\n|one|two|three|four|five\n|==="
+		source := `[cols="3*10,2*~"]
+|===
+|h1|h2|h3|h4|h5
+
+|one|two|three|four|five
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 10%;">
@@ -456,9 +495,12 @@ var _ = Describe("tables", func() {
 	})
 
 	It("columns with alignment changes", func() {
-		// source := "[cols=\"2*^.^,<,.>,>\"]\n|===\n|==="
+		source := `[cols="2*^.^,<,.>,>"]
+|===
+|h1|h2|h3|h4|h5
 
-		source := "[cols=\"2*^.^,<,.>,>\"]\n|===\n|h1|h2|h3|h4|h5\n\n|one|two|three|four|five\n|==="
+|one|two|three|four|five
+|===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">

@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("passthrough blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("with title", func() {
 			source := `.a title

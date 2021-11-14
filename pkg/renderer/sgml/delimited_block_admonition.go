@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.ExampleBlock) (string, error) {
+func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	kind, _, err := b.Attributes.GetAsString(types.AttrStyle)
 	if err != nil {
 		return "", err
@@ -54,7 +54,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b types.Exam
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering admonition paragraph...")
 	result := &strings.Builder{}
 	kind, ok, err := p.Attributes.GetAsString(types.AttrStyle)
@@ -69,7 +69,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 	if err != nil {
 		return "", err
 	}
-	content, err := r.renderLines(ctx, p.Lines)
+	content, err := r.renderParagraphElements(ctx, p)
 	if err != nil {
 		return "", err
 	}
@@ -90,7 +90,6 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 		Icon    string
 		Kind    string
 		Content string
-		Lines   [][]interface{}
 	}{
 		Context: ctx,
 		ID:      r.renderElementID(p.Attributes),
@@ -99,7 +98,6 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p types.
 		Roles:   roles,
 		Icon:    icon,
 		Content: content,
-		Lines:   p.Lines,
 	})
 
 	return result.String(), err

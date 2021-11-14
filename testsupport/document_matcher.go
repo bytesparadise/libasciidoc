@@ -2,37 +2,47 @@ package testsupport
 
 import (
 	"fmt"
-	"reflect"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
-	"github.com/sergi/go-diff/diffmatchpatch"
+	log "github.com/sirupsen/logrus"
 )
 
 // MatchDocument a custom matcher to verify that a document matches the given expectation
 // Similar to the standard `Equal` matcher, but display a diff when the values don't match
-func MatchDocument(expected types.Document) gomegatypes.GomegaMatcher {
+func MatchDocument(expected *types.Document) gomegatypes.GomegaMatcher {
 	return &documentMatcher{
 		expected: expected,
 	}
 }
 
 type documentMatcher struct {
-	expected types.Document
+	expected *types.Document
 	diffs    string
 }
 
+var opts = []cmp.Option{cmpopts.IgnoreUnexported(
+	types.List{},
+	types.DelimitedBlock{},
+	types.Footnotes{},
+	types.TableOfContents{},
+)}
+
 func (m *documentMatcher) Match(actual interface{}) (success bool, err error) {
-	if _, ok := actual.(types.Document); !ok {
+	if _, ok := actual.(*types.Document); !ok {
 		return false, errors.Errorf("MatchDocument matcher expects a Document (actual: %T)", actual)
 	}
-	if !reflect.DeepEqual(m.expected, actual) {
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(spew.Sdump(actual), spew.Sdump(m.expected), true)
-		m.diffs = dmp.DiffPrettyText(diffs)
+	if diff := cmp.Diff(m.expected, actual, opts...); diff != "" {
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debugf("actual document:\n%s", spew.Sdump(actual))
+			log.Debugf("expected document:\n%s", spew.Sdump(m.expected))
+		}
+		m.diffs = diff
 		return false, nil
 	}
 	return true, nil

@@ -1,7 +1,11 @@
+:leveloffset: +1
+
 = parent title
 
 first line of parent
 
 include::child-include.adoc[]
 
-last line of parent
+last line of parent <1>
+
+:leveloffset!:

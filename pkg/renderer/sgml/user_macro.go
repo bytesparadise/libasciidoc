@@ -7,23 +7,21 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderUserMacro(ctx *renderer.Context, um types.UserMacro) (string, error) {
+func (r *sgmlRenderer) renderUserMacro(ctx *renderer.Context, m *types.UserMacro) (string, error) {
 	buf := &strings.Builder{}
-	macro, ok := ctx.Config.Macros[um.Name]
+	macro, ok := ctx.Config.Macros[m.Name]
 	if !ok {
-		if um.Kind == types.BlockMacro {
+		if m.Kind == types.BlockMacro {
 			// fallback to paragraph
-			p, _ := types.NewParagraph([]interface{}{
-				[]interface{}{
-					types.StringElement{Content: um.RawText},
-				},
-			}, nil)
+			p, _ := types.NewParagraph(
+				&types.StringElement{Content: m.RawText},
+			)
 			return r.renderParagraph(ctx, p)
 		}
 		// fallback to render raw text
-		return um.RawText, nil
+		return m.RawText, nil
 	}
-	if err := macro.Execute(buf, um); err != nil {
+	if err := macro.Execute(buf, m); err != nil {
 		return "", err
 	}
 	return buf.String(), nil

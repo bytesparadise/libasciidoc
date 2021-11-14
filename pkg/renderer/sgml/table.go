@@ -6,10 +6,12 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string, error) {
+func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (string, error) {
 	result := &strings.Builder{}
 	caption := &strings.Builder{}
 
@@ -41,12 +43,15 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	}
 
 	if t.Attributes.Has(types.AttrTitle) {
-		c, ok, err := t.Attributes.GetAsString(types.AttrCaption)
+		c, found, err := t.Attributes.GetAsString(types.AttrCaption)
 		if err != nil {
 			return "", err
-		} else if !ok {
-			c = ctx.Attributes.GetAsStringWithDefault(types.AttrTableCaption, "Table")
-			if c != "" {
+		} else if !found {
+			c, found, err = ctx.Attributes.GetAsString(types.AttrTableCaption)
+			if err != nil {
+				return "", errors.Wrap(err, "unable to render table")
+			}
+			if found && c != "" {
 				// We always append the figure number, unless the caption is disabled.
 				// This is for asciidoctor compatibility.
 				c += " {counter:table-number}. "
@@ -62,13 +67,15 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 		}
 		caption.WriteString(c)
 	}
-
-	header, err := r.renderTableHeader(ctx, t.Header, t.Columns)
+	columns, err := t.Columns()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render table")
 	}
-
-	body, err := r.renderTableBody(ctx, t)
+	header, err := r.renderTableHeader(ctx, t.Header, columns)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to render table")
+	}
+	body, err := r.renderTableBody(ctx, t.Rows, columns)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render table")
 	}
@@ -78,13 +85,12 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	}
 	title, err := r.renderElementTitle(t.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render table title")
 	}
-
 	err = r.table.Execute(result, struct {
 		Context     *renderer.Context
 		Title       string
-		Columns     []types.TableColumn
+		Columns     []*types.TableColumn
 		TableNumber int
 		Caption     string
 		Frame       string
@@ -99,7 +105,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	}{
 		Context:     ctx,
 		Title:       title,
-		Columns:     t.Columns,
+		Columns:     columns,
 		TableNumber: number,
 		Caption:     caption.String(),
 		Roles:       roles,
@@ -118,11 +124,14 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t types.Table) (string
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, l types.TableLine, cols []types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, h *types.TableRow, cols []*types.TableColumn) (string, error) {
+	if h == nil {
+		return "", nil
+	}
 	result := &strings.Builder{}
 	content := &strings.Builder{}
 	col := 0
-	for _, cell := range l.Cells {
+	for _, cell := range h.Cells {
 		c, err := r.renderTableHeaderCell(ctx, cell, cols[col%len(cols)])
 		col++
 		if err != nil {
@@ -133,18 +142,18 @@ func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, l types.TableLin
 	err := r.tableHeader.Execute(result, struct {
 		Context *renderer.Context
 		Content string
-		Cells   [][]interface{}
+		Cells   []*types.TableCell
 	}{
 		Context: ctx,
 		Content: content.String(),
-		Cells:   l.Cells,
+		Cells:   h.Cells,
 	})
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, cell []interface{}, col types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, cell *types.TableCell, col *types.TableColumn) (string, error) {
 	result := &strings.Builder{}
-	content, err := r.renderInlineElements(ctx, cell)
+	content, err := r.renderInlineElements(ctx, cell.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render header cell")
 	}
@@ -152,58 +161,61 @@ func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, cell []inter
 		Context *renderer.Context
 		Content string
 		Cell    []interface{}
-		VAlign  string
-		HAlign  string
+		HAlign  types.HAlign
+		VAlign  types.VAlign
 	}{
 		Context: ctx,
 		Content: content,
-		Cell:    cell,
+		Cell:    cell.Elements,
 		HAlign:  col.HAlign,
 		VAlign:  col.VAlign,
 	})
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, t types.Table) (string, error) {
+func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.TableRow, columns []*types.TableColumn) (string, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("rendering table body")
+		log.Debugf("columns:\n%s", spew.Sdump(columns))
+		log.Debugf("rows:\n%s", spew.Sdump(rows))
+	}
 	result := &strings.Builder{}
 	content := &strings.Builder{}
-	for _, row := range t.Lines {
-		c, err := r.renderTableRow(ctx, row, t.Columns)
+	for _, row := range rows {
+		c, err := r.renderTableRow(ctx, row, columns)
 		if err != nil {
-			return "", errors.Wrap(err, "unable to render header")
+			return "", errors.Wrap(err, "unable to render body")
 		}
 		content.WriteString(c)
 	}
 	err := r.tableBody.Execute(result, struct {
 		Context *renderer.Context
 		Content string
-		Rows    []types.TableLine
-		Columns []types.TableColumn
+		Rows    []*types.TableRow
+		Columns []*types.TableColumn
 	}{
 		Context: ctx,
 		Content: content.String(),
-		Rows:    t.Lines,
-		Columns: t.Columns,
+		Rows:    rows,
+		Columns: columns,
 	})
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l types.TableLine, cols []types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l *types.TableRow, cols []*types.TableColumn) (string, error) {
 	result := &strings.Builder{}
 	content := &strings.Builder{}
-	col := 0
-	for _, cell := range l.Cells {
-		c, err := r.renderTableCell(ctx, cell, cols[col%len(cols)])
-		col++
+	for i, cell := range l.Cells {
+		c, err := r.renderTableCell(ctx, cell, cols[i])
 		if err != nil {
-			return "", errors.Wrap(err, "unable to render header")
+			return "", errors.Wrap(err, "unable to render row")
 		}
 		content.WriteString(c)
 	}
 	err := r.tableRow.Execute(result, struct {
 		Context *renderer.Context
 		Content string
-		Cells   [][]interface{}
+		Cells   []*types.TableCell
 	}{
 		Context: ctx,
 		Content: content.String(),
@@ -212,18 +224,21 @@ func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l types.TableLine, 
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell []interface{}, col types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell *types.TableCell, col *types.TableColumn) (string, error) {
 	result := &strings.Builder{}
-	content, err := r.renderInlineElements(ctx, cell)
+	content, err := r.renderInlineElements(ctx, cell.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render header cell")
+		return "", errors.Wrap(err, "unable to render cell")
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("rendering cell with content '%s' and def %s", content, spew.Sdump(col))
 	}
 	err = r.tableCell.Execute(result, struct {
 		Context *renderer.Context
 		Content string
-		Cell    []interface{}
-		HAlign  string
-		VAlign  string
+		Cell    *types.TableCell
+		HAlign  types.HAlign
+		VAlign  types.VAlign
 	}{
 		Context: ctx,
 		Content: content,

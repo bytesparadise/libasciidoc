@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.QuoteBlock) (string, error) {
+func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
@@ -19,7 +19,7 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.QuoteBloc
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	attribution, err := quoteBlockAttribution(b)
+	attribution, err := newAttribution(b)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
@@ -46,15 +46,15 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b types.QuoteBloc
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering quote paragraph...")
 	result := &strings.Builder{}
 
-	content, err := r.renderLines(ctx, p.Lines)
+	content, err := r.renderParagraphElements(ctx, p)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote paragraph lines")
 	}
-	attribution, err := paragraphAttribution(p)
+	attribution, err := newAttribution(p)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote paragraph lines")
 	}
@@ -69,14 +69,12 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p types.Parag
 		Title       string
 		Attribution Attribution
 		Content     string
-		Lines       [][]interface{}
 	}{
 		Context:     ctx,
 		ID:          r.renderElementID(p.Attributes),
 		Title:       title,
 		Attribution: attribution,
 		Content:     string(content),
-		Lines:       p.Lines,
 	})
 
 	return result.String(), err

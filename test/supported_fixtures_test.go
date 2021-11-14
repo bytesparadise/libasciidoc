@@ -10,7 +10,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-
 	. "github.com/onsi/ginkgo" //nolint golint
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega" //nolint golint
@@ -51,10 +50,13 @@ func compare(file string) {
 			log.SetLevel(level)
 		}()
 	}
-	actual, err := convert(file)
-	Expect(err).ShouldNot(HaveOccurred())
+	actual := &strings.Builder{}
+	_, err := libasciidoc.ConvertFile(actual, configuration.NewConfiguration(
+		configuration.WithFilename(file),
+		configuration.WithBackEnd("html5")))
+	Expect(err).NotTo(HaveOccurred())
 	expected, err := getGoldenFile(file)
-	Expect(err).ShouldNot(HaveOccurred())
+	Expect(err).NotTo(HaveOccurred())
 	// if tests are executed on windows platform and git 'autocrlf' is set to 'true',
 	// then we need to remove the `\r` characters that were added in the 'expected'
 	// source at the time of the checkout
@@ -62,7 +64,7 @@ func compare(file string) {
 		expected = strings.Replace(expected, "\r", "", -1)
 	}
 	// compare actual vs reference
-	Expect(actual).To(Equal(expected))
+	Expect(actual.String()).To(Equal(expected))
 }
 
 const adocExt = ".adoc"
@@ -74,17 +76,6 @@ func entries(pattern string) []TableEntry {
 		result[i] = Entry(file, file)
 	}
 	return result
-}
-
-func convert(sourcePath string) (string, error) {
-	// generate the HTML output
-	buff := bytes.NewBuffer(nil)
-	config := configuration.NewConfiguration(configuration.WithFilename(sourcePath), configuration.WithBackEnd("html5"))
-	_, err := libasciidoc.ConvertFile(buff, config)
-	if err != nil {
-		return "", err
-	}
-	return buff.String(), nil
 }
 
 func getGoldenFile(sourcePath string) (string, error) {

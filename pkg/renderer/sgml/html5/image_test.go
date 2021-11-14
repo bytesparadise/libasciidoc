@@ -99,8 +99,9 @@ var _ = Describe("images", func() {
 
 		It("with suppressed caption", func() {
 
-			source := ":figure-caption!:\n" +
-				".Image Title\nimage::foo.png[foo image, 600, 400]"
+			source := `:figure-caption!:
+.Image Title
+image::foo.png[foo image, 600, 400]`
 			expected := `<div class="imageblock">
 <div class="content">
 <img src="foo.png" alt="foo image" width="600" height="400">

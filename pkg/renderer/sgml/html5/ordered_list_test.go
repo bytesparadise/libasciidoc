@@ -9,7 +9,41 @@ import (
 
 var _ = Describe("ordered lists", func() {
 
-	It("ordered list with title and role", func() {
+	It("with implicit numbering style on a single line", func() {
+		source := `. item on a single line`
+		expected := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>item on a single line</p>
+</li>
+</ol>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("with implicit numbering style on multiple lines with heading tabs", func() {
+		// heading tabs should be trimmed
+		source := `. item 
+	on 
+	multiple 
+	lines
+`
+		expected := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>item
+on
+multiple
+lines</p>
+</li>
+</ol>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("with title and role", func() {
 		source := `.title
 [#myid]
 [.myrole]
@@ -26,7 +60,7 @@ var _ = Describe("ordered lists", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list item with explicit start only", func() {
+	It("with explicit start only", func() {
 		source := `[start=5]
 . item`
 		expected := `<div class="olist arabic">
@@ -40,7 +74,7 @@ var _ = Describe("ordered lists", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list item with explicit quoted numbering and start", func() {
+	It("with explicit quoted numbering and start", func() {
 		source := `["lowerroman", start="5"]
 . item`
 		expected := `<div class="olist lowerroman">
@@ -72,7 +106,7 @@ var _ = Describe("ordered lists", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list with paragraph continuation", func() {
+	It("with paragraph continuation", func() {
 		source := `. item 1
 +
 foo`
@@ -90,7 +124,7 @@ foo`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list with delimited block continuation", func() {
+	It("with delimited block continuation", func() {
 		source := `. item 1
 +
 ----
@@ -112,7 +146,7 @@ foo
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list with unnumbered items", func() {
+	It("with unnumbered items", func() {
 		source := `. item 1
 		.. item 1.1
 		... item 1.1.1

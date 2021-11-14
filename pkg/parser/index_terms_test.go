@@ -10,27 +10,26 @@ import (
 
 var _ = Describe("index terms", func() {
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
 		It("index term in existing paragraph line", func() {
 			source := `a paragraph with an ((index)) term.`
-			expected := types.Document{
+			expected := &types.Document{
 				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "a paragraph with an ",
-								},
-								types.IndexTerm{
-									Term: []interface{}{types.StringElement{
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a paragraph with an ",
+							},
+							&types.IndexTerm{
+								Term: []interface{}{
+									&types.StringElement{
 										Content: "index",
 									},
-									},
 								},
-								types.StringElement{
-									Content: " term.",
-								},
+							},
+							&types.StringElement{
+								Content: " term.",
 							},
 						},
 					},
@@ -42,34 +41,30 @@ var _ = Describe("index terms", func() {
 		It("index term in single paragraph line", func() {
 			source := `((foo_bar_baz _italic_ normal))
 a paragraph with an index term.`
-			expected := types.Document{
+			expected := &types.Document{
 				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.IndexTerm{
-									Term: []interface{}{
-										types.StringElement{
-											Content: "foo_bar_baz ",
-										},
-										types.QuotedText{
-											Kind: types.SingleQuoteItalic,
-											Elements: []interface{}{
-												types.StringElement{
-													Content: "italic",
-												},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.IndexTerm{
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "foo_bar_baz ",
+									},
+									&types.QuotedText{
+										Kind: types.SingleQuoteItalic,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "italic",
 											},
 										},
-										types.StringElement{
-											Content: " normal",
-										},
+									},
+									&types.StringElement{
+										Content: " normal",
 									},
 								},
 							},
-							{
-								types.StringElement{
-									Content: "a paragraph with an index term.",
-								},
+							&types.StringElement{
+								Content: "\na paragraph with an index term.",
 							},
 						},
 					},
@@ -82,26 +77,24 @@ a paragraph with an index term.`
 
 var _ = Describe("concealed index terms", func() {
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
 		It("concealed index term in existing paragraph line", func() {
 			source := `a paragraph with an index term (((index, term, here))).`
-			expected := types.Document{
+			expected := &types.Document{
 				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "a paragraph with an index term ",
-								},
-								types.ConcealedIndexTerm{
-									Term1: "index",
-									Term2: "term",
-									Term3: "here",
-								},
-								types.StringElement{
-									Content: ".",
-								},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a paragraph with an index term ",
+							},
+							&types.ConcealedIndexTerm{
+								Term1: "index",
+								Term2: "term",
+								Term3: "here",
+							},
+							&types.StringElement{
+								Content: ".",
 							},
 						},
 					},
@@ -113,20 +106,16 @@ var _ = Describe("concealed index terms", func() {
 		It("concealed index term in separate paragraph line", func() {
 			source := `(((index, term)))
 a paragraph with an index term.`
-			expected := types.Document{
+			expected := &types.Document{
 				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.ConcealedIndexTerm{
-									Term1: "index",
-									Term2: "term",
-								},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.ConcealedIndexTerm{
+								Term1: "index",
+								Term2: "term",
 							},
-							{
-								types.StringElement{
-									Content: "a paragraph with an index term.",
-								},
+							&types.StringElement{
+								Content: "\na paragraph with an index term.",
 							},
 						},
 					},

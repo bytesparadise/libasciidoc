@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("source blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("with source attribute only", func() {
 			source := `[source]

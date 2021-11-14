@@ -10,7 +10,7 @@ import (
 
 // TODO: The bold, italic, and monospace items should be refactored to support semantic tags instead.
 
-func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t types.QuotedText) (string, error) {
+func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t *types.QuotedText) (string, error) {
 	elementsBuffer := &strings.Builder{}
 	for _, element := range t.Elements {
 		b, err := r.renderElement(ctx, element)

@@ -1,122 +1,210 @@
 package parser_test
 
 import (
+	"strings"
+
+	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
+	log "github.com/sirupsen/logrus"
 
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo"                  //nolint golint
+	. "github.com/onsi/ginkgo/extensions/table" //nolint golint
+	. "github.com/onsi/gomega"                  //nolint golint
 )
 
 var _ = Describe("tables", func() {
 
-	It("1-line table with 2 cells", func() {
-		source := `|===
-| *foo* foo  | _bar_  
+	Context("in final documents", func() {
+
+		It("1-line table with 2 cells", func() {
+			source := `|===
+| *cookie* cookie  | _pasta_  
 |===
 `
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Columns: []types.TableColumn{
-						{Width: "50", VAlign: "top", HAlign: "left"},
-						{Width: "50", VAlign: "top", HAlign: "left"},
-					},
-					Lines: []types.TableLine{
-						{
-							Cells: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.SingleQuoteBold,
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						// Columns: []*types.TableColumn{
+						// 	{Width: "50", VAlign: "top", HAlign: "left"},
+						// 	{Width: "50", VAlign: "top", HAlign: "left"},
+						// },
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
 										Elements: []interface{}{
-											types.StringElement{
-												Content: "foo",
+											&types.QuotedText{
+												Kind: types.SingleQuoteBold,
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "cookie",
+													},
+												},
+											},
+											&types.StringElement{
+												Content: " cookie  ",
 											},
 										},
 									},
-									types.StringElement{
-										Content: " foo  ",
-									},
-								},
-								{
-									types.QuotedText{
-										Kind: types.SingleQuoteItalic,
+									{
 										Elements: []interface{}{
-											types.StringElement{
-												Content: "bar",
+											&types.QuotedText{
+												Kind: types.SingleQuoteItalic,
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "pasta",
+													},
+												},
+											},
+											&types.StringElement{
+												Content: "  ",
 											},
 										},
-									},
-									types.StringElement{
-										Content: "  ",
 									},
 								},
 							},
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("1-line table with 3 cells", func() {
-		source := `|===
-| *foo* foo  | _bar_  | baz
+		It("1-line table with 3 cells", func() {
+			source := `|===
+| *cookie* cookie  | _pasta_  | chocolate
 |===`
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Columns: []types.TableColumn{
-						{Width: "33.3333", VAlign: "top", HAlign: "left"},
-						{Width: "33.3333", VAlign: "top", HAlign: "left"},
-						{Width: "33.3334", VAlign: "top", HAlign: "left"},
-					},
-					Lines: []types.TableLine{
-						{
-							Cells: [][]interface{}{
-								{
-									types.QuotedText{
-										Kind: types.SingleQuoteBold,
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						// Columns: []*types.TableColumn{
+						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
+						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
+						// 	{Width: "33.3334", VAlign: "top", HAlign: "left"},
+						// },
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
 										Elements: []interface{}{
-											types.StringElement{
-												Content: "foo",
+											&types.QuotedText{
+												Kind: types.SingleQuoteBold,
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "cookie",
+													},
+												},
+											},
+											&types.StringElement{
+												Content: " cookie  ",
 											},
 										},
 									},
-									types.StringElement{
-										Content: " foo  ",
-									},
-								},
-								{
-									types.QuotedText{
-										Kind: types.SingleQuoteItalic,
+									{
 										Elements: []interface{}{
-											types.StringElement{
-												Content: "bar",
+											&types.QuotedText{
+												Kind: types.SingleQuoteItalic,
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "pasta",
+													},
+												},
+											},
+											&types.StringElement{
+												Content: "  ",
 											},
 										},
 									},
-									types.StringElement{
-										Content: "  ",
-									},
-								},
-								{
-									types.StringElement{
-										Content: "baz",
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "chocolate",
+											},
+										},
 									},
 								},
 							},
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("table with title, headers and 1 line per cell", func() {
-		source := `.table title
+		It("2-line table with 3 cells", func() {
+			source := `|===
+| some cookies | some chocolate | some pasta
+| more cookies | more chocolate | more pasta
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						// Columns: []*types.TableColumn{
+						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
+						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
+						// 	{Width: "33.3334", VAlign: "top", HAlign: "left"},
+						// },
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "some cookies ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "some chocolate ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "some pasta",
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "more cookies ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "more chocolate ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "more pasta",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("table with title, headers and 1 line per cell", func() {
+			source := `.table title
 |===
 |heading 1 |heading 2
 
@@ -126,70 +214,82 @@ var _ = Describe("tables", func() {
 |row 2, column 1
 |row 2, column 2
 |===`
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Attributes: types.Attributes{
-						types.AttrTitle: "table title",
-					},
-					Columns: []types.TableColumn{
-						{Width: "50", HAlign: "left", VAlign: "top"},
-						{Width: "50", HAlign: "left", VAlign: "top"},
-					},
-
-					Header: types.TableLine{
-						Cells: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "heading 1 ",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "heading 2",
-								},
-							},
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrTitle: "table title",
 						},
-					},
+						// Columns: []*types.TableColumn{
+						// 	{Width: "50", HAlign: "left", VAlign: "top"},
+						// 	{Width: "50", HAlign: "left", VAlign: "top"},
+						// },
 
-					Lines: []types.TableLine{
-						{
-							Cells: [][]interface{}{
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
 								{
-									types.StringElement{
-										Content: "row 1, column 1",
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "heading 1 ",
+										},
 									},
 								},
 								{
-									types.StringElement{
-										Content: "row 1, column 2",
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "heading 2",
+										},
 									},
 								},
 							},
 						},
-						{
-							Cells: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "row 2, column 1",
+
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 1, column 1",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 1, column 2",
+											},
+										},
 									},
 								},
-								{
-									types.StringElement{
-										Content: "row 2, column 2",
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 2, column 1",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 2, column 2",
+											},
+										},
 									},
 								},
 							},
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("table with title, headers, id and multiple roles, stretch", func() {
-		source := `.table title
+		It("table with title, headers, id and multiple roles, stretch", func() {
+			source := `.table title
 [#anchor.role1%autowidth.stretch]
 |===
 |heading 1 |heading 2
@@ -200,206 +300,384 @@ var _ = Describe("tables", func() {
 |row 2, column 1
 |row 2, column 2
 |===`
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Attributes: types.Attributes{
-						types.AttrTitle:   "table title",
-						types.AttrOptions: []interface{}{"autowidth"},
-						types.AttrRoles:   []interface{}{"role1", "stretch"},
-						types.AttrID:      "anchor",
-					},
-					Header: types.TableLine{
-						Cells: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "heading 1 ",
-								},
-							},
-							{
-								types.StringElement{
-									Content: "heading 2",
-								},
-							},
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrTitle:   "table title",
+							types.AttrOptions: []interface{}{"autowidth"},
+							types.AttrRoles:   []interface{}{"role1", "stretch"},
+							types.AttrID:      "anchor",
 						},
-					},
-					Columns: []types.TableColumn{
-						// autowidth clears width
-						{HAlign: "left", VAlign: "top"},
-						{HAlign: "left", VAlign: "top"},
-					},
-					Lines: []types.TableLine{
-						{
-							Cells: [][]interface{}{
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
 								{
-									types.StringElement{
-										Content: "row 1, column 1",
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "heading 1 ",
+										},
 									},
 								},
 								{
-									types.StringElement{
-										Content: "row 1, column 2",
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "heading 2",
+										},
 									},
 								},
 							},
 						},
-						{
-							Cells: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "row 2, column 1",
+						// Columns: []*types.TableColumn{
+						// 	// autowidth clears width
+						// 	{HAlign: "left", VAlign: "top"},
+						// 	{HAlign: "left", VAlign: "top"},
+						// },
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 1, column 1",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 1, column 2",
+											},
+										},
 									},
 								},
-								{
-									types.StringElement{
-										Content: "row 2, column 2",
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 2, column 1",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "row 2, column 2",
+											},
+										},
 									},
 								},
 							},
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("empty table ", func() {
-		source := `|===
+		It("empty table ", func() {
+			source := `|===
 |===`
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Columns: []types.TableColumn{},
-					Lines:   []types.TableLine{},
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						// Columns: []*types.TableColumn{},
+						// Lines:   []*types.TableLine{},
+					},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("empty table with cols attr", func() {
-		source := "[cols=\"3,2,5\"]\n|===\n|==="
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Attributes: types.Attributes{
-						types.AttrCols: "3,2,5",
+		It("with cols attribute", func() {
+			source := `[cols="2*^.^,<,.>"]
+|===
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 2,
+									HAlign:     types.HAlignCenter,
+									VAlign:     types.VAlignMiddle,
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignLeft,
+									VAlign:     types.VAlignTop,
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignLeft,
+									VAlign:     types.VAlignBottom,
+									Weight:     1,
+								},
+							},
+						},
 					},
-					Columns: []types.TableColumn{
-						{Width: "30", HAlign: "left", VAlign: "top"},
-						{Width: "20", HAlign: "left", VAlign: "top"},
-						{Width: "50", HAlign: "left", VAlign: "top"},
-					},
-					Lines: []types.TableLine{},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("autowidth overrides column widths", func() {
-		source := "[%autowidth,cols=\"3,2,5\"]\n|===\n|==="
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Attributes: types.Attributes{
-						types.AttrOptions: []interface{}{"autowidth"},
-						types.AttrCols:    "3,2,5",
+		It("columns as document attribute", func() {
+			source := `:cols: 2*^.^d,<e,.>s
+			
+[cols={cols}]
+|===
+|===`
+			expected := &types.Document{
+				// Attributes: types.Attributes{
+				// 	"cols": "2*^.^d,<e,.>s",
+				// },
+				Elements: []interface{}{
+					&types.AttributeDeclaration{
+						Name:  "cols",
+						Value: "2*^.^d,<e,.>s",
 					},
-					Columns: []types.TableColumn{
-						{HAlign: "left", VAlign: "top"},
-						{HAlign: "left", VAlign: "top"},
-						{HAlign: "left", VAlign: "top"},
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 2,
+									HAlign:     types.HAlignCenter,
+									VAlign:     types.VAlignMiddle,
+									Style:      types.DefaultStyle,
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignLeft,
+									VAlign:     types.VAlignTop,
+									Style:      types.EmphasisStyle,
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignLeft,
+									VAlign:     types.VAlignBottom,
+									Style:      types.StrongStyle,
+									Weight:     1,
+								},
+							},
+						},
 					},
-					Lines: []types.TableLine{},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 	})
+})
 
-	It("column autowidth", func() {
-		source := "[cols=\"30,~,~\"]\n|===\n|==="
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Attributes: types.Attributes{
-						types.AttrCols: "30,~,~",
-					},
-					Columns: []types.TableColumn{
-						{Width: "30", HAlign: "left", VAlign: "top"},
-						{HAlign: "left", VAlign: "top"},
-						{HAlign: "left", VAlign: "top"},
-					},
-					Lines: []types.TableLine{},
-				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+var _ = Describe("table cols", func() {
 
-	It("columns with repeat", func() {
-		source := "[cols=\"3*10,2*~\"]\n|===\n|==="
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Table{
-					Attributes: types.Attributes{
-						types.AttrCols: "3*10,2*~",
-					},
-					Columns: []types.TableColumn{
-						{Width: "10", HAlign: "left", VAlign: "top"},
-						{Width: "10", HAlign: "left", VAlign: "top"},
-						{Width: "10", HAlign: "left", VAlign: "top"},
-						{HAlign: "left", VAlign: "top"},
-						{HAlign: "left", VAlign: "top"},
-					},
-					Lines: []types.TableLine{},
-				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
-	It("columns with alignment changes", func() {
-		source := "[cols=\"2*^.^,<,.>\"]\n|===\n|==="
-		expected := types.DraftDocument{Elements: []interface{}{
-			types.Table{
+	DescribeTable("valid",
+		func(source string, expected []*types.TableColumn) {
+			// given
+			log.Debugf("processing '%s'", source)
+			content := strings.NewReader(source)
+			// when parsing only (ie, no substitution applied)
+			result, err := parser.ParseReader("", content, parser.Entrypoint("TableColumnsAttribute"))
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result).To(BeAssignableToTypeOf([]interface{}{}))
+			cols := result.([]interface{})
+			// now, set the attribute in the table and call the `Columns()` method
+			t := &types.Table{
 				Attributes: types.Attributes{
-					types.AttrCols: "2*^.^,<,.>",
+					types.AttrCols: result,
 				},
-				Columns: []types.TableColumn{
-					{Width: "25", HAlign: "center", VAlign: "middle"},
-					{Width: "25", HAlign: "center", VAlign: "middle"},
-					{Width: "25", HAlign: "left", VAlign: "top"},
-					{Width: "25", HAlign: "left", VAlign: "bottom"},
-				},
-				Lines: []types.TableLine{},
-			},
+				Rows: []*types.TableRow{{}},
+			}
+			t.Rows[0].Cells = make([]*types.TableCell, len(cols))
+			for i := range cols {
+				t.Rows[0].Cells[i] = &types.TableCell{}
+			}
+			Expect(t.Columns()).To(Equal(expected))
 		},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
 
-	// TODO: This checks that we parse the styles -- we don't actually do anything with them further yet.
-	It("columns with alignment changes and styles", func() {
-		source := "[cols=\"2*^.^d,<e,.>s\"]\n|===\n|==="
-		expected := types.DraftDocument{
-			FrontMatter: types.FrontMatter{Content: nil},
-			Elements: []interface{}{
-				types.Table{
-					Attributes: types.Attributes{
-						types.AttrCols: "2*^.^d,<e,.>s",
-					},
-					Columns: []types.TableColumn{
-						{Width: "25", HAlign: "center", VAlign: "middle"}, // "d" is aliased to ""
-						{Width: "25", HAlign: "center", VAlign: "middle"},
-						{Width: "25", HAlign: "left", VAlign: "top", Style: "e"},
-						{Width: "25", HAlign: "left", VAlign: "bottom", Style: "s"},
-					},
-					Lines: []types.TableLine{},
+		Entry(`1`, `1`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "100",
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+			}),
+		Entry(`20,~,~`, `20,~,~`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     20,
+					Width:      "20",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Autowidth:  true,
+					Width:      "",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Autowidth:  true,
+					Width:      "",
+				},
+			}),
+
+		Entry(`<,>`, `<,>`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "50",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignRight,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "50",
+				},
+			}),
+		Entry(`.<,.>`, `.<,.>`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "50",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignBottom,
+					Weight:     1,
+					Width:      "50",
+				},
+			}),
+		Entry(`<.<,>.>`, `<.<,>.>`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "50",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignRight,
+					VAlign:     types.VAlignBottom,
+					Weight:     1,
+					Width:      "50",
+				},
+			}),
+		Entry(`<.<1,>.>2`, `<.<1,>.>2`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "33.3333",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignRight,
+					VAlign:     types.VAlignBottom,
+					Weight:     2,
+					Width:      "66.6667",
+				},
+			}),
+		Entry(`2*<.<1,1*>.>2`, `2*<.<1,1*>.>2`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 2,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "25",
+				},
+				{
+					Multiplier: 2,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "25",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignRight,
+					VAlign:     types.VAlignBottom,
+					Weight:     2,
+					Width:      "50",
+				},
+			}),
+		// with style
+		Entry(`2*^.^d,<e,.>s`, `2*^.^d,<e,.>s`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 2,
+					HAlign:     types.HAlignCenter,
+					VAlign:     types.VAlignMiddle,
+					Style:      types.DefaultStyle,
+					Weight:     1,
+					Width:      "25",
+				},
+				{
+					Multiplier: 2,
+					HAlign:     types.HAlignCenter,
+					VAlign:     types.VAlignMiddle,
+					Style:      types.DefaultStyle,
+					Weight:     1,
+					Width:      "25",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignTop,
+					Style:      types.EmphasisStyle,
+					Weight:     1,
+					Width:      "25",
+				},
+				{
+					Multiplier: 1,
+					HAlign:     types.HAlignLeft,
+					VAlign:     types.VAlignBottom,
+					Style:      types.StrongStyle,
+					Weight:     1,
+					Width:      "25",
+				},
+			}),
+	)
+
+	DescribeTable("invalid",
+		func(source string) {
+			// given
+			log.Debugf("processing '%s'", source)
+			content := strings.NewReader(source)
+			// when parsing only (ie, no substitution applied)
+			_, err := parser.ParseReader("", content, parser.Entrypoint("TableColumnsAttribute"))
+			// then
+			Expect(err).To(HaveOccurred())
+		},
+
+		// unknown case: should return an error
+		Entry(`invalid`, `invalid`),
+	)
 })

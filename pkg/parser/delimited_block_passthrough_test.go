@@ -10,130 +10,7 @@ import (
 
 var _ = Describe("passthrough blocks", func() {
 
-	Context("draft documents", func() {
-
-		Context("delimited blocks", func() {
-
-			It("with title", func() {
-				source := `.a title
-++++
-_foo_
-
-*bar*
-++++`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.PassthroughBlock{
-							Attributes: types.Attributes{
-								types.AttrTitle: "a title",
-							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "_foo_",
-									},
-								},
-								{},
-								{
-									types.StringElement{
-										Content: "*bar*",
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("with special characters", func() {
-				source := `++++
-<input>
-
-<input>
-++++`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.PassthroughBlock{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "<input>",
-									},
-								},
-								{},
-								{
-									types.StringElement{
-										Content: "<input>",
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("with inline link", func() {
-				source := `++++
-http://example.com[]
-++++`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.PassthroughBlock{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "http://example.com[]",
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("with inline pass", func() {
-				source := `++++
-pass:[foo]
-++++`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.PassthroughBlock{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "pass:[foo]",
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("with quoted text", func() {
-				source := `++++
-*foo*
-++++`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.PassthroughBlock{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "*foo*",
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-		})
+	Context("in raw documents", func() {
 
 		Context("paragraph with attribute", func() {
 
@@ -143,46 +20,44 @@ _foo_
 *bar*
 
 another paragraph`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.PassthroughBlock{
-							Attributes: types.Attributes{
-								types.AttrStyle: types.Passthrough,
-							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "_foo_",
-									},
+				expected := []types.DocumentFragment{
+					{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrStyle: "pass",
 								},
-								{
-									types.StringElement{
-										Content: "*bar*",
-									},
+								Elements: []interface{}{
+									types.RawLine("_foo_"),
+									types.RawLine("*bar*"),
 								},
 							},
 						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "another paragraph",
-									},
+					},
+					{
+						Elements: []interface{}{
+							&types.BlankLine{},
+						},
+					},
+					{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									types.RawLine("another paragraph"),
 								},
 							},
 						},
 					},
 				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+				Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 			})
 		})
 
 	})
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
-		Context("delimited blocks", func() {
+		Context("as delimited blocks", func() {
 
 			It("with title", func() {
 				source := `.a title
@@ -191,23 +66,16 @@ _foo_
 
 *bar*
 ++++`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.PassthroughBlock{
+						&types.DelimitedBlock{
+							Kind: types.Passthrough,
 							Attributes: types.Attributes{
 								types.AttrTitle: "a title",
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "_foo_",
-									},
-								},
-								{},
-								{
-									types.StringElement{
-										Content: "*bar*",
-									},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "_foo_\n\n*bar*",
 								},
 							},
 						},
@@ -217,6 +85,65 @@ _foo_
 				Expect(err).NotTo(HaveOccurred())
 				Expect(result).To(MatchDocument(expected))
 			})
+
+			It("with special characters", func() {
+				source := `++++
+<input>
+
+<input>
+++++`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Passthrough,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "<input>\n\n<input>",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with inline link", func() {
+				source := `++++
+http://example.com[]
+++++`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Passthrough,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "http://example.com[]",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with inline pass", func() {
+				source := `++++
+pass:[foo]
+++++`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Passthrough,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "pass:[foo]",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 
 		Context("paragraph with attribute", func() {
@@ -227,31 +154,22 @@ _foo_
 *bar*
 
 another paragraph`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.PassthroughBlock{
+						&types.Paragraph{
 							Attributes: types.Attributes{
 								types.AttrStyle: types.Passthrough,
 							},
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "_foo_",
-									},
-								},
-								{
-									types.StringElement{
-										Content: "*bar*",
-									},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "_foo_\n*bar*",
 								},
 							},
 						},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "another paragraph",
-									},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "another paragraph",
 								},
 							},
 						},

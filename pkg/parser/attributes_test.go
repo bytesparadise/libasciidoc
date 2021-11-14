@@ -16,289 +16,305 @@ import (
 var _ = Describe("attributes", func() {
 
 	// We test inline image attributes first.
-	Context("inline attributes", func() {
+	Context("inline", func() {
 
 		It("block image with empty alt", func() {
-			source := "image::foo.png[]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			source := `image::foo.png[]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image with empty alt and extra whitespace", func() {
-			source := "image::foo.png[ ]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			source := `image::foo.png[ ]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image with empty positional parameters", func() {
-			source := "image::foo.png[ , , ]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			source := `image::foo.png[ , , ]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image with empty first parameter, non-empty width", func() {
-			source := "image::foo.png[ , 200, ]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrWidth: "200",
-						},
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			source := `image::foo.png[ , 200, ]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrWidth: "200",
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image with double quoted alt", func() {
-			source := "image::foo.png[\"Quoted, Here\"]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: `Quoted, Here`,
-						},
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			source := `image::foo.png["Quoted, Here"]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `Quoted, Here`,
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
-		It("block image with double quoted alt and embedded quotes", func() {
+		It("block image with double quoted alt and escaped double quotes", func() {
 			source := `image::foo.png["The Foo\"Bar\" here"]`
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: `The Foo"Bar" here`,
-						},
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `The Foo"Bar" here`,
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+		})
+
+		It("block image with single quoted alt and escaped single quotes", func() {
+			source := `image::foo.png['The Foo\'Bar\' here']`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `The Foo'Bar' here`,
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+		})
+
+		It("block image with double quoted alt and standalone backslash", func() {
+			source := `image::foo.png["The Foo\Bar here"]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `The Foo\Bar here`,
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+		})
+
+		It("block image with single quoted alt and standalone backslash", func() {
+			source := `image::foo.png['The Foo\Bar here']`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `The Foo\Bar here`,
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image alt and named pair", func() {
 			source := `image::foo.png["Quoted, Here", height=100]`
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: `Quoted, Here`,
-							types.AttrHeight:   "100",
-						},
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `Quoted, Here`,
+								types.AttrHeight:   "100",
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			result, err := ParseDraftDocument(source)
+			result, err := ParseDocumentFragments(source)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(MatchDraftDocument(expected))
+			Expect(result).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image alt, width, height, and named pair", func() {
-			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: `Quoted, Here`,
-							types.AttrHeight:   "100", // last one wins
-							types.AttrWidth:    "1",
-						},
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			source := `image::foo.png["Quoted, Here", 1, 2, height=100]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `Quoted, Here`,
+								types.AttrHeight:   "100", // last one wins
+								types.AttrWidth:    "1",
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image alt, width, height, and named pair (spacing)", func() {
-			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100, test1=123 ,test2 = second test ]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: `Quoted, Here`,
-							types.AttrHeight:   "100", // last one wins
-							types.AttrWidth:    "1",
-							"test1":            "123",
-							"test2":            "second test", // shows trailing pad removed
-						},
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			source := `image::foo.png["Quoted, Here", 1, 2, height=100, test1=123 ,test2 = second test ]`
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `Quoted, Here`,
+								types.AttrHeight:   "100", // last one wins
+								types.AttrWidth:    "1",
+								"test1":            "123",
+								"test2":            "second test", // shows trailing pad removed
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("block image alt, width, height, and named pair embedded quote", func() {
 			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100, test1=123 ,test2 = second \"test\" ]"
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.ImageBlock{
-						Attributes: types.Attributes{
-							types.AttrImageAlt: `Quoted, Here`,
-							types.AttrHeight:   "100", // last one wins
-							types.AttrWidth:    "1",
-							"test1":            "123",
-							"test2":            `second "test"`, // shows trailing pad removed
-						},
-						Location: types.Location{
-							Path: []interface{}{
-								types.StringElement{Content: "foo.png"},
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrImageAlt: `Quoted, Here`,
+								types.AttrHeight:   "100", // last one wins
+								types.AttrWidth:    "1",
+								"test1":            "123",
+								"test2":            `second "test"`, // shows trailing pad removed
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{Content: "foo.png"},
+								},
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 	})
 
-	Context("attributes with substitutions", func() {
+	Context("invalid syntax", func() {
 
-		It("should substitute an attribute in another attribute", func() {
-			source := `:def: foo
-:abc: {def}bar
+		// no space should be allowed at the beginning of inline attributes,
+		// (to be consistent with block attributes)
 
-{abc}`
-			expected := types.DraftDocument{
-				Attributes: types.Attributes{
-					"def": "foo",
-					"abc": "foobar", // resolved
-				},
-				Elements: []interface{}{
-					types.AttributeDeclaration{
-						Name:  "def",
-						Value: "foo",
-					},
-					types.AttributeDeclaration{
-						Name:  "abc",
-						Value: "foobar", // resolved
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "foobar",
-								},
-							},
-						},
-					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-		})
-
-		It("should not substitute an attribute in another attribute when not defined", func() {
-			source := `:abc: {def}bar
-
-{abc}`
-			expected := types.DraftDocument{
-				Attributes: types.Attributes{
-					"abc": "{def}bar", // unresolved
-				},
-				Elements: []interface{}{
-					types.AttributeDeclaration{
-						Name:  "abc",
-						Value: "{def}bar", // unresolved
-					},
-					types.BlankLine{},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "{def}bar",
-								},
-							},
-						},
-					},
-				},
-			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-		})
-
-		Context("invalid syntax", func() {
-
-			// no space should be allowed at the beginning of inline attributes,
-			// (to be consistent with block attributes)
-
-			It("block image with double quoted alt extra whitespace", func() {
-				source := `image::foo.png[ "This \Backslash  2Spaced End Space " ]`
-				expected := types.DraftDocument{
+		It("block image with double quoted alt extra whitespace", func() {
+			source := `image::foo.png[ "This \Backslash  2Spaced End Space " ]`
+			expected := []types.DocumentFragment{
+				{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: `image::foo.png[ "This \Backslash  2Spaced End Space " ]`,
-									},
-								},
+						&types.Paragraph{
+							Elements: []interface{}{
+								types.RawLine(`image::foo.png[ "This \Backslash  2Spaced End Space " ]`),
 							},
 						},
 					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
+				},
+			}
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 	})
 })
@@ -322,16 +338,16 @@ var _ = DescribeTable("valid block attributes",
 			`attr1`: `cookie`,
 		},
 	),
-	Entry(`[attr1=cookie,foo2='bar2']`, `[attr1=cookie,foo2='bar2']`,
+	Entry(`[attr1=cookie,attr2='pasta']`, `[attr1=cookie,attr2='pasta']`,
 		types.Attributes{
 			`attr1`: `cookie`,
-			`foo2`:  `bar2`,
+			`attr2`: `pasta`,
 		},
 	),
-	Entry(`[attr1=cookie,foo2=bar2]`, `[attr1=cookie,foo2="bar2"]`,
+	Entry(`[attr1=cookie,attr2=pasta]`, `[attr1=cookie,attr2="pasta"]`,
 		types.Attributes{
 			`attr1`: `cookie`,
-			`foo2`:  `bar2`,
+			`attr2`: `pasta`,
 		},
 	),
 
@@ -505,11 +521,6 @@ var _ = DescribeTable("valid block attributes",
 			types.AttrPositional2: `go.not_a_role`,
 		},
 	),
-	Entry("multiple roles", "[.role1]\n[.role2]",
-		types.Attributes{
-			types.AttrRoles: []interface{}{`role1`, `role2`},
-		},
-	),
 
 	// option shorthand
 	Entry(`[%hardbreaks]`, `[%hardbreaks]`,
@@ -627,76 +638,22 @@ var _ = DescribeTable("valid inline attributes",
 	// unquoted positional attributes with quoted text value
 	Entry(`[*cookie*,_chocolate_]`, `[*cookie*,_chocolate_]`,
 		types.Attributes{
-			types.AttrPositional1: []interface{}{
-				types.QuotedText{
-					Kind: types.SingleQuoteBold,
-					Elements: []interface{}{
-						types.StringElement{
-							Content: "cookie",
-						},
-					},
-				},
-			},
-			types.AttrPositional2: []interface{}{
-				types.QuotedText{
-					Kind: types.SingleQuoteItalic,
-					Elements: []interface{}{
-						types.StringElement{
-							Content: "chocolate",
-						},
-					},
-				},
-			},
+			types.AttrPositional1: "*cookie*", // with the `InlineAttributes` rule, values are returned as-is by the parser
+			types.AttrPositional2: "_chocolate_",
 		},
 	),
 	// single-quoted positional attributes with quoted text value
 	Entry(`[*cookie*,_chocolate_]`, `[*cookie*,_chocolate_]`,
 		types.Attributes{
-			types.AttrPositional1: []interface{}{
-				types.QuotedText{
-					Kind: types.SingleQuoteBold,
-					Elements: []interface{}{
-						types.StringElement{
-							Content: "cookie",
-						},
-					},
-				},
-			},
-			types.AttrPositional2: []interface{}{
-				types.QuotedText{
-					Kind: types.SingleQuoteItalic,
-					Elements: []interface{}{
-						types.StringElement{
-							Content: "chocolate",
-						},
-					},
-				},
-			},
+			types.AttrPositional1: "*cookie*", // with the `InlineAttributes` rule, values are returned as-is by the parser
+			types.AttrPositional2: "_chocolate_",
 		},
 	),
 	// double-quoted positional attributes with quoted text value
 	Entry(`["*cookie*","_chocolate_"]`, `["*cookie*","_chocolate_"]`,
 		types.Attributes{
-			types.AttrPositional1: []interface{}{
-				types.QuotedText{
-					Kind: types.SingleQuoteBold,
-					Elements: []interface{}{
-						types.StringElement{
-							Content: "cookie",
-						},
-					},
-				},
-			},
-			types.AttrPositional2: []interface{}{
-				types.QuotedText{
-					Kind: types.SingleQuoteItalic,
-					Elements: []interface{}{
-						types.StringElement{
-							Content: "chocolate",
-						},
-					},
-				},
-			},
+			types.AttrPositional1: "*cookie*", // with the `InlineAttributes` rule, values are returned as-is by the parser
+			types.AttrPositional2: "_chocolate_",
 		},
 	),
 )

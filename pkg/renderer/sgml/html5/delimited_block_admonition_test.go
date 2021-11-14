@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("admonition blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("admonition block with multiple elements alone", func() {
 			source := `[NOTE]
@@ -174,7 +174,7 @@ this is an admonition paragraph.
 This is an admonition block
 								
 with another paragraph    
-====      `
+====`
 			expected := `<div class="admonitionblock caution">
 <table>
 <tr>

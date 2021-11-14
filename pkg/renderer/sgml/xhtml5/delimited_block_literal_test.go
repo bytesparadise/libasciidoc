@@ -117,7 +117,7 @@ a normal paragraph.`
 		It("literal block from 1-line paragraph with attribute", func() {
 			source := `[literal]   
  literal content
- on many lines 
+  on many lines 
  has its heading spaces preserved.
 
 a normal paragraph.`
@@ -125,7 +125,7 @@ a normal paragraph.`
 			expected := `<div class="literalblock">
 <div class="content">
 <pre> literal content
- on many lines
+  on many lines
  has its heading spaces preserved.</pre>
 </div>
 </div>

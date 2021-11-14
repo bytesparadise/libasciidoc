@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon types.Icon) (string, error) {
+func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon *types.Icon) (string, error) {
 	result := &strings.Builder{}
 
 	iconStr, err := r.renderIcon(ctx, types.Icon{
@@ -120,7 +120,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 func renderIconPath(ctx *renderer.Context, name string) string {
 	// Icon files by default are in {imagesdir}/icons, where {imagesdir} defaults to "./images"
 	dir := ctx.Attributes.GetAsStringWithDefault("iconsdir",
-		path.Join(ctx.Attributes.GetAsStringWithDefault("imagesdir", "./images"), "icons"))
+		path.Join(ctx.Attributes.GetAsStringWithDefault(types.AttrImagesDir, "./images"), "icons"))
 	// TODO: perform attribute substitutions here!
 	ext := ctx.Attributes.GetAsStringWithDefault("icontype", "png")
 

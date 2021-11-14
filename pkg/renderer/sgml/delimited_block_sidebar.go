@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b types.SidebarBlock) (string, error) {
+func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
 
 	blocks := discardBlankLines(b.Elements)

@@ -10,12 +10,12 @@ import (
 
 var _ = Describe("documents", func() {
 
-	Context("draft documents", func() {
+	Context("raw documents", func() {
 
 		It("should parse empty document", func() {
 			source := ``
-			expected := types.DraftDocument{}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			expected := []types.DocumentFragment{}
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("should parse header without empty first line", func() {
@@ -23,42 +23,38 @@ var _ = Describe("documents", func() {
 Garrett D'Amore
 1.0, July 4, 2020
 `
-			expected := types.DraftDocument{
-				Attributes: types.Attributes{
-					"revnumber":      "1.0",
-					"revdate":        "July 4, 2020",
-					"author":         "Garrett D'Amore",
-					"authorinitials": "GD",
-					"authors": []types.DocumentAuthor{
-						{
-							FullName: "Garrett D'Amore",
-							Email:    "",
-						},
-					},
-					"firstname": "Garrett",
-					"lastname":  "D'Amore",
-					"revision": types.DocumentRevision{
-						Revnumber: "1.0",
-						Revdate:   "July 4, 2020",
-						Revremark: "",
-					},
-				},
-				Elements: []interface{}{
-					types.Section{
-						Level: 0,
-						Attributes: types.Attributes{
-							"id": "_my_title",
-						},
-						Title: []interface{}{
-							types.StringElement{
-								Content: "My title",
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.DocumentHeader{
+							Title: []interface{}{
+								types.RawLine("My title"),
+							},
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: types.AttrAuthors,
+									Value: types.DocumentAuthors{
+										{
+											DocumentAuthorFullName: &types.DocumentAuthorFullName{
+												FirstName: "Garrett",
+												LastName:  "D'Amore",
+											},
+										},
+									},
+								},
+								&types.AttributeDeclaration{
+									Name: types.AttrRevision,
+									Value: &types.DocumentRevision{
+										Revnumber: "1.0",
+										Revdate:   "July 4, 2020",
+									},
+								},
 							},
 						},
-						Elements: []interface{}{},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 
 		})
 
@@ -67,54 +63,115 @@ Garrett D'Amore
 = My title
 Garrett D'Amore
 1.0, July 4, 2020`
-			expected := types.DraftDocument{
-				Attributes: types.Attributes{
-					"revnumber":      "1.0",
-					"revdate":        "July 4, 2020",
-					"author":         "Garrett D'Amore",
-					"authorinitials": "GD",
-					"authors": []types.DocumentAuthor{
-						{
-							FullName: "Garrett D'Amore",
-							Email:    "",
-						},
-					},
-					"firstname": "Garrett",
-					"lastname":  "D'Amore",
-					"revision": types.DocumentRevision{
-						Revnumber: "1.0",
-						Revdate:   "July 4, 2020",
-						Revremark: "",
-					},
-				},
-				Elements: []interface{}{
-					types.Section{
-						Level: 0,
-						Attributes: types.Attributes{
-							"id": "_my_title",
-						},
-						Title: []interface{}{
-							types.StringElement{
-								Content: "My title",
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.DocumentHeader{
+							Title: []interface{}{
+								types.RawLine("My title"),
+							},
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: types.AttrAuthors,
+									Value: types.DocumentAuthors{
+										{
+											DocumentAuthorFullName: &types.DocumentAuthorFullName{
+												FirstName: "Garrett",
+												LastName:  "D'Amore",
+											},
+										},
+									},
+								},
+								&types.AttributeDeclaration{
+									Name: types.AttrRevision,
+									Value: &types.DocumentRevision{
+										Revnumber: "1.0",
+										Revdate:   "July 4, 2020",
+									},
+								},
 							},
 						},
-						Elements: []interface{}{},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 
 		})
 	})
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
 		It("should parse empty document", func() {
 			source := ``
-			expected := types.Document{
-				Elements: []interface{}{},
+			expected := &types.Document{}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("should parse basic document", func() {
+			source := `== Lorem Ipsum
+			
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
+sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
+sed diam voluptua. 
+At vero eos et accusam et justo duo dolores et ea rebum. 
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
+sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
+sed diam voluptua. 
+At vero eos et accusam et justo duo dolores et ea rebum. 
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit *amet*.`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_lorem_ipsum",
+						},
+						Title: []interface{}{
+							&types.StringElement{
+								Content: "Lorem Ipsum",
+							},
+						},
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										// suffix spaces are trimmed on each line
+										Content: `Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+sed diam voluptua.
+At vero eos et accusam et justo duo dolores et ea rebum.
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+sed diam voluptua.
+At vero eos et accusam et justo duo dolores et ea rebum.
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit `,
+									},
+									&types.QuotedText{
+										Kind: types.SingleQuoteBold,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "amet",
+											},
+										},
+									},
+									&types.StringElement{
+										Content: ".",
+									},
+								},
+							},
+						},
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_lorem_ipsum": []interface{}{
+						&types.StringElement{Content: "Lorem Ipsum"},
+					},
+				},
 			}
-			Expect(ParseDocument(source)).To(Equal(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 })

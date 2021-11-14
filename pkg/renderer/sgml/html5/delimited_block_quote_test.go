@@ -9,9 +9,9 @@ import (
 
 var _ = Describe("quote blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
-		It("single-line quote with author and title ", func() {
+		It("with single-line quote and author and title ", func() {
 			source := `[quote, john doe, quote title]
 ____
 some *quote* content
@@ -32,7 +32,7 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("single-line quote with author and title, and ID and title ", func() {
+		It("with single-line quote and author and title, and ID and title ", func() {
 			source := `[#id-for-quote-block]
 [quote, john doe, quote title]
 .title for quote block
@@ -55,7 +55,7 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("multi-line quote with author and title", func() {
+		It("with multi-line quote and author and title", func() {
 			source := `[quote, john doe, quote title]
 ____
 
@@ -89,7 +89,7 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("multi-line quote with author only and nested listing", func() {
+		It("with multi-line quote and author only and nested listing", func() {
 			source := `[quote, john doe]
 ____
 * some
@@ -128,7 +128,7 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("single-line quote with title only", func() {
+		It("with single-line quote and title only", func() {
 			source := `[quote, , quote title]
 ____
 some quote content
@@ -147,7 +147,7 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("multi-line quote without author and title", func() {
+		It("with multi-line quote without author and title", func() {
 			source := `[quote]
 ____
 lines 
@@ -169,7 +169,7 @@ are preserved, but not trailing spaces</p>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("empty quote without author and title", func() {
+		It("with empty quote without author and title", func() {
 			source := `[quote]
 ____
 ____`

@@ -14,5 +14,7 @@ import (
 func DocumentMetadata(actual string, lastUpdated time.Time) (types.Metadata, error) {
 	return libasciidoc.Convert(strings.NewReader(actual),
 		bytes.NewBuffer(nil),
-		configuration.NewConfiguration(configuration.WithLastUpdated(lastUpdated), configuration.WithBackEnd("html5")))
+		configuration.NewConfiguration(
+			configuration.WithLastUpdated(lastUpdated),
+			configuration.WithBackEnd("html5")))
 }

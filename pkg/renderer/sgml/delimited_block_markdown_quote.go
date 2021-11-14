@@ -8,9 +8,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b types.MarkdownQuoteBlock) (string, error) {
+func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
-	content, err := r.renderLines(ctx, b.Lines)
+	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block content")
 	}
@@ -18,7 +18,7 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b types.M
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	attribution, err := markdownQuoteBlockAttribution(b)
+	attribution, err := newAttribution(b)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}

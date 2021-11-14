@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("literal blocks", func() {
 
-	Context("literal blocks with spaces indentation", func() {
+	Context("with spaces indentation", func() {
 
 		It("literal block from 1-line paragraph with single space", func() {
 			source := ` some literal content`
@@ -88,7 +88,7 @@ a normal paragraph.`
 		})
 	})
 
-	Context("literal blocks with block delimiter", func() {
+	Context("as block delimiter", func() {
 
 		It("literal block with delimited and attributes followed by 1-line paragraph", func() {
 			source := `[#ID]
@@ -112,19 +112,19 @@ a normal paragraph.`
 
 	})
 
-	Context("literal blocks with attribute", func() {
+	Context("with literal attribute", func() {
 
 		It("literal block from 1-line paragraph with attribute", func() {
 			source := `[literal]   
  literal content
- on many lines 
+  on many lines 
  has its heading spaces preserved.
 
 a normal paragraph.`
 			expected := `<div class="literalblock">
 <div class="content">
 <pre> literal content
- on many lines
+  on many lines
  has its heading spaces preserved.</pre>
 </div>
 </div>

@@ -52,7 +52,7 @@ var templates = sgml.Templates{
 	MarkedText:                markedTextTmpl,
 	MonospaceText:             monospaceTextTmpl,
 	OrderedList:               orderedListTmpl,
-	OrderedListItem:           orderedListItemTmpl,
+	OrderedListElement:        orderedListItemTmpl,
 	PassthroughBlock:          passthroughBlock,
 	Paragraph:                 paragraphTmpl,
 	Preamble:                  preambleTmpl,
@@ -81,7 +81,6 @@ var templates = sgml.Templates{
 	TocSection:                tocSectionTmpl,
 	UnorderedList:             unorderedListTmpl,
 	UnorderedListItem:         unorderedListItemTmpl,
-	VerbatimLine:              verbatimLineTmpl,
 	VerseBlock:                verseBlockTmpl,
 	VerseParagraph:            verseParagraphTmpl,
 }
@@ -95,7 +94,7 @@ func init() {
 
 // Render renders the document to the output, using a default instance
 // of the renderer, with default templates.
-func Render(ctx *renderer.Context, doc types.Document, output io.Writer) (types.Metadata, error) {
+func Render(ctx *renderer.Context, doc *types.Document, output io.Writer) (types.Metadata, error) {
 	return defaultRenderer.Render(ctx, doc, output)
 }
 

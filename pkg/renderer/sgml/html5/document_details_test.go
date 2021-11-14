@@ -139,7 +139,7 @@ Last updated {{.LastUpdated}}
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
-				configuration.WithAttributes(map[string]string{}),
+				configuration.WithAttributes(map[string]interface{}{}),
 			)).To(MatchHTMLTemplate(expected, now))
 		})
 
@@ -171,7 +171,7 @@ a paragraph`
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
-				configuration.WithAttributes(map[string]string{
+				configuration.WithAttributes(map[string]interface{}{
 					types.AttrNoFooter: "",
 				}),
 			)).To(MatchHTMLTemplate(expected, now))
@@ -207,7 +207,7 @@ Last updated {{.LastUpdated}}
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
-				configuration.WithAttributes(map[string]string{
+				configuration.WithAttributes(map[string]interface{}{
 					types.AttrNoHeader: "",
 				}),
 			)).To(MatchHTMLTemplate(expected, now))
@@ -238,7 +238,7 @@ a paragraph`
 			Expect(RenderHTML(source,
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
-				configuration.WithAttributes(map[string]string{
+				configuration.WithAttributes(map[string]interface{}{
 					types.AttrNoHeader: "",
 					types.AttrNoFooter: "",
 				}),

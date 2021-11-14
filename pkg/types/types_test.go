@@ -479,319 +479,196 @@ var _ = Describe("tag ranges", func() {
 
 })
 
-var _ = DescribeTable("raw document attributes",
-	func(d types.RawDocument, expectation types.Attributes) {
-		Expect(d.Attributes()).To(Equal(expectation))
-	},
+var _ = Describe("section id resolution", func() {
 
-	Entry("should use attribute declarations at top of document only",
-		types.RawDocument{
-			Elements: []interface{}{
-				types.AttributeDeclaration{
-					Name:  "foo1",
-					Value: "bar1",
-				},
-				types.AttributeDeclaration{
-					Name:  "foo2",
-					Value: "bar2",
-				},
-				types.BlankLine{},
-				types.AttributeDeclaration{
-					Name:  "foo3",
-					Value: "bar3",
-				},
-			},
-		},
-		types.Attributes{
-			"foo1": "bar1",
-			"foo2": "bar2",
-		},
-	),
-	Entry("should use attribute declarations right after section 0 only",
-		types.RawDocument{
-			Elements: []interface{}{
-				types.Section{
-					Level: 0,
-				},
-				types.AttributeDeclaration{
-					Name:  "foo1",
-					Value: "bar1",
-				},
-				types.AttributeDeclaration{
-					Name:  "foo2",
-					Value: "bar2",
-				},
-				types.BlankLine{},
-				types.AttributeDeclaration{
-					Name:  "foo3",
-					Value: "bar3",
-				},
-			},
-		},
-		types.Attributes{
-			"foo1": "bar1",
-			"foo2": "bar2",
-		},
-	),
-	Entry("should include attributes of section 0 only",
-		types.RawDocument{
-			Elements: []interface{}{
-				types.Section{
-					Level: 0,
-					Attributes: types.Attributes{
-						types.AttrAuthors: []types.DocumentAuthor{
-							{
-								FullName: "foo",
-							},
-						},
-						types.AttrRevision: types.DocumentRevision{
-							Revnumber: "1.0",
-						},
-						"other": "unused",
+	Context("default it", func() {
+
+		It("simple title", func() {
+			// given
+			section := types.Section{
+				Level:      0,
+				Attributes: types.Attributes{},
+				Title: []interface{}{
+					&types.StringElement{
+						Content: "foo",
 					},
 				},
-				types.BlankLine{},
-				types.Section{
-					Level: 1,
-					Attributes: types.Attributes{
-						"foo1": "bar1",
-						"foo2": "bar2",
+			}
+			// when
+			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
+		})
+
+		It("title with link", func() {
+			// given
+			section := types.Section{
+				Level:      0,
+				Attributes: types.Attributes{},
+				Title: []interface{}{
+					&types.StringElement{
+						Content: "a link to ",
 					},
-				},
-				types.AttributeDeclaration{
-					Name:  "foo3",
-					Value: "bar3",
-				},
-			},
-		},
-		types.Attributes{
-			types.AttrAuthors: []types.DocumentAuthor{
-				{
-					FullName: "foo",
-				},
-			},
-			// "authors" attribute gets "expanded" when being moved to the document attributes level
-			"author":         "foo",
-			"firstname":      "foo",
-			"authorinitials": "f",
-			// "revision" attribute is also "expanded"
-			types.AttrRevision: types.DocumentRevision{
-				Revnumber: "1.0",
-			},
-			"revnumber": "1.0",
-		},
-	),
-	Entry("should ignore attribute declarations elsewhere",
-		types.RawDocument{
-			Elements: []interface{}{
-				types.Section{
-					Level: 1,
-				},
-				types.AttributeDeclaration{
-					Name:  "foo1",
-					Value: "bar1",
-				},
-				types.AttributeDeclaration{
-					Name:  "foo2",
-					Value: "bar2",
-				},
-				types.BlankLine{},
-				types.AttributeDeclaration{
-					Name:  "foo3",
-					Value: "bar3",
-				},
-			},
-		},
-		types.Attributes{},
-	),
-)
-
-var _ = Describe("element id resolution", func() {
-
-	Context("sections", func() {
-
-		Context("default it", func() {
-
-			It("simple title", func() {
-				// given
-				section := types.Section{
-					Level:      0,
-					Attributes: types.Attributes{},
-					Title: []interface{}{
-						types.StringElement{
-							Content: "foo",
-						},
-					},
-					Elements: []interface{}{},
-				}
-				// when
-				section, err := section.ResolveID(types.AttributesWithOverrides{
-					Content:   map[string]interface{}{},
-					Overrides: map[string]string{},
-				})
-				// then
-				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
-			})
-
-			It("title with link", func() {
-				// given
-				section := types.Section{
-					Level:      0,
-					Attributes: types.Attributes{},
-					Title: []interface{}{
-						types.StringElement{
-							Content: "a link to ",
-						},
-						types.InlineLink{
-							Location: types.Location{
-								Scheme: "https://",
-								Path: []interface{}{
-									types.StringElement{
-										Content: "foo.com",
-									},
+					&types.InlineLink{
+						Location: &types.Location{
+							Scheme: "https://",
+							Path: []interface{}{
+								&types.StringElement{
+									Content: "foo.com",
 								},
 							},
 						},
 					},
-					Elements: []interface{}{},
-				}
-				// when
-				section, err := section.ResolveID(types.AttributesWithOverrides{
-					Content:   map[string]interface{}{},
-					Overrides: map[string]string{},
-				})
-				// then
-				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
-			})
+				},
+			}
+			// when
+			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
 		})
 
-		Context("custom id prefix", func() {
-
-			It("simple title", func() {
-				// given
-				section := types.Section{
-					Level:      0,
-					Attributes: types.Attributes{},
-					Title: []interface{}{
-						types.StringElement{
-							Content: "foo",
-						},
+		It("avoid duplicate id", func() {
+			// given
+			section := types.Section{
+				Level:      0,
+				Attributes: types.Attributes{},
+				Title: []interface{}{
+					&types.StringElement{
+						Content: "foo",
 					},
-					Elements: []interface{}{},
-				}
-				// when
-				section, err := section.ResolveID(types.AttributesWithOverrides{
-					Content: map[string]interface{}{
-						types.AttrIDPrefix: "custom_",
-					},
-					Overrides: map[string]string{},
-				})
-				// then
-				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("custom_foo"))
-			})
+				},
+			}
+			// when
+			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
+		})
+	})
 
-			It("title with link", func() {
-				// given
-				section := types.Section{
-					Level:      0,
-					Attributes: types.Attributes{},
-					Title: []interface{}{
-						types.StringElement{
-							Content: "a link to ",
-						},
-						types.InlineLink{
-							Location: types.Location{
-								Scheme: "https://",
-								Path: []interface{}{
-									types.StringElement{
-										Content: "foo.com",
-									},
+	Context("custom id prefix", func() {
+
+		It("simple title", func() {
+			// given
+			section := types.Section{
+				Level:      0,
+				Attributes: types.Attributes{},
+				Title: []interface{}{
+					&types.StringElement{
+						Content: "foo",
+					},
+				},
+			}
+			// when
+			err := section.ResolveID(
+				types.Attributes{
+					types.AttrIDPrefix: "custom_",
+				},
+				types.ElementReferences{},
+			)
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(section.Attributes[types.AttrID]).To(Equal("custom_foo"))
+		})
+
+		It("title with link", func() {
+			// given
+			section := types.Section{
+				Level:      0,
+				Attributes: types.Attributes{},
+				Title: []interface{}{
+					&types.StringElement{
+						Content: "a link to ",
+					},
+					&types.InlineLink{
+						Location: &types.Location{
+							Scheme: "https://",
+							Path: []interface{}{
+								&types.StringElement{
+									Content: "foo.com",
 								},
 							},
 						},
 					},
-					Elements: []interface{}{},
-				}
-				// when
-				section, err := section.ResolveID(types.AttributesWithOverrides{
-					Content: map[string]interface{}{
-						types.AttrIDPrefix: "custom_",
+				},
+			}
+			// when
+			err := section.ResolveID(
+				types.Attributes{
+					types.AttrIDPrefix: "custom_",
+				},
+				types.ElementReferences{},
+			)
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(section.Attributes[types.AttrID]).To(Equal("custom_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
+		})
+	})
+
+	Context("custom id", func() {
+
+		It("simple title", func() {
+			// given
+			section := types.Section{
+				Level: 0,
+				Attributes: types.Attributes{
+					types.AttrID: "bar",
+				},
+				Title: []interface{}{
+					&types.StringElement{
+						Content: "foo",
 					},
-					Overrides: map[string]string{},
-				})
-				// then
-				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("custom_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
-			})
+				},
+			}
+			// when
+			err := section.ResolveID(
+				types.Attributes{
+					types.AttrIDPrefix: "custom_",
+				},
+				types.ElementReferences{},
+			)
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
 		})
 
-		Context("custom id", func() {
-
-			It("simple title", func() {
-				// given
-				section := types.Section{
-					Level: 0,
-					Attributes: types.Attributes{
-						types.AttrID: "bar",
+		It("title with link", func() {
+			// given
+			section := types.Section{
+				Level: 0,
+				Attributes: types.Attributes{
+					types.AttrID: "bar",
+				},
+				Title: []interface{}{
+					&types.StringElement{
+						Content: "a link to ",
 					},
-					Title: []interface{}{
-						types.StringElement{
-							Content: "foo",
-						},
-					},
-					Elements: []interface{}{},
-				}
-				// when
-				section, err := section.ResolveID(types.AttributesWithOverrides{
-					Content: map[string]interface{}{
-						types.AttrIDPrefix: "custom_",
-					},
-					Overrides: map[string]string{},
-				})
-				// then
-				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
-			})
-
-			It("title with link", func() {
-				// given
-				section := types.Section{
-					Level: 0,
-					Attributes: types.Attributes{
-						types.AttrID: "bar",
-					},
-					Title: []interface{}{
-						types.StringElement{
-							Content: "a link to ",
-						},
-						types.InlineLink{
-							Location: types.Location{
-								Scheme: "https://",
-								Path: []interface{}{
-									types.StringElement{
-										Content: "foo.com",
-									},
+					&types.InlineLink{
+						Location: &types.Location{
+							Scheme: "https://",
+							Path: []interface{}{
+								&types.StringElement{
+									Content: "foo.com",
 								},
 							},
 						},
 					},
-					Elements: []interface{}{},
-				}
-				// when
-				section, err := section.ResolveID(types.AttributesWithOverrides{
-					Content: map[string]interface{}{
-						types.AttrIDPrefix: "custom_",
-					},
-					Overrides: map[string]string{},
-				})
-				// then
-				Expect(err).NotTo(HaveOccurred())
-				Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
-			})
+				},
+			}
+			// when
+			err := section.ResolveID(
+				types.Attributes{
+					types.AttrIDPrefix: "custom_",
+				},
+				types.ElementReferences{},
+			)
+			// then
+			Expect(err).NotTo(HaveOccurred())
+			Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
 		})
+
 	})
 })
 
@@ -805,18 +682,17 @@ var _ = Describe("footnote replacements", func() {
 				Level:      0,
 				Attributes: types.Attributes{},
 				Title: []interface{}{
-					types.StringElement{
+					&types.StringElement{
 						Content: "foo",
 					},
-					types.Footnote{
+					&types.Footnote{
 						Elements: []interface{}{
-							types.StringElement{
+							&types.StringElement{
 								Content: "a regular footnote.",
 							},
 						},
 					},
 				},
-				Elements: []interface{}{},
 			}
 			footnotes := types.NewFootnotes()
 			// when
@@ -826,20 +702,19 @@ var _ = Describe("footnote replacements", func() {
 				Level:      0,
 				Attributes: types.Attributes{},
 				Title: []interface{}{
-					types.StringElement{
+					&types.StringElement{
 						Content: "foo",
 					},
-					types.FootnoteReference{
+					&types.FootnoteReference{
 						ID: 1,
 					},
 				},
-				Elements: []interface{}{},
 			}))
-			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+			Expect(footnotes.Notes).To(Equal([]*types.Footnote{
 				{
 					ID: 1,
 					Elements: []interface{}{
-						types.StringElement{
+						&types.StringElement{
 							Content: "a regular footnote.",
 						},
 					},
@@ -853,19 +728,18 @@ var _ = Describe("footnote replacements", func() {
 				Level:      0,
 				Attributes: types.Attributes{},
 				Title: []interface{}{
-					types.StringElement{
+					&types.StringElement{
 						Content: "foo",
 					},
-					types.Footnote{
+					&types.Footnote{
 						Ref: "disclaimer",
 						Elements: []interface{}{
-							types.StringElement{
+							&types.StringElement{
 								Content: "a regular footnote.",
 							},
 						},
 					},
 				},
-				Elements: []interface{}{},
 			}
 			footnotes := types.NewFootnotes()
 			// when
@@ -875,22 +749,21 @@ var _ = Describe("footnote replacements", func() {
 				Level:      0,
 				Attributes: types.Attributes{},
 				Title: []interface{}{
-					types.StringElement{
+					&types.StringElement{
 						Content: "foo",
 					},
-					types.FootnoteReference{
+					&types.FootnoteReference{
 						ID:  1,
 						Ref: "disclaimer",
 					},
 				},
-				Elements: []interface{}{},
 			}))
-			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+			Expect(footnotes.Notes).To(Equal([]*types.Footnote{
 				{
 					ID:  1,
 					Ref: "disclaimer",
 					Elements: []interface{}{
-						types.StringElement{
+						&types.StringElement{
 							Content: "a regular footnote.",
 						},
 					},
@@ -904,40 +777,34 @@ var _ = Describe("footnote replacements", func() {
 		It("paragraph with multiple footnotes", func() {
 			// given
 			paragraph := types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "first line",
-						},
-						types.Footnote{
-							Ref: "disclaimer",
-							Elements: []interface{}{
-								types.StringElement{
-									Content: "a disclaimer.",
-								},
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "first line",
+					},
+					&types.Footnote{
+						Ref: "disclaimer",
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a disclaimer.",
 							},
 						},
 					},
-					{
-						types.StringElement{
-							Content: "second line",
-						},
-						types.Footnote{
-							Elements: []interface{}{
-								types.StringElement{
-									Content: "a regular footnote.",
-								},
+					&types.StringElement{
+						Content: "second line",
+					},
+					&types.Footnote{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a regular footnote.",
 							},
 						},
 					},
-					{
-						types.StringElement{
-							Content: "third line",
-						},
-						types.Footnote{
-							Ref:      "disclaimer",
-							Elements: []interface{}{},
-						},
+					&types.StringElement{
+						Content: "third line",
+					},
+					&types.Footnote{
+						Ref:      "disclaimer",
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -946,42 +813,36 @@ var _ = Describe("footnote replacements", func() {
 			paragraph.SubstituteFootnotes(footnotes)
 			// then
 			Expect(paragraph).To(Equal(types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "first line",
-						},
-						types.FootnoteReference{
-							ID:  1,
-							Ref: "disclaimer",
-						},
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "first line",
 					},
-					{
-						types.StringElement{
-							Content: "second line",
-						},
-						types.FootnoteReference{
-							ID: 2,
-						},
+					&types.FootnoteReference{
+						ID:  1,
+						Ref: "disclaimer",
 					},
-					{
-						types.StringElement{
-							Content: "third line",
-						},
-						types.FootnoteReference{
-							ID:        1,
-							Ref:       "disclaimer",
-							Duplicate: true,
-						},
+					&types.StringElement{
+						Content: "second line",
+					},
+					&types.FootnoteReference{
+						ID: 2,
+					},
+					&types.StringElement{
+						Content: "third line",
+					},
+					&types.FootnoteReference{
+						ID:        1,
+						Ref:       "disclaimer",
+						Duplicate: true,
 					},
 				},
 			}))
-			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+			Expect(footnotes.Notes).To(Equal([]*types.Footnote{
 				{
 					ID:  1,
 					Ref: "disclaimer",
 					Elements: []interface{}{
-						types.StringElement{
+						&types.StringElement{
 							Content: "a disclaimer.",
 						},
 					},
@@ -989,7 +850,7 @@ var _ = Describe("footnote replacements", func() {
 				{
 					ID: 2,
 					Elements: []interface{}{
-						types.StringElement{
+						&types.StringElement{
 							Content: "a regular footnote.",
 						},
 					},
@@ -1000,40 +861,34 @@ var _ = Describe("footnote replacements", func() {
 		It("paragraph with invalid footnote reference", func() {
 			// given
 			paragraph := types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "first line",
-						},
-						types.Footnote{
-							Ref: "disclaimer",
-							Elements: []interface{}{
-								types.StringElement{
-									Content: "a disclaimer.",
-								},
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "first line",
+					},
+					&types.Footnote{
+						Ref: "disclaimer",
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a disclaimer.",
 							},
 						},
 					},
-					{
-						types.StringElement{
-							Content: "second line",
-						},
-						types.Footnote{
-							Elements: []interface{}{
-								types.StringElement{
-									Content: "a regular footnote.",
-								},
+					&types.StringElement{
+						Content: "second line",
+					},
+					&types.Footnote{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a regular footnote.",
 							},
 						},
 					},
-					{
-						types.StringElement{
-							Content: "third line",
-						},
-						types.Footnote{
-							Ref:      "disclaimer_",
-							Elements: []interface{}{},
-						},
+					&types.StringElement{
+						Content: "third line",
+					},
+					&types.Footnote{
+						Ref:      "disclaimer_",
+						Elements: []interface{}{},
 					},
 				},
 			}
@@ -1042,41 +897,35 @@ var _ = Describe("footnote replacements", func() {
 			paragraph.SubstituteFootnotes(footnotes)
 			// then
 			Expect(paragraph).To(Equal(types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "first line",
-						},
-						types.FootnoteReference{
-							ID:  1,
-							Ref: "disclaimer",
-						},
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "first line",
 					},
-					{
-						types.StringElement{
-							Content: "second line",
-						},
-						types.FootnoteReference{
-							ID: 2,
-						},
+					&types.FootnoteReference{
+						ID:  1,
+						Ref: "disclaimer",
 					},
-					{
-						types.StringElement{
-							Content: "third line",
-						},
-						types.FootnoteReference{
-							ID:  types.InvalidFootnoteReference, // marks as an invalid reference
-							Ref: "disclaimer_",
-						},
+					&types.StringElement{
+						Content: "second line",
+					},
+					&types.FootnoteReference{
+						ID: 2,
+					},
+					&types.StringElement{
+						Content: "third line",
+					},
+					&types.FootnoteReference{
+						ID:  types.InvalidFootnoteReference, // marks as an invalid reference
+						Ref: "disclaimer_",
 					},
 				},
 			}))
-			Expect(footnotes.Notes()).To(Equal([]types.Footnote{
+			Expect(footnotes.Notes).To(Equal([]*types.Footnote{
 				{
 					ID:  1,
 					Ref: "disclaimer",
 					Elements: []interface{}{
-						types.StringElement{
+						&types.StringElement{
 							Content: "a disclaimer.",
 						},
 					},
@@ -1084,7 +933,7 @@ var _ = Describe("footnote replacements", func() {
 				{
 					ID: 2,
 					Elements: []interface{}{
-						types.StringElement{
+						&types.StringElement{
 							Content: "a regular footnote.",
 						},
 					},
@@ -1098,7 +947,7 @@ var _ = DescribeTable("match for attribute with key and value",
 	func(key string, value interface{}, expected bool) {
 		// given
 		attributes := []interface{}{
-			types.Attribute{ // single attribute
+			&types.Attribute{ // single attribute
 				Key:   types.AttrStyle,
 				Value: types.Quote,
 			},
@@ -1144,106 +993,106 @@ var _ = DescribeTable("no match attribute with key",
 	Entry("no match for block-kind: quote", types.AttrID, true),
 )
 
-var _ = DescribeTable("rawtest",
+var _ = DescribeTable("rawtext",
 	func(element types.RawText, expected string) {
 		Expect(element.RawText()).To(Equal(expected))
 	},
 	// quoted text
 	Entry("single quote bold text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.SingleQuoteBold,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"*content*"),
 	Entry("double quote bold text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.DoubleQuoteBold,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"**content**"),
 	Entry("single quote italic text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.SingleQuoteItalic,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"_content_"),
 	Entry("double quote italic text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.DoubleQuoteItalic,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"__content__"),
 	Entry("single quote monospace text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.SingleQuoteMonospace,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"`content`"),
 	Entry("double quote monospace text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.DoubleQuoteMonospace,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"``content``"),
 	Entry("single quote marked text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.SingleQuoteMarked,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"#content#"),
 	Entry("double quote marked text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.DoubleQuoteMarked,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"##content##"),
 	Entry("single quote subscript text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.SingleQuoteSubscript,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"~content~"),
 	Entry("single quote superscript text",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.SingleQuoteSuperscript,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
@@ -1254,7 +1103,7 @@ var _ = DescribeTable("rawtest",
 		types.QuotedString{
 			Kind: types.SingleQuote,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
@@ -1264,7 +1113,7 @@ var _ = DescribeTable("rawtest",
 		types.QuotedString{
 			Kind: types.DoubleQuote,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
@@ -1272,30 +1121,30 @@ var _ = DescribeTable("rawtest",
 		"`\"content\"`"),
 	// inline passthrough
 	Entry("singleplus inline passthrough",
-		types.InlinePassthrough{
+		&types.InlinePassthrough{
 			Kind: types.SinglePlusPassthrough,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"+content+"),
 	Entry("tripleplus inline passthrough",
-		types.InlinePassthrough{
+		&types.InlinePassthrough{
 			Kind: types.TriplePlusPassthrough,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
 		},
 		"+++content+++"),
 	Entry("macro inline passthrough",
-		types.InlinePassthrough{
+		&types.InlinePassthrough{
 			Kind: types.PassthroughMacro,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "content",
 				},
 			},
@@ -1303,42 +1152,42 @@ var _ = DescribeTable("rawtest",
 		"pass:[content]"),
 	// special characters
 	Entry("special character",
-		types.SpecialCharacter{
+		&types.SpecialCharacter{
 			Name: "<",
 		},
 		"<"),
 	// attribute substitution
 	Entry("attribute substitution",
-		types.AttributeSubstitution{
+		&types.AttributeSubstitution{
 			Name: "cookie",
 		},
 		"{cookie}"),
 	// mixins
 	Entry("mixins",
-		types.QuotedText{
+		&types.QuotedText{
 			Kind: types.SingleQuoteBold,
 			Elements: []interface{}{
-				types.StringElement{
+				&types.StringElement{
 					Content: "some ",
 				},
 				types.QuotedString{
 					Kind: types.DoubleQuote,
 					Elements: []interface{}{
-						types.StringElement{
+						&types.StringElement{
 							Content: "content",
 						},
-						types.SpecialCharacter{
+						&types.SpecialCharacter{
 							Name: "<",
 						},
-						types.SpecialCharacter{
+						&types.SpecialCharacter{
 							Name: ">",
 						},
 					},
 				},
-				types.StringElement{
+				&types.StringElement{
 					Content: " ",
 				},
-				types.AttributeSubstitution{
+				&types.AttributeSubstitution{
 					Name: "here",
 				},
 			},

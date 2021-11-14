@@ -7,29 +7,12 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-type linesRenderer struct {
-	render renderFunc
-}
-
-type renderLinesOption func(config *linesRenderer)
-
-func (r *sgmlRenderer) withVerbatim() renderLinesOption {
-	return func(config *linesRenderer) {
-		config.render = r.renderPlainText
-	}
-}
-
-func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []interface{}, options ...renderLinesOption) (string, error) {
+func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []interface{}, options ...lineRendererOption) (string, error) {
 	if len(elements) == 0 {
 		return "", nil
 	}
 	// log.Debugf("rendering line with %d element(s)...", len(elements))
-	lr := linesRenderer{
-		render: r.renderElement,
-	}
-	for _, apply := range options {
-		apply(&lr)
-	}
+	lr := r.newLineRenderer(options...)
 	// first pass or rendering, using the provided `renderElementFunc`:
 	buf := &strings.Builder{}
 	for i, element := range elements {
@@ -38,7 +21,7 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 			return "", err
 		}
 		if i == len(elements)-1 {
-			if _, ok := element.(types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
+			if _, ok := element.(*types.StringElement); ok { // TODO: only for StringElement? or for any kind of element?
 				// trim trailing spaces before returning the line
 				buf.WriteString(strings.TrimRight(string(renderedElement), " "))
 			} else {

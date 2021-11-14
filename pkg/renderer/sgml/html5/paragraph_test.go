@@ -194,7 +194,7 @@ another one using attribute substitution: https://github.com[]...</p>
 
 		Context("with line break", func() {
 
-			It("with explicit line break", func() {
+			It("at end of line", func() {
 				source := `foo +
 bar
 baz`
@@ -207,7 +207,7 @@ baz</p>
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("with paragraph attribute", func() {
+			It("as paragraph attribute", func() {
 
 				source := `[%hardbreaks]
 foo
@@ -222,7 +222,7 @@ baz</p>
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("with document attribute", func() {
+			It("as document attribute", func() {
 				source := `:hardbreaks:
 foo
 bar
@@ -476,19 +476,19 @@ I am a verse paragraph.`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("image block as a verse", func() {
-			source := `[verse, john doe, verse title]
-image::foo.png[]`
-			expected := `<div class="verseblock">
-<pre class="content">image::foo.png[]</pre>
-<div class="attribution">
-&#8212; john doe<br>
-<cite>verse title</cite>
-</div>
-</div>
-`
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
-		})
+		// 		It("image block as a verse", func() {
+		// 			source := `[verse, john doe, verse title]
+		// image::foo.png[]`
+		// 			expected := `<div class="verseblock">
+		// <pre class="content">image::foo.png[]</pre>
+		// <div class="attribution">
+		// &#8212; john doe<br>
+		// <cite>verse title</cite>
+		// </div>
+		// </div>
+		// `
+		// 			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		// 		})
 	})
 
 	Context("quote paragraphs", func() {

@@ -10,10 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.ExampleBlock) (string, error) {
-	if b.Attributes.Has(types.AttrStyle) {
-		return r.renderAdmonitionBlock(ctx, b)
-	}
+func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
 	caption := &strings.Builder{}
 
@@ -21,19 +18,22 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Example
 	number := 0
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render example block content")
+		return "", errors.Wrap(err, "unable to render example block")
 	}
 	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render example block")
 	}
-	c, ok, err := b.Attributes.GetAsString(types.AttrCaption)
+	c, found, err := b.Attributes.GetAsString(types.AttrCaption)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render example block")
 	}
-	if !ok {
-		c = ctx.Attributes.GetAsStringWithDefault(types.AttrExampleCaption, "Example")
-		if c != "" {
+	if !found {
+		c, found, err = ctx.Attributes.GetAsString(types.AttrExampleCaption)
+		if err != nil {
+			return "", errors.Wrap(err, "unable to render example block")
+		}
+		if found && c != "" {
 			c += " {counter:example-number}. "
 		}
 	}
@@ -67,10 +67,10 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b types.Example
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering example paragraph...")
 	result := &strings.Builder{}
-	content, err := r.renderLines(ctx, p.Lines)
+	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote paragraph lines")
 	}

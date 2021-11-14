@@ -28,6 +28,7 @@ func (m *htmlMatcher) Match(actual interface{}) (success bool, err error) {
 	}
 	if m.expected != actual {
 		GinkgoT().Logf("actual HTML:\n%s", actual)
+		GinkgoT().Logf("expected HTML:\n%s", m.expected)
 		dmp := diffmatchpatch.New()
 		diffs := dmp.DiffMain(actual.(string), m.expected, true)
 		m.diffs = dmp.DiffPrettyText(diffs)

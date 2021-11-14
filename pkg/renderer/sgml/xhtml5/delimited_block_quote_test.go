@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("quote blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("single-line quote with author and title ", func() {
 			source := `[quote, john doe, quote title]

@@ -1,19 +1,14 @@
 package parser
 
-import (
-	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/sirupsen/logrus"
-)
-
-// processes the footnotes in the blocks, replaces them with `FootnoteReference`
-// and keep them in a separate `Footnotes`
-func processFootnotes(blocks []interface{}) ([]interface{}, []types.Footnote) {
-	logrus.Debug("processing footnotes...")
-	footnotes := types.NewFootnotes()
-	for i, block := range blocks {
-		if c, ok := block.(types.FootnotesContainer); ok {
-			blocks[i] = c.SubstituteFootnotes(footnotes)
-		}
-	}
-	return blocks, footnotes.Notes()
-}
+// // processes the footnotes in the blocks, replaces them with `FootnoteReference`
+// // and keep them in a separate `Footnotes`
+// func processFootnotes(blocks []interface{}) ([]interface{}, []*types.Footnote) {
+// 	logrus.Debug("processing footnotes...")
+// 	footnotes := types.NewFootnotes()
+// 	for _, block := range blocks {
+// 		if c, ok := block.(types.WithFootnotes); ok {
+// 			c.SubstituteFootnotes(footnotes)
+// 		}
+// 	}
+// 	return blocks, footnotes.Notes()
+// }

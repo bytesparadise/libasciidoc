@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("passthrough blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("with title", func() {
 			source := `.a title
@@ -17,6 +17,21 @@ var _ = Describe("passthrough blocks", func() {
 _foo_
 
 *bar*
+++++`
+			expected := `_foo_
+
+*bar*
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with empty lines around", func() {
+			source := `++++
+
+_foo_
+
+*bar*
+
 ++++`
 			expected := `_foo_
 
@@ -39,16 +54,16 @@ _foo_
 		})
 	})
 
-	Context("paragraph blocks", func() {
+	Context("as paragraph blocks", func() {
 
 		It("2-line paragraph followed by another paragraph", func() {
 			source := `[pass]
-_foo_
-*bar*
+<script>_foo_
+*bar*</script>
 
 another paragraph`
-			expected := `_foo_
-*bar*
+			expected := `<script>_foo_
+*bar*</script>
 <div class="paragraph">
 <p>another paragraph</p>
 </div>

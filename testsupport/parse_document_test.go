@@ -10,14 +10,12 @@ import (
 
 var _ = Describe("parse document", func() {
 
-	expected := types.Document{
+	expected := &types.Document{
 		Elements: []interface{}{
-			types.Paragraph{
-				Lines: [][]interface{}{
-					{
-						types.StringElement{
-							Content: "hello, world!",
-						},
+			&types.Paragraph{
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "hello, world!",
 					},
 				},
 			},

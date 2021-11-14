@@ -8,15 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b types.PassthroughBlock) (string, error) {
+func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	result := &strings.Builder{}
-	lines := discardEmptyLines(b.Lines)
+	// lines := discardEmptyLines(b.Lines)
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	defer func() {
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
 	}()
 	ctx.WithinDelimitedBlock = true
-	content, err := r.renderLines(ctx, lines)
+	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render passthrough")
 	}

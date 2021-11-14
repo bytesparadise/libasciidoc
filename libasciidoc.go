@@ -33,7 +33,7 @@ var (
 // ConvertFile converts the content of the given filename into an output document.
 // The conversion result is written in the given writer `output`, whereas the document metadata (title, etc.) (or an error if a problem occurred) is returned
 // as the result of the function call.  The output format is determined by config.Backend (HTML5 default).
-func ConvertFile(output io.Writer, config configuration.Configuration) (types.Metadata, error) {
+func ConvertFile(output io.Writer, config *configuration.Configuration) (types.Metadata, error) {
 	file, err := os.Open(config.Filename)
 	if err != nil {
 		return types.Metadata{}, errors.Wrapf(err, "error opening %s", config.Filename)
@@ -50,9 +50,9 @@ func ConvertFile(output io.Writer, config configuration.Configuration) (types.Me
 
 // Convert converts the content of the given reader `r` into a full output document, written in the given writer `output`.
 // Returns an error if a problem occurred. The default will be HTML5, but depends on the config.BackEnd value.
-func Convert(r io.Reader, output io.Writer, config configuration.Configuration) (types.Metadata, error) {
+func Convert(r io.Reader, output io.Writer, config *configuration.Configuration) (types.Metadata, error) {
 
-	var render func(*renderer.Context, types.Document, io.Writer) (types.Metadata, error)
+	var render func(*renderer.Context, *types.Document, io.Writer) (types.Metadata, error)
 	switch config.BackEnd {
 	case "html", "html5", "":
 		render = html5.Render
@@ -73,16 +73,22 @@ func Convert(r io.Reader, output io.Writer, config configuration.Configuration) 
 		return types.Metadata{}, err
 	}
 	// validate the document
-	problems, err := validator.Validate(&doc)
+	doctype := config.Attributes.GetAsStringWithDefault(types.AttrDocType, "article")
+	problems, err := validator.Validate(doc, doctype)
 	if err != nil {
 		return types.Metadata{}, err
 	}
-	for _, problem := range problems {
-		switch problem.Severity {
-		case validator.Error:
-			log.Error(problem.Message)
-		case validator.Warning:
-			log.Warn(problem.Message)
+	if len(problems) > 0 {
+		// if any problem found, change the doctype to render the document as a regular article
+		log.Warnf("changing doctype to 'article' because problems were found in the document: %v", problems)
+		config.Attributes[types.AttrDocType] = "article" // switch to `article` rendering (in case it was a manpage with problems)
+		for _, problem := range problems {
+			switch problem.Severity {
+			case validator.Error:
+				log.Error(problem.Message)
+			case validator.Warning:
+				log.Warn(problem.Message)
+			}
 		}
 	}
 	// render

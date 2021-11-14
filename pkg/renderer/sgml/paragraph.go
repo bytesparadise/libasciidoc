@@ -9,37 +9,46 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	result := &strings.Builder{}
-	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) ||
-		ctx.Attributes.HasOption(types.DocumentAttrHardBreaks)
-	content, err := r.renderLines(ctx, p.Lines, r.withHardBreaks(hardbreaks))
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render paragraph content")
-	}
+func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+	log.Debugf("rendering a regular paragraph with style '%v' and embedded: %t", p.Attributes[types.AttrStyle], (ctx.WithinDelimitedBlock || ctx.WithinList > 0))
 	if k, ok := p.Attributes[types.AttrStyle].(string); ok {
 		switch k {
-		case types.Example:
+		case string(types.Example):
 			return r.renderExampleParagraph(ctx, p)
-		case types.Listing:
+		case string(types.Listing):
 			return r.renderListingParagraph(ctx, p)
-		case types.Source:
+		case string(types.Source):
 			return r.renderSourceParagraph(ctx, p)
-		case types.Verse:
+		case string(types.Verse):
 			return r.renderVerseParagraph(ctx, p)
-		case types.Quote:
+		case string(types.Quote):
 			return r.renderQuoteParagraph(ctx, p)
+		case string(types.Passthrough):
+			return r.renderPassthroughParagraph(ctx, p)
 		case types.Tip, types.Note, types.Important, types.Warning, types.Caution:
 			return r.renderAdmonitionParagraph(ctx, p)
+		case types.Literal:
+			// if t, found := p.Attributes[types.AttrLiteralBlockType]; found && t == types.LiteralBlockWithSpacesOnFirstLine {
+			// }
+			return r.renderLiteralParagraph(ctx, p)
 		case "manpage":
 			return r.renderManpageNameParagraph(ctx, p)
 		default:
 			// do nothing, will move to default below
 		}
 	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
-		return r.renderParagraphWithinDelimitedBlock(ctx, p)
+		return r.renderEmbeddedParagraph(ctx, p)
 	}
 	// default case
+	return r.renderRegularParagraph(ctx, p)
+}
+
+func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
+	log.Debug("rendering a regular paragraph")
+	content, err := r.renderParagraphElements(ctx, p, opts...)
+	if err != nil {
+		return "", errors.Wrap(err, "unable to render paragraph content")
+	}
 	roles, err := r.renderElementRoles(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph roles")
@@ -48,7 +57,7 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph roles")
 	}
-	log.Debug("rendering a standalone paragraph")
+	result := &strings.Builder{}
 	err = r.paragraph.Execute(result, struct {
 		Context *renderer.Context
 		ID      string
@@ -66,13 +75,14 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p types.Paragraph)
 		return "", errors.Wrap(err, "unable to render paragraph")
 	}
 	return result.String(), nil
+
 }
 
-func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering name section paragraph in manpage...")
 	result := &strings.Builder{}
 
-	content, err := r.renderLines(ctx, p.Lines)
+	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote paragraph lines")
 	}
@@ -80,20 +90,18 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p types
 	err = r.manpageNameParagraph.Execute(result, struct {
 		Context *renderer.Context
 		Content string
-		Lines   [][]interface{}
 	}{
 		Context: ctx,
 		Content: string(content),
-		Lines:   p.Lines,
 	})
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderParagraphWithinDelimitedBlock(ctx *renderer.Context, p types.Paragraph) (string, error) {
-	// log.Debugf("rendering paragraph with %d line(s) within a delimited block or a list", len(p.Lines))
+func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+	log.Debug("rendering paragraph within a delimited block or a list")
 	result := &strings.Builder{}
 
-	content, err := r.renderLines(ctx, p.Lines)
+	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
 	}
@@ -108,14 +116,12 @@ func (r *sgmlRenderer) renderParagraphWithinDelimitedBlock(ctx *renderer.Context
 		Title      string
 		CheckStyle string
 		Content    string
-		Lines      [][]interface{}
 	}{
 		Context:    ctx,
 		ID:         r.renderElementID(p.Attributes),
 		Title:      title,
 		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 		Content:    string(content),
-		Lines:      p.Lines,
 	})
 	return result.String(), err
 }
@@ -148,76 +154,64 @@ func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) (string, error
 	return "", nil
 }
 
-// RenderLinesConfig the config to use when rendering paragraph lines
-type RenderLinesConfig struct {
+type lineRenderer struct {
 	render     renderFunc
 	hardBreaks bool
 }
 
+func (r *sgmlRenderer) newLineRenderer(opts ...lineRendererOption) *lineRenderer {
+	lr := &lineRenderer{
+		render: r.renderElement,
+	}
+	for _, apply := range opts {
+		apply(lr)
+	}
+	return lr
+}
+
 // RenderLinesOption an option to configure the rendering
-type RenderLinesOption func(c *RenderLinesConfig)
+type lineRendererOption func(c *lineRenderer)
+
+// func (r *sgmlRenderer) withVerbatim() lineRendererOption {
+// 	return func(lr *lineRenderer) {
+// 		lr.render = r.renderPlainText
+// 	}
+// }
 
 // WithHardBreaks sets the hard break option
-func (r *sgmlRenderer) withHardBreaks(hardBreaks bool) RenderLinesOption {
-	return func(c *RenderLinesConfig) {
-		c.hardBreaks = hardBreaks
+func withHardBreaks(hardBreaks bool) lineRendererOption {
+	return func(lr *lineRenderer) {
+		lr.hardBreaks = hardBreaks
 	}
 }
 
-// PlainText sets the render func to PlainText instead of SGML
-func (r *sgmlRenderer) withPlainText() RenderLinesOption {
-	return func(c *RenderLinesConfig) {
-		c.render = r.renderPlainText
+// withRenderer sets the render func
+func withRenderer(f renderFunc) lineRendererOption {
+	return func(c *lineRenderer) {
+		c.render = f
 	}
 }
 
-// renderLines renders all lines (i.e, all `InlineElements`` - each `InlineElements` being a slice of elements to generate a line)
-// and includes an `\n` character in-between, until the last one.
-// Trailing spaces are removed for each line.
-func (r *sgmlRenderer) renderLines(ctx *renderer.Context, lines [][]interface{}, options ...RenderLinesOption) (string, error) { // renderLineFunc renderFunc, hardbreak bool
-	linesRenderer := RenderLinesConfig{
-		render:     r.renderLine,
-		hardBreaks: false,
-	}
-	for _, apply := range options {
-		apply(&linesRenderer)
-	}
+func (r *sgmlRenderer) renderParagraphElements(ctx *renderer.Context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
+	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) || ctx.Attributes.HasOption(types.DocumentAttrHardBreaks)
+	lr := r.newLineRenderer(append(opts, withHardBreaks(hardbreaks))...)
 	buf := &strings.Builder{}
-	for i, e := range lines {
-		renderedLine, err := linesRenderer.render(ctx, e)
+	for _, e := range p.Elements {
+		renderedElement, err := lr.render(ctx, e)
 		if err != nil {
-			return "", errors.Wrap(err, "unable to render lines")
+			return "", errors.Wrap(err, "unable to render paragraph elements")
 		}
-		if len(renderedLine) > 0 {
-			if _, err := buf.WriteString(renderedLine); err != nil {
-				return "", errors.Wrap(err, "unable to render lines")
-			}
-		}
-
-		if i < len(lines)-1 && (len(renderedLine) > 0 || ctx.WithinDelimitedBlock) {
-			// log.Debugf("rendered line is not the last one in the slice")
-			var err error
-			if linesRenderer.hardBreaks {
-				if br, err := r.renderLineBreak(); err != nil {
-					return "", errors.Wrap(err, "unable to render hardbreak")
-				} else if _, err = buf.WriteString(br); err != nil {
-					return "", errors.Wrap(err, "unable to write hardbreak")
-				}
-			}
-			_, err = buf.WriteString("\n")
-			if err != nil {
-				return "", errors.Wrap(err, "unable to render lines")
-			}
+		if _, err := buf.WriteString(renderedElement); err != nil {
+			return "", errors.Wrap(err, "unable to render paragraph elements")
 		}
 	}
-	// log.Debugf("rendered lines: '%s'", buf.String())
-	return buf.String(), nil
-}
-
-func (r *sgmlRenderer) renderLine(ctx *renderer.Context, element interface{}) (string, error) {
-	if elements, ok := element.([]interface{}); ok {
-		return r.renderInlineElements(ctx, elements)
+	result := buf.String()
+	if lr.hardBreaks { // TODO: move within the call to `render`?
+		linebreak := &strings.Builder{}
+		if err := r.lineBreak.Execute(linebreak, nil); err != nil {
+			return "", err
+		}
+		result = strings.ReplaceAll(result, "\n", linebreak.String()+"\n")
 	}
-
-	return "", errors.Errorf("invalid type of element for a line: %T", element)
+	return result, nil
 }

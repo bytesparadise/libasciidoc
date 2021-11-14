@@ -16,7 +16,7 @@ var _ = Describe("inline elements matcher", func() {
 
 	// given
 	expected := []interface{}{
-		types.StringElement{
+		&types.StringElement{
 			Content: "a paragraph.",
 		},
 	}
@@ -25,7 +25,7 @@ var _ = Describe("inline elements matcher", func() {
 	It("should match", func() {
 		// given
 		actual := []interface{}{
-			types.StringElement{
+			&types.StringElement{
 				Content: "a paragraph.",
 			},
 		}
@@ -39,7 +39,7 @@ var _ = Describe("inline elements matcher", func() {
 	It("should not match", func() {
 		// given
 		actual := []interface{}{
-			types.StringElement{
+			&types.StringElement{
 				Content: "another paragraph.",
 			},
 		}

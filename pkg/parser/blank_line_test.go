@@ -10,36 +10,38 @@ import (
 
 var _ = Describe("blank lines", func() {
 
-	Context("draft documents", func() {
+	Context("in raw documents", func() {
 
 		It("blank line between 2 paragraphs", func() {
 			source := `first paragraph
  
 second paragraph`
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "first paragraph",
-								},
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								types.RawLine("first paragraph"),
 							},
 						},
 					},
-					types.BlankLine{},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "second paragraph",
-								},
+				},
+				{
+					Elements: []interface{}{
+						&types.BlankLine{},
+					},
+				},
+				{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								types.RawLine("second paragraph"),
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("blank line with spaces and tabs between 2 paragraphs and after second paragraph", func() {
@@ -49,69 +51,78 @@ second paragraph`
 		
 second paragraph
 `
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "first paragraph",
-								},
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								types.RawLine("first paragraph"),
 							},
 						},
 					},
-					types.BlankLine{},
-					types.BlankLine{},
-					types.BlankLine{},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{
-									Content: "second paragraph",
-								},
+				},
+				{
+					Elements: []interface{}{
+						&types.BlankLine{},
+					},
+				},
+				{
+					Elements: []interface{}{
+						&types.BlankLine{},
+					},
+				},
+				{
+					Elements: []interface{}{
+						&types.BlankLine{},
+					},
+				},
+				{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								types.RawLine("second paragraph"),
 							},
 						},
 					},
 				},
 			}
-			Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 
 		It("blank line with attributes", func() {
 			source := `.ignored
  
 `
-			expected := types.DraftDocument{
-				Elements: []interface{}{
-					types.BlankLine{},
+			expected := []types.DocumentFragment{
+				{
+					Elements: []interface{}{
+						// types.Attributes{
+						// 	types.AttrTitle: "ignored",
+						// },
+						&types.BlankLine{},
+					},
 				},
 			}
-			result, err := ParseDraftDocument(source) // , parser.Debug(true))
-			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(MatchDraftDocument(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})
 	})
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
 		It("blank line between 2 paragraphs", func() {
 			source := `first paragraph
  
 second paragraph`
-			expected := types.Document{
+			expected := &types.Document{
 				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "first paragraph"},
-							},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{Content: "first paragraph"},
 						},
 					},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "second paragraph"},
-							},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{Content: "second paragraph"},
 						},
 					},
 				},
@@ -125,20 +136,16 @@ second paragraph`
 		
 second paragraph
 `
-			expected := types.Document{
+			expected := &types.Document{
 				Elements: []interface{}{
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "first paragraph"},
-							},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{Content: "first paragraph"},
 						},
 					},
-					types.Paragraph{
-						Lines: [][]interface{}{
-							{
-								types.StringElement{Content: "second paragraph"},
-							},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{Content: "second paragraph"},
 						},
 					},
 				},

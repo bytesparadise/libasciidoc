@@ -2,8 +2,10 @@ package libasciidoc_test
 
 import (
 	"os"
+	"strings"
 	"time"
 
+	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
@@ -122,17 +124,17 @@ a paragraph`
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 					TableOfContents: types.TableOfContents{
-						Sections: []types.ToCSection{
+						Sections: []*types.ToCSection{
 							{
 								ID:    "_section_a",
 								Level: 1,
 								Title: "Section A",
-								Children: []types.ToCSection{
+								Children: []*types.ToCSection{
 									{
 										ID:       "_section_a_a_a",
 										Level:    3,
 										Title:    "Section A.a.a",
-										Children: []types.ToCSection{},
+										Children: []*types.ToCSection{},
 									},
 								},
 							},
@@ -185,17 +187,17 @@ a paragraph with _italic content_`
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 					TableOfContents: types.TableOfContents{
-						Sections: []types.ToCSection{
+						Sections: []*types.ToCSection{
 							{
 								ID:    "_section_a",
 								Level: 1,
 								Title: "Section A",
-								Children: []types.ToCSection{
+								Children: []*types.ToCSection{
 									{
 										ID:       "_section_a_a",
 										Level:    2,
 										Title:    "Section A.a",
-										Children: []types.ToCSection{},
+										Children: []*types.ToCSection{},
 									},
 								},
 							},
@@ -203,7 +205,7 @@ a paragraph with _italic content_`
 								ID:       "_section_b",
 								Level:    1,
 								Title:    "Section B",
-								Children: []types.ToCSection{},
+								Children: []*types.ToCSection{},
 							},
 						},
 					},
@@ -229,12 +231,12 @@ a paragraph with _italic content_`
 					Title:       "",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 					TableOfContents: types.TableOfContents{
-						Sections: []types.ToCSection{
+						Sections: []*types.ToCSection{
 							{
 								ID:       "_grandchild_title",
 								Level:    1,
 								Title:    "grandchild title",
-								Children: []types.ToCSection{},
+								Children: []*types.ToCSection{},
 							},
 						},
 					},
@@ -275,7 +277,36 @@ Last updated {{.LastUpdated}}
 				filename := "test/includes/chapter-a.adoc"
 				stat, err := os.Stat(filename)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(RenderHTML5Document(filename, configuration.WithCSS("path/to/style.css"), configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, stat.ModTime()))
+				out := &strings.Builder{}
+				_, err = libasciidoc.ConvertFile(out,
+					configuration.NewConfiguration(
+						configuration.WithFilename(filename),
+						configuration.WithCSS("path/to/style.css"),
+						configuration.WithHeaderFooter(true)))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, stat.ModTime()))
+			})
+
+			It("should render with html5 backend without failure", func() {
+				out := &strings.Builder{}
+				_, err := libasciidoc.ConvertFile(out,
+					configuration.NewConfiguration(
+						configuration.WithFilename("test/article.adoc"),
+						configuration.WithBackEnd("html5"),
+						configuration.WithCSS("path/to/style.css"),
+						configuration.WithHeaderFooter(true)))
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should render with xhtml5 backend without failure", func() {
+				out := &strings.Builder{}
+				_, err := libasciidoc.ConvertFile(out,
+					configuration.NewConfiguration(
+						configuration.WithFilename("test/article.adoc"),
+						configuration.WithBackEnd("xhtml5"),
+						configuration.WithCSS("path/to/style.css"),
+						configuration.WithHeaderFooter(true)))
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 	})
@@ -324,7 +355,15 @@ Free use of this software is granted under the terms of the MIT License.</p>
 </div>
 </div>
 `
-				Expect(RenderHTML(source, configuration.WithAttribute(types.AttrDocType, "manpage"))).To(Equal(expectedContent))
+				out := &strings.Builder{}
+				_, err := libasciidoc.Convert(
+					strings.NewReader(source),
+					out,
+					configuration.NewConfiguration(
+						configuration.WithAttribute(types.AttrDocType, "manpage"),
+					))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(out.String()).To(MatchHTML(expectedContent))
 			})
 		})
 
@@ -395,11 +434,18 @@ Last updated {{.LastUpdated}}
 </body>
 </html>
 `
-				Expect(RenderHTML(source,
-					configuration.WithAttribute(types.AttrDocType, "manpage"),
-					configuration.WithLastUpdated(lastUpdated),
-					configuration.WithCSS("path/to/style.css"),
-					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				out := &strings.Builder{}
+				_, err := libasciidoc.Convert(
+					strings.NewReader(source),
+					out,
+					configuration.NewConfiguration(
+						configuration.WithAttribute(types.AttrDocType, "manpage"),
+						configuration.WithLastUpdated(lastUpdated),
+						configuration.WithCSS("path/to/style.css"),
+						configuration.WithHeaderFooter(true),
+					))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
 			})
 
 			It("should render invalid manpage as article", func() {
@@ -475,11 +521,18 @@ Last updated {{.LastUpdated}}
 </body>
 </html>
 `
-				Expect(RenderHTML(source,
-					configuration.WithAttribute(types.AttrDocType, "manpage"),
-					configuration.WithLastUpdated(lastUpdated),
-					configuration.WithCSS("path/to/style.css"),
-					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				out := &strings.Builder{}
+				_, err := libasciidoc.Convert(
+					strings.NewReader(source),
+					out,
+					configuration.NewConfiguration(
+						configuration.WithAttribute(types.AttrDocType, "manpage"),
+						configuration.WithLastUpdated(lastUpdated),
+						configuration.WithCSS("path/to/style.css"),
+						configuration.WithHeaderFooter(true),
+					))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
 			})
 
 			It("should render html", func() {
@@ -512,13 +565,20 @@ Last updated {{.LastUpdated}}
 </body>
 </html>
 `
-				Expect(Render(source,
-					configuration.WithBackEnd("html5"),
-					configuration.WithLastUpdated(lastUpdated),
-					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				out := &strings.Builder{}
+				_, err := libasciidoc.Convert(
+					strings.NewReader(source),
+					out,
+					configuration.NewConfiguration(
+						configuration.WithLastUpdated(lastUpdated),
+						configuration.WithBackEnd("html5"),
+						configuration.WithHeaderFooter(true),
+					))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
 			})
 
-			It("should render xhtml", func() {
+			It("should render with xhtml5 backend", func() {
 				source := `= Story
 
 Our story begins.`
@@ -548,25 +608,35 @@ Last updated {{.LastUpdated}}
 </body>
 </html>
 `
-				Expect(Render(source,
-					configuration.WithBackEnd("xhtml5"),
-					configuration.WithLastUpdated(lastUpdated),
-					configuration.WithHeaderFooter(true))).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				out := &strings.Builder{}
+				_, err := libasciidoc.Convert(
+					strings.NewReader(source),
+					out,
+					configuration.NewConfiguration(
+						configuration.WithLastUpdated(lastUpdated),
+						configuration.WithBackEnd("xhtml5"),
+						configuration.WithHeaderFooter(true),
+					))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
 			})
 
 			It("should fail given bogus backend", func() {
 				source := `= Story
 
 Our story begins.`
-				doc, err := Render(source,
-					configuration.WithBackEnd("wordperfect"),
-					configuration.WithLastUpdated(lastUpdated),
-					configuration.WithHeaderFooter(true))
-				Expect(doc).To(BeEmpty())
+				out := &strings.Builder{}
+				_, err := libasciidoc.Convert(
+					strings.NewReader(source),
+					out,
+					configuration.NewConfiguration(
+						configuration.WithBackEnd("wordperfect"),
+						configuration.WithLastUpdated(lastUpdated),
+						configuration.WithHeaderFooter(true),
+					))
 				Expect(err).To(MatchError("backend 'wordperfect' not supported"))
 			})
-
 		})
-
 	})
+
 })

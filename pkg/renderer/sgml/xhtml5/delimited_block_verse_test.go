@@ -11,7 +11,7 @@ import (
 
 var _ = Describe("verse blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("single-line verse with author and title ", func() {
 			source := `[verse, john doe, verse title]

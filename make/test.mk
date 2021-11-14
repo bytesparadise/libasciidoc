@@ -25,4 +25,4 @@ test-with-coverage: generate-optimized install-ginkgo install-gover
 .PHONY: test-fixtures
 ## run all fixtures tests
 test-fixtures: generate-optimized
-	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2 -tags=fixtures --focus=fixtures
+	@ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=0 -tags=fixtures --focus=fixtures

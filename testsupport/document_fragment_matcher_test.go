@@ -1,0 +1,64 @@
+package testsupport_test
+
+import (
+	"fmt"
+
+	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/bytesparadise/libasciidoc/testsupport"
+
+	"github.com/google/go-cmp/cmp"
+	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/gomega" //nolint golint
+)
+
+var _ = Describe("document fragments matcher", func() {
+
+	// given
+	expected := types.DocumentFragment{
+		Elements: []interface{}{
+			types.RawLine("a paragraph."),
+		},
+	}
+	matcher := testsupport.MatchDocumentFragment(expected)
+
+	It("should match", func() {
+		// given
+		actual := types.DocumentFragment{
+			Elements: []interface{}{
+				types.RawLine("a paragraph."),
+			},
+		}
+		// when
+		result, err := matcher.Match(actual)
+		// then
+		Expect(err).ToNot(HaveOccurred())
+		Expect(result).To(BeTrue())
+	})
+
+	It("should not match", func() {
+		// given
+		actual := types.DocumentFragment{
+			Elements: []interface{}{
+				types.RawLine("something else"),
+			},
+		}
+		// when
+		result, err := matcher.Match(actual)
+		// then
+		Expect(err).ToNot(HaveOccurred())
+		Expect(result).To(BeFalse())
+		diffs := cmp.Diff(expected, actual)
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments to match:\n%s", diffs)))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments not to match:\n%s", diffs)))
+	})
+
+	It("should return error when invalid type is input", func() {
+		// when
+		result, err := matcher.Match(1)
+		// then
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("MatchDocumentFragment matcher expects a types.DocumentFragment (actual: int)"))
+		Expect(result).To(BeFalse())
+	})
+
+})

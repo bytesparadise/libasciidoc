@@ -8,7 +8,7 @@ import (
 // Context is a custom implementation of the standard golang context.Context interface,
 // which carries the types.Document which is being processed
 type Context struct {
-	Config configuration.Configuration
+	Config *configuration.Configuration
 	// TableOfContents exists even if the document did not specify the `:toc:` attribute.
 	// It will take into account the configured `:toclevels:` attribute value.
 	TableOfContents      types.TableOfContents
@@ -17,24 +17,44 @@ type Context struct {
 	WithinList           int
 	counters             map[string]int
 	Attributes           types.Attributes
-	Footnotes            []types.Footnote
+	Footnotes            []*types.Footnote
 	ElementReferences    types.ElementReferences
 	HasHeader            bool
-	UseUnicode           bool
 }
 
 // NewContext returns a new rendering context for the given document.
-func NewContext(doc types.Document, config configuration.Configuration) *Context {
-	_, hasHeader := doc.Header()
-	return &Context{
+func NewContext(doc *types.Document, config *configuration.Configuration) *Context {
+	header, _, hasHeader := doc.Header()
+	ctx := &Context{
 		Config:             config,
 		counters:           make(map[string]int),
-		Attributes:         doc.Attributes,
+		Attributes:         config.Attributes,
 		ElementReferences:  doc.ElementReferences,
 		Footnotes:          doc.Footnotes,
 		HasHeader:          hasHeader,
 		EncodeSpecialChars: true,
 	}
+	// TODO: add other attributes from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#builtin-attributes-i18n
+	ctx.Attributes[types.AttrFigureCaption] = "Figure"
+	ctx.Attributes[types.AttrExampleCaption] = "Example"
+	ctx.Attributes[types.AttrTableCaption] = "Table"
+	ctx.Attributes[types.AttrVersionLabel] = "version"
+	// also, expand authors and revision
+	if hasHeader {
+		if authors := header.Authors(); authors != nil {
+			ctx.Attributes.AddAll(authors.Expand())
+		}
+
+		if revision := header.Revision(); revision != nil {
+			ctx.Attributes.AddAll(revision.Expand())
+
+		}
+	}
+	return ctx
+}
+
+func (ctx *Context) UseUnicode() bool {
+	return ctx.Attributes.Has(types.AttrUnicode)
 }
 
 const tableCounter = "tableCounter"

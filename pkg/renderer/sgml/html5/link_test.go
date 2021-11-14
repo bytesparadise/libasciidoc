@@ -1,6 +1,9 @@
 package html5_test
 
 import (
+	"time"
+
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo" //nolint golint
@@ -264,6 +267,56 @@ a link to {scheme}://{path} and https://foo.baz`
 		})
 
 		Context("with document attribute substitutions", func() {
+
+			It("with attribute in section 0 title", func() {
+				source := `= a title to {scheme}://{path} and https://foo.com
+:scheme: https
+:path: example.com`
+				expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<title>a title to https://example.com and https://foo.com</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>a title to <a href="https://example.com" class="bare">https://example.com</a> and <a href="https://foo.com" class="bare">https://foo.com</a></h1>
+</div>
+<div id="content">
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>
+`
+				lastUpdated := time.Now()
+				Expect(RenderHTML(source,
+					configuration.WithHeaderFooter(true),
+					configuration.WithLastUpdated(lastUpdated),
+				)).To(MatchHTMLTemplate(expected, lastUpdated))
+			})
+
+			It("with attribute in section 1 title", func() {
+				source := `
+:scheme: https
+:path: example.com
+
+== a title to {scheme}://{path} and https://foo.com
+`
+				expected := `<div class="sect1">
+<h2 id="_a_title_to_httpsexample_com_and_httpsfoo_com">a title to <a href="https://example.com" class="bare">https://example.com</a> and <a href="https://foo.com" class="bare">https://foo.com</a></h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 
 			It("relative link with two document attribute substitutions and a reset", func() {
 				source := `:scheme: link

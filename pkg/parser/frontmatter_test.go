@@ -10,28 +10,28 @@ import (
 
 var _ = Describe("front-matters", func() {
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
 		Context("yaml front-matter", func() {
 
-			It("front-matter with simple attributes", func() {
+			It("with simple attributes", func() {
 				source := `---
 title: a title
 author: Xavier
 ---
 
 first paragraph`
-				expected := types.Document{
-					Attributes: types.Attributes{
-						"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
-						"author": "Xavier",
-					},
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "first paragraph"},
-								},
+						&types.FrontMatter{
+							Attributes: types.Attributes{
+								"title":  "a title", // TODO: convert `title` attribute from front-matter into `doctitle` here ?
+								"author": "Xavier",
+							},
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},
@@ -44,13 +44,12 @@ first paragraph`
 ---
 
 first paragraph`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{Content: "first paragraph"},
-								},
+						&types.FrontMatter{},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "first paragraph"},
 							},
 						},
 					},

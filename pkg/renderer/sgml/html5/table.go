@@ -27,7 +27,7 @@ const (
 
 	tableRowTmpl = "<tr>\n{{ .Content }}</tr>\n"
 
-	tableHeaderCellTmpl = "<th class=\"tableblock halign-{{ .HAlign }} valign-{{ .VAlign }}\">{{ .Content }}</th>\n"
+	tableHeaderCellTmpl = "<th class=\"tableblock {{ halign .HAlign }} {{ valign .VAlign }}\">{{ .Content }}</th>\n"
 
-	tableCellTmpl = "<td class=\"tableblock halign-{{ .HAlign }} valign-{{ .VAlign }}\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
+	tableCellTmpl = "<td class=\"tableblock {{ halign .HAlign }} {{ valign .VAlign }}\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
 )
