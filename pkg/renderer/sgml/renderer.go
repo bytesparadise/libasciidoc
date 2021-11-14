@@ -415,7 +415,7 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header *types.
 	if description.Attributes == nil {
 		description.Attributes = types.Attributes{}
 	}
-	description.Attributes.AddNonEmpty(types.AttrStyle, "manpage")
+	description.Attributes.Set(types.AttrStyle, "manpage")
 	renderedContent, err := r.renderParagraph(ctx, description)
 	if err != nil {
 		return "", err

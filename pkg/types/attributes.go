@@ -180,10 +180,6 @@ func NewAttributes(attributes ...interface{}) (Attributes, error) {
 			result.Set(attr.Key(), attr.Value)
 		case *Attribute:
 			result.Set(attr.Key, attr.Value)
-		case Attributes: // when an there were multiple attributes, eg: `[quote,author,title]`
-			result.AddAll(attr)
-		case nil:
-			// ignore
 		default:
 			return nil, fmt.Errorf("unexpected type of attribute: '%[1]T' (%[1]v)", attr)
 		}
@@ -228,21 +224,6 @@ func (a Attributes) AddAll(others Attributes) Attributes {
 		a.Set(k, v)
 	}
 	return a
-}
-
-// NilIfEmpty returns `nil` if this `attributes` is empty
-func (a Attributes) NilIfEmpty() Attributes {
-	if len(a) == 0 {
-		return nil
-	}
-	return a
-}
-
-func toAttributes(attrs interface{}) Attributes {
-	if attrs, ok := attrs.(Attributes); ok {
-		return attrs
-	}
-	return nil
 }
 
 func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attributes {
@@ -306,10 +287,6 @@ func HasAttributeWithValue(attributes interface{}, key string, value interface{}
 // HasNotAttribute checks that there is no entry for the given key
 func HasNotAttribute(attributes interface{}, key string) bool {
 	switch a := attributes.(type) {
-	case *Attribute:
-		if a.Key == key {
-			return false
-		}
 	case Attributes:
 		if _, ok := a[key]; ok {
 			return false
@@ -498,20 +475,6 @@ func (a Attributes) GetAsString(key string) (string, bool, error) {
 	return "", false, nil
 }
 
-// GetAsInt gets the int value for the given key (+ `true`),
-// or empty string (+ `false`) if none was found,
-// or an error if the value could not be converted to an integer
-func (a Attributes) GetAsInt(key string) (int, bool, error) {
-	if value, found := a[key].(int); found {
-		return value, true, nil
-	}
-	if value, found := a[key].(string); found {
-		result, err := strconv.Atoi(value)
-		return result, true, err
-	}
-	return -1, false, nil
-}
-
 // GetAsIntWithDefault gets the int value for the given key ,
 // or default if none was found,
 func (a Attributes) GetAsIntWithDefault(key string, defaultValue int) int {
@@ -563,40 +526,4 @@ func (a Attributes) GetAsStringWithDefault(key, defaultValue string) string {
 		}
 	}
 	return defaultValue
-}
-
-// GetAsBool returns the value of the key as a bool, or `false` if the key did not exist
-// or if its value was not a bool
-func (a Attributes) GetAsBool(key string) bool {
-	if v, ok := a[key]; ok {
-		if v, ok := v.(bool); ok {
-			return v
-		}
-	}
-	return false
-}
-
-// AddNonEmpty adds the given attribute if its value is non-nil and non-empty
-// TODO: raise a warning if there was already a name/value
-func (a Attributes) AddNonEmpty(key string, value interface{}) {
-	// do not add nil or empty values
-	if value == "" {
-		return
-	}
-	a[key] = value
-}
-
-// Positionals returns all positional attributes, ie, the values for the keys in the form of `positional-<int>`
-func (a Attributes) Positionals() [][]interface{} {
-	result := make([][]interface{}, 0, len(a))
-	i := 0
-	for {
-		i++
-		if arg, ok := a["positional-"+strconv.Itoa(i)].([]interface{}); ok {
-			result = append(result, arg)
-			continue
-		}
-		break
-	}
-	return result
 }

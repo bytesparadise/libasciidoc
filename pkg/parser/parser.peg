@@ -2768,7 +2768,7 @@ UserMacroBlock <-
     "::" 
     value:(UserMacroValue) 
     inlineAttributes:(InlineAttributes) EOL {
-        return types.NewUserMacroBlock(name.(string), value.(string), inlineAttributes, string(c.text))
+        return types.NewUserMacroBlock(name.(string), value.(string), inlineAttributes.(types.Attributes), string(c.text))
     }
 
 InlineUserMacro <- 
@@ -2780,7 +2780,7 @@ InlineUserMacro <-
     ":" 
     value:(UserMacroValue) 
     inlineAttributes:(InlineAttributes) {
-        return types.NewInlineUserMacro(name.(string), value.(string), inlineAttributes, string(c.text))
+        return types.NewInlineUserMacro(name.(string), value.(string), inlineAttributes.(types.Attributes), string(c.text))
     }
 
 UserMacroName <- ([\pL0-9_-]+) {

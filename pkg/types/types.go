@@ -610,18 +610,6 @@ func NewCounterSubstitution(name string, hidden bool, val interface{}) (CounterS
 	}, nil
 }
 
-// StandaloneAttributes are attributes at the end of
-// a delimited block or at the end of the doc, ie, not
-// associated with any block. They shall be ignored/discarded
-// in the final document
-type StandaloneAttributes Attributes
-
-// NewStandaloneAttributes returns a new StandaloneAttributes element
-func NewStandaloneAttributes(attributes interface{}) (StandaloneAttributes, error) {
-	log.Debug("new standalone attributes")
-	return StandaloneAttributes(toAttributes(attributes)), nil
-}
-
 // ------------------------------------------
 // Preamble
 // ------------------------------------------
@@ -1780,7 +1768,8 @@ type ImageBlock struct {
 // NewImageBlock initializes a new `ImageBlock`
 func NewImageBlock(location *Location, inlineAttributes Attributes, attributes interface{}) (*ImageBlock, error) {
 	// inline attributes trump block attributes
-	attrs := toAttributes(inlineAttributes)
+	attrs := Attributes{}
+	attrs.SetAll(inlineAttributes)
 	attrs.SetAll(attributes)
 	attrs = toAttributesWithMapping(attrs, map[string]string{
 		AttrPositional1: AttrImageAlt,
@@ -2339,23 +2328,23 @@ type UserMacro struct {
 }
 
 // NewUserMacroBlock returns an UserMacro
-func NewUserMacroBlock(name string, value string, attributes interface{}, raw string) (*UserMacro, error) {
+func NewUserMacroBlock(name string, value string, attributes Attributes, raw string) (*UserMacro, error) {
 	return &UserMacro{
 		Name:       name,
 		Kind:       BlockMacro,
 		Value:      value,
-		Attributes: toAttributes(attributes),
+		Attributes: attributes,
 		RawText:    raw,
 	}, nil
 }
 
 // NewInlineUserMacro returns an UserMacro
-func NewInlineUserMacro(name, value string, attributes interface{}, raw string) (*UserMacro, error) {
+func NewInlineUserMacro(name, value string, attributes Attributes, raw string) (*UserMacro, error) {
 	return &UserMacro{
 		Name:       name,
 		Kind:       InlineMacro,
 		Value:      value,
-		Attributes: toAttributes(attributes),
+		Attributes: attributes,
 		RawText:    raw,
 	}, nil
 }
