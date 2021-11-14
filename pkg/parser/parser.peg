@@ -2827,7 +2827,7 @@ InlineWord <-
     / Punctuation
 
 Punctuation <- ("." / "," / ";" / "!" / "?") &(Space / EOL) {
-    return types.NewString(string(c.text))
+    return string(c.text), nil
 }
 
 // this is a fall-back rule in case all preceeding rules failed to match the current content.

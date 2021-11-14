@@ -12,25 +12,10 @@ import (
 func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
 	// log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := &strings.Builder{}
-	if !ctx.Config.WrapInHTMLBodyElement && len(elements) > 0 {
-		if s, ok := elements[0].(*types.Section); ok && s.Level == 0 {
-			// don't render the top-level section, but only its elements (plus the rest if there's anything)
-			if len(elements) > 1 {
-				elements = append(s.Elements, elements[1:])
-			} else {
-				elements = s.Elements
-			}
-		}
-	}
 	for _, element := range elements {
 		renderedElement, err := r.renderElement(ctx, element)
 		if err != nil {
 			return "", err // no need to wrap the error here
-		}
-		// insert new line if there's already some content (except for BlankLine)
-		_, isVerbatimLine := element.(types.VerbatimLine)
-		if buff.Len() > 0 && isVerbatimLine {
-			buff.WriteString("\n")
 		}
 		buff.WriteString(renderedElement)
 	}

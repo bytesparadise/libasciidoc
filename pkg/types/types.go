@@ -45,15 +45,17 @@ type BlockWithAttributes interface {
 }
 
 type WithElementAddition interface {
-	// WithElements
-	CanAddElement(interface{}) bool
 	AddElement(interface{}) error
+}
+
+type WithConditionalElementAddition interface {
+	WithElementAddition
+	CanAddElement(interface{}) bool
 }
 type BlockWithElements interface {
 	BlockWithAttributes
 	GetElements() []interface{}
 	SetElements([]interface{}) error
-	// WithElementAddition
 }
 
 type BlockWithLocation interface {
@@ -132,10 +134,6 @@ func (d *Document) Header() (*DocumentHeader, []interface{}, bool) { // TODO: re
 }
 
 var _ WithElementAddition = &Document{}
-
-func (d *Document) CanAddElement(element interface{}) bool {
-	return true
-}
 
 func (d *Document) AddElement(element interface{}) error {
 	d.Elements = append(d.Elements, element)
@@ -252,14 +250,7 @@ func NewDocumentHeader(title []interface{}, info interface{}, extraAttrs []inter
 		}
 
 	}
-	for _, attr := range extraAttrs {
-		switch attr := attr.(type) {
-		case *AttributeDeclaration, *AttributeReset:
-			elements = append(elements, attr)
-		default:
-			return nil, fmt.Errorf("unexpected type of attribute declaration in the document header: '%T'", attr)
-		}
-	}
+	elements = append(elements, extraAttrs...)
 	if len(elements) > 0 {
 		header.Elements = elements
 	}
@@ -538,22 +529,6 @@ func NewAttributeDeclaration(name string, value interface{}) *AttributeDeclarati
 	}
 }
 
-var _ Stringer = &AttributeDeclaration{}
-
-// Stringify returns the string representation of this attribute declaration, as it existed in the source document
-func (a *AttributeDeclaration) Stringify() string {
-	result := strings.Builder{}
-	result.WriteString(":" + a.Name + ":")
-	result.WriteString(stringify(a.Value))
-	return result.String()
-}
-
-// ReplaceElements replaces the elements in this section
-func (a *AttributeDeclaration) ReplaceElements(value []interface{}) interface{} {
-	a.Value = Reduce(value, strings.TrimSpace)
-	return a
-}
-
 // AttributeReset the type for AttributeReset
 type AttributeReset struct {
 	Name string
@@ -646,8 +621,7 @@ type FrontMatter struct {
 // NewYamlFrontMatter initializes a new FrontMatter from the given `content`
 func NewYamlFrontMatter(content string) (*FrontMatter, error) {
 	attributes := make(map[string]interface{})
-	err := yaml.Unmarshal([]byte(content), &attributes)
-	if err != nil {
+	if err := yaml.Unmarshal([]byte(content), &attributes); err != nil {
 		return nil, errors.Wrapf(err, "failed to parse the yaml content in the front-matter block")
 	}
 	if len(attributes) == 0 {
@@ -671,15 +645,6 @@ type ListElement interface { // TODO: convert to struct and use as composant in 
 	ListKind() ListKind
 	AdjustStyle(*List)
 	matchesStyle(ListElement) bool
-}
-
-func canAddToListElement(element interface{}) bool {
-	switch element.(type) {
-	case RawLine, *SingleLineComment:
-		return true
-	default:
-		return false
-	}
 }
 
 func addToListElement(e ListElement, element interface{}) error {
@@ -710,7 +675,7 @@ type List struct {
 	Elements   []ListElement
 }
 
-var _ BlockWithElements = &List{}
+var _ WithConditionalElementAddition = &List{}
 
 // CanAddElement checks if the given element can be added
 func (l *List) CanAddElement(element interface{}) bool {
@@ -753,57 +718,6 @@ func (l *List) LastElement() ListElement {
 		return nil
 	}
 	return l.Elements[len(l.Elements)-1]
-}
-
-// GetElements returns this paragraph's elements (or lines)
-func (l *List) GetElements() []interface{} {
-	elements := make([]interface{}, len(l.Elements))
-	for i, e := range l.Elements {
-		elements[i] = e
-	}
-	return elements
-}
-
-// SetElements sets this paragraph's elements
-func (l *List) SetElements(elements []interface{}) error {
-	// ensure that all elements are `ListElement`
-	l.Elements = make([]ListElement, len(elements))
-	for i, e := range elements {
-		if e, ok := e.(ListElement); ok {
-			l.Elements[i] = e
-			continue
-		}
-		return fmt.Errorf("unexpected kind of element to set in a list: '%T'", e)
-	}
-	return nil
-}
-
-// GetAttributes returns this first item's attributes (if applicable)
-func (l *List) GetAttributes() Attributes {
-	if len(l.Elements) > 0 {
-		if f, ok := l.Elements[0].(BlockWithAttributes); ok {
-			return f.GetAttributes()
-		}
-	}
-	return Attributes(nil)
-}
-
-// AddAttributes adds the attributes in this fist list item (if applicable)
-func (l *List) AddAttributes(attributes Attributes) {
-	if len(l.Elements) > 0 {
-		if f, ok := l.Elements[0].(BlockWithAttributes); ok {
-			f.AddAttributes(attributes)
-		}
-	}
-}
-
-// SetAttributes replaces the attributes in this fist list item (if applicable)
-func (l *List) SetAttributes(attributes Attributes) {
-	if len(l.Elements) > 0 {
-		if f, ok := l.Elements[0].(BlockWithAttributes); ok {
-			f.SetAttributes(attributes)
-		}
-	}
 }
 
 type ListElements struct {
@@ -883,17 +797,6 @@ func (l *ListElements) SetElements(elements []interface{}) error {
 	return nil
 }
 
-// CanAddElement checks if the given element can be added
-func (l *ListElements) CanAddElement(element interface{}) bool {
-	return true
-}
-
-// AddElement adds the given element
-func (l *ListElements) AddElement(element interface{}) error {
-	l.Elements = append(l.Elements, element)
-	return nil
-}
-
 type ListKind string
 
 const (
@@ -937,33 +840,11 @@ func NewListElementContinuation(offset int, Element interface{}) (*ListElementCo
 
 var _ WithElementAddition = &ListElementContinuation{}
 
-func (c *ListElementContinuation) CanAddElement(element interface{}) bool {
-	if e, ok := c.Element.(WithElementAddition); ok {
-		return e.CanAddElement(element)
-	}
-	return false
-}
-
 func (c *ListElementContinuation) AddElement(element interface{}) error {
 	if e, ok := c.Element.(WithElementAddition); ok {
 		return e.AddElement(element)
 	}
 	return errors.Errorf("cannot add element of type '%T' to list element continuation", c.Element)
-}
-
-// ContinuedListItemElement a wrapper for an element which should be attached to a list item (same level or an ancestor)
-type ContinuedListItemElement struct {
-	Offset  int // the relative ancestor. Should be a negative number
-	Element interface{}
-}
-
-// NewContinuedListItemElement returns a wrapper for an element which should be attached to a list item (same level or an ancestor)
-func NewContinuedListItemElement(element interface{}) (ContinuedListItemElement, error) {
-	// log.Debugf("new continued list element for element of type %T", element)
-	return ContinuedListItemElement{
-		Offset:  0,
-		Element: element,
-	}, nil
 }
 
 // ------------------------------------------
@@ -1038,10 +919,7 @@ func (e *CalloutListElement) SetAttributes(attributes Attributes) {
 	e.Attributes = attributes
 }
 
-// CanAddElement checks if the given element can be added
-func (e *CalloutListElement) CanAddElement(element interface{}) bool {
-	return canAddToListElement(element)
-}
+var _ WithElementAddition = &CalloutListElement{}
 
 // AddElement add an element to this UnorderedListElement
 func (e *CalloutListElement) AddElement(element interface{}) error {
@@ -1139,10 +1017,7 @@ func (e *OrderedListElement) SetElements(elements []interface{}) error {
 	return nil
 }
 
-// CanAddElement checks if the given element can be added
-func (e *OrderedListElement) CanAddElement(element interface{}) bool {
-	return canAddToListElement(element)
-}
+var _ WithElementAddition = &OrderedListElement{}
 
 // AddElement add an element to this UnorderedListElement
 func (e *OrderedListElement) AddElement(element interface{}) error {
@@ -1262,10 +1137,7 @@ func (e *UnorderedListElement) interactive() {
 	}
 }
 
-// CanAddElement checks if the given element can be added
-func (e *UnorderedListElement) CanAddElement(element interface{}) bool {
-	return canAddToListElement(element)
-}
+var _ WithElementAddition = &UnorderedListElement{}
 
 // AddElement add an element to this UnorderedListElement
 func (e *UnorderedListElement) AddElement(element interface{}) error {
@@ -1470,10 +1342,7 @@ func (e *LabeledListElement) ListKind() ListKind {
 	return LabeledListKind
 }
 
-// CanAddElement checks if the given element can be added
-func (e *LabeledListElement) CanAddElement(element interface{}) bool {
-	return canAddToListElement(element)
-}
+var _ WithElementAddition = &LabeledListElement{}
 
 // AddElement add an element to this LabeledListElement
 func (e *LabeledListElement) AddElement(element interface{}) error {
@@ -1580,15 +1449,7 @@ func (p *Paragraph) SetElements(elements []interface{}) error {
 	return nil
 }
 
-// CanAddElement checks if the given element can be added
-func (p *Paragraph) CanAddElement(element interface{}) bool {
-	switch element.(type) {
-	case RawLine, *SingleLineComment:
-		return true
-	default:
-		return false
-	}
-}
+var _ WithElementAddition = &Paragraph{}
 
 func (p *Paragraph) AddElement(e interface{}) error {
 	p.Elements = append(p.Elements, e)
@@ -1667,20 +1528,6 @@ const (
 	// Unknown is the zero value for admonition kind
 	Unknown = ""
 )
-
-type AdmonitionLine struct {
-	Kind    string
-	Content RawLine
-}
-
-// NewAdmonitionLine returns a new AdmonitionLine with the given kind and content
-func NewAdmonitionLine(kind string, content string) (*AdmonitionLine, error) {
-	log.Debugf("new admonition paragraph")
-	return &AdmonitionLine{
-		Kind:    kind,
-		Content: RawLine(content),
-	}, nil
-}
 
 // ------------------------------------------
 // Inline Elements
@@ -1986,17 +1833,7 @@ func (s *sequence) nextVal() int {
 // Delimited blocks
 // ------------------------------------------
 
-type BlockDelimiter struct {
-	Kind string
-}
-
 type BlockDelimiterKind string // TODO: use it
-
-func NewBlockDelimiter(kind string) (*BlockDelimiter, error) {
-	return &BlockDelimiter{
-		Kind: kind,
-	}, nil
-}
 
 const (
 	// Fenced a fenced block
@@ -2075,28 +1912,6 @@ func (b *DelimitedBlock) SetElements(elements []interface{}) error {
 	return nil
 }
 
-// CanAddElement checks if the given element can be added
-func (b *DelimitedBlock) CanAddElement(element interface{}) bool {
-	switch element.(type) {
-	case *BlockDelimiter, RawLine:
-		return true
-	default:
-		switch b.Kind {
-		// // Normal blocks can have more kinds of elements
-		// case Example, Quote:
-		// 	return true
-		default:
-			return false
-		}
-	}
-}
-
-func (b *DelimitedBlock) AddElement(element interface{}) error {
-	log.Debugf("adding element of type '%T' to delimited block of kind '%s'", element, b.Kind)
-	b.Elements = append(b.Elements, element)
-	return nil
-}
-
 var _ BlockWithAttributes = &DelimitedBlock{}
 
 // GetAttributes returns the attributes of this paragraph so that substitutions can be applied onto them
@@ -2163,16 +1978,6 @@ type Section struct {
 	Attributes Attributes
 	Title      []interface{}
 	Elements   []interface{}
-}
-
-// NewSection initializes a new `Section` from the given section title and elements
-func NewSection(level int, title []interface{}, ids []interface{}) (*Section, error) {
-	return &Section{
-		Level: level,
-		// Attributes: attrs,
-		Title: title,
-		// Elements: []interface{}{},
-	}, nil
 }
 
 var _ BlockWithElements = &Section{}
@@ -2260,10 +2065,7 @@ func (s *Section) resolveID(attrs Attributes) (string, error) {
 	return id, nil
 }
 
-// CanAddElement checks if the given element can be added
-func (s *Section) CanAddElement(_ interface{}) bool {
-	return true
-}
+var _ WithElementAddition = &Section{}
 
 // AddElement adds the given child element to this section
 func (s *Section) AddElement(e interface{}) error {
@@ -2402,34 +2204,6 @@ func (s StringElement) RawText() (string, error) {
 }
 
 // ------------------------------------------
-// VerbatimLine
-// ------------------------------------------
-
-// VerbatimLine the structure for verbatim line, ie, read "as-is" from a given text document.
-//TODO: remove
-type VerbatimLine struct {
-	Elements []interface{}
-	Callouts []Callout
-}
-
-// NewVerbatimLine initializes a new `VerbatimLine` from the given content
-func NewVerbatimLine(elements []interface{}, callouts []interface{}) (VerbatimLine, error) {
-	var cos []Callout
-	for _, c := range callouts {
-		cos = append(cos, c.(Callout))
-	}
-	return VerbatimLine{
-		Elements: elements,
-		Callouts: cos,
-	}, nil
-}
-
-// IsEmpty return `true` if the line contains only whitespaces and tabs
-func (s VerbatimLine) IsEmpty() bool {
-	return len(s.Elements) == 0 // || emptyStringRE.MatchString(s.Content)
-}
-
-// ------------------------------------------
 // Explicit line breaks
 // ------------------------------------------
 
@@ -2527,16 +2301,6 @@ func (t *QuotedText) GetElements() []interface{} {
 // SetElements sets this QuotedText's elements
 func (t *QuotedText) SetElements(elements []interface{}) error {
 	t.Elements = elements
-	return nil
-}
-
-// CanAddElement checks if the given element can be added
-func (t *QuotedText) CanAddElement(_ interface{}) bool {
-	return true
-}
-
-func (t *QuotedText) AddElement(e interface{}) error {
-	t.Elements = append(t.Elements, e)
 	return nil
 }
 
@@ -2739,30 +2503,6 @@ func (l *InlineLink) SetLocation(value *Location) {
 	l.Location = value
 }
 
-// NewInlineLinkAttributes returns a map of link attributes
-func NewInlineLinkAttributes(attributes []interface{}) (Attributes, error) {
-	// log.Debugf("new inline link attributes: %v", attributes)
-	if len(attributes) == 0 {
-		return nil, nil
-	}
-	result := Attributes{}
-	for i, attr := range attributes {
-		// log.Debugf("new inline link attribute: '%[1]v' (%[1]T)", attr)
-		switch attr := attr.(type) {
-		case *Attribute:
-			result[attr.Key] = attr.Value
-		case Attributes:
-			for k, v := range attr {
-				result[k] = v
-			}
-		case []interface{}:
-			result["positional-"+strconv.Itoa(i+1)] = attr
-		}
-	}
-	// log.Debugf("new inline link attributes: %v", result)
-	return result, nil
-}
-
 // ------------------------------------------
 // File Inclusions
 // ------------------------------------------
@@ -2811,27 +2551,6 @@ func (f *FileInclusion) SetAttributes(attributes Attributes) {
 	f.Attributes = attributes
 }
 
-// LineRanges returns the line ranges of the file to include.
-func (f *FileInclusion) LineRanges() (LineRanges, bool) {
-	if lr, ok := f.Attributes[AttrLineRanges].(LineRanges); ok {
-		return lr, true
-	}
-	return LineRanges{ // default line ranges: include all content
-		{
-			StartLine: 1,
-			EndLine:   -1,
-		},
-	}, false
-}
-
-// TagRanges returns the tag ranges of the file to include.
-func (f *FileInclusion) TagRanges() (TagRanges, bool) {
-	if lr, ok := f.Attributes[AttrTagRanges].(TagRanges); ok {
-		return lr, true
-	}
-	return TagRanges{}, false // default tag ranges: include all content
-}
-
 // -------------------------------------------------------------------------------------
 // Raw Line
 // -------------------------------------------------------------------------------------
@@ -2860,38 +2579,8 @@ func NewRawContent(content string) (RawContent, error) {
 }
 
 // -------------------------------------------------------------------------------------
-// Raw Line
-// -------------------------------------------------------------------------------------
-type MarkdownQuoteRawLine string
-
-// NewMarkdownQuoteRawLine returns a new slice containing a single StringElement with the given content
-func NewMarkdownQuoteRawLine(content string) (MarkdownQuoteRawLine, error) {
-	// log.Debugf("new line: '%v'", content)
-	return MarkdownQuoteRawLine(content), nil
-}
-
-// -------------------------------------------------------------------------------------
 // LineRanges: one or more ranges of lines to limit the content of a file to include
 // -------------------------------------------------------------------------------------
-
-// NewLineRangesAttribute returns an element attribute with a slice of line ranges attribute for a file inclusion.
-// TODO: DEPRECATED
-func NewLineRangesAttribute(ranges interface{}) (Attributes, error) {
-	switch ranges := ranges.(type) {
-	case []interface{}:
-		return Attributes{
-			AttrLineRanges: NewLineRanges(ranges),
-		}, nil
-	case LineRange:
-		return Attributes{
-			AttrLineRanges: NewLineRanges(ranges),
-		}, nil
-	default:
-		return Attributes{
-			AttrLineRanges: ranges,
-		}, nil
-	}
-}
 
 // NewLineRanges returns a slice of line ranges attribute for a file inclusion.
 func NewLineRanges(ranges interface{}) LineRanges {
@@ -2959,25 +2648,6 @@ func (r LineRanges) Less(i, j int) bool { return r[i].StartLine < r[j].StartLine
 // -------------------------------------------------------------------------------------
 // TagRanges: one or more ranges of tags to limit the content of a file to include
 // -------------------------------------------------------------------------------------
-
-// NewTagRangesAttribute returns an element attribute with a slice of tag ranges attribute for a file inclusion.
-// TODO: DEPRECATED
-func NewTagRangesAttribute(ranges interface{}) (Attributes, error) {
-	switch ranges := ranges.(type) {
-	case []interface{}:
-		return Attributes{
-			AttrTagRanges: NewTagRanges(ranges),
-		}, nil
-	case LineRange:
-		return Attributes{
-			AttrTagRanges: NewTagRanges(ranges),
-		}, nil
-	default:
-		return Attributes{
-			AttrTagRanges: ranges,
-		}, nil
-	}
-}
 
 // TagRanges the ranges of tags of the child doc to include in the master doc
 type TagRanges []TagRange
@@ -3208,38 +2878,6 @@ func NewConcealedIndexTerm(term1, term2, term3 interface{}) (*ConcealedIndexTerm
 		Term2: term2,
 		Term3: term3,
 	}, nil
-}
-
-// NewString takes either a single string, or an array of interfaces or strings, and makes
-// a single concatenated string.  Used by the parser when simply collecting all characters that
-// match would not be desired.
-func NewString(v interface{}) (string, error) {
-	switch v := v.(type) {
-	case string:
-		return v, nil
-	case []interface{}:
-		res := strings.Builder{}
-		for _, item := range v {
-			s, e := NewString(item)
-			if e != nil {
-				return "", e
-			}
-			res.WriteString(s)
-		}
-		return res.String(), nil
-	default:
-		return "", fmt.Errorf("bad string type (%T)", v)
-	}
-}
-
-// NewInlineAttribute returns a new InlineAttribute if the value is a string (or an error otherwise)
-func NewInlineAttribute(name string, value interface{}) (interface{}, error) {
-	// log.Debugf("new inline attribute: '%s':'%v'", name, value)
-	if value == nil {
-		return nil, nil
-	}
-	value = Reduce(value)
-	return Attributes{name: value}, nil
 }
 
 // ------------------------------------------------------------------------------------
