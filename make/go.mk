@@ -44,7 +44,7 @@ generate: install-pigeon
 
 .PHONY: verify-parser
 ## verify that the parser was built with the latest version of pigeon, using the `optimize-grammar` option
-verify-parser: prebuild-checks clean
+verify-parser: prebuild-checks clean generate-optimized
 ifneq ($(shell git diff --quiet pkg/parser/parser.go; echo $$?), 0)
 	@git diff pkg/parser/parser.go
 	$(error "pkg/parser/parser.go is uncommited or was generated with an older version of 'mna/pigeon' or without the '-optimize-parser' option enabled.")
@@ -66,7 +66,7 @@ generate-optimized: install-pigeon
 
 .PHONY: build
 ## build the binary executable from CLI
-build: prebuild-checks verify-parser generate-optimized
+build: prebuild-checks clean generate-optimized
 	$(eval BUILD_COMMIT:=$(shell git rev-parse --short HEAD))
 	$(eval BUILD_TAG:=$(shell git tag --contains $(BUILD_COMMIT)))
 	$(eval BUILD_TIME:=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ'))
