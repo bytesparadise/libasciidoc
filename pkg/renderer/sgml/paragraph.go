@@ -172,12 +172,6 @@ func (r *sgmlRenderer) newLineRenderer(opts ...lineRendererOption) *lineRenderer
 // RenderLinesOption an option to configure the rendering
 type lineRendererOption func(c *lineRenderer)
 
-// func (r *sgmlRenderer) withVerbatim() lineRendererOption {
-// 	return func(lr *lineRenderer) {
-// 		lr.render = r.renderPlainText
-// 	}
-// }
-
 // WithHardBreaks sets the hard break option
 func withHardBreaks(hardBreaks bool) lineRendererOption {
 	return func(lr *lineRenderer) {

@@ -13,66 +13,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// // RawDocument document with a front-matter and raw blocks (will be refined in subsequent processing phases)
-// type RawDocument struct {
-// 	FrontMatter FrontMatter
-// 	Elements    []interface{}
-// }
-
-// // NewRawDocument initializes a new `RawDocument` from the given lines
-// func NewRawDocument(frontMatter interface{}, elements []interface{}) (RawDocument, error) {
-// 	// log.Debugf("new RawDocument with %d block element(s)", len(elements))
-// 	result := RawDocument{
-// 		Elements: elements,
-// 	}
-// 	if fm, ok := frontMatter.(FrontMatter); ok {
-// 		result.FrontMatter = fm
-// 	}
-// 	return result, nil
-// }
-
-// Attributes returns the document attributes on the top-level section
-// and all the document attribute declarations at the top of the document only.
-// func (d RawDocument) Attributes() Attributes {
-// 	result := Attributes{}
-// elements:
-// 	for _, b := range d.Elements {
-// 		switch b := b.(type) {
-// 		case Section:
-// 			if b.Level == 0 {
-// 				// also, expand document authors and revision
-// 				if authors, ok := b.Attributes[AttrAuthors].([]DocumentAuthor); ok {
-// 					// move to the Document attributes
-// 					result.SetAll(expandAuthors(authors))
-// 					delete(b.Attributes, AttrAuthors)
-// 				}
-// 				// also, expand document authors and revision
-// 				if revision, ok := b.Attributes[AttrRevision].(DocumentRevision); ok {
-// 					// move to the Document attributes
-// 					result.SetAll(expandRevision(revision))
-// 					delete(b.Attributes, AttrRevision)
-// 				}
-// 				continue // allow to continue if the section is level 0
-// 			}
-// 			break elements // otherwise, just stop
-// 		case AttributeDeclaration:
-// 			result.Set(b.Name, b.Value)
-// 		default:
-// 			break elements
-// 		}
-// 	}
-// 	// log.Debugf("document attributes: %+v", result)
-// 	return result
-// }
-
-// RawSection a document section (when processing file inclusions)
-// We only care about the level here
-// type RawSection struct {
-// 	Level   int
-// 	Title   string
-// 	RawText string
-// }
-
 // NewRawSection returns a new RawSection
 func NewRawSection(level int, title []interface{}) (*Section, error) {
 	// log.Debugf("new rawsection: '%s' (%d)", title, level)
@@ -82,13 +22,6 @@ func NewRawSection(level int, title []interface{}) (*Section, error) {
 	}, nil
 }
 
-// var _ Stringer = RawSection{}
-
-// // Stringify returns the string representation of this section, as it existed in the source document
-// func (s RawSection) Stringify() string {
-// 	return strings.Repeat("=", s.Level+1) + " " + s.Title
-// }
-
 // ------------------------------------------
 // common interfaces
 // ------------------------------------------
@@ -97,24 +30,6 @@ func NewRawSection(level int, title []interface{}) (*Section, error) {
 type Stringer interface {
 	Stringify() string
 }
-
-// // WithPlaceholdersInElements interface for all blocks in which elements can
-// // be substituted with placeholders while applying the substitutions
-// type WithPlaceholdersInElements interface {
-// 	RestoreElements(placeholders map[string]interface{}) interface{}
-// }
-
-// // WithPlaceholdersInAttributes interface for all blocks in which attribute content can
-// // be substituted with placeholders while applying the substitutions
-// type WithPlaceholdersInAttributes interface {
-// 	RestoreAttributes(placeholders map[string]interface{}) interface{}
-// }
-
-// // WithPlaceholdersInLocation interface for all blocks in which location elements can
-// // be substituted with placeholders while applying the substitutions
-// type WithPlaceholdersInLocation interface {
-// 	RestoreLocation(placeholders map[string]interface{}) interface{}
-// }
 
 // RawText interface for the elements that can provide the raw text representation of this element
 // as it was (supposedly) written in the source document
@@ -168,48 +83,6 @@ func NewErrorFragment(err error) DocumentFragment {
 		Error: err,
 	}
 }
-
-// type RawBlock interface {
-// 	AddLine(l RawLine)
-// }
-
-// type RawParagraph struct {
-// 	Attributes Attributes
-// 	Lines      []interface{}
-// }
-
-// func NewRawParagraph(attributes Attributes) *RawParagraph {
-// 	return &RawParagraph{
-// 		Attributes: attributes,
-// 		Lines:      []interface{}{},
-// 	}
-// }
-
-// var _ RawBlock = &RawParagraph{}
-
-// func (p *RawParagraph) AddLine(l RawLine) {
-// 	p.Lines = append(p.Lines, l)
-// }
-
-// type RawDelimitedBlock struct {
-// 	Attributes Attributes
-// 	Kind       string
-// 	Lines      []RawLine
-// }
-
-// func NewRawDelimitedBlock(kind string, attributes Attributes) *RawDelimitedBlock {
-// 	return &RawDelimitedBlock{
-// 		Attributes: attributes,
-// 		Kind:       kind,
-// 		Lines:      []RawLine{},
-// 	}
-// }
-
-// // var _ RawBlock = &RawDelimitedBlock{}
-
-// func (b *RawDelimitedBlock) AddLine(l RawLine) {
-// 	b.Lines = append(b.Lines, l)
-// }
 
 // ------------------------------------------
 // Draft Document: document in which
@@ -659,10 +532,6 @@ type AttributeDeclaration struct {
 
 // NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
 func NewAttributeDeclaration(name string, value interface{}) *AttributeDeclaration {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	// log.Debugf("new AttributeDeclaration: '%s'", name)
-	// 	spew.Fdump(log.StandardLogger().Out, value)
-	// }
 	return &AttributeDeclaration{
 		Name:  name,
 		Value: value,
@@ -864,10 +733,6 @@ func (l *List) CanAddElement(element interface{}) bool {
 		return e.ListKind() == l.Kind && e.matchesStyle(l.LastElement()) // TODO: compare to `FirstElement` is enough and faster
 	case *ListElementContinuation:
 		return true
-	// case *Paragraph, *DelimitedBlock:
-	// 	lastList := l.lastLists[len(l.lastLists)-1]
-	// 	_, ok := lastList.lastElement().LastElement().(*ListElementContinuation)
-	// 	return ok
 	default:
 		return false
 	}
@@ -1368,11 +1233,6 @@ func NewUnorderedListElement(prefix UnorderedListElementPrefix, checkstyle inter
 	}, nil
 }
 
-// // GetLevel returns the level of this element
-// func (e *UnorderedListElement) GetLevel() int {
-// 	return e.Level
-// }
-
 // checks if the given list element matches the level of this element
 func (e *UnorderedListElement) matchesStyle(other ListElement) bool {
 	if other, ok := other.(*UnorderedListElement); ok {
@@ -1845,16 +1705,6 @@ func NewInlineElements(elements ...interface{}) (InlineElements, error) {
 	return Merge(elements...), nil
 }
 
-// // HasAttributeSubstitutions returns `true` if at least one of the element is an `AttributeSubstitution`
-// func (e InlineElements) HasAttributeSubstitutions() bool {
-// 	for _, elmt := range e {
-// 		if _, match := elmt.(*AttributeSubstitution); match {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
-
 // ------------------------------------------
 // Cross References
 // ------------------------------------------
@@ -1892,8 +1742,6 @@ func NewExternalCrossReference(location *Location, attributes interface{}) (*Ext
 	}, nil
 }
 
-// var _ WithPlaceholdersInElements = ExternalCrossReference{}
-
 var _ BlockWithLocation = &ExternalCrossReference{}
 
 func (x *ExternalCrossReference) GetLocation() *Location {
@@ -1918,19 +1766,6 @@ func (x *ExternalCrossReference) AddAttributes(attributes Attributes) {
 func (x *ExternalCrossReference) SetAttributes(attributes Attributes) {
 	x.Attributes = x.Attributes.SetAll(attributes)
 }
-
-// var _ WithElementsToSubstitute = ExternalCrossReference{}
-
-// // ElementsToSubstitute returns this corss reference location path so that substitutions can be applied onto it
-// func (r ExternalCrossReference) ElementsToSubstitute() []interface{} {
-// 	return r.Location.Path
-// }
-
-// // ReplaceElements replaces the elements in this example block
-// func (r ExternalCrossReference) ReplaceElements(path []interface{}) interface{} {
-// 	r.Location.Path = path
-// 	return r
-// }
 
 // ------------------------------------------
 // Images
@@ -1957,22 +1792,6 @@ func NewImageBlock(location *Location, inlineAttributes Attributes, attributes i
 		Attributes: attrs,
 	}, nil
 }
-
-// var _ WithPlaceholdersInAttributes = &ImageBlock{}
-
-// // RestoreAttributes restores the attributes which had been substituted by placeholders
-// func (i *ImageBlock) RestoreAttributes(placeholders map[string]interface{}) interface{} {
-// 	i.Attributes = restoreAttributes(i.Attributes, placeholders)
-// 	return i
-// }
-
-// var _ WithPlaceholdersInLocation = &ImageBlock{}
-
-// // RestoreLocation restores the location elements which had been substituted by placeholders
-// func (i ImageBlock) RestoreLocation(placeholders map[string]interface{}) interface{} {
-// 	i.Location.Path = restoreElements(i.Location.Path, placeholders)
-// 	return i
-// }
 
 var _ BlockWithAttributes = &ImageBlock{}
 
@@ -2001,19 +1820,6 @@ func (i *ImageBlock) SetLocation(value *Location) {
 	i.Location = value
 }
 
-// var _ WithElementsToSubstitute = ImageBlock{}
-
-// // ElementsToSubstitute returns this image's location path so that substitutions can be applied onto it
-// func (i ImageBlock) ElementsToSubstitute() []interface{} {
-// 	return i.Location.Path
-// }
-
-// // ReplaceElements replaces the elements in this example block
-// func (i ImageBlock) ReplaceElements(path []interface{}) interface{} {
-// 	i.Location.Path = path
-// 	return i
-// }
-
 // InlineImage the structure for the inline image macros
 type InlineImage struct {
 	Location   *Location
@@ -2033,22 +1839,6 @@ func NewInlineImage(location *Location, attributes interface{}, imagesdir interf
 		Location:   location,
 	}, nil
 }
-
-// var _ WithPlaceholdersInAttributes = &InlineImage{}
-
-// // RestoreAttributes restores the attributes which had been substituted by placeholders
-// func (i *InlineImage) RestoreAttributes(placeholders map[string]interface{}) interface{} {
-// 	i.Attributes = restoreAttributes(i.Attributes, placeholders)
-// 	return i
-// }
-
-// var _ WithPlaceholdersInLocation = &InlineImage{}
-
-// // RestoreLocation restores the location elements which had been substituted by placeholders
-// func (i *InlineImage) RestoreLocation(placeholders map[string]interface{}) interface{} {
-// 	i.Location.Path = restoreElements(i.Location.Path, placeholders)
-// 	return i
-// }
 
 var _ BlockWithAttributes = &InlineImage{}
 
@@ -2076,19 +1866,6 @@ func (i *InlineImage) GetLocation() *Location {
 func (i *InlineImage) SetLocation(value *Location) {
 	i.Location = value
 }
-
-// var _ WithElementsToSubstitute = InlineImage{}
-
-// // ElementsToSubstitute returns this inline image location path so that substitutions can be applied onto its elements
-// func (i InlineImage) ElementsToSubstitute() []interface{} {
-// 	return i.Location.Path // TODO: should return the location so substitution can also take place on the scheme
-// }
-
-// // ReplaceElements replaces the elements in this inline image
-// func (i InlineImage) ReplaceElements(path []interface{}) interface{} {
-// 	i.Location.Path = path
-// 	return i
-// }
 
 // ------------------------------------------
 // Icons
@@ -2144,14 +1921,6 @@ func NewFootnote(ref string, elements interface{}) (*Footnote, error) {
 		Elements: []interface{}{},
 	}, nil
 }
-
-// var _ WithPlaceholdersInElements = Footnote{}
-
-// // RestoreElements restores the elements which had been substituted by placeholders
-// func (n Footnote) RestoreElements(placeholders map[string]interface{}) interface{} {
-// 	n.Elements = restoreElements(n.Elements, placeholders)
-// 	return n
-// }
 
 // FootnoteReference a footnote reference. Substitutes the actual footnote in the document,
 // and only contains a generated, sequential ID (which will be displayed)
@@ -2409,16 +2178,6 @@ type Section struct {
 
 // NewSection initializes a new `Section` from the given section title and elements
 func NewSection(level int, title []interface{}, ids []interface{}) (*Section, error) {
-	// attrs := toAttributes(attributes)
-	// // multiple IDs can be defined (by mistake), but only the last one is used
-	// attrs = attrs.SetAll(ids)
-	// // also, set the `AttrCustomID` flag if an ID was set
-	// if _, exists := attrs[AttrID]; exists {
-	// 	attrs[AttrCustomID] = true
-	// }
-	// attrs := Attributes{}
-	// set the default ID
-
 	return &Section{
 		Level: level,
 		// Attributes: attrs,
@@ -2888,14 +2647,6 @@ func (s QuotedString) RawText() (string, error) {
 	result.WriteString("`")            // closing delimiter
 	return result.String(), nil
 }
-
-// var _ WithPlaceholdersInElements = QuotedString{}
-
-// // RestoreElements restores the elements which had been substituted by placeholders
-// func (s QuotedString) RestoreElements(placeholders map[string]interface{}) interface{} {
-// 	s.Elements = restoreElements(s.Elements, placeholders)
-// 	return s
-// }
 
 // ------------------------------------------
 // InlinePassthrough
@@ -3406,17 +3157,6 @@ func NewLocation(scheme interface{}, path []interface{}) (*Location, error) {
 	}, nil
 }
 
-// var _ WithElements = &Location{}
-
-// // GetElements returns this section's title
-// func (l *Location) GetElements() []interface{} {
-// 	return l.Path
-// }
-
-// // SetElements sets this section's title
-// func (l *Location) SetElements(path []interface{}) {
-// 	l.Path = path
-// }
 func (l *Location) SetPath(elements []interface{}) {
 	l.Path = Merge(elements)
 }
@@ -3464,14 +3204,6 @@ func NewIndexTerm(term []interface{}) (*IndexTerm, error) {
 		Term: term,
 	}, nil
 }
-
-// var _ WithPlaceholdersInElements = &IndexTerm{}
-
-// // RestoreElements restores the elements which had been substituted by placeholders
-// func (t *IndexTerm) RestoreElements(placeholders map[string]interface{}) interface{} {
-// 	t.Term = restoreElements(t.Term, placeholders)
-// 	return t
-// }
 
 // ConcealedIndexTerm a concealed index term, with 1 required and 2 optional terms
 type ConcealedIndexTerm struct {
@@ -3580,11 +3312,6 @@ type Table struct {
 	Rows []*TableRow
 }
 
-// func NewTable(attributes interface{}) *Table {
-// 	return &Table{
-// 		Attributes: toAttributes(attributes),
-// 	}
-// }
 func NewTable(header interface{}, elements []interface{}) (*Table, error) {
 	rows := make([]*TableRow, len(elements))
 	for i, row := range elements {
@@ -3602,38 +3329,6 @@ func NewTable(header interface{}, elements []interface{}) (*Table, error) {
 	}
 	return t, nil
 }
-
-// var _ WithElements = &Table{}
-
-// func (t *Table) CanAddElement(element interface{}) bool {
-// 	return true
-// }
-
-// func (t *Table) AddElement(element interface{}) error {
-// 	switch e := element.(type) {
-// 	case *TableRow:
-// 		if t.Rows == nil {
-// 			t.Rows = []*TableRow{}
-// 		}
-// 		if len(t.Rows) == 0 {
-// 			t.Rows = append(t.Rows, &TableRow{})
-// 		}
-// 		// add all cells of the RawTableRow to the last row of the table
-// 		row := t.Rows[len(t.Rows)-1]
-// 		for _, c := range e.Cells { // TODO: add a `AddElement()` method to *TableRow?
-// 			row.Cells = append(row.Cells, &TableCell{
-// 				Elements: []interface{}{
-// 					&StringElement{
-// 						Content: string(c.Content),
-// 					},
-// 				},
-// 			})
-// 		}
-// 		return nil
-// 	default:
-// 		return errors.Errorf("unexpected kind of element to add to a table: '%T'", e)
-// 	}
-// }
 
 // return the optional header line and the cell lines
 func (t *Table) GetElements() []interface{} {
@@ -3898,19 +3593,3 @@ func (c *TableCell) SetElements(elements []interface{}) error {
 	c.Elements = elements
 	return nil
 }
-
-// // NewTableLine initializes a new TableLine with the given columns
-// func NewTableLine(columns []interface{}) (*TableLine, error) {
-// 	c := make([][]interface{}, 0, len(columns))
-// 	for _, column := range columns {
-// 		if e, ok := column.([]interface{}); ok {
-// 			c = append(c, e)
-// 		} else {
-// 			return nil, errors.Errorf("unsupported element of type %T", column)
-// 		}
-// 	}
-// 	// log.Debugf("initialized a new table line with %d columns", len(c))
-// 	return &TableLine{
-// 		Cells: c,
-// 	}, nil
-// }

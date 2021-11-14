@@ -7,9 +7,6 @@ import (
 
 // Merge merge string elements together
 func Merge(elements ...interface{}) []interface{} {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("merging %s", spew.Sdump(elements))
-	// }
 	result := make([]interface{}, 0, len(elements))
 	buf := &strings.Builder{}
 	for _, element := range elements {
@@ -88,9 +85,6 @@ type ReduceOption func(string) string
 // (ie, return its `Content`), otherwise return the given elements or empty string if the elements
 // is `nil` or an empty `[]interface{}`
 func Reduce(elements interface{}, opts ...ReduceOption) interface{} {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("reducing %s", spew.Sdump(elements))
-	// }
 	switch e := elements.(type) {
 	case []interface{}:
 		e = Merge(e...)

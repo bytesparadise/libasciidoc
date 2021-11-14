@@ -120,17 +120,6 @@ func doIncludeFile(ctx *ParseContext, e *types.FileInclusion, done <-chan interf
 	return includeFiles(ctx, elements, done)
 }
 
-// func send(fragment types.DocumentFragment, done <-chan interface{}, fragmentStream chan<- types.DocumentFragment) bool {
-// 	log.Debug("sending content...")
-// 	select {
-// 	case <-done:
-// 		log.WithField("pipeline_task", "include_files").Debug("received 'done' signal")
-// 		return false
-// 	case fragmentStream <- fragment:
-// 		return true
-// 	}
-// }
-
 func contentOf(ctx *ParseContext, incl *types.FileInclusion) (io.Reader, error) {
 	if err := applySubstitutionsOnBlockWithLocation(ctx, incl); err != nil {
 		log.Error(err)
@@ -140,7 +129,6 @@ func contentOf(ctx *ParseContext, incl *types.FileInclusion) (io.Reader, error) 
 	currentDir := filepath.Dir(ctx.filename)
 	f, absPath, closeFile, err := open(filepath.Join(currentDir, path))
 	if err != nil {
-		// log.Error(err)
 		return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	}
 	defer closeFile()
@@ -207,85 +195,6 @@ func contentOf(ctx *ParseContext, incl *types.FileInclusion) (io.Reader, error) 
 	}
 	return content, nil
 }
-
-// func includeFiles(filename string, f types.DocumentFragment) []types.DocumentFragment {
-
-// 	fragmentStream := make(chan types.DocumentFragment, 1)
-
-// 	// skip if the incoming fragment already contains an error
-// 	if f.Error != nil {
-// 		fragmentStream <- f
-// 	}
-// 	// incl.Location.Path = substituteAttributes(incl.Location.Path, s.attributes)
-// 	path := incl.Location.Stringify()
-// 	currentDir := filepath.Dir(filename)
-// 	f, absPath, done, err := open(filepath.Join(currentDir, path))
-// 	defer done()
-// 	if err != nil {
-// 		return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
-// 	}
-// 	content := bytes.NewBuffer(nil)
-// 	scanner := bufio.NewScanner(bufio.NewReader(f))
-// 	if log.IsLevelEnabled(log.DebugLevel) {
-// 		log.Debugf("parsing file to %s", incl.RawText)
-// 	}
-// 	if lr, ok, err := lineRanges(incl); err != nil {
-// 		log.WithError(err).Error("error occurred while checking if file inclusion has line ranges")
-// 		return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
-// 	} else if ok {
-// 		if err := readWithinLines(scanner, content, lr); err != nil {
-// 			log.WithError(err).Error("error occurred while reading file within line ranges")
-// 			return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
-// 		}
-// 	} else if tr, ok, err := tagRanges(incl); err != nil {
-// 		log.WithError(err).Error("error occurred while checking if file inclusion has tag ranges")
-// 		return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
-// 	} else if ok {
-// 		if err := readWithinTags(path, scanner, content, tr); err != nil {
-// 			log.WithError(err).Error("error occurred while reading file within tag ranges")
-// 			return nil, err // keep the underlying error here
-// 		}
-// 	} else {
-// 		if err := readAll(scanner, content); err != nil {
-// 			log.WithError(err).Error("error occurred while reading file")
-// 			return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
-// 		}
-// 	}
-// 	if err := scanner.Err(); err != nil {
-// 		return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
-// 	}
-// 	// if the file to include is not an Asciidoc document, just return the content as "raw lines"
-// 	if !IsAsciidoc(absPath) {
-// 		return []interface{}{
-// 			types.RawLine(content.Bytes()),
-// 		}, nil
-// 	}
-// 	// parse the content, and returns the corresponding elements
-// 	lvl, found, err := incl.Attributes.GetAsString(types.AttrLevelOffset)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if found {
-// 		offset, err := strconv.Atoi(lvl)
-// 		if err != nil {
-// 			return nil, errors.Wrap(err, "unable to read file to include")
-// 		}
-// 		if strings.HasPrefix(lvl, "+") || strings.HasPrefix(lvl, "-") {
-// 			ctx.levelOffsets = append(ctx.levelOffsets, relativeOffset(offset))
-// 		} else {
-// 			ctx.levelOffsets = []levelOffset{absoluteOffset(offset)}
-
-// 		}
-// 	}
-// 	actualFilename := filename
-// 	defer func() {
-// 		// restore actual filename after exiting
-// 		filename = actualFilename
-// 	}()
-// 	filename = absPath
-// 	// now, let's parse this content and process nested file inclusions (recursively)
-// 	return parseDocumentFragments(ctx, content, opts...)
-// }
 
 type levelOffsets []*levelOffset
 

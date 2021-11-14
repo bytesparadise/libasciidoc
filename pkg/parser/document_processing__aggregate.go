@@ -97,9 +97,6 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 	}
 
 	log.WithField("pipeline_task", "aggregate").Debug("done")
-	// if len(attrs) > 0 {
-	// 	root.Attributes = attrs
-	// }
 	if len(refs) > 0 {
 		root.ElementReferences = refs
 	}
@@ -188,24 +185,6 @@ func newPreamble(doc *types.Document) *types.Preamble {
 	return nil
 }
 
-// func lookupPreamble(doc *types.Document) *types.Preamble {
-// 	if _, _, exists := doc.Header(); !exists {
-// 		log.Debug("skipping preamble: no header in doc")
-// 		return nil
-// 	}
-// 	for _, e := range doc.Elements {
-// 		switch e := e.(type) {
-// 		case *types.Preamble:
-// 			return e
-// 		case *types.Section:
-// 			return nil // not found
-// 		default:
-// 			// continue
-// 		}
-// 	}
-// 	return nil
-// }
-
 func insertTableOfContents(ctx *ParseContext, doc *types.Document, toc *types.TableOfContents) {
 	if toc == nil {
 		log.Debug("no table of contents to insert")
@@ -214,25 +193,4 @@ func insertTableOfContents(ctx *ParseContext, doc *types.Document, toc *types.Ta
 	if ctx.attributes.has(types.AttrTableOfContents) {
 		doc.TableOfContents = toc
 	}
-	// switch ctx.attributes.GetAsStringWithDefault(types.AttrTableOfContents, "") {
-	// case "preamble":
-	// 	preamble := lookupPreamble(doc)
-	// 	if preamble == nil {
-	// 		log.Warn("cannot insert table of contents: no preamble")
-	// 		return
-	// 	}
-	// 	preamble.Elements = append(preamble.Elements, toc)
-	// default:
-	// 	if header, found := doc.Header(); found {
-	// 		// insert as last element in header
-	// 		header.Elements = append(header.Elements, toc)
-	// 	} else {
-	// 		// insert as first element of doc
-	// 		elements := make([]interface{}, len(doc.Elements)+1)
-	// 		elements[0] = toc
-	// 		copy(elements[1:], doc.Elements)
-	// 		doc.Elements = elements
-	// 	}
-	// }
-
 }

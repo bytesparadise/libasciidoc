@@ -188,9 +188,6 @@ func NewAttributes(attributes ...interface{}) (Attributes, error) {
 			return nil, fmt.Errorf("unexpected type of attribute: '%[1]T' (%[1]v)", attr)
 		}
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("new attributes: %s", spew.Sdump(result))
-	// }
 	return result, nil
 }
 
@@ -275,10 +272,6 @@ func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attri
 				delete(attrs, source)
 			}
 		}
-		// if log.IsLevelEnabled(log.DebugLevel) {
-		// 	log.Debug("processed attributes with mapping:")
-		// 	spew.Fdump(log.StandardLogger().Out, attrs)
-		// }
 		if len(attrs) == 0 {
 			return nil
 		}
@@ -286,75 +279,6 @@ func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attri
 	}
 	return nil
 }
-
-// // NewAttributeGroup initializes an AttributeGroup
-// // We always pass in an array of Attributes.  Special handling for certain attributes:
-// //
-// // AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
-// // AttrRoles - these are strings, we append them into an array
-// // AttrOptions - comma separated list, we split and put into a map
-// func NewAttributeGroup(attributes ...interface{}) (Attributes, error) {
-// 	if len(attributes) == 0 {
-// 		return nil, nil
-// 	}
-// 	result := Attributes{}
-// 	for _, item := range attributes {
-// 		if item == nil {
-// 			continue
-// 		}
-// 		var attrs Attributes
-// 		var err error
-// 		switch item := item.(type) {
-// 		case Attribute:
-// 			attrs = Attributes{
-// 				item.Key: item.Value,
-// 			}
-// 		case Attributes:
-// 			attrs = item
-// 		case []interface{}:
-// 			attrs, err = NewAttributeGroup(item...)
-// 			if err != nil {
-// 				return nil, err
-// 			}
-// 		default:
-// 			return nil, fmt.Errorf("unexpected type of attributes: %T", item)
-// 		}
-// 		for k, v := range attrs {
-// 			switch k {
-// 			case AttrID:
-// 				// The first ID set wins.
-// 				result[AttrID] = v
-// 			case AttrRoles:
-// 				result.append(AttrRoles, v)
-// 			case AttrOptions, AttrOpts: // TODO handle the split in the `NewOptionAttribute` func
-// 				if !result.Has(AttrOptions) {
-// 					result[AttrOptions] = map[string]bool{}
-// 				}
-// 				m := result[AttrOptions].(map[string]bool)
-// 				switch v := v.(type) {
-// 				case string:
-// 					for _, o := range strings.Split(v, ",") {
-// 						m[o] = true
-// 					}
-// 				case map[string]bool:
-// 					for o := range v {
-// 						m[o] = v[o]
-// 					}
-// 				}
-// 			default:
-// 				result[k] = v
-// 			}
-// 		}
-// 	}
-// 	if len(result) == 0 {
-// 		return nil, nil // don't retain groups with no attribute
-// 	}
-// 	if log.IsLevelEnabled(log.DebugLevel) {
-// 		log.Debug("new attribute group:")
-// 		spew.Fdump(log.StandardLogger().Out, result)
-// 	}
-// 	return result, nil
-// }
 
 // HasAttributeWithValue checks that there is an entry for the given key/value pair
 func HasAttributeWithValue(attributes interface{}, key string, value interface{}) bool {
@@ -433,10 +357,6 @@ func NewNamedAttribute(key string, value interface{}) (*Attribute, error) {
 	if key == AttrOpts { // Handle the alias
 		key = AttrOptions
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	// log.Debugf("new named attribute '%s':", key)
-	// 	spew.Fdump(log.StandardLogger().Out, value)
-	// }
 	return &Attribute{
 		Key:   key,
 		Value: value,
@@ -445,7 +365,6 @@ func NewNamedAttribute(key string, value interface{}) (*Attribute, error) {
 
 // NewInlineIDAttribute initializes a new attribute map with a single entry for the ID using the given value
 func NewInlineIDAttribute(id string) (*Attribute, error) {
-	// log.Debugf("initializing a new inline ElementID with ID=%s", id)
 	return &Attribute{
 		Key:   AttrID,
 		Value: id,
@@ -464,7 +383,6 @@ func NewTitleAttribute(title interface{}) (*Attribute, error) {
 // NewRoleAttribute initializes a new attribute map with a single entry for the title using the given value
 func NewRoleAttribute(role interface{}) (*Attribute, error) {
 	role = Reduce(role)
-	// log.Debugf("new role attribute: '%v'", spew.Sdump(role))
 	return &Attribute{
 		Key:   AttrRole,
 		Value: role,
@@ -473,7 +391,6 @@ func NewRoleAttribute(role interface{}) (*Attribute, error) {
 
 // NewIDAttribute initializes a new attribute map with a single entry for the ID using the given value
 func NewIDAttribute(id interface{}) (*Attribute, error) {
-	// log.Debugf("initializing a new ID attribute with ID='%v'", id)
 	return &Attribute{
 		Key:   AttrID,
 		Value: id,
@@ -518,10 +435,6 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 	default:
 		a[key] = value
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	spew.Fdump(log.StandardLogger().Out, a)
-
-	// }
 	return a
 }
 

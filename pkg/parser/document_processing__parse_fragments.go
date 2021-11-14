@@ -57,9 +57,6 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			if log.IsLevelEnabled(log.DebugLevel) {
 				log.Debugf("parsed fragment:\n%s", spew.Sdump(f))
 			}
-			// if err != nil {
-			// 	break parsing
-			// }
 			select {
 			case <-done:
 				log.Info("exiting the document parsing routine")

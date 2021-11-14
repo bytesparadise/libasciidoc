@@ -575,7 +575,6 @@ func (s *substitution) processAttributes(ctx *ParseContext, element types.BlockW
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.
 			WithField("entrypoint", s.entrypoint).
-			// WithField("hasAttributeSubstitutions", s.hasAttributeSubstitutions).
 			Debugf("processing attributes of %s", spew.Sdump(element))
 	}
 	// TODO: only parse element attributes if an attribute substitution occurred?
@@ -644,7 +643,6 @@ func (s *substitution) parseElements(ctx *ParseContext, elements []interface{}, 
 	if len(serialized) == 0 {
 		return nil, nil
 	}
-	// opts = append(opts)
 	result, err := s.parseContent(serialized, opts...)
 	if err != nil {
 		return nil, err
@@ -1151,10 +1149,6 @@ func serialize(content interface{}) ([]byte, *placeholders) {
 				}
 			case *types.StringElement:
 				result.WriteString(element.Content)
-			// case types.SingleLineComment:
-			// 	// replace with placeholder
-			// 	p := placeholders.add(element)
-			// 	result.WriteString(p.String())
 			default:
 				// replace with placeholder
 				p := placeholders.add(element)
@@ -1209,11 +1203,6 @@ func (c *current) setCurrentSubstitution(kind string) error {
 	return nil
 }
 
-// func (c *current) unsetCurrentSubstitution() {
-// 	log.Debug("unsetting current subsitution kind")
-// 	delete(c.state, substitutionsKey)
-// }
-
 func (c *current) lookupCurrentSubstitution() (*substitution, bool) {
 	// look-up in the current state
 	if s, found := c.state[substitutionKey].(*substitution); found {
@@ -1224,26 +1213,6 @@ func (c *current) lookupCurrentSubstitution() (*substitution, bool) {
 	s, found := c.globalStore[substitutionKey].(*substitution)
 	return s, found
 }
-
-// // called when an attribute substitution occurred
-// // TODO: find a better name for this method
-// func (c *current) flagAttributeSubstitutions() error {
-// 	s, found := c.lookupCurrentSubstitution()
-// 	if !found {
-// 		log.Debug("no substitution found?")
-// 		return nil
-// 	}
-// 	s.hasAttributeSubstitutions = true
-// 	log.Debug("flagged attribute substitutions")
-// 	// // also, disable all subsitutions post `attributes` (`macros`, etc.)
-// 	// for s := range phase.enablements {
-// 	// 	switch s {
-// 	// 	case Quotes, Replacements, Macros, PostReplacements: // TODO: avoid hard-coded entries
-// 	// 		phase.enablements[s] = false // disabled
-// 	// 	}
-// 	// }
-// 	return nil
-// }
 
 func (c *current) isSubstitutionEnabled(k substitutionKind) (bool, error) {
 	s, found := c.lookupCurrentSubstitution()
