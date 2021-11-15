@@ -18,7 +18,7 @@ import (
 )
 
 func IncludeFiles(ctx *ParseContext, done <-chan interface{}, fragmentStream <-chan types.DocumentFragment) <-chan types.DocumentFragment {
-	resultStream := make(chan types.DocumentFragment, 1)
+	resultStream := make(chan types.DocumentFragment, bufferSize)
 	go func() {
 		defer close(resultStream)
 		for fragment := range fragmentStream {

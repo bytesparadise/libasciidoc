@@ -15,7 +15,7 @@ import (
 
 // TODO: convert `ctx *parseContext` as a local variable instead of a func param
 func ApplySubstitutions(ctx *ParseContext, done <-chan interface{}, fragmentStream <-chan types.DocumentFragment) chan types.DocumentFragment {
-	processedFragmentStream := make(chan types.DocumentFragment, 1)
+	processedFragmentStream := make(chan types.DocumentFragment, bufferSize)
 	go func() {
 		defer close(processedFragmentStream)
 		for f := range fragmentStream {

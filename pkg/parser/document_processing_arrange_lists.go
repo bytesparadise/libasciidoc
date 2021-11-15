@@ -9,7 +9,7 @@ import (
 
 // ArrangeLists pipeline task which consists join list elements into lists
 func ArrangeLists(done <-chan interface{}, fragmentStream <-chan types.DocumentFragment) <-chan types.DocumentFragment {
-	arrangedStream := make(chan types.DocumentFragment, 1)
+	arrangedStream := make(chan types.DocumentFragment, bufferSize)
 	go func() {
 		defer close(arrangedStream)
 		for fragment := range fragmentStream {

@@ -11,7 +11,7 @@ import (
 )
 
 func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}) <-chan types.DocumentFragment {
-	resultStream := make(chan types.DocumentFragment, 1)
+	resultStream := make(chan types.DocumentFragment, bufferSize)
 	go func() {
 		defer close(resultStream)
 		b, err := ioutil.ReadAll(source)

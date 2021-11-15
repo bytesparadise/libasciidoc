@@ -10,7 +10,7 @@ import (
 // - empty preambles
 // - single line comments and comment blocks
 func FilterOut(done <-chan interface{}, fragmentStream <-chan types.DocumentFragment) <-chan types.DocumentFragment {
-	resultStream := make(chan types.DocumentFragment, 1)
+	resultStream := make(chan types.DocumentFragment, bufferSize)
 	go func() {
 		defer close(resultStream)
 		for fragment := range fragmentStream {

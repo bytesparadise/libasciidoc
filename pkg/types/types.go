@@ -753,6 +753,11 @@ func NewListElements(elements []interface{}) (*ListElements, error) {
 					return nil, errors.Errorf("unable to attach element of type '%T' in a list", e)
 				}
 			}
+		case *ListElementContinuation:
+			attrs = nil           // couldn't attach attribute to element, so discard it
+			if e.Element != nil { // only retain list element continuations with actual content
+				elmts = append(elmts, e)
+			}
 		default:
 			attrs = nil // couldn't attach attribute to element, so discard it
 			elmts = append(elmts, e)

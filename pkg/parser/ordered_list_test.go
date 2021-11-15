@@ -1018,6 +1018,70 @@ print("two")
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("ordered list with element continuation - case 3", func() {
+				// continuation with "continued element" being a list element (ie, kinda invalid/emtpy continuation in the middle of a list)
+				source := `. element 1
++
+a paragraph
+. element 2
++
+. element 3
+`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.List{
+							Kind: types.OrderedListKind,
+							Elements: []types.ListElement{
+								&types.OrderedListElement{
+									Style: types.Arabic,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "element 1",
+												},
+											},
+										},
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "a paragraph",
+												},
+											},
+										},
+									},
+								},
+								&types.OrderedListElement{
+									Style: types.Arabic,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "element 2",
+												},
+											},
+										},
+									},
+								},
+								&types.OrderedListElement{
+									Style: types.Arabic,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "element 3",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 	})
 })

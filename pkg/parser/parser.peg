@@ -21,22 +21,23 @@ import (
 DocumentFragment <-
     attributes:(BlockAttributes)?
     element:(
-        FrontMatter
-        / DocumentHeader
-        / BlankLine
+        ImageBlock
+        / UserMacroBlock
+        / FileInclusion
+        / ShortcutParagraph
         / AttributeDeclaration
         / AttributeReset
         / DelimitedBlock
+        / DocumentHeader // must appear before Section
+        / BlankLine // must appear after DocumentHeader
         / Section // must appear after delimited block (because of example delimiter)
         / ThematicBreak // must appear before ListElement :/
         / ListElements
-        / ImageBlock
-        / FileInclusion
         / Table
         / SingleLineComment
         / AdmonitionParagraph
         / LiteralParagraph
-        / UserMacroBlock
+        / FrontMatter
         / Paragraph // must be the last one... 
     ) {
         c.setFrontMatterAllowed(false) // not allowed anymore
@@ -47,6 +48,48 @@ DocumentFragment <-
         }
         return element, nil
     }
+
+// DocumentFragment <-
+//     element:(
+//         DocumentFragmentWithoutAttributes
+//         / DocumentFragmentWithAttributes
+//     ) {
+//         c.setFrontMatterAllowed(false) // not allowed anymore
+//         c.setDocumentHeaderAllowed(false) // not allowed anymore
+//         return element, nil
+//     }
+    
+
+// DocumentFragmentWithoutAttributes <-
+//     AttributeDeclaration
+//     / AttributeReset
+//     / FileInclusion
+//     / UserMacroBlock
+//     / BlankLine
+//     / ThematicBreak // must appear before ListElement :/
+//     / FrontMatter
+
+// DocumentFragmentWithAttributes <-
+//     attributes:(BlockAttributes)?
+//     element:(
+//         ImageBlock
+//         / ShortcutParagraph // taking a shortcut here
+//         / BlankLine
+//         / DelimitedBlock
+//         / Section // must appear after delimited block (because of example delimiter)
+//         / ListElements
+//         / Table
+//         / SingleLineComment
+//         / AdmonitionParagraph
+//         / LiteralParagraph
+//         / DocumentHeader
+//         / Paragraph // must be the last one... 
+//     ) {
+//         if element, ok := element.(types.BlockWithAttributes); ok && attributes != nil {
+//             element.AddAttributes(attributes.(types.Attributes))
+//         }
+//         return element, nil
+//     }
 
 DocumentFragmentWithinVerbatimBlock <-
     elements:(
@@ -1247,22 +1290,22 @@ ExternalLink <- url:(LocationWithScheme) inlineAttributes:(InlineAttributes)? {
 // List 
 // -----------------------------------------------------------------------------------------------------------------------
 ListElements <- 
-    firstElement:(FirstListElement)
-    otherElements:(OtherListElements) {
-        return types.NewListElements(append([]interface{}{firstElement}, otherElements.([]interface{})...))
+    firstElement:(ListElement)
+    extraElements:(ExtraListElements) {
+        return types.NewListElements(append([]interface{}{firstElement}, extraElements.([]interface{})...))
     }
 
-FirstListElement <- 
+ListElement <- 
     OrderedListElement 
     / UnorderedListElement
     / CalloutListElement
     / LabeledListElement 
 
-OtherListElements <- otherElements:OtherListElement* {
-    return types.Flatten(otherElements.([]interface{})), nil
+ExtraListElements <- elements:(ExtraListElement)* {
+    return types.Flatten(elements.([]interface{})), nil
 }
 
-OtherListElement <- // other elements can be separated by blankline WITHOUT attributes, or can have attributes but NO blankline before
+ExtraListElement <- // other elements can be separated by blankline WITHOUT attributes, or can have attributes but NO blankline before
     !EOF 
     element:(
         (   BlankLine* 
@@ -1344,6 +1387,7 @@ ListElementContinuationMarker <- "+" Space* Newline
 
 ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
     !EOF // quick escapes
+    !ListElement
     attributes:(BlockAttributes)?
     element:(
         BlankLine
@@ -1351,7 +1395,6 @@ ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
         / AttributeReset
         / DelimitedBlock
         / ThematicBreak // must appear before ListElement :/
-        / ListElements
         / ImageBlock
         / FileInclusion
         / Table
@@ -1504,25 +1547,9 @@ LabeledListElementSeparator <-
         return separator, nil
     }
 
-// LabeledListElementDescription <- 
-//     (
-//         Space* EOL { // no description on the same line as the term and separate
-//             return nil, nil
-//         }
-//     )
-//     / (
-//         Spaces // trim spaces right after delimiter
-//         content:([^\r\n]+ {
-//             return types.NewRawLine(string(c.text))
-//         })
-//         EOL {
-//             return types.NewParagraph(content)
-//         }
-//     )
-
 LabeledListElementDescription <- 
     (
-        // no description on the same line as the term and separate
+        // no description on the same line as the term
         Space* EOL 
         BlankLine* 
         content:(ListElementParagraphLine)? {
@@ -1532,7 +1559,7 @@ LabeledListElementDescription <-
             return types.NewParagraph(content)
         }
     ) / (
-        // description on the same line
+        // description on the same line as the term
         Spaces // trim spaces right after delimiter
         content:([^\r\n]+ {
             return types.NewRawLine(string(c.text))
@@ -1576,6 +1603,28 @@ CalloutListElementContent <-
 // -----------------------------------------------------------------------------------------------------------------------
 // Paragraphs
 // -----------------------------------------------------------------------------------------------------------------------
+ShortcutParagraph <- 
+    &(Alphanum) // make sure that the line starts with an alphanum and it's not an ordered list element prefix
+    &(!OrderedListElementPrefix)
+    &(!UnorderedListElementPrefix)
+    &(!AdmonitionKind)
+    firstLine:(ParagraphRawLine) 
+    &{
+        // also, make sure that there is no LabeledListElement delimiter (`::` - `::::`) 
+        //   in the middle of the line (with space afterwards)
+        //   or at the end of the line 
+        return !strings.Contains(string(firstLine.(types.RawLine)), ":: ") && 
+            !strings.HasSuffix(string(firstLine.(types.RawLine)), "::"), nil
+    }
+    otherLines:(
+        !EOF
+        !ListElementContinuationMarker
+        line:(SingleLineComment / ParagraphRawLine) {
+            return line, nil
+        })* 
+    {
+        return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
+    }
 Paragraph <- 
     firstLine:(ParagraphRawLine) 
     otherLines:(
