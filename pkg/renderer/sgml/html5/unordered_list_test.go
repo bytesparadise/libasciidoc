@@ -216,7 +216,7 @@ foo
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("unordered list with item continuation", func() {
+	It("unordered list with item continuation - case 1", func() {
 		source := `* foo
 +
 ----
@@ -245,6 +245,25 @@ another delimited block
 </li>
 <li>
 <p>bar</p>
+</li>
+</ul>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("unordered list with item continuation - case 2", func() {
+		source := `- here
++
+_there_
+`
+		expected := `<div class="ulist">
+<ul>
+<li>
+<p>here</p>
+<div class="paragraph">
+<p><em>there</em></p>
+</div>
 </li>
 </ul>
 </div>
@@ -288,4 +307,5 @@ another delimited block
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
+
 })

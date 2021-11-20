@@ -1196,6 +1196,47 @@ The {plus} symbol is on a new line.
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("with list element continuation - case 3", func() {
+				source := `- here
++
+_there_`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.List{
+							Kind: types.UnorderedListKind,
+							Elements: []types.ListElement{
+								&types.UnorderedListElement{
+									BulletStyle: types.Dash,
+									CheckStyle:  types.NoCheck,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "here",
+												},
+											},
+										},
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.QuotedText{
+													Kind: types.SingleQuoteItalic,
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "there",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("without item continuation", func() {
 				source := `* foo
 
