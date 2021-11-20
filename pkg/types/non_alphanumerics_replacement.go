@@ -12,7 +12,7 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 	buf := &strings.Builder{}
 	for _, element := range elements {
 		switch element := element.(type) {
-		case QuotedText:
+		case *QuotedText:
 			r, err := ReplaceNonAlphanumerics(element.Elements, replacement)
 			if err != nil {
 				return "", err
@@ -21,7 +21,7 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 				buf.WriteString(replacement)
 			}
 			buf.WriteString(r)
-		case StringElement:
+		case *StringElement:
 			r, err := replaceNonAlphanumerics(element.Content, replacement)
 			if err != nil {
 				return "", err
@@ -30,7 +30,7 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 				buf.WriteString(replacement)
 			}
 			buf.WriteString(r)
-		case InlineLink:
+		case *InlineLink:
 			r, err := replaceNonAlphanumerics(element.Location.Stringify(), replacement)
 			if err != nil {
 				return "", err
@@ -39,7 +39,7 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 				buf.WriteString(replacement)
 			}
 			buf.WriteString(r)
-		case Icon:
+		case *Icon:
 			s := element.Attributes.GetAsStringWithDefault(AttrImageAlt, element.Class)
 			r, err := replaceNonAlphanumerics(s, replacement)
 			if err != nil {

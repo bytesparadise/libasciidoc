@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("listing blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("with no line", func() {
 			source := `----
@@ -23,7 +23,7 @@ var _ = Describe("listing blocks", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("with multiple lines", func() {
+		It("with multiple lines and empty end lines", func() {
 			source := `----
 some source code
 

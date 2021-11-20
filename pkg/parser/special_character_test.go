@@ -10,107 +10,107 @@ import (
 
 var _ = Describe("special characters", func() {
 
-	It("should parse in paragraph", func() {
-		source := "<b>*</b> &apos; &amp;"
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.SpecialCharacter{
-								Name: "<",
-							},
-							types.StringElement{
-								Content: "b",
-							},
-							types.SpecialCharacter{
-								Name: ">",
-							},
-							types.StringElement{
-								Content: "*",
-							},
-							types.SpecialCharacter{
-								Name: "<",
-							},
-							types.StringElement{
-								Content: "/b",
-							},
-							types.SpecialCharacter{
-								Name: ">",
-							},
-							types.StringElement{
-								Content: " ",
-							},
-							types.SpecialCharacter{
-								Name: "&",
-							},
-							types.StringElement{
-								Content: "apos; ",
-							},
-							types.SpecialCharacter{
-								Name: "&",
-							},
-							types.StringElement{
-								Content: "amp;",
-							},
-						},
-					},
-				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-	})
+	Context("in final documents", func() {
 
-	It("should parse in delimited block", func() {
-		source := "```" + "\n" +
-			"<b>*</b> &apos; &amp;" + "\n" +
-			"```"
-		expected := types.DraftDocument{
-			Elements: []interface{}{
-				types.FencedBlock{
-					Lines: [][]interface{}{
-						{
-							types.SpecialCharacter{
+		It("should parse in paragraph", func() {
+			source := "<b>*</b> &apos; &amp;"
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.SpecialCharacter{
 								Name: "<",
 							},
-							types.StringElement{
+							&types.StringElement{
 								Content: "b",
 							},
-							types.SpecialCharacter{
+							&types.SpecialCharacter{
 								Name: ">",
 							},
-							types.StringElement{
+							&types.StringElement{
 								Content: "*",
 							},
-							types.SpecialCharacter{
+							&types.SpecialCharacter{
 								Name: "<",
 							},
-							types.StringElement{
+							&types.StringElement{
 								Content: "/b",
 							},
-							types.SpecialCharacter{
+							&types.SpecialCharacter{
 								Name: ">",
 							},
-							types.StringElement{
+							&types.StringElement{
 								Content: " ",
 							},
-							types.SpecialCharacter{
+							&types.SpecialCharacter{
 								Name: "&",
 							},
-							types.StringElement{
+							&types.StringElement{
 								Content: "apos; ",
 							},
-							types.SpecialCharacter{
+							&types.SpecialCharacter{
 								Name: "&",
 							},
-							types.StringElement{
+							&types.StringElement{
 								Content: "amp;",
 							},
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("should parse in delimited block", func() {
+			source := "```" + "\n" +
+				"<b>*</b> &apos; &amp;" + "\n" +
+				"```"
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DelimitedBlock{
+						Kind: types.Fenced,
+						Elements: []interface{}{
+							&types.SpecialCharacter{
+								Name: "<",
+							},
+							&types.StringElement{
+								Content: "b",
+							},
+							&types.SpecialCharacter{
+								Name: ">",
+							},
+							&types.StringElement{
+								Content: "*",
+							},
+							&types.SpecialCharacter{
+								Name: "<",
+							},
+							&types.StringElement{
+								Content: "/b",
+							},
+							&types.SpecialCharacter{
+								Name: ">",
+							},
+							&types.StringElement{
+								Content: " ",
+							},
+							&types.SpecialCharacter{
+								Name: "&",
+							},
+							&types.StringElement{
+								Content: "apos; ",
+							},
+							&types.SpecialCharacter{
+								Name: "&",
+							},
+							&types.StringElement{
+								Content: "amp;",
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 	})
 })

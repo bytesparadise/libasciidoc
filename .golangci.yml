@@ -6,19 +6,21 @@ run:
   timeout: 5m
   
 linters:
+  enable-all: false
   enable:
     - megacheck
     - govet
     - gocyclo
     - unused
     - gofmt
-    - golint
+    - revive
     - misspell
-  enable-all: false
+    - exportloopref
+  disable-all: false
   disable:
     - maligned
     - prealloc
-  disable-all: false
+    - scopelint
   presets:
     - bugs
     - unused

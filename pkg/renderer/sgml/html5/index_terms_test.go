@@ -44,18 +44,10 @@ var _ = Describe("concealed index terms", func() {
 	It("concealed index term in single paragraph line", func() {
 		source := `(((index, term)))
 a paragraph with an index term.`
+		// paragraph content starts with a `\n` because index terms are not rendered in HTML
 		expected := `<div class="paragraph">
-<p>a paragraph with an index term.</p>
-</div>
-`
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
-	})
-
-	It("concealed index term in single paragraph line", func() {
-		source := `(((index, term)))
-a paragraph with an index term.`
-		expected := `<div class="paragraph">
-<p>a paragraph with an index term.</p>
+<p>
+a paragraph with an index term.</p>
 </div>
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))

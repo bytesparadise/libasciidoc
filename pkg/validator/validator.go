@@ -8,10 +8,8 @@ import (
 
 // Validate validates the given document
 // May also alter some attributes (eg: doctype from `manpage` to `article`)
-func Validate(doc *types.Document) ([]Problem, error) {
-	if doctype, found, err := doc.Attributes.GetAsString(types.AttrDocType); err != nil {
-		return nil, err
-	} else if found && doctype == "manpage" {
+func Validate(doc *types.Document, doctype string) ([]Problem, error) {
+	if doctype == "manpage" {
 		return validateManpage(doc), nil
 	}
 	return nil, nil
@@ -44,12 +42,14 @@ const (
 func validateManpage(doc *types.Document) []Problem {
 	problems := []Problem{}
 	// checks the presence of a header
-	if header, ok := assertThatElement(doc.Elements[0]).isHeader(); !ok {
+	_, elements, found := doc.Header()
+	if !found {
 		problems = append(problems, Problem{
 			Severity: Error,
 			Message:  "manpage document is missing a header",
 		})
-	} else if nameSection, ok := assertThatElement(header.Elements[0]).isSection(withLevel(1), withTitle("name")); !ok {
+	}
+	if nameSection, ok := assertThatElement(elements[0]).isSection(withLevel(1), withTitle("name")); !ok {
 		problems = append(problems, Problem{
 			Severity: Error,
 			Message:  "manpage document is missing the 'Name' section'",
@@ -59,15 +59,11 @@ func validateManpage(doc *types.Document) []Problem {
 			Severity: Error,
 			Message:  "'Name' section' should contain a single paragraph",
 		})
-	} else if _, ok := assertThatElement(header.Elements[1]).isSection(withLevel(1), withTitle("synopsis")); !ok {
+	} else if _, ok := assertThatElement(elements[1]).isSection(withLevel(1), withTitle("synopsis")); !ok {
 		problems = append(problems, Problem{
 			Severity: Error,
 			Message:  "manpage document is missing the 'Synopsis' section'",
 		})
-	}
-	// if any problem found, change the doctype to render the document as a regular article
-	if len(problems) > 0 {
-		doc.Attributes.Set(types.AttrDocType, "article")
 	}
 	return problems
 }
@@ -83,15 +79,10 @@ type elementAssertion struct {
 	element interface{}
 }
 
-func (e elementAssertion) isHeader() (types.Section, bool) {
-	s, ok := e.element.(types.Section)
-	return s, ok && s.Level == 0
-}
-
-func (e elementAssertion) isSection(assertions ...sectionAssertion) (types.Section, bool) {
-	s, ok := e.element.(types.Section)
+func (e elementAssertion) isSection(assertions ...sectionAssertion) (*types.Section, bool) {
+	s, ok := e.element.(*types.Section)
 	if !ok {
-		return types.Section{}, false
+		return nil, false
 	}
 	match := true
 	for _, assert := range assertions {
@@ -100,20 +91,20 @@ func (e elementAssertion) isSection(assertions ...sectionAssertion) (types.Secti
 	return s, match
 }
 
-type sectionAssertion func(s types.Section) bool
+type sectionAssertion func(s *types.Section) bool
 
 func withTitle(title string) sectionAssertion {
-	return func(s types.Section) bool {
+	return func(s *types.Section) bool {
 		if len(s.Title) != 1 {
 			return false
 		}
-		str, ok := s.Title[0].(types.StringElement)
+		str, ok := s.Title[0].(*types.StringElement)
 		return ok && strings.ToLower(str.Content) == title
 	}
 }
 
 func withLevel(level int) sectionAssertion {
-	return func(s types.Section) bool {
+	return func(s *types.Section) bool {
 		return s.Level == level
 	}
 }

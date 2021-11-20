@@ -2,13 +2,7 @@ package sgml
 
 import (
 	"strings"
-
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
-
-func (r *sgmlRenderer) renderBlankLine(ctx *Context, _ types.BlankLine) (string, error) {
-	return "", nil
-}
 
 func (r *sgmlRenderer) renderLineBreak() (string, error) {
 	buf := &strings.Builder{}

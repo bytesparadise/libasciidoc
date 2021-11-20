@@ -40,7 +40,7 @@ func init() {
 
 // Render renders the document to the output, using a default instance
 // of the renderer, with default templates.
-func Render(ctx *renderer.Context, doc types.Document, output io.Writer) (types.Metadata, error) {
+func Render(ctx *renderer.Context, doc *types.Document, output io.Writer) (types.Metadata, error) {
 	return defaultRenderer.Render(ctx, doc, output)
 }
 

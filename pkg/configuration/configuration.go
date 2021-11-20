@@ -2,25 +2,28 @@ package configuration
 
 import (
 	"time"
+
+	"github.com/bytesparadise/libasciidoc/pkg/types"
+	log "github.com/sirupsen/logrus"
 )
 
 // NewConfiguration returns a new configuration
-func NewConfiguration(settings ...Setting) Configuration {
-	config := Configuration{
-		AttributeOverrides: map[string]string{},
-		Macros:             map[string]MacroTemplate{},
+func NewConfiguration(settings ...Setting) *Configuration {
+	config := &Configuration{
+		Attributes: map[string]interface{}{},
+		Macros:     map[string]MacroTemplate{},
 	}
 	for _, set := range settings {
-		set(&config)
+		set(config)
 	}
 	return config
 }
 
 // Configuration the configuration used when rendering a document
 type Configuration struct {
-	Filename           string
-	AttributeOverrides map[string]string
-	LastUpdated        time.Time
+	Filename    string // TODO: move out of Configuration?
+	Attributes  types.Attributes
+	LastUpdated time.Time
 	// WrapInHTMLBodyElement flag to include the content in an html>body element
 	WrapInHTMLBodyElement bool
 	CSS                   string
@@ -36,6 +39,13 @@ const (
 // Setting a setting to customize the configuration used during parsing and rendering of a document
 type Setting func(config *Configuration)
 
+// WithFigureCaption function to set the `fogure-caption` attribute
+func WithFigureCaption(caption string) Setting {
+	return func(config *Configuration) {
+		config.Attributes[types.AttrFigureCaption] = caption
+	}
+}
+
 // WithLastUpdated function to set the `last updated` option in the renderer context (default is `time.Now()`)
 func WithLastUpdated(value time.Time) Setting {
 	return func(config *Configuration) {
@@ -44,16 +54,16 @@ func WithLastUpdated(value time.Time) Setting {
 }
 
 // WithAttributes function to set the `attribute overrides`
-func WithAttributes(attrs map[string]string) Setting {
+func WithAttributes(attrs map[string]interface{}) Setting {
 	return func(config *Configuration) {
-		config.AttributeOverrides = attrs
+		config.Attributes = attrs
 	}
 }
 
 // WithAttribute function to set an attribute as if it was passed as an argument in the CLI
 func WithAttribute(key, value string) Setting {
 	return func(config *Configuration) {
-		config.AttributeOverrides[key] = value
+		config.Attributes[key] = value
 	}
 }
 
@@ -88,6 +98,7 @@ func WithFilename(filename string) Setting {
 // WithMacroTemplate defines the given template to a user macro with the given name
 func WithMacroTemplate(name string, t MacroTemplate) Setting {
 	return func(config *Configuration) {
+		log.Debugf("registering user macro '%s'", name)
 		config.Macros[name] = t
 	}
 }

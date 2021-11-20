@@ -11,9 +11,9 @@ import (
 
 var _ = Describe("verse blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
-		It("single-line verse with author and title ", func() {
+		It("single-line verse with author and title and empty end line", func() {
 			source := `[verse, john doe, verse title]
 ____
 some *verse* content
@@ -49,7 +49,7 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("multi-line verse with author and title", func() {
+		It("multi-line verse with author and title and empty end line", func() {
 			source := `[verse, john doe, verse title]
 ____
 - some 
@@ -104,7 +104,7 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("multi-line verse without author and title", func() {
+		It("multi-line verse without author and title and empty end line", func() {
 			source := `[verse]
 ____
 lines 

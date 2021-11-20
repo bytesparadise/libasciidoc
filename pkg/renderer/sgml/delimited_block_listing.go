@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.ListingBlock) (string, error) {
+func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	if k, found := b.Attributes[types.AttrStyle]; found && k == types.Source {
 		return r.renderSourceBlock(ctx, b)
 	}
@@ -18,8 +18,8 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Listing
 	}()
 	ctx.WithinDelimitedBlock = true
 	result := &strings.Builder{}
-	lines := discardEmptyLines(b.Lines)
-	content, err := r.renderLines(ctx, lines)
+	// lines := [][]interface{}{} // discardEmptyLines(b.Elements)
+	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
 	}
@@ -48,9 +48,9 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b types.Listing
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	result := &strings.Builder{}
-	content, err := r.renderLines(ctx, p.Lines)
+	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
 	}

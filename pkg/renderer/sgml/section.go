@@ -8,33 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p types.Preamble) (string, error) {
-	// log.Debugf("rendering preamble...")
-	result := &strings.Builder{}
-	// the <div id="preamble"> wrapper is only necessary
-	// if the document has a section 0
-
-	content, err := r.renderElements(ctx, p.Elements)
-	if err != nil {
-		return "", errors.Wrap(err, "error rendering preamble elements")
-	}
-	err = r.preamble.Execute(result, struct {
-		Context *renderer.Context
-		Wrapper bool
-		Content string
-	}{
-		Context: ctx,
-		Wrapper: ctx.HasHeader,
-		Content: string(content),
-	})
-	if err != nil {
-		return "", errors.Wrap(err, "error while rendering preamble")
-	}
-	// log.Debugf("rendered preamble: %s", result.Bytes())
-	return result.String(), nil
-}
-
-func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (string, error) {
+func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s *types.Section) (string, error) {
 	// log.Debugf("rendering section level %d", s.Level)
 	title, err := r.renderSectionTitle(ctx, s)
 	if err != nil {
@@ -75,29 +49,22 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s types.Section) (st
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s types.Section) (string, error) {
+func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s *types.Section) (string, error) {
 	result := &strings.Builder{}
 	renderedContent, err := r.renderInlineElements(ctx, s.Title)
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering sectionTitle content")
 	}
-	roles, err := r.renderElementRoles(ctx, s.Attributes)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render section content")
-	}
-
 	renderedContentStr := strings.TrimSpace(renderedContent)
 	err = r.sectionHeader.Execute(result, struct {
 		Level        int
 		LevelPlusOne int
 		ID           string
-		Roles        string
 		Content      string
 	}{
 		Level:        s.Level,
 		LevelPlusOne: s.Level + 1, // Level 1 is <h2>.
 		ID:           r.renderElementID(s.Attributes),
-		Roles:        roles,
 		Content:      renderedContentStr,
 	})
 	if err != nil {

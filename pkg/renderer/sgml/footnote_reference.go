@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) (string, error) {
+func (r *sgmlRenderer) renderFootnoteReference(note *types.FootnoteReference) (string, error) {
 	result := &strings.Builder{}
 	if note.ID != types.InvalidFootnoteReference && !note.Duplicate {
 		// valid case for a footnote with content, with our without an explicit reference
@@ -50,7 +50,7 @@ func (r *sgmlRenderer) renderFootnoteReference(note types.FootnoteReference) (st
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderFootnoteReferencePlainText(note types.FootnoteReference) (string, error) {
+func (r *sgmlRenderer) renderFootnoteReferencePlainText(note *types.FootnoteReference) (string, error) {
 	result := &strings.Builder{}
 	if note.ID != types.InvalidFootnoteReference {
 		// valid case for a footnote with content, with our without an explicit reference
@@ -70,7 +70,7 @@ func (r *sgmlRenderer) renderFootnoteReferencePlainText(note types.FootnoteRefer
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Footnote) (string, error) {
+func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Footnote) (string, error) {
 	// skip if there's no foot note in the doc
 	if len(notes) == 0 {
 		return "", nil
@@ -87,7 +87,7 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Foot
 	err := r.footnotes.Execute(result, struct {
 		Context   *renderer.Context
 		Content   string
-		Footnotes []types.Footnote
+		Footnotes []*types.Footnote
 	}{
 		Context:   ctx,
 		Content:   string(content.String()),
@@ -99,7 +99,7 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []types.Foot
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderFootnoteItem(ctx *renderer.Context, w io.Writer, item types.Footnote) error {
+func (r *sgmlRenderer) renderFootnoteItem(ctx *renderer.Context, w io.Writer, item *types.Footnote) error {
 
 	content, err := r.renderInlineElements(ctx, item.Elements)
 	if err != nil {

@@ -81,7 +81,6 @@ type sgmlRenderer struct {
 	tocSection                *textTemplate
 	unorderedList             *textTemplate
 	unorderedListItem         *textTemplate
-	verbatimLine              *textTemplate
 	verseBlock                *textTemplate
 	verseParagraph            *textTemplate
 }
@@ -133,7 +132,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.markedText, err = r.newTemplate("marked-text", tmpls.MarkedText, err)
 		r.monospaceText, err = r.newTemplate("monospace-text", tmpls.MonospaceText, err)
 		r.orderedList, err = r.newTemplate("ordered-list", tmpls.OrderedList, err)
-		r.orderedListItem, err = r.newTemplate("ordered-list-item", tmpls.OrderedListItem, err)
+		r.orderedListItem, err = r.newTemplate("ordered-list-item", tmpls.OrderedListElement, err)
 		r.paragraph, err = r.newTemplate("paragraph", tmpls.Paragraph, err)
 		r.passthroughBlock, err = r.newTemplate("passthrough", tmpls.PassthroughBlock, err)
 		r.preamble, err = r.newTemplate("preamble", tmpls.Preamble, err)
@@ -162,7 +161,6 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.tocSection, err = r.newTemplate("toc-section", tmpls.TocSection, err)
 		r.unorderedList, err = r.newTemplate("unordered-list", tmpls.UnorderedList, err)
 		r.unorderedListItem, err = r.newTemplate("unordered-list-item", tmpls.UnorderedListItem, err)
-		r.verbatimLine, err = r.newTemplate("verbatim-line", tmpls.VerbatimLine, err)
 		r.verseBlock, err = r.newTemplate("verse", tmpls.VerseBlock, err)
 		r.verseParagraph, err = r.newTemplate("verse-paragraph", tmpls.VerseParagraph, err)
 	})

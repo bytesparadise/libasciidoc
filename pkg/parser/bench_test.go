@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	doc1line = `= Lorem Ipsum
+	doc1Paragraph = `= Lorem Ipsum
 	
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
 sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
@@ -29,7 +29,7 @@ sed diam voluptua.
 At vero eos et accusam et justo duo dolores et ea rebum. 
 Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.`
 
-	doc10lines = `=== foo
+	doc10Sections = `=== foo
 bar
 
 === foo
@@ -70,8 +70,8 @@ var _ = DescribeTable("basic stats",
 		result, _ := json.MarshalIndent(stats.ChoiceAltCnt, " ", " ")
 		fmt.Printf("ChoiceAltCnt: \n%s\n", result)
 	},
-	Entry("parse a single line file", "1-line doc", doc1line),
-	Entry("parse a 10-line file", "10-lines doc", doc10lines),
+	Entry("parse a single line file", "1-line doc", doc1Paragraph),
+	Entry("parse a 10-line file", "10-lines doc", doc10Sections),
 )
 
 var _ = Describe("real-world doc-based benchmarks", func() {

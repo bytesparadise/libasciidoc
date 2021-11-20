@@ -36,12 +36,12 @@ var _ = Describe("file inclusions", func() {
 			Title:       "",
 			LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 			TableOfContents: types.TableOfContents{
-				Sections: []types.ToCSection{
+				Sections: []*types.ToCSection{
 					{
 						ID:       "_grandchild_title",
 						Level:    1,
 						Title:    "grandchild title",
-						Children: []types.ToCSection{},
+						Children: []*types.ToCSection{},
 					},
 				},
 			},
@@ -874,7 +874,7 @@ func helloworld() {
 <p>last line of child</p>
 </div>
 <div class="paragraph">
-<p>last line of parent</p>
+<p>last line of parent &lt;1&gt;</p>
 </div>
 </div>
 </div>
@@ -889,15 +889,17 @@ include::../../../../test/includes/parent-include.adoc[leveloffset=+1]
 ----`
 			expected := `<div class="listingblock">
 <div class="content">
-<pre>== parent title
+<pre>:leveloffset: +1
+
+= parent title
 
 first line of parent
 
-== child title
+= child title
 
 first line of child
 
-=== grandchild title
+== grandchild title
 
 first line of grandchild
 
@@ -905,7 +907,9 @@ last line of grandchild
 
 last line of child
 
-last line of parent</pre>
+last line of parent <b class="conum">(1)</b>
+
+:leveloffset!:</pre>
 </div>
 </div>
 `

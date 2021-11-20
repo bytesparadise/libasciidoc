@@ -8,15 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b types.FencedBlock) (string, error) {
+func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	defer func() {
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
 	}()
 	ctx.WithinDelimitedBlock = true
 	result := &strings.Builder{}
-	lines := discardEmptyLines(b.Lines)
-	content, err := r.renderLines(ctx, lines)
+	// lines := discardEmptyLines(b.Elements)
+	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}

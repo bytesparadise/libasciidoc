@@ -365,7 +365,7 @@ content</mark>.</p>
 			source := `[."a <role>"]**bold**`
 			// wrapping quotes are not preserved
 			expected := `<div class="paragraph">
-<p><strong class="a &lt;role&gt;">bold</strong></p>
+<p><strong class="a <role>">bold</strong></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -443,12 +443,11 @@ content</mark>.</p>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		// This is a departure from asciidoctor, as we support quoting the role in first position.
-		// (Asciidoctor passes it, but does not sanitize it, leading to invalid HTML.)
 		It("quoted role", func() {
 			source := "[.\"something <wicked>\"]**bold**"
+			// TODO: do we need to parse SpecialCharacters in inline attributes?
 			expected := `<div class="paragraph">
-<p><strong class="something &lt;wicked&gt;">bold</strong></p>
+<p><strong class="something <wicked>">bold</strong></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -479,7 +478,7 @@ content</mark>.</p>
 	Context("nested content", func() {
 
 		It("nested bold quote within bold quote with same punctuation", func() {
-
+			// kinda invalid content, and Asciidoc has the same way of parsing this content
 			source := "*some *nested bold* content*."
 			expected := `<div class="paragraph">
 <p><strong>some *nested bold</strong> content*.</p>

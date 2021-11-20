@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
@@ -10,75 +9,38 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const bufferSize = 10
+
 // ParseDocument parses the content of the reader identitied by the filename
-func ParseDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.Document, error) {
-	rawDoc, err := ParseRawDocument(r, config, options...)
-	if err != nil {
-		return types.Document{}, err
-	}
+func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Option) (*types.Document, error) {
+	done := make(chan interface{})
+	defer close(done)
 
-	draftDoc, err := ApplySubstitutions(rawDoc, config)
+	ctx := NewParseContext(config, opts...) // each pipeline step will have its own clone of `ctx`
+	footnotes := types.NewFootnotes()
+	doc, _, err := Aggregate(ctx.Clone(),
+		CollectFootnotes(footnotes, done,
+			// SplitHeader(done,
+			FilterOut(done,
+				ArrangeLists(done,
+					ApplySubstitutions(ctx.Clone(), done, // needs to be before 'ArrangeLists'
+						IncludeFiles(ctx.Clone(), done,
+							ParseFragments(ctx.Clone(), r, done),
+						),
+					),
+				),
+			),
+		),
+		// ),
+	)
 	if err != nil {
-		return types.Document{}, err
+		return nil, err
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("draft doc:")
-		spew.Fdump(log.StandardLogger().Out, draftDoc)
+	if len(footnotes.Notes) > 0 {
+		doc.Footnotes = footnotes.Notes
 	}
-
-	// now, merge list items into proper lists
-	blocks, err := rearrangeListItems(draftDoc.Elements, false)
-	if err != nil {
-		return types.Document{}, err
-	}
-	// filter out blocks not needed in the final doc
-	blocks = filter(blocks, allMatchers...)
-
-	blocks, footnotes := processFootnotes(blocks)
-	// now, rearrange elements in a hierarchical manner
-	doc, err := rearrangeSections(blocks)
-	if err != nil {
-		return types.Document{}, err
-	}
-	// also, set the footnotes
-	doc.Footnotes = footnotes
-	// insert the preamble at the right location
-	doc = includePreamble(doc)
-	doc.Attributes = doc.Attributes.SetAll(draftDoc.Attributes)
-	// also insert the table of contents
-	doc = includeTableOfContentsPlaceHolder(doc)
-	// finally
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("final document:")
-		spew.Fdump(log.StandardLogger().Out, doc)
+	if log.IsLevelEnabled(log.InfoLevel) {
+		log.Infof("parsed document:\n%s", spew.Sdump(doc))
 	}
 	return doc, nil
-}
-
-// ContextKey a non-built-in type for keys in the context
-type ContextKey string
-
-// LevelOffset the key for the level offset of the file to include
-const LevelOffset ContextKey = "leveloffset"
-
-// ParseRawDocument parses a document's content and applies the preprocessing directives (file inclusions)
-func ParseRawDocument(r io.Reader, config configuration.Configuration, options ...Option) (types.RawDocument, error) {
-	// first, let's find all file inclusions and replace with the actual content to include
-	source, err := ParseRawSource(r, config, options...)
-	if err != nil {
-		return types.RawDocument{}, err
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("source to parse:")
-		fmt.Fprintf(log.StandardLogger().Out, "'%s'\n", source)
-	}
-	// then let's parse the "source" to detect raw blocks
-	options = append(options, Entrypoint("RawDocument"), GlobalStore(usermacrosKey, config.Macros))
-	if result, err := Parse(config.Filename, source, options...); err != nil {
-		return types.RawDocument{}, err
-	} else if doc, ok := result.(types.RawDocument); ok {
-		return doc, nil
-	} else {
-		return types.RawDocument{}, fmt.Errorf("unexpected type of content: '%T'", result)
-	}
 }

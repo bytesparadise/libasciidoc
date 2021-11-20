@@ -117,6 +117,8 @@ const (
 	AttrFloat = "float"
 	// AttrCols the table columns attribute
 	AttrCols = "cols"
+	// AttrAutowidth the `autowidth` attribute on a table
+	AttrAutowidth = "autowidth"
 	// AttrPositionalPrefix positional parameter prefix (DEPRECATED - use `AttrPositionalIndex`)
 	AttrPositionalPrefix = "@"
 	// AttrPositionalIndex positional parameter index
@@ -147,6 +149,10 @@ const (
 	AttrWarningCaption = "warning-caption"
 	// AttrSubstitutions the "subs" attribute to configure substitutions on delimited blocks and paragraphs
 	AttrSubstitutions = "subs"
+	// AttrImagesDir the `imagesdir` attribute
+	AttrImagesDir = "imagesdir"
+	// AttrXRefLabel the label of a cross reference
+	AttrXRefLabel = "xrefLabel"
 )
 
 // Attribute is a key/value pair wrapper
@@ -168,43 +174,66 @@ func NewAttributes(attributes ...interface{}) (Attributes, error) {
 	positionalIndex := 0
 	for _, attr := range attributes {
 		switch attr := attr.(type) {
-		case PositionalAttribute:
+		case *PositionalAttribute:
 			positionalIndex++
 			attr.Index = positionalIndex
 			result.Set(attr.Key(), attr.Value)
-		case Attribute:
+		case *Attribute:
 			result.Set(attr.Key, attr.Value)
-		case Attributes: // when an there were multiple attributes, eg: `[quote,author,title]`
-			result.SetAll(attr)
-		case nil:
-			// ignore
 		default:
 			return nil, fmt.Errorf("unexpected type of attribute: '%[1]T' (%[1]v)", attr)
 		}
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("initialized attributes:")
-		spew.Fdump(log.StandardLogger().Out, result)
+	return result, nil
+}
+
+func (a Attributes) Clone() Attributes {
+	result := Attributes{}
+	for k, v := range a {
+		result[k] = v
+	}
+	return result
+}
+func MergeAttributes(attributes ...interface{}) (Attributes, error) {
+	if len(attributes) == 0 {
+		return nil, nil
+	}
+	result := Attributes{}
+	for _, attr := range attributes {
+		switch attr := attr.(type) {
+		case *Attribute:
+			result.Set(attr.Key, attr.Value)
+		case Attributes: // when an there were multiple attributes, eg: `[quote,author,title]`
+			result.AddAll(attr)
+		default:
+			return nil, fmt.Errorf("unexpected type of attribute: '%[1]T' (%[1]v)", attr)
+		}
 	}
 	return result, nil
 }
 
-func toAttributes(attrs interface{}) Attributes {
-	if attrs, ok := attrs.(Attributes); ok {
-		return attrs
+// NilIfEmpty returns `nil` if this `attributes` is empty
+func (a Attributes) AddAll(others Attributes) Attributes {
+	if others == nil {
+		return a
 	}
-	return nil
+	if a == nil {
+		a = Attributes{}
+	}
+	for k, v := range others {
+		a.Set(k, v)
+	}
+	return a
 }
 
 func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attributes {
 	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug("processing attributes with mapping on")
-	// 	spew.Fdump(log.StandardLogger().Out, attrs)
+	// 	log.Debugf("processing attributes with mapping on\n%s", spew.Sdump(attrs))
 	// }
 	if attrs, ok := attrs.(Attributes); ok {
 		for source, target := range mapping {
 			if v, exists := attrs[source]; exists {
-				if v != nil {
+				if v != nil && v != "" { // nil and empty values are discarded (ie, not mapped to target key)
 					// (a bit hack-ish) make sure that `roles` is an `[]interface{}` if it came from a positional (1) attribute
 					if source == AttrPositional1 && target == AttrRoles {
 						v = []interface{}{v}
@@ -212,8 +241,8 @@ func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attri
 
 					// do not override if already exists
 					if _, exists := attrs[target]; !exists {
-						// if key == value, replace value with `true`, so we don't have something
-						// like `linenums=linenums`
+						// if key == value, replace value with `true`,
+						// so we don't have something such as `linenums=linenums`
 						if target == v {
 							attrs[target] = true
 						} else {
@@ -224,92 +253,18 @@ func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attri
 				delete(attrs, source)
 			}
 		}
-		// if log.IsLevelEnabled(log.DebugLevel) {
-		// 	log.Debug("processed attributes with mapping:")
-		// 	spew.Fdump(log.StandardLogger().Out, attrs)
-		// }
 		if len(attrs) == 0 {
 			return nil
 		}
 		return attrs
 	}
-
 	return nil
 }
-
-// // NewAttributeGroup initializes an AttributeGroup
-// // We always pass in an array of Attributes.  Special handling for certain attributes:
-// //
-// // AttrID - these are strings, the first occurrence of this wins, and we set AttrCustomID
-// // AttrRoles - these are strings, we append them into an array
-// // AttrOptions - comma separated list, we split and put into a map
-// func NewAttributeGroup(attributes ...interface{}) (Attributes, error) {
-// 	if len(attributes) == 0 {
-// 		return nil, nil
-// 	}
-// 	result := Attributes{}
-// 	for _, item := range attributes {
-// 		if item == nil {
-// 			continue
-// 		}
-// 		var attrs Attributes
-// 		var err error
-// 		switch item := item.(type) {
-// 		case Attribute:
-// 			attrs = Attributes{
-// 				item.Key: item.Value,
-// 			}
-// 		case Attributes:
-// 			attrs = item
-// 		case []interface{}:
-// 			attrs, err = NewAttributeGroup(item...)
-// 			if err != nil {
-// 				return nil, err
-// 			}
-// 		default:
-// 			return nil, fmt.Errorf("unexpected type of attributes: %T", item)
-// 		}
-// 		for k, v := range attrs {
-// 			switch k {
-// 			case AttrID:
-// 				// The first ID set wins.
-// 				result[AttrID] = v
-// 			case AttrRoles:
-// 				result.append(AttrRoles, v)
-// 			case AttrOptions, AttrOpts: // TODO handle the split in the `NewOptionAttribute` func
-// 				if !result.Has(AttrOptions) {
-// 					result[AttrOptions] = map[string]bool{}
-// 				}
-// 				m := result[AttrOptions].(map[string]bool)
-// 				switch v := v.(type) {
-// 				case string:
-// 					for _, o := range strings.Split(v, ",") {
-// 						m[o] = true
-// 					}
-// 				case map[string]bool:
-// 					for o := range v {
-// 						m[o] = v[o]
-// 					}
-// 				}
-// 			default:
-// 				result[k] = v
-// 			}
-// 		}
-// 	}
-// 	if len(result) == 0 {
-// 		return nil, nil // don't retain groups with no attribute
-// 	}
-// 	if log.IsLevelEnabled(log.DebugLevel) {
-// 		log.Debug("new attribute group:")
-// 		spew.Fdump(log.StandardLogger().Out, result)
-// 	}
-// 	return result, nil
-// }
 
 // HasAttributeWithValue checks that there is an entry for the given key/value pair
 func HasAttributeWithValue(attributes interface{}, key string, value interface{}) bool {
 	switch a := attributes.(type) {
-	case Attribute:
+	case *Attribute:
 		if a.Key == key && a.Value == value {
 			return true
 		}
@@ -332,10 +287,6 @@ func HasAttributeWithValue(attributes interface{}, key string, value interface{}
 // HasNotAttribute checks that there is no entry for the given key
 func HasNotAttribute(attributes interface{}, key string) bool {
 	switch a := attributes.(type) {
-	case Attribute:
-		if a.Key == key {
-			return false
-		}
 	case Attributes:
 		if _, ok := a[key]; ok {
 			return false
@@ -357,78 +308,67 @@ type PositionalAttribute struct {
 	Value interface{}
 }
 
+// NewPositionalAttribute returns a new attribute who key is the position in the group
+func NewPositionalAttribute(value interface{}) (*PositionalAttribute, error) {
+	return &PositionalAttribute{
+		Value: value,
+	}, nil
+}
+
 // Key returns the "temporary" key, based on the attribute index.
-func (a PositionalAttribute) Key() string {
+func (a *PositionalAttribute) Key() string {
 	return AttrPositionalIndex + strconv.Itoa(a.Index)
 }
 
-// NewPositionalAttribute returns a new attribute who key is the position in the group
-func NewPositionalAttribute(value interface{}) (PositionalAttribute, error) {
-	result := PositionalAttribute{
-		Value: value,
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("new positional attribute:")
-		spew.Fdump(log.StandardLogger().Out, result)
-	}
-	return result, nil
-}
-
 // NewOptionAttribute sets a boolean option.
-func NewOptionAttribute(options interface{}) (Attribute, error) {
-	return Attribute{
+func NewOptionAttribute(options interface{}) (*Attribute, error) {
+	return &Attribute{
 		Key:   AttrOption,
 		Value: Reduce(options),
 	}, nil
 }
 
 // NewNamedAttribute a named (or positional) element
-func NewNamedAttribute(key string, value interface{}) (Attribute, error) {
+func NewNamedAttribute(key string, value interface{}) (*Attribute, error) {
 	value = Reduce(value)
 	if key == AttrOpts { // Handle the alias
 		key = AttrOptions
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		// log.Debugf("new named attribute '%s':", key)
-		spew.Fdump(log.StandardLogger().Out, value)
-	}
-	return Attribute{
+	return &Attribute{
 		Key:   key,
 		Value: value,
 	}, nil
 }
 
 // NewInlineIDAttribute initializes a new attribute map with a single entry for the ID using the given value
-func NewInlineIDAttribute(id string) (Attribute, error) {
-	// log.Debugf("initializing a new inline ElementID with ID=%s", id)
-	return Attribute{
+func NewInlineIDAttribute(id string) (*Attribute, error) {
+	return &Attribute{
 		Key:   AttrID,
 		Value: id,
 	}, nil
 }
 
 // NewTitleAttribute initializes a new attribute map with a single entry for the title using the given value
-func NewTitleAttribute(title interface{}) (Attribute, error) {
+func NewTitleAttribute(title interface{}) (*Attribute, error) {
 	// log.Debugf("initializing a new Title attribute with content=%v", title)
-	return Attribute{
+	return &Attribute{
 		Key:   AttrTitle,
 		Value: title,
 	}, nil
 }
 
 // NewRoleAttribute initializes a new attribute map with a single entry for the title using the given value
-func NewRoleAttribute(role interface{}) (Attribute, error) {
+func NewRoleAttribute(role interface{}) (*Attribute, error) {
 	role = Reduce(role)
-	return Attribute{
+	return &Attribute{
 		Key:   AttrRole,
 		Value: role,
 	}, nil
 }
 
 // NewIDAttribute initializes a new attribute map with a single entry for the ID using the given value
-func NewIDAttribute(id interface{}) (Attribute, error) {
-	// log.Debugf("initializing a new ID attribute with ID='%v'", id)
-	return Attribute{
+func NewIDAttribute(id interface{}) (*Attribute, error) {
+	return &Attribute{
 		Key:   AttrID,
 		Value: id,
 	}, nil
@@ -436,27 +376,30 @@ func NewIDAttribute(id interface{}) (Attribute, error) {
 
 // Set adds the given attribute to the current ones
 // with some `key` replacements/grouping (Role->Roles and Option->Options)
+// returns the new `Attributes` if the current instance was `nil`
 func (a Attributes) Set(key string, value interface{}) Attributes {
-	// log.Debugf("setting attribute %s=%v", key, value)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("setting attribute %s=%s", key, spew.Sdump(value))
+	}
 	if a == nil {
 		a = Attributes{}
 	}
 	switch key {
 	case AttrRole:
 		if roles, ok := a[AttrRoles].([]interface{}); ok {
-			// log.Debugf("appending role to existin one(s): %v", value)
+			log.Debugf("appending role to existing ones: %v", value)
 			a[AttrRoles] = append(roles, value)
 		} else {
-			// log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
+			log.Debugf("setting first role: %v", value)
 			a[AttrRoles] = []interface{}{value}
 		}
 	case AttrRoles:
 		if r, ok := value.([]interface{}); ok { // value should be an []interface{}
 			if roles, ok := a[AttrRoles].([]interface{}); ok {
-				// log.Debugf("appending role to existin one(s): %v", value)
+				log.Debugf("appending role to existing ones: %v", value)
 				a[AttrRoles] = append(roles, r...)
 			} else {
-				// log.Debugf("setting first role: %v (%T)", value, a[AttrRoles])
+				log.Debugf("overridding roles: %v -> %v", a[AttrRoles], r)
 				a[AttrRoles] = r
 			}
 		}
@@ -469,18 +412,13 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 	default:
 		a[key] = value
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		spew.Fdump(log.StandardLogger().Out, a)
-
-	}
 	return a
 }
 
 // SetAll adds the given attributes to the current ones
 func (a Attributes) SetAll(attr interface{}) Attributes {
-	log.Debug("setting attributes")
 	switch attr := attr.(type) {
-	case Attribute:
+	case *Attribute:
 		if a == nil {
 			a = Attributes{}
 		}
@@ -537,6 +475,20 @@ func (a Attributes) GetAsString(key string) (string, bool, error) {
 	return "", false, nil
 }
 
+// GetAsIntWithDefault gets the int value for the given key ,
+// or default if none was found,
+func (a Attributes) GetAsIntWithDefault(key string, defaultValue int) int {
+	switch v := a[key].(type) {
+	case int:
+		return v
+	case string:
+		if result, err := strconv.Atoi(v); err == nil {
+			return result
+		}
+	}
+	return defaultValue
+}
+
 func asString(v interface{}) (string, error) {
 	switch v := v.(type) {
 	case string:
@@ -574,40 +526,4 @@ func (a Attributes) GetAsStringWithDefault(key, defaultValue string) string {
 		}
 	}
 	return defaultValue
-}
-
-// GetAsBool returns the value of the key as a bool, or `false` if the key did not exist
-// or if its value was not a bool
-func (a Attributes) GetAsBool(key string) bool {
-	if v, ok := a[key]; ok {
-		if v, ok := v.(bool); ok {
-			return v
-		}
-	}
-	return false
-}
-
-// AddNonEmpty adds the given attribute if its value is non-nil and non-empty
-// TODO: raise a warning if there was already a name/value
-func (a Attributes) AddNonEmpty(key string, value interface{}) {
-	// do not add nil or empty values
-	if value == "" {
-		return
-	}
-	a[key] = value
-}
-
-// Positionals returns all positional attributes, ie, the values for the keys in the form of `positional-<int>`
-func (a Attributes) Positionals() [][]interface{} {
-	result := make([][]interface{}, 0, len(a))
-	i := 0
-	for {
-		i++
-		if arg, ok := a["positional-"+strconv.Itoa(i)].([]interface{}); ok {
-			result = append(result, arg)
-			continue
-		}
-		break
-	}
-	return result
 }

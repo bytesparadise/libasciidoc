@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderPredefinedAttribute(a types.PredefinedAttribute) (string, error) {
+func (r *sgmlRenderer) renderPredefinedAttribute(a *types.PredefinedAttribute) (string, error) {
 	result := &strings.Builder{}
 	if err := r.predefinedAttribute.Execute(result, struct {
 		Name string

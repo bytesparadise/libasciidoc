@@ -9,9 +9,10 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBlock) (string, error) {
+func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageBlock) (string, error) {
 	result := &strings.Builder{}
 	title, err := r.renderElementTitle(img.Attributes)
 	if err != nil {
@@ -28,7 +29,11 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render image")
 		} else if !found {
-			if c = ctx.Attributes.GetAsStringWithDefault(types.AttrFigureCaption, "Figure"); c != "" {
+			c, found, err = ctx.Attributes.GetAsString(types.AttrFigureCaption)
+			if err != nil {
+				return "", errors.Wrap(err, "unable to render image")
+			}
+			if found && c != "" {
 				// We always append the figure number, unless the caption is disabled.
 				// This is for asciidoctor compatibility.
 				c += " {counter:figure-number}. "
@@ -80,12 +85,13 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img types.ImageBl
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (string, error) {
+func (r *sgmlRenderer) renderInlineImage(ctx *Context, img *types.InlineImage) (string, error) {
 	result := &strings.Builder{}
 	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
+	href := img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, "")
 	path := img.Location.Stringify()
 	alt, err := r.renderImageAlt(img.Attributes, path)
 	if err != nil {
@@ -107,7 +113,7 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (s
 	}{
 		Title:  title,
 		Roles:  roles,
-		Href:   img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
+		Href:   href,
 		Alt:    alt,
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
@@ -117,7 +123,9 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img types.InlineImage) (s
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render inline image")
 	}
-	// log.Debugf("rendered inline image: %s", result.Bytes())
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("rendered inline image: %s", result.String())
+	}
 	return result.String(), nil
 }
 

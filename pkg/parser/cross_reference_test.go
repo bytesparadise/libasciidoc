@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("cross references", func() {
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
 		Context("internal references", func() {
 
@@ -19,39 +19,34 @@ var _ = Describe("cross references", func() {
 == a title
 
 with some content linked to <<thetitle>>!`
-				expected := types.Document{
+				title := []interface{}{
+					&types.StringElement{
+						Content: "a title",
+					},
+				}
+				expected := &types.Document{
 					ElementReferences: types.ElementReferences{
-						"thetitle": []interface{}{
-							types.StringElement{
-								Content: "a title",
-							},
-						},
+						"thetitle": title,
 					},
 					Elements: []interface{}{
-						types.Section{
+						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
 								types.AttrID:       "thetitle",
 								types.AttrCustomID: true,
 							},
-							Title: []interface{}{
-								types.StringElement{
-									Content: "a title",
-								},
-							},
+							Title: title,
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "with some content linked to ",
-											},
-											types.InternalCrossReference{
-												ID: "thetitle",
-											},
-											types.StringElement{
-												Content: "!",
-											},
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "with some content linked to ",
+										},
+										&types.InternalCrossReference{
+											ID: "thetitle",
+										},
+										&types.StringElement{
+											Content: "!",
 										},
 									},
 								},
@@ -67,45 +62,40 @@ with some content linked to <<thetitle>>!`
 == a title
 
 with some content linked to <<thetitle,a label to the title>>!`
-				expected := types.Document{
-					ElementReferences: types.ElementReferences{
-						"thetitle": []interface{}{
-							types.StringElement{
-								Content: "a title",
-							},
-						},
+				title := []interface{}{
+					&types.StringElement{
+						Content: "a title",
 					},
+				}
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.Section{
+						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
 								types.AttrID:       "thetitle",
 								types.AttrCustomID: true,
 							},
-							Title: []interface{}{
-								types.StringElement{
-									Content: "a title",
-								},
-							},
+							Title: title,
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "with some content linked to ",
-											},
-											types.InternalCrossReference{
-												ID:    "thetitle",
-												Label: "a label to the title",
-											},
-											types.StringElement{
-												Content: "!",
-											},
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "with some content linked to ",
+										},
+										&types.InternalCrossReference{
+											ID:    "thetitle",
+											Label: "a label to the title",
+										},
+										&types.StringElement{
+											Content: "!",
 										},
 									},
 								},
 							},
 						},
+					},
+					ElementReferences: types.ElementReferences{
+						"thetitle": title,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -116,36 +106,36 @@ with some content linked to <<thetitle,a label to the title>>!`
 
 			It("external cross reference to other doc with plain text location and rich label", func() {
 				source := `some content linked to xref:another-doc.adoc[*another doc*]!`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "some content linked to ",
-									},
-									types.ExternalCrossReference{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{
-													Content: "another-doc.adoc",
-												},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some content linked to ",
+								},
+								&types.ExternalCrossReference{
+									Location: &types.Location{
+										Path: []interface{}{
+											&types.StringElement{
+												Content: "another-doc.adoc",
 											},
 										},
-										Label: []interface{}{
-											types.QuotedText{
+									},
+									Attributes: types.Attributes{
+										types.AttrXRefLabel: []interface{}{
+											&types.QuotedText{
 												Kind: types.SingleQuoteBold,
 												Elements: []interface{}{
-													types.StringElement{
+													&types.StringElement{
 														Content: "another doc",
 													},
 												},
 											},
 										},
 									},
-									types.StringElement{
-										Content: "!",
-									},
+								},
+								&types.StringElement{
+									Content: "!",
 								},
 							},
 						},
@@ -156,27 +146,30 @@ with some content linked to <<thetitle,a label to the title>>!`
 
 			It("external cross reference to other doc with document attribute in location", func() {
 				source := `some content linked to xref:{foo}.adoc[another doc]!`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "some content linked to ",
-									},
-									types.ExternalCrossReference{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{
-													Content: "{foo}.adoc", // attribute substitution failed for `{foo}`
-												},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some content linked to ",
+								},
+								&types.ExternalCrossReference{
+									Location: &types.Location{
+										Path: []interface{}{
+											&types.AttributeSubstitution{ // attribute substitution failed for `{foo}` during parsing
+												Name: "foo",
+											},
+											&types.StringElement{
+												Content: ".adoc",
 											},
 										},
-										Label: "another doc",
 									},
-									types.StringElement{
-										Content: "!",
+									Attributes: types.Attributes{
+										types.AttrXRefLabel: "another doc",
 									},
+								},
+								&types.StringElement{
+									Content: "!",
 								},
 							},
 						},
@@ -190,29 +183,34 @@ with some content linked to <<thetitle,a label to the title>>!`
 :foo: another-doc.adoc
 
 some content linked to xref:{foo}[another_doc()]!`
-				expected := types.Document{
-					Attributes: types.Attributes{
-						"foo": "another-doc.adoc",
-					},
+				expected := &types.Document{
+					// Attributes: types.Attributes{
+					// 	"foo": "another-doc.adoc",
+					// },
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{types.StringElement{
+						&types.AttributeDeclaration{
+							Name:  "foo",
+							Value: "another-doc.adoc",
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
 									Content: "some content linked to ",
 								},
-									types.ExternalCrossReference{
-										Location: types.Location{
-											Path: []interface{}{
-												types.StringElement{
-													Content: "another-doc.adoc",
-												},
+								&types.ExternalCrossReference{
+									Location: &types.Location{
+										Path: []interface{}{
+											&types.StringElement{
+												Content: "another-doc.adoc",
 											},
 										},
-										Label: "another_doc()",
 									},
-									types.StringElement{
-										Content: "!",
+									Attributes: types.Attributes{
+										types.AttrXRefLabel: "another_doc()",
 									},
+								},
+								&types.StringElement{
+									Content: "!",
 								},
 							},
 						},

@@ -10,312 +10,40 @@ import (
 
 var _ = Describe("quote blocks", func() {
 
-	Context("draft documents", func() {
+	Context("in final documents", func() {
 
-		Context("delimited blocks", func() {
+		Context("as delimited blocks", func() {
 
-			It("single-line quote block with author and title", func() {
+			It("with single-line content and author and title attributes", func() {
 				source := `[quote, john doe, quote title]
 ____
 some *quote* content
 ____`
-				expected := types.DraftDocument{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 								types.AttrQuoteTitle:  "quote title",
 							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "some ",
-											},
-											types.QuotedText{
-												Kind: types.SingleQuoteBold,
-												Elements: []interface{}{
-													types.StringElement{
-														Content: "quote",
-													},
-												},
-											},
-											types.StringElement{
-												Content: " content",
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				result, err := ParseDraftDocument(source)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(result).To(MatchDraftDocument(expected))
-			})
-
-			It("multi-line quote with author only", func() {
-				source := `[quote, john doe,   ]
-____
-- some 
-- quote 
-- content 
-____
-`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.QuoteBlock{
-							Attributes: types.Attributes{
-								types.AttrStyle:       types.Quote,
-								types.AttrQuoteAuthor: "john doe",
-							},
-							Elements: []interface{}{
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.Dash,
-									CheckStyle:  types.NoCheck,
+								&types.Paragraph{
 									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "some ",
-													},
+										&types.StringElement{
+											Content: "some ",
+										},
+										&types.QuotedText{
+											Kind: types.SingleQuoteBold,
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "quote",
 												},
 											},
 										},
-									},
-								},
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.Dash,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "quote ",
-													},
-												},
-											},
-										},
-									},
-								},
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.Dash,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "content ",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("single-line quote with title only", func() {
-				source := `[quote, ,quote title]
-____
-some quote content 
-____
-`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.QuoteBlock{
-							Attributes: types.Attributes{
-								types.AttrStyle:      types.Quote,
-								types.AttrQuoteTitle: "quote title",
-							},
-							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "some quote content ",
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("multi-line quote with rendered list and without author and title", func() {
-				source := `[quote]
-____
-* some
-
-
-* quote 
-
-
-* content
-____`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.QuoteBlock{
-							Attributes: types.Attributes{
-								types.AttrStyle: types.Quote,
-							},
-							Elements: []interface{}{
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.OneAsterisk,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "some",
-													},
-												},
-											},
-										},
-									},
-								},
-								types.BlankLine{},
-								types.BlankLine{},
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.OneAsterisk,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "quote ",
-													},
-												},
-											},
-										},
-									},
-								},
-								types.BlankLine{},
-								types.BlankLine{},
-								types.UnorderedListItem{
-									Level:       1,
-									BulletStyle: types.OneAsterisk,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										types.Paragraph{
-											Lines: [][]interface{}{
-												{
-													types.StringElement{
-														Content: "content",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("empty quote without author and title", func() {
-				source := `[quote]
-____
-____`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.QuoteBlock{
-							Attributes: types.Attributes{
-								types.AttrStyle: types.Quote,
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-
-			It("unclosed quote without author and title", func() {
-				source := `[quote]
-____
-foo
-`
-				expected := types.DraftDocument{
-					Elements: []interface{}{
-						types.QuoteBlock{
-							Attributes: types.Attributes{
-								types.AttrStyle: types.Quote,
-							},
-							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "foo",
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDraftDocument(source)).To(MatchDraftDocument(expected))
-			})
-		})
-	})
-
-	Context("final documents", func() {
-
-		Context("delimited blocks", func() {
-
-			It("single-line quote block with author and title", func() {
-				source := `[quote, john doe, quote title]
-____
-some *quote* content
-____`
-				expected := types.Document{
-					Elements: []interface{}{
-						types.QuoteBlock{
-							Attributes: types.Attributes{
-								types.AttrStyle:       types.Quote,
-								types.AttrQuoteAuthor: "john doe",
-								types.AttrQuoteTitle:  "quote title",
-							},
-							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "some ",
-											},
-											types.QuotedText{
-												Kind: types.SingleQuoteBold,
-												Elements: []interface{}{
-													types.StringElement{
-														Content: "quote",
-													},
-												},
-											},
-											types.StringElement{
-												Content: " content",
-											},
+										&types.StringElement{
+											Content: " content",
 										},
 									},
 								},
@@ -326,7 +54,7 @@ ____`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("multi-line quote with author only", func() {
+			It("with multi-line content and author attribute", func() {
 				source := `[quote, john doe,   ]
 ____
 - some 
@@ -334,59 +62,53 @@ ____
 - content 
 ____
 `
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle:       types.Quote,
 								types.AttrQuoteAuthor: "john doe",
 							},
 							Elements: []interface{}{
-								types.UnorderedList{
-									Items: []types.UnorderedListItem{
-										{
-											Level:       1,
+								&types.List{
+									Kind: types.UnorderedListKind,
+									Elements: []types.ListElement{
+										// suffix spaces are trimmed on each line
+										&types.UnorderedListElement{
 											BulletStyle: types.Dash,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "some ",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "some",
 														},
 													},
 												},
 											},
 										},
-										{
-											Level:       1,
+										&types.UnorderedListElement{
 											BulletStyle: types.Dash,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "quote ",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "quote",
 														},
 													},
 												},
 											},
 										},
-										{
-											Level:       1,
+										&types.UnorderedListElement{
 											BulletStyle: types.Dash,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "content ",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "content",
 														},
 													},
 												},
@@ -401,26 +123,26 @@ ____
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("single-line quote with title only", func() {
+			It("with single-line content with title attribute", func() {
 				source := `[quote, ,quote title]
 ____
 some quote content 
 ____
 `
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle:      types.Quote,
 								types.AttrQuoteTitle: "quote title",
 							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "some quote content ",
-											},
+								// suffix spaces are trimmed on each line
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "some quote content",
 										},
 									},
 								},
@@ -436,13 +158,13 @@ ____
 ____
 .foo
 ____`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle: types.Quote,
 							},
-							Elements: []interface{}{},
 						},
 					},
 				}
@@ -456,30 +178,30 @@ ____`
 ____
 * some
 ----
-* quote 
+* listing 
 ----
 * content
 ____`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
-								types.UnorderedList{
-									Items: []types.UnorderedListItem{
-										{
-											Level:       1,
+								// suffix spaces are trimmed on each line
+								&types.List{
+									Kind: types.UnorderedListKind,
+									Elements: []types.ListElement{
+										&types.UnorderedListElement{
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "some",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "some",
 														},
 													},
 												},
@@ -487,28 +209,25 @@ ____`
 										},
 									},
 								},
-								types.ListingBlock{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "* quote ",
-											},
+								&types.DelimitedBlock{
+									Kind: types.Listing,
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "* listing",
 										},
 									},
 								},
-								types.UnorderedList{
-									Items: []types.UnorderedListItem{
-										{
-											Level:       1,
+								&types.List{
+									Kind: types.UnorderedListKind,
+									Elements: []types.ListElement{
+										&types.UnorderedListElement{
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "content",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "content",
 														},
 													},
 												},
@@ -534,58 +253,52 @@ ____
 
 * content
 ____`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
-								types.UnorderedList{
-									Items: []types.UnorderedListItem{
-										{
-											Level:       1,
+								&types.List{
+									Kind: types.UnorderedListKind,
+									Elements: []types.ListElement{
+										// suffix spaces are trimmed on each line
+										&types.UnorderedListElement{
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "some",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "some",
 														},
 													},
 												},
 											},
 										},
-										{
-											Level:       1,
+										&types.UnorderedListElement{
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "quote ",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "quote",
 														},
 													},
 												},
 											},
 										},
-										{
-											Level:       1,
+										&types.UnorderedListElement{
 											BulletStyle: types.OneAsterisk,
 											CheckStyle:  types.NoCheck,
 											Elements: []interface{}{
-												types.Paragraph{
-													Lines: [][]interface{}{
-														{
-															types.StringElement{
-																Content: "content",
-															},
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "content",
 														},
 													},
 												},
@@ -604,13 +317,13 @@ ____`
 				source := `[quote]
 ____
 ____`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle: types.Quote,
 							},
-							Elements: []interface{}{},
 						},
 					},
 				}
@@ -622,19 +335,18 @@ ____`
 ____
 foo
 `
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.QuoteBlock{
+						&types.DelimitedBlock{
+							Kind: types.Quote,
 							Attributes: types.Attributes{
 								types.AttrStyle: types.Quote,
 							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "foo",
-											},
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "foo",
 										},
 									},
 								},

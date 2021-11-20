@@ -12,25 +12,10 @@ import (
 func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
 	// log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := &strings.Builder{}
-	if !ctx.Config.WrapInHTMLBodyElement && len(elements) > 0 {
-		if s, ok := elements[0].(types.Section); ok && s.Level == 0 {
-			// don't render the top-level section, but only its elements (plus the rest if there's anything)
-			if len(elements) > 1 {
-				elements = append(s.Elements, elements[1:])
-			} else {
-				elements = s.Elements
-			}
-		}
-	}
 	for _, element := range elements {
 		renderedElement, err := r.renderElement(ctx, element)
 		if err != nil {
 			return "", err // no need to wrap the error here
-		}
-		// insert new line if there's already some content (except for BlankLine)
-		_, isVerbatimLine := element.(types.VerbatimLine)
-		if buff.Len() > 0 && isVerbatimLine {
-			buff.WriteString("\n")
 		}
 		buff.WriteString(renderedElement)
 	}
@@ -47,11 +32,11 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 			ctx.WithinList++
 		}
 		renderedElement, err := r.renderElement(ctx, element)
+		if err != nil {
+			return "", errors.Wrap(err, "unable to render a list element")
+		}
 		if i == 0 {
 			ctx.WithinList--
-		}
-		if err != nil {
-			return "", errors.Wrap(err, "unable to render a list block")
 		}
 		buff.WriteString(renderedElement)
 	}
@@ -64,84 +49,69 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	switch e := element.(type) {
 	case []interface{}:
 		return r.renderElements(ctx, e)
-	case types.TableOfContentsPlaceHolder:
-		return r.renderTableOfContents(ctx, ctx.TableOfContents)
-	case types.Section:
+	case *types.TableOfContents:
+		return r.renderTableOfContents(ctx, e)
+	case *types.Section:
 		return r.renderSection(ctx, e)
-	case types.Preamble:
+	case *types.Preamble:
 		return r.renderPreamble(ctx, e)
-	case types.BlankLine:
-		return r.renderBlankLine(ctx, e)
-	case types.LabeledList:
-		return r.renderLabeledList(ctx, e)
-	case types.OrderedList:
-		return r.renderOrderedList(ctx, e)
-	case types.UnorderedList:
-		return r.renderUnorderedList(ctx, e)
-	case types.CalloutList:
-		return r.renderCalloutList(ctx, e)
-	case types.Callout:
+	case *types.List:
+		return r.renderList(ctx, e)
+	case *types.Callout:
 		return r.renderCalloutRef(e)
-	case types.Paragraph:
+	case *types.Paragraph:
 		return r.renderParagraph(ctx, e)
-	case types.InternalCrossReference:
+	case *types.InternalCrossReference:
 		return r.renderInternalCrossReference(ctx, e)
-	case types.ExternalCrossReference:
+	case *types.ExternalCrossReference:
 		return r.renderExternalCrossReference(ctx, e)
-	case types.QuotedText:
+	case *types.QuotedText:
 		return r.renderQuotedText(ctx, e)
-	case types.InlinePassthrough:
+	case *types.InlinePassthrough:
 		return r.renderInlinePassthrough(ctx, e)
-	case types.ImageBlock:
+	case *types.ImageBlock:
 		return r.renderImageBlock(ctx, e)
-	case types.Icon:
-		return r.renderInlineIcon(ctx, e)
-	case types.InlineImage:
+	case *types.InlineImage:
 		return r.renderInlineImage(ctx, e)
-	case types.ExampleBlock:
-		return r.renderExampleBlock(ctx, e)
-	case types.QuoteBlock:
-		return r.renderQuoteBlock(ctx, e)
-	case types.SidebarBlock:
-		return r.renderSidebarBlock(ctx, e)
-	case types.FencedBlock:
-		return r.renderFencedBlock(ctx, e)
-	case types.ListingBlock:
-		return r.renderListingBlock(ctx, e)
-	case types.PassthroughBlock:
-		return r.renderPassthroughBlock(ctx, e)
-	case types.MarkdownQuoteBlock:
-		return r.renderMarkdownQuoteBlock(ctx, e)
-	case types.VerseBlock:
-		return r.renderVerseBlock(ctx, e)
-	case types.Table:
+	case *types.Icon:
+		return r.renderInlineIcon(ctx, e)
+	case *types.DelimitedBlock:
+		return r.renderDelimitedBlock(ctx, e)
+	case *types.Table:
 		return r.renderTable(ctx, e)
-	case types.LiteralBlock:
-		return r.renderLiteralBlock(ctx, e)
-	case types.InlineLink:
+	case *types.InlineLink:
 		return r.renderLink(ctx, e)
-	case types.StringElement:
+	case *types.StringElement:
 		return r.renderStringElement(ctx, e)
-	case types.FootnoteReference:
+	case *types.FootnoteReference:
 		return r.renderFootnoteReference(e)
-	case types.LineBreak:
+	case *types.LineBreak:
 		return r.renderLineBreak()
-	case types.UserMacro:
+	case *types.UserMacro:
 		return r.renderUserMacro(ctx, e)
-	case types.IndexTerm:
+	case *types.IndexTerm:
 		return r.renderIndexTerm(ctx, e)
-	case types.ConcealedIndexTerm:
+	case *types.ConcealedIndexTerm:
 		return r.renderConcealedIndexTerm(e)
-	case types.VerbatimLine:
-		return r.renderVerbatimLine(e)
-	case types.QuotedString:
+	case *types.QuotedString:
 		return r.renderQuotedString(ctx, e)
-	case types.ThematicBreak:
+	case *types.ThematicBreak:
 		return r.renderThematicBreak()
-	case types.SpecialCharacter:
+	case *types.SpecialCharacter:
 		return r.renderSpecialCharacter(ctx, e)
-	case types.PredefinedAttribute:
+	case *types.PredefinedAttribute:
 		return r.renderPredefinedAttribute(e)
+	case *types.AttributeDeclaration:
+		ctx.Attributes[e.Name] = e.Value
+		return "", nil
+	case *types.AttributeReset:
+		delete(ctx.Attributes, e.Name)
+		return "", nil
+	case *types.FrontMatter:
+		ctx.Attributes.AddAll(e.Attributes)
+		return "", nil
+	case *types.AttributeSubstitution:
+		return r.renderAttributeSubstitution(ctx, e)
 	default:
 		return "", errors.Errorf("unsupported type of element: %T", element)
 	}
@@ -152,27 +122,27 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 	// log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case []interface{}:
-		return r.renderInlineElements(ctx, element, r.withVerbatim())
-	case types.QuotedText:
+		return r.renderInlineElements(ctx, element, withRenderer(r.renderPlainText))
+	case *types.QuotedText:
 		return r.renderPlainText(ctx, element.Elements)
-	case types.Icon:
+	case *types.Icon:
 		return element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
-	case types.InlineImage:
+	case *types.InlineImage:
 		return element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
-	case types.InlineLink:
+	case *types.InlineLink:
 		if alt, ok := element.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
 			return r.renderPlainText(ctx, alt)
 		}
 		return element.Location.Stringify(), nil
-	case types.BlankLine, types.ThematicBreak:
+	case *types.BlankLine, types.ThematicBreak:
 		return "\n\n", nil
-	case types.StringElement:
+	case *types.StringElement:
 		return element.Content, nil
-	case types.QuotedString:
+	case *types.QuotedString:
 		return r.renderQuotedStringPlain(ctx, element)
-	case types.Paragraph:
-		return r.renderLines(ctx, element.Lines, r.withPlainText())
-	case types.FootnoteReference:
+	// case *types.Paragraph:
+	// 	return r.renderParagraph(ctx, element, withRenderer(r.renderPlainText))
+	case *types.FootnoteReference:
 		// footnotes are rendered in HTML so they can appear as such in the table of contents
 		return r.renderFootnoteReferencePlainText(element)
 	default:

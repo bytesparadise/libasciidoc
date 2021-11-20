@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("sidebar blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("sidebar block with paragraph", func() {
 			source := `****

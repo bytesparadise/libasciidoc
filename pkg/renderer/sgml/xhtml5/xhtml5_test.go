@@ -133,7 +133,7 @@ Last updated {{.LastUpdated}}
 
 	It("document with custom icon attributes", func() {
 		// given
-		attrs := map[string]string{
+		attrs := map[string]interface{}{
 			"icons":              "font",
 			"source-highlighter": "pygments",
 		}
@@ -166,7 +166,7 @@ a note
 
 	It("document without custom icon attributes", func() {
 		// given
-		attrs := map[string]string{}
+		attrs := map[string]interface{}{}
 		source := `[source]
 ----
 foo
@@ -328,7 +328,7 @@ Last updated {{.LastUpdated}}
 `
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"),
-			configuration.WithAttributes(map[string]string{
+			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),
 			configuration.WithCSS("/path/to/style.css"),
@@ -446,7 +446,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 `
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"),
-			configuration.WithAttributes(map[string]string{
+			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),
 			configuration.WithCSS("/path/to/style.css"),

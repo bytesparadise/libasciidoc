@@ -3,6 +3,7 @@ package parser_test
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
+	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo" //nolint golint
 	. "github.com/onsi/gomega" //nolint golint
@@ -10,7 +11,7 @@ import (
 
 var _ = Describe("element attributes", func() {
 
-	Context("final documents", func() {
+	Context("in final documents", func() {
 
 		Context("element links", func() {
 
@@ -19,17 +20,15 @@ var _ = Describe("element attributes", func() {
 				It("element link alone", func() {
 					source := `[link=http://foo.bar]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
+							&types.Paragraph{
 								Attributes: types.Attributes{
 									"link": "http://foo.bar",
 								},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a paragraph",
 									},
 								},
 							},
@@ -40,17 +39,15 @@ a paragraph`
 				It("spaces in link", func() {
 					source := `[link= http://foo.bar  ]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
+							&types.Paragraph{
 								Attributes: types.Attributes{
 									"link": "http://foo.bar",
 								},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a paragraph",
 									},
 								},
 							},
@@ -63,21 +60,28 @@ a paragraph`
 			Context("with invalid syntax", func() {
 
 				It("spaces before keyword", func() {
+					// Note: Asciidoctor will produce a different output in this case
 					source := `[ link=http://foo.bar]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "[ link=http://foo.bar]",
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "[ link=",
+									},
+									&types.InlineLink{
+										Location: &types.Location{
+											Scheme: "http://",
+											Path: []interface{}{
+												&types.StringElement{
+													Content: "foo.bar",
+												},
+											},
 										},
 									},
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+									&types.StringElement{
+										Content: "]\na paragraph",
 									},
 								},
 							},
@@ -87,21 +91,28 @@ a paragraph`
 				})
 
 				It("unbalanced brackets", func() {
+					// Note: Asciidoctor will produce a different output in this case
 					source := `[link=http://foo.bar
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "[link=http://foo.bar",
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "[link=",
+									},
+									&types.InlineLink{
+										Location: &types.Location{
+											Scheme: "http://",
+											Path: []interface{}{
+												&types.StringElement{
+													Content: "foo.bar",
+												},
+											},
 										},
 									},
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+									&types.StringElement{
+										Content: "\na paragraph",
 									},
 								},
 							},
@@ -119,17 +130,15 @@ a paragraph`
 				It("normal syntax", func() {
 					source := `[[img-foobar]]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
+							&types.Paragraph{
 								Attributes: types.Attributes{
 									types.AttrID: "img-foobar",
 								},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a paragraph",
 									},
 								},
 							},
@@ -141,17 +150,15 @@ a paragraph`
 				It("short-hand syntax", func() {
 					source := `[#img-foobar]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
+							&types.Paragraph{
 								Attributes: types.Attributes{
 									types.AttrID: "img-foobar",
 								},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a paragraph",
 									},
 								},
 							},
@@ -166,19 +173,12 @@ a paragraph`
 				It("extra spaces", func() {
 					source := `[ #img-foobar ]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "[ #img-foobar ]",
-										},
-									},
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "[ #img-foobar ]\na paragraph",
 									},
 								},
 							},
@@ -190,19 +190,12 @@ a paragraph`
 				It("unbalanced brackets", func() {
 					source := `[#img-foobar
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "[#img-foobar",
-										},
-									},
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "[#img-foobar\na paragraph",
 									},
 								},
 							},
@@ -220,17 +213,15 @@ a paragraph`
 				It("valid element title", func() {
 					source := `.a title
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
+							&types.Paragraph{
 								Attributes: types.Attributes{
 									types.AttrTitle: "a title",
 								},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a paragraph",
 									},
 								},
 							},
@@ -245,25 +236,18 @@ a paragraph`
 				It("extra space after dot", func() {
 					source := `. a title
 a list item!`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.OrderedList{
-								Items: []types.OrderedListItem{
-									{
-										Level: 1,
+							&types.List{
+								Kind: types.OrderedListKind,
+								Elements: []types.ListElement{
+									&types.OrderedListElement{
 										Style: types.Arabic,
 										Elements: []interface{}{
-											types.Paragraph{
-												Lines: [][]interface{}{
-													{
-														types.StringElement{
-															Content: "a title",
-														},
-													},
-													{
-														types.StringElement{
-															Content: "a list item!",
-														},
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "a title\na list item!",
 													},
 												},
 											},
@@ -280,19 +264,12 @@ a list item!`
 					source := `!a title
 a paragraph`
 
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "!a title",
-										},
-									},
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "!a title\na paragraph",
 									},
 								},
 							},
@@ -310,17 +287,15 @@ a paragraph`
 				It("shortcut role element", func() {
 					source := `[.a_role]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
+							&types.Paragraph{
 								Attributes: types.Attributes{
 									types.AttrRoles: []interface{}{"a_role"},
 								},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a paragraph",
 									},
 								},
 							},
@@ -332,17 +307,15 @@ a paragraph`
 				It("full role syntax", func() {
 					source := `[role=a_role]
 a paragraph`
-					expected := types.Document{
+					expected := &types.Document{
 						Elements: []interface{}{
-							types.Paragraph{
+							&types.Paragraph{
 								Attributes: types.Attributes{
 									types.AttrRoles: []interface{}{"a_role"},
 								},
-								Lines: [][]interface{}{
-									{
-										types.StringElement{
-											Content: "a paragraph",
-										},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a paragraph",
 									},
 								},
 							},
@@ -353,17 +326,21 @@ a paragraph`
 			})
 
 			It("blank line after role attribute", func() {
+				// blanklines after attributes are not supported in Libasciidoc
 				source := `[.a_role]
 
 a paragraph`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						// attribute was attached to blankline, which was filtered out in the final doc
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{types.StringElement{
+						&types.Paragraph{
+							// Attributes: types.Attributes{
+							// 	types.AttrRoles: []interface{}{
+							// 		"a_role",
+							// 	},
+							// },
+							Elements: []interface{}{
+								&types.StringElement{
 									Content: "a paragraph",
-								},
 								},
 							},
 						},
@@ -373,20 +350,24 @@ a paragraph`
 			})
 
 			It("blank lines after id, role and title attributes", func() {
+				// blanklines after attributes are not supported in Libasciidoc
 				source := `[.a_role]
 [[ID]]
 .title
 
 
 a paragraph`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						// attributes were attached to blankline, which was filtered out in the final doc
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{types.StringElement{
+						&types.Paragraph{
+							// Attributes: types.Attributes{
+							// 	types.AttrID:    "ID",
+							// 	types.AttrTitle: "title",
+							// 	types.AttrRoles: []interface{}{"a_role"},
+							// },
+							Elements: []interface{}{
+								&types.StringElement{
 									Content: "a paragraph",
-								},
 								},
 							},
 						},
@@ -399,38 +380,39 @@ a paragraph`
 		Context("standalone attributes", func() {
 
 			It("single standalone attribute", func() {
+				// TODO: find a way to avoid error in the logs
+				_, restoreLogger := ConfigureLogger(logrus.FatalLevel)
+				defer restoreLogger()
 				source := `[.a_role]
 `
-				expected := types.Document{
-					Elements: []interface{}{},
-				}
+				expected := &types.Document{}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("multiple standalone attributes", func() {
+				_, restoreLogger := ConfigureLogger(logrus.FatalLevel)
+				defer restoreLogger()
 				source := `[.a_role]
 [[ID]]
 .title`
-				expected := types.Document{
-					Elements: []interface{}{},
-				}
+				expected := &types.Document{}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("multiple standalone attributes after a paragraph", func() {
+				_, restoreLogger := ConfigureLogger(logrus.FatalLevel)
+				defer restoreLogger()
 				source := `a paragraph
 			
 [.a_role]
 [[ID]]
 .title`
-				expected := types.Document{
+				expected := &types.Document{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{
-									types.StringElement{
-										Content: "a paragraph",
-									},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a paragraph",
 								},
 							},
 						},

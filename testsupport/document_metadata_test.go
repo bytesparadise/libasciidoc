@@ -17,12 +17,12 @@ var _ = Describe("document metadata", func() {
 	expected := types.Metadata{
 		LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 		TableOfContents: types.TableOfContents{
-			Sections: []types.ToCSection{
+			Sections: []*types.ToCSection{
 				{
 					ID:       "_section_1",
 					Level:    1,
 					Title:    "Section 1",
-					Children: []types.ToCSection{},
+					Children: []*types.ToCSection{},
 				},
 			},
 		},

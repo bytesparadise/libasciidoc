@@ -1,2 +1,2 @@
 clean:
-	@rm pkg/parser/parser.go
+	@-rm pkg/parser/parser.go

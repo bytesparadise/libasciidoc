@@ -27,7 +27,7 @@ var quotes = map[types.QuotedStringKind]struct {
 	},
 }
 
-func (r *sgmlRenderer) renderQuotedStringPlain(ctx *renderer.Context, s types.QuotedString) (string, error) {
+func (r *sgmlRenderer) renderQuotedStringPlain(ctx *renderer.Context, s *types.QuotedString) (string, error) {
 	buf := &strings.Builder{}
 	b, err := r.renderPlainText(ctx, s.Elements)
 	if err != nil {
@@ -39,15 +39,15 @@ func (r *sgmlRenderer) renderQuotedStringPlain(ctx *renderer.Context, s types.Qu
 	return buf.String(), nil
 }
 
-func (r *sgmlRenderer) renderQuotedString(ctx *renderer.Context, s types.QuotedString) (string, error) {
+func (r *sgmlRenderer) renderQuotedString(ctx *renderer.Context, s *types.QuotedString) (string, error) {
 	elements := append([]interface{}{
-		types.StringElement{Content: quotes[s.Kind].Open},
+		&types.StringElement{Content: quotes[s.Kind].Open},
 	}, s.Elements...)
-	elements = append(elements, types.StringElement{Content: quotes[s.Kind].Close})
+	elements = append(elements, &types.StringElement{Content: quotes[s.Kind].Close})
 	return r.renderInlineElements(ctx, elements)
 }
 
-func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str types.StringElement) (string, error) {
+func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str *types.StringElement) (string, error) {
 	buf := &strings.Builder{}
 	err := r.stringElement.Execute(buf, str.Content)
 	if err != nil {
@@ -57,7 +57,7 @@ func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str types.Stri
 	// NB: For all SGML flavors we are aware of, the numeric entities from
 	// Unicode are supported.  We generally avoid named entities.
 	result := buf.String()
-	if !ctx.UseUnicode {
+	if !ctx.UseUnicode() {
 		// convert to entities
 		result = asciiEntify(result)
 	}

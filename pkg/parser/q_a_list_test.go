@@ -10,54 +10,52 @@ import (
 
 var _ = Describe("q and a lists", func() {
 
-	It("q and a with title", func() {
+	It("with title", func() {
 		source := `.Q&A
 [qanda]
 What is libasciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
 
-		expected := types.Document{
+		expected := &types.Document{
 			Elements: []interface{}{
-				types.LabeledList{
+				&types.List{
+					Kind: types.LabeledListKind,
 					Attributes: types.Attributes{
 						types.AttrTitle: "Q&A",
 						types.AttrStyle: "qanda",
 					},
-					Items: []types.LabeledListItem{
-						{
-							Level: 1,
+					Elements: []types.ListElement{
+						&types.LabeledListElement{
+							Style: "::",
 							Term: []interface{}{
-								types.StringElement{
+								&types.StringElement{
 									Content: "What is libasciidoc?",
 								},
 							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "An implementation of the AsciiDoc processor in Golang.",
-											},
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											// heading spaces are trimmed
+											Content: "An implementation of the AsciiDoc processor in Golang.",
 										},
 									},
 								},
 							},
 						},
-						{
-							Level: 1,
+						&types.LabeledListElement{
+							Style: "::",
 							Term: []interface{}{
-								types.StringElement{
+								&types.StringElement{
 									Content: "What is the answer to the Ultimate Question?",
 								},
 							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "42",
-											},
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "42",
 										},
 									},
 								},
@@ -72,7 +70,7 @@ What is the answer to the Ultimate Question?:: 42`
 		Expect(result).To(MatchDocument(expected))
 	})
 
-	It("q and a with role and id", func() {
+	It("with role and id", func() {
 		source := `.Q&A
 [qanda#quiz]
 [.role1.role2]
@@ -80,47 +78,44 @@ What is libasciidoc?::
 	An implementation of the AsciiDoc processor in Golang.
 What is the answer to the Ultimate Question?:: 42`
 
-		expected := types.Document{
+		expected := &types.Document{
 			Elements: []interface{}{
-				types.LabeledList{
+				&types.List{
+					Kind: types.LabeledListKind,
 					Attributes: types.Attributes{
 						types.AttrTitle: "Q&A",
 						types.AttrStyle: "qanda",
 						types.AttrID:    "quiz",
 						types.AttrRoles: []interface{}{"role1", "role2"},
 					},
-					Items: []types.LabeledListItem{
-						{
-							Level: 1,
+					Elements: []types.ListElement{
+						&types.LabeledListElement{
+							Style: "::",
 							Term: []interface{}{
-								types.StringElement{Content: "What is libasciidoc?"},
+								&types.StringElement{Content: "What is libasciidoc?"},
 							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "An implementation of the AsciiDoc processor in Golang.",
-											},
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "An implementation of the AsciiDoc processor in Golang.", // heading spaces are trimmed
 										},
 									},
 								},
 							},
 						},
-						{
-							Level: 1,
+						&types.LabeledListElement{
+							Style: "::",
 							Term: []interface{}{
-								types.StringElement{
+								&types.StringElement{
 									Content: "What is the answer to the Ultimate Question?",
 								},
 							},
 							Elements: []interface{}{
-								types.Paragraph{
-									Lines: [][]interface{}{
-										{
-											types.StringElement{
-												Content: "42",
-											},
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "42",
 										},
 									},
 								},

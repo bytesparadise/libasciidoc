@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 
 	"github.com/onsi/gomega/types"
@@ -16,11 +17,23 @@ import (
 // ConfigureLogger configures the logger to write to a `Readable`.
 // Also returns a func that can be used to reset the logger at the
 // end of the test.
-func ConfigureLogger(level log.Level) (io.Reader, func()) {
+
+type TeeOption func(*tee)
+
+func DiscardStdout() TeeOption {
+	return func(t *tee) {
+		t.out = ioutil.Discard
+	}
+}
+
+func ConfigureLogger(level log.Level, opts ...TeeOption) (io.Reader, func()) {
 	fmtr := log.StandardLogger().Formatter
 	t := tee{
 		buf: bytes.NewBuffer(nil),
 		out: os.Stdout,
+	}
+	for _, apply := range opts {
+		apply(&t)
 	}
 	log.SetOutput(t)
 	log.SetFormatter(&log.JSONFormatter{

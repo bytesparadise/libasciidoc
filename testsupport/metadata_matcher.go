@@ -11,9 +11,9 @@ import (
 // MetadataTitle returns the title entry from the document metadata
 func MetadataTitle(actual string, options ...configuration.Setting) (string, error) {
 	config := configuration.NewConfiguration()
-	configuration.WithBackEnd("html5")(&config)
+	configuration.WithBackEnd("html5")(config)
 	for _, set := range options {
-		set(&config)
+		set(config)
 	}
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)

@@ -10,22 +10,6 @@ const attributesKey = "attributes"
 
 const usermacrosKey = "user_macros"
 
-func (c storeDict) pushAttributes(value interface{}) {
-	if s, ok := c[attributesKey].(*stack); ok {
-		s.push(value)
-		return
-	}
-	s := newStack()
-	s.push(value)
-	c[attributesKey] = s
-}
-
-func (c storeDict) discardAttributes() {
-	if s, ok := c[attributesKey].(*stack); ok {
-		s.pop()
-	}
-}
-
 func (c storeDict) getAttributes() interface{} {
 	if s, ok := c[attributesKey].(*stack); ok {
 		return s.get()
@@ -38,5 +22,6 @@ func (c storeDict) hasUserMacro(name string) bool {
 		_, exists := macros[name]
 		return exists
 	}
+	// log.Debugf("no user macro registered")
 	return false
 }

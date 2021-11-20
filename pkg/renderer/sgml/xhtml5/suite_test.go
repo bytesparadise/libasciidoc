@@ -2,12 +2,13 @@ package xhtml5_test
 
 import (
 	"bytes"
+	"strings"
+
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	. "github.com/onsi/ginkgo" //nolint golint
 	. "github.com/onsi/gomega" //nolint golint
 	log "github.com/sirupsen/logrus"
-	"strings"
 
 	"testing"
 
@@ -16,7 +17,7 @@ import (
 
 func RenderXHTML(actual string, settings ...configuration.Setting) (string, error) {
 	config := configuration.NewConfiguration(settings...)
-	configuration.WithBackEnd("xhtml5")(&config)
+	configuration.WithBackEnd("xhtml5")(config)
 
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
@@ -31,14 +32,12 @@ func RenderXHTML(actual string, settings ...configuration.Setting) (string, erro
 }
 
 // RenderXHTML5Title renders the HTML body using the given source
-func RenderXHTML5Title(actual string, options ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration(configuration.WithBackEnd("xhtml5"))
-	for _, set := range options {
-		set(&config)
-	}
+func RenderXHTML5Title(actual string) (string, error) {
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.Convert(contentReader, resultWriter, config)
+	metadata, err := libasciidoc.Convert(contentReader,
+		resultWriter,
+		configuration.NewConfiguration(configuration.WithBackEnd("xhtml5")))
 	if err != nil {
 		return "", err
 	}

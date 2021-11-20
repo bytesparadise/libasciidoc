@@ -45,7 +45,8 @@ var _ = Describe("concealed index terms", func() {
 		source := `(((index, term)))
 a paragraph with an index term.`
 		expected := `<div class="paragraph">
-<p>a paragraph with an index term.</p>
+<p>
+a paragraph with an index term.</p>
 </div>
 `
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
@@ -55,7 +56,8 @@ a paragraph with an index term.`
 		source := `(((index, term)))
 a paragraph with an index term.`
 		expected := `<div class="paragraph">
-<p>a paragraph with an index term.</p>
+<p>
+a paragraph with an index term.</p>
 </div>
 `
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))

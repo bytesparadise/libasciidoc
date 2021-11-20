@@ -17,7 +17,10 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*string, er
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}
 		documentDetailsBuff := &bytes.Buffer{}
-		revLabel := ctx.Attributes.GetAsStringWithDefault("version-label", "version")
+		revLabel, _, err := ctx.Attributes.GetAsString(types.AttrVersionLabel)
+		if err != nil {
+			return nil, errors.Wrap(err, "error while rendering the document details")
+		}
 		revNumber, _, err := ctx.Attributes.GetAsString("revnumber")
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")

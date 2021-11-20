@@ -11,7 +11,7 @@ import (
 
 var _ = Describe("example blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("example block with multiple elements - case 1", func() {
 			source := `====

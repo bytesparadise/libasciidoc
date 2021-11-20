@@ -35,7 +35,7 @@ here</code></pre>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("fenced block with id and title", func() {
+		It("fenced block with id and title and empty end lines", func() {
 			source := "[#id-for-fences]\n.fenced block title\n```\nsome source code\n\nhere\n\n\n\n```"
 			expected := `<div id="id-for-fences" class="listingblock">
 <div class="title">fenced block title</div>
@@ -49,7 +49,7 @@ here</code></pre>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("fenced block with external link inside", func() {
+		It("fenced block with external link inside amd empty end line", func() {
 			source := "```" + "\n" +
 				"a http://website.com" + "\n" +
 				"and more text on the" + "\n" +

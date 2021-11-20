@@ -7,240 +7,166 @@ import (
 	. "github.com/onsi/gomega" //nolint golint
 )
 
-var _ = Describe("preambles", func() {
+var _ = Describe("insert preambles", func() {
 
-	sectionATitle := []interface{}{
-		types.StringElement{Content: "Section A"},
+	header := &types.DocumentHeader{
+		Title: []interface{}{
+			&types.StringElement{
+				Content: "title",
+			},
+		},
+		Elements: []interface{}{
+			&types.AttributeDeclaration{
+				Name:  "biscuits",
+				Value: "cookies",
+			},
+		},
 	}
-
-	sectionBTitle := []interface{}{
-		types.StringElement{Content: "Section B"},
+	sectionA := &types.Section{
+		Level: 1,
+		Title: []interface{}{
+			&types.StringElement{Content: "Section A"},
+		},
+		Attributes: types.Attributes{
+			types.AttrID: "_section_a",
+		},
 	}
+	sectionB := &types.Section{
+		Level: 1,
+		Title: []interface{}{
+			&types.StringElement{Content: "Section B"},
+		},
+		Attributes: types.Attributes{
+			types.AttrID: "_section_b",
+		},
+	}
+	paragraph := &types.Paragraph{
+		Elements: []interface{}{
+			&types.StringElement{
+				Content: "a short paragraph",
+			},
+		},
+	}
+	anotherParagraph := &types.Paragraph{
+		Elements: []interface{}{
+			&types.StringElement{
+				Content: "another short paragraph",
+			},
+		},
+	}
+	blankline := &types.BlankLine{}
 
-	It("doc without sections", func() {
-		source := types.Document{
-			Attributes: types.Attributes{
-				types.AttrTitle: "foo",
-			},
-			ElementReferences: types.ElementReferences{
-				"_section_a": sectionATitle,
-				"_section_b": sectionBTitle,
-			},
-			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{Content: "a short paragraph"},
-						},
-					},
+	Context("no insertion", func() {
+
+		It("should not insert when no sections", func() {
+			// given
+			doc := &types.Document{
+				Elements: []interface{}{
+					header,
+					paragraph,
+					blankline,
+					paragraph,
 				},
-				types.BlankLine{},
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{Content: "another short paragraph"},
-						},
-					},
+			}
+			expected := &types.Document{
+				Elements: []interface{}{
+					header,
+					paragraph,
+					blankline,
+					paragraph,
 				},
-			},
-		}
-		expected := types.Document{
-			Attributes: types.Attributes{
-				types.AttrTitle: "foo",
-			},
-			ElementReferences: types.ElementReferences{
-				"_section_a": sectionATitle,
-				"_section_b": sectionBTitle,
-			},
-			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{Content: "a short paragraph"},
-						},
-					},
+			}
+			// when
+			insertPreamble(doc)
+			// then
+			Expect(doc).To(Equal(expected))
+		})
+
+		It("should not insert when no header", func() {
+			// given
+			doc := &types.Document{
+				Elements: []interface{}{
+					paragraph,
+					sectionA,
+					sectionB,
 				},
-				types.BlankLine{},
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{Content: "another short paragraph"},
-						},
-					},
+			}
+			expected := &types.Document{
+				Elements: []interface{}{
+					paragraph,
+					sectionA,
+					sectionB,
 				},
-			},
-		}
-		Expect(includePreamble(source)).To(Equal(expected))
+			}
+			// when
+			insertPreamble(doc)
+			// then
+			Expect(doc).To(Equal(expected))
+		})
 	})
 
-	It("doc with 1-paragraph preamble", func() {
-		source := types.Document{
-			Attributes: types.Attributes{
-				types.AttrTitle: "foo",
-			},
-			ElementReferences: types.ElementReferences{
-				"_section_a": sectionATitle,
-				"_section_b": sectionBTitle,
-			},
+	It("should insert preamble with 1 paragraph and blankline", func() {
+		// given
+		doc := &types.Document{
 			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{Content: "a short paragraph"},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Section{
-					Level: 1,
-					Title: sectionATitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_a",
-					},
-
-					Elements: []interface{}{},
-				},
-				types.Section{
-					Level: 1,
-					Title: sectionBTitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_b",
-					},
-					Elements: []interface{}{},
-				},
+				header,
+				paragraph,
+				blankline,
+				sectionA,
+				sectionB,
 			},
 		}
-		expected := types.Document{
-			Attributes: types.Attributes{
-				types.AttrTitle: "foo",
-			},
-			ElementReferences: types.ElementReferences{
-				"_section_a": sectionATitle,
-				"_section_b": sectionBTitle,
-			},
+		expected := &types.Document{
 			Elements: []interface{}{
-				types.Preamble{
+				header,
+				&types.Preamble{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{types.StringElement{Content: "a short paragraph"}},
-							},
-						},
-						types.BlankLine{},
+						paragraph,
+						blankline,
 					},
 				},
-				types.Section{
-					Level: 1,
-					Title: sectionATitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_a",
-					},
-
-					Elements: []interface{}{},
-				},
-				types.Section{
-					Level: 1,
-					Title: sectionBTitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_b",
-					},
-					Elements: []interface{}{},
-				},
+				sectionA,
+				sectionB,
 			},
 		}
-		Expect(includePreamble(source)).To(Equal(expected))
+		// when
+		insertPreamble(doc)
+		// then
+		Expect(doc).To(Equal(expected))
 	})
 
-	It("doc with 2-paragraph preamble", func() {
-		source := types.Document{
-			Attributes: types.Attributes{
-				types.AttrTitle: "foo",
-			},
-			ElementReferences: types.ElementReferences{
-				"_section_a": sectionATitle,
-				"_section_b": sectionBTitle,
-			},
+	It("should insert preamble with 2 paragraphs and blanklines", func() {
+		// given
+		doc := &types.Document{
 			Elements: []interface{}{
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{Content: "a short paragraph"},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Paragraph{
-					Lines: [][]interface{}{
-						{
-							types.StringElement{Content: "another short paragraph"},
-						},
-					},
-				},
-				types.BlankLine{},
-				types.Section{
-					Level: 1,
-					Title: sectionATitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_a",
-					},
-
-					Elements: []interface{}{},
-				},
-				types.Section{
-					Level: 1,
-					Title: sectionBTitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_b",
-					},
-					Elements: []interface{}{},
-				},
+				header,
+				paragraph,
+				blankline,
+				anotherParagraph,
+				blankline,
+				sectionA,
+				sectionB,
 			},
 		}
-		expected := types.Document{
-			Attributes: types.Attributes{
-				types.AttrTitle: "foo",
-			},
-			ElementReferences: types.ElementReferences{
-				"_section_a": sectionATitle,
-				"_section_b": sectionBTitle,
-			},
+		expected := &types.Document{
 			Elements: []interface{}{
-				types.Preamble{
+				header,
+				&types.Preamble{
 					Elements: []interface{}{
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{types.StringElement{Content: "a short paragraph"}},
-							},
-						},
-						types.BlankLine{},
-						types.Paragraph{
-							Lines: [][]interface{}{
-								{types.StringElement{Content: "another short paragraph"}},
-							},
-						},
-						types.BlankLine{},
+						paragraph,
+						blankline,
+						anotherParagraph,
+						blankline,
 					},
 				},
-				types.Section{
-					Level: 1,
-					Title: sectionATitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_a",
-					},
-
-					Elements: []interface{}{},
-				},
-				types.Section{
-					Level: 1,
-					Title: sectionBTitle,
-					Attributes: types.Attributes{
-						types.AttrID: "_section_b",
-					},
-					Elements: []interface{}{},
-				},
+				sectionA,
+				sectionB,
 			},
 		}
-		Expect(includePreamble(source)).To(Equal(expected))
+		// when
+		insertPreamble(doc)
+		// then
+		Expect(doc).To(Equal(expected))
 	})
 
 })

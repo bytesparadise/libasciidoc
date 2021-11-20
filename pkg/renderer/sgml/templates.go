@@ -45,7 +45,7 @@ type Templates struct {
 	MarkedText                string
 	MonospaceText             string
 	OrderedList               string
-	OrderedListItem           string
+	OrderedListElement        string
 	Paragraph                 string
 	PassthroughBlock          string
 	Preamble                  string
@@ -74,7 +74,6 @@ type Templates struct {
 	TocSection                string
 	UnorderedList             string
 	UnorderedListItem         string
-	VerbatimLine              string
 	VerseBlock                string
 	VerseParagraph            string
 }

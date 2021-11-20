@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("fenced blocks", func() {
 
-	Context("delimited blocks", func() {
+	Context("as delimited blocks", func() {
 
 		It("fenced block with surrounding empty lines", func() {
 			source := "```\n\nsome source code \n\nhere  \n\n\n\n```"

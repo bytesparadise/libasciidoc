@@ -7,9 +7,9 @@ import (
 	. "github.com/onsi/gomega" //nolint golint
 )
 
-var _ = Describe("labeled lists of items", func() {
+var _ = Describe("labeled lists", func() {
 
-	Context("simple items", func() {
+	Context("simple elements", func() {
 
 		It("simple labeled list with id, title, role and a default layout", func() {
 			source := `.mytitle
@@ -286,7 +286,7 @@ item 2
 
 	Context("labeled lists with continuation", func() {
 
-		It("labeled list with paragraph continuation", func() {
+		It("with paragraph continuation", func() {
 			source := `item 1:: description 1
 +
 foo
@@ -311,7 +311,7 @@ item 2:: description 2.`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("labeled list with blockcontinuation", func() {
+		It("with block continuation", func() {
 			source := `Item 1::
 +
 ----
@@ -348,7 +348,7 @@ another delimited block
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("labeled list with multiple item continuations", func() {
+		It("with multiple continuations", func() {
 			source := `Item 1::
 content 1
 +

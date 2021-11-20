@@ -376,19 +376,19 @@ I am a verse paragraph.`
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("image block as a verse", func() {
-			source := `[verse, john doe, verse title]
-image::foo.png[]`
-			expected := `<div class="verseblock">
-<pre class="content">image::foo.png[]</pre>
-<div class="attribution">
-&#8212; john doe<br/>
-<cite>verse title</cite>
-</div>
-</div>
-`
-			Expect(RenderXHTML(source)).To(MatchHTML(expected))
-		})
+		// 		It("image block as a verse", func() {
+		// 			source := `[verse, john doe, verse title]
+		// image::foo.png[]`
+		// 			expected := `<div class="verseblock">
+		// <pre class="content">image::foo.png[]</pre>
+		// <div class="attribution">
+		// &#8212; john doe<br/>
+		// <cite>verse title</cite>
+		// </div>
+		// </div>
+		// `
+		// 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		// 		})
 	})
 
 	Context("quote paragraphs", func() {
