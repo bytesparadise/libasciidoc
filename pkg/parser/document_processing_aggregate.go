@@ -8,7 +8,6 @@ import (
 
 // Aggregate pipeline task which organizes the sections in hierarchy, and
 // keeps track of their references.
-// Also, joins a
 // Also, takes care of wrapping all blocks between header (section 0) and first child section
 // into a `Preamble`
 // Also, takes care of inserting the Table of Contents
