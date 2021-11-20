@@ -1310,6 +1310,46 @@ a link to {scheme}:{path}[] and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("links with underscores", func() {
+				source := "link:a_[A] link:a_[A]"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText: "A",
+									},
+									Location: &types.Location{
+										Path: []interface{}{
+											&types.StringElement{
+												Content: "a_",
+											},
+										},
+									},
+								},
+								&types.StringElement{
+									Content: " ",
+								},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText: "A",
+									},
+									Location: &types.Location{
+										Path: []interface{}{
+											&types.StringElement{
+												Content: "a_",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			Context("text attribute with comma", func() {
 
 				It("relative link only with text having comma", func() {

@@ -331,6 +331,15 @@ a link to {scheme}:{path}[] and https://foo.baz`
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
+
+			It("links with underscores", func() {
+				source := "link:a_[A] link:a_[A]"
+				expected := `<div class="paragraph">
+<p><a href="a_">A</a> <a href="a_">A</a></p>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 		})
 	})
 })
