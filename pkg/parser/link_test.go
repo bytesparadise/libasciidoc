@@ -1350,6 +1350,32 @@ a link to {scheme}:{path}[] and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("links with line breaks in attributes", func() {
+				source := `link:x[
+title]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText: "title",
+									},
+									Location: &types.Location{
+										Path: []interface{}{
+											&types.StringElement{
+												Content: "x",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			Context("text attribute with comma", func() {
 
 				It("relative link only with text having comma", func() {
