@@ -1020,7 +1020,7 @@ print("two")
 			})
 
 			It("ordered list with element continuation - case 3", func() {
-				// continuation with "continued element" being a list element (ie, kinda invalid/emtpy continuation in the middle of a list)
+				// continuation with "continued element" being a list element (ie, kinda invalid/empty continuation in the middle of a list)
 				source := `. element 1
 +
 a paragraph
