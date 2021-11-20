@@ -33,9 +33,6 @@ var _ = Describe("line breaks", func() {
 			source := `:author: Xavier
 Copyright (C) 2021 {author}. +`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"author": "Xavier",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "author",

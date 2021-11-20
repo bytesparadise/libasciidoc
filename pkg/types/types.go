@@ -1538,11 +1538,18 @@ const (
 // Inline Elements
 // ------------------------------------------
 
-type InlineElements []interface{} // TODO: unnecessary alias?
-
 // NewInlineElements initializes a new `InlineElements` from the given values
-func NewInlineElements(elements ...interface{}) (InlineElements, error) {
-	return Merge(elements...), nil
+func NewInlineElements(elements ...interface{}) ([]interface{}, error) {
+	elements = merge(elements...)
+	// due to grammar optimization (and a bit hack-ish): remove space suffix from `*StringElement`` when followed by `*LineBreak`
+	for i, e := range elements {
+		if _, ok := e.(*LineBreak); ok && i > 0 {
+			if s, ok := elements[i-1].(*StringElement); ok {
+				s.Content = strings.TrimSuffix(s.Content, " ")
+			}
+		}
+	}
+	return elements, nil
 }
 
 // ------------------------------------------
@@ -1750,7 +1757,7 @@ type Footnote struct {
 func NewFootnote(ref string, elements interface{}) (*Footnote, error) {
 	log.Debugf("new footnote with elements: '%s'", spew.Sdump(elements))
 	// footnote with content get an ID
-	if elements, ok := elements.(InlineElements); ok {
+	if elements, ok := elements.([]interface{}); ok {
 		return &Footnote{
 			// ID is only set during document processing
 			Ref:      ref,
@@ -2261,7 +2268,7 @@ const (
 func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (*QuotedText, error) {
 	return &QuotedText{
 		Kind:     kind,
-		Elements: Merge(elements),
+		Elements: merge(elements),
 	}, nil
 }
 
@@ -2432,7 +2439,7 @@ const (
 func NewInlinePassthrough(kind PassthroughKind, elements []interface{}) (*InlinePassthrough, error) {
 	return &InlinePassthrough{
 		Kind:     kind,
-		Elements: Merge(elements...),
+		Elements: merge(elements...),
 	}, nil
 }
 
@@ -2741,7 +2748,7 @@ type IncludedFileLine []interface{}
 
 // NewIncludedFileLine returns a new IncludedFileLine
 func NewIncludedFileLine(content []interface{}) (IncludedFileLine, error) {
-	return IncludedFileLine(Merge(content)), nil
+	return IncludedFileLine(merge(content)), nil
 }
 
 // HasTag returns true if the line has at least one inclusion tag (start or end), false otherwise
@@ -2809,7 +2816,7 @@ type Location struct {
 
 // NewLocation return a new location with the given elements
 func NewLocation(scheme interface{}, path []interface{}) (*Location, error) {
-	path = Merge(path)
+	path = merge(path)
 	// log.Debugf("new location: scheme='%v' path='%+v", scheme, path)
 	s := ""
 	if scheme, ok := scheme.([]byte); ok {
@@ -2822,7 +2829,7 @@ func NewLocation(scheme interface{}, path []interface{}) (*Location, error) {
 }
 
 func (l *Location) SetPath(elements []interface{}) {
-	l.Path = Merge(elements)
+	l.Path = merge(elements)
 }
 
 // SetPathPrefix adds the given prefix to the path if this latter is NOT an absolute
@@ -2835,7 +2842,7 @@ func (l *Location) SetPathPrefix(p interface{}) {
 		if l.Scheme == "" && !strings.HasPrefix(l.Stringify(), "/") {
 			if u, err := url.Parse(l.Stringify()); err == nil {
 				if !u.IsAbs() {
-					l.Path = Merge(p, l.Path)
+					l.Path = merge(p, l.Path)
 				}
 			}
 		}

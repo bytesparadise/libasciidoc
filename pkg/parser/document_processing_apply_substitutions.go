@@ -623,7 +623,7 @@ func (s *substitution) processElements(ctx *ParseContext, elements []interface{}
 		log.Debugf("content has attribute substitutions: %t", found)
 	}
 	if found {
-		elements = types.Merge(elements)
+		elements, _ = types.NewInlineElements(elements)
 		// re-run the parser, skipping the `inline_passthrough` and `attribute` rules this time
 		s.disable(InlinePassthroughs) // TODO: verify when elements contain an `InlinePassthroughs`
 		if s.hasEnablements() {

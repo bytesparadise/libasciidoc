@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -98,6 +99,40 @@ func (p *parser) next() (val interface{}, err error) {
 		return nil, p.errs.err()
 	}
 	return val, p.errs.err()
+}
+
+const spaceSuffixTrackingKey = "space_suffix_tracking"
+
+func (c *current) trackSpaceSuffix(element interface{}) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("tracking space at the end of:\n%s", spew.Sdump(element))
+	}
+	switch e := element.(type) {
+	case string:
+		c.globalStore[spaceSuffixTrackingKey] = strings.HasSuffix(e, " ")
+	case *types.StringElement:
+		c.globalStore[spaceSuffixTrackingKey] = strings.HasSuffix(e.Content, " ")
+	default:
+		delete(c.state, spaceSuffixTrackingKey)
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("space suffix detected: %t", c.globalStore[spaceSuffixTrackingKey])
+	}
+}
+
+func (c *current) isPreceededBySpace() bool {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("checking if element ends with space: %t", c.globalStore[spaceSuffixTrackingKey])
+	}
+	s, ok := c.globalStore[spaceSuffixTrackingKey].(bool)
+	return ok && s
+}
+
+func (c *current) resetSpaceSuffixTracking() {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("resetting space suffix tracking")
+	}
+	delete(c.globalStore, spaceSuffixTrackingKey)
 }
 
 // verifies that the content does not end with a space

@@ -60,6 +60,7 @@ a paragraph`
 			Context("with invalid syntax", func() {
 
 				It("spaces before keyword", func() {
+					// Note: Asciidoctor will produce a different output in this case
 					source := `[ link=http://foo.bar]
 a paragraph`
 					expected := &types.Document{
@@ -67,7 +68,20 @@ a paragraph`
 							&types.Paragraph{
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "[ link=http://foo.bar]\na paragraph",
+										Content: "[ link=",
+									},
+									&types.InlineLink{
+										Location: &types.Location{
+											Scheme: "http://",
+											Path: []interface{}{
+												&types.StringElement{
+													Content: "foo.bar",
+												},
+											},
+										},
+									},
+									&types.StringElement{
+										Content: "]\na paragraph",
 									},
 								},
 							},
@@ -77,6 +91,7 @@ a paragraph`
 				})
 
 				It("unbalanced brackets", func() {
+					// Note: Asciidoctor will produce a different output in this case
 					source := `[link=http://foo.bar
 a paragraph`
 					expected := &types.Document{
@@ -84,7 +99,20 @@ a paragraph`
 							&types.Paragraph{
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "[link=http://foo.bar\na paragraph",
+										Content: "[link=",
+									},
+									&types.InlineLink{
+										Location: &types.Location{
+											Scheme: "http://",
+											Path: []interface{}{
+												&types.StringElement{
+													Content: "foo.bar",
+												},
+											},
+										},
+									},
+									&types.StringElement{
+										Content: "\na paragraph",
 									},
 								},
 							},

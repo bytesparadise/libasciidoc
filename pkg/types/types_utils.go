@@ -5,8 +5,9 @@ import (
 	"strings"
 )
 
-// Merge merge string elements together
-func Merge(elements ...interface{}) []interface{} {
+// merge merge string elements together, keeping
+// other elements intact
+func merge(elements ...interface{}) []interface{} {
 	result := make([]interface{}, 0, len(elements))
 	buf := &strings.Builder{}
 	for _, element := range elements {
@@ -22,9 +23,9 @@ func Merge(elements ...interface{}) []interface{} {
 			buf.WriteString(element.Content)
 		case []interface{}:
 			if len(element) > 0 {
-				f := Merge(element...)
+				f := merge(element...)
 				result, buf = appendBuffer(result, buf)
-				result = Merge(append(result, f...)...)
+				result = merge(append(result, f...)...)
 			}
 		default:
 			// log.Debugf("Merging with 'default' case an element of type %[1]T", element)
@@ -87,7 +88,7 @@ type ReduceOption func(string) string
 func Reduce(elements interface{}, opts ...ReduceOption) interface{} {
 	switch e := elements.(type) {
 	case []interface{}:
-		e = Merge(e...)
+		e = merge(e...)
 		switch len(e) {
 		case 0: // if empty, return nil
 			return nil

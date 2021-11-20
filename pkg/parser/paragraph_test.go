@@ -682,50 +682,6 @@ world`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("multiline paragraph with rich content", func() {
-				source := `:fds-version: 6.7.4
-				
-PyroSim is a graphical user interface for the https://github.com/firemodels/fds/releases/tag/FDS{fds-version}/[Fire Dynamics Simulator (FDS) version {fds-version}].
-FDS is closely integrated into PyroSim.
-FDS models can predict smoke, temperature, carbon monoxide, and other substances during fires.
-The results of these simulations are used to ensure the safety of buildings before construction, evaluate safety options of existing buildings, reconstruct fires for post-accident investigation, and assist in firefighter training.
-`
-				expected := &types.Document{
-					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "fds-version",
-							Value: string("6.7.4"),
-						},
-						&types.Paragraph{
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "PyroSim is a graphical user interface for the ",
-								},
-								// https://github.com/firemodels/fds/releases/tag/FDS{fds-version}/[Fire Dynamics Simulator (FDS) version {fds-version}]
-								&types.InlineLink{
-									Attributes: types.Attributes{
-										types.AttrInlineLinkText: "Fire Dynamics Simulator (FDS) version 6.7.4",
-									},
-									Location: &types.Location{
-										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "github.com/firemodels/fds/releases/tag/FDS6.7.4/",
-											},
-										},
-									},
-								},
-								&types.StringElement{
-									Content: ".\nFDS is closely integrated into PyroSim.\nFDS models can predict smoke, temperature, carbon monoxide, and other substances during fires.\nThe results of these simulations are used to ensure the safety of buildings before construction, evaluate safety options of existing buildings, reconstruct fires for post-accident investigation, and assist in firefighter training.",
-								},
-							},
-						},
-					},
-				}
-				// Expect(ParseDocument(source, parser.Debug(true))).To(MatchDocument(expected))
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
-			})
-
 			Context("with custom substitutions", func() {
 
 				// using the same input for all substitution tests
