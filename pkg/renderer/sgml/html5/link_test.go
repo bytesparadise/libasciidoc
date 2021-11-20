@@ -340,6 +340,16 @@ a link to {scheme}:{path}[] and https://foo.baz`
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
+
+			It("links with line breaks in attributes", func() {
+				source := `link:x[
+title]`
+				expected := `<div class="paragraph">
+<p><a href="x">title</a></p>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 		})
 	})
 })

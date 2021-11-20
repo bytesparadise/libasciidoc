@@ -449,10 +449,10 @@ UnquotedAttributeRawValue <-
     // so we need to count the `[` and `]` to balance
     !Space // can't start with a space (eg: can't have `[ cookie ]`)
     elements:(
-        ("[" UnquotedAttributeRawValue "]") // recursively within brackets
+        ("[" UnquotedAttributeRawValue "]") // recursively within brackets (see comment above)
         / ElementPlaceHolder
         / AttributeSubstitution
-        / ([^=,\r\n\uFFFD\] ]+ { // not within brackets and stop on space
+        / ([^=,\uFFFD\] ]+ { // not within brackets and stop on space
             return string(c.text), nil
         }) 
         / Space
@@ -1180,7 +1180,7 @@ InlineElementID <- "[[" id:(Id) "]]" Space* { // no EOL here since there can be 
 // -------------------------------------------------------------------------------------
 IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
-}
+    }
 
 IndexTermContent <- elements:(Word / QuotedString / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
     return string(c.text), nil
