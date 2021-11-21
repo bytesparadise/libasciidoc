@@ -348,6 +348,9 @@ var _ = Describe("tables", func() {
 						},
 					},
 				},
+				ElementReferences: types.ElementReferences{
+					"anchor": "table title",
+				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})

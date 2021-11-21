@@ -20,13 +20,16 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 	if xrefLabel, ok := xref.Label.(string); ok {
 		label = xrefLabel
 	} else if target, found := ctx.ElementReferences[xrefID]; found {
-		if t, ok := target.([]interface{}); ok {
-			renderedContent, err := r.renderElement(ctx, t)
+		switch t := target.(type) {
+		case string:
+			label = t
+		case []interface{}:
+			renderedContent, err := r.renderPlainText(ctx, t)
 			if err != nil {
 				return "", errors.Wrap(err, "error while rendering internal cross reference")
 			}
 			label = renderedContent
-		} else {
+		default:
 			return "", errors.Errorf("unable to process internal cross reference to element of type %T", target)
 		}
 	} else {
