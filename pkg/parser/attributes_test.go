@@ -522,10 +522,37 @@ var _ = DescribeTable("valid block attributes",
 		},
 	),
 
+	// options (explicit)
+	Entry(`[options=header]`, `[options=header]`,
+		types.Attributes{
+			types.AttrOptions: []interface{}{"header"},
+		},
+	),
+	Entry(`[options="header,footer"]`, `[options="header,footer"]`,
+		types.Attributes{
+			types.AttrOptions: []interface{}{"header", "footer"},
+		},
+	),
+
 	// option shorthand
 	Entry(`[%hardbreaks]`, `[%hardbreaks]`,
 		types.Attributes{
 			types.AttrOptions: []interface{}{"hardbreaks"},
+		},
+	),
+	Entry(`[%header]`, `[%header]`,
+		types.Attributes{
+			types.AttrOptions: []interface{}{"header"},
+		},
+	),
+	Entry(`[%footer]`, `[%footer]`,
+		types.Attributes{
+			types.AttrOptions: []interface{}{"footer"},
+		},
+	),
+	Entry(`[%header%footer]`, `[%header%footer]`,
+		types.Attributes{
+			types.AttrOptions: []interface{}{"header", "footer"},
 		},
 	),
 

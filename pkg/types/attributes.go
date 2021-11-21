@@ -117,8 +117,8 @@ const (
 	AttrFloat = "float"
 	// AttrCols the table columns attribute
 	AttrCols = "cols"
-	// AttrAutowidth the `autowidth` attribute on a table
-	AttrAutowidth = "autowidth"
+	// AttrAutoWidth the `autowidth` attribute on a table
+	AttrAutoWidth = "autowidth"
 	// AttrPositionalPrefix positional parameter prefix (DEPRECATED - use `AttrPositionalIndex`)
 	AttrPositionalPrefix = "@"
 	// AttrPositionalIndex positional parameter index
@@ -403,10 +403,24 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 				a[AttrRoles] = r
 			}
 		}
-	case AttrOption:
+	case AttrOption: // move into `options`
 		if options, ok := a[AttrOptions].([]interface{}); ok {
 			a[AttrOptions] = append(options, value)
 		} else {
+			a[AttrOptions] = []interface{}{value}
+		}
+	case AttrOptions: // make sure the value is wrapped into a []interface{}
+		switch v := value.(type) {
+		case []interface{}:
+			a[AttrOptions] = v
+		case string:
+			values := strings.Split(v, ",")
+			options := make([]interface{}, len(values))
+			for i, v := range values {
+				options[i] = v
+			}
+			a[AttrOptions] = options
+		default:
 			a[AttrOptions] = []interface{}{value}
 		}
 	default:

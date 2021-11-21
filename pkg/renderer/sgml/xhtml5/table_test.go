@@ -532,5 +532,94 @@ var _ = Describe("tables", func() {
 		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("with header option", func() {
+		source := `[cols="3*^",options="header"]
+|===
+|Dir (X,Y,Z) |Num Cells |Size
+|X |10 |0.1
+|Y |5  |0.2
+|Z |10 |0.1
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Dir (X,Y,Z)</th>
+<th class="tableblock halign-center valign-top">Num Cells</th>
+<th class="tableblock halign-center valign-top">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Y</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Z</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+</tbody>
+</table>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("with header and footer options", func() {
+		source := `[%header%footer,cols="2,2,1"] 
+|===
+|Column 1, header row
+|Column 2, header row
+|Column 3, header row
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+
+|Column 1, footer row
+|Column 2, footer row
+|Column 3, footer row
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 40%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column 1, header row</th>
+<th class="tableblock halign-left valign-top">Column 2, header row</th>
+<th class="tableblock halign-left valign-top">Column 3, header row</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cell in column 1, row 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cell in column 2, row 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cell in column 3, row 2</p></td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column 1, footer row</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, footer row</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column 3, footer row</p></td>
+</tr>
+</tfoot>
+</table>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
 	// TODO: Verify styles -- it's verified in the parser for now, but we still need to implement styles.
 })

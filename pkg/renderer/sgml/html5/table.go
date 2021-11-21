@@ -18,6 +18,7 @@ const (
 		"</colgroup>\n" +
 		"{{ .Header }}" +
 		"{{ .Body }}" +
+		"{{ .Footer }}" +
 		"{{ end }}" +
 		"</table>\n"
 
@@ -25,9 +26,13 @@ const (
 
 	tableHeaderTmpl = "{{ if .Content }}<thead>\n<tr>\n{{ .Content }}</tr>\n</thead>\n{{ end }}"
 
-	tableRowTmpl = "<tr>\n{{ .Content }}</tr>\n"
-
 	tableHeaderCellTmpl = "<th class=\"tableblock {{ halign .HAlign }} {{ valign .VAlign }}\">{{ .Content }}</th>\n"
+
+	tableFooterTmpl = "{{ if .Content }}<tfoot>\n<tr>\n{{ .Content }}</tr>\n</tfoot>\n{{ end }}"
+
+	tableFooterCellTmpl = "<td class=\"tableblock {{ halign .HAlign }} {{ valign .VAlign }}\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
+
+	tableRowTmpl = "<tr>\n{{ .Content }}</tr>\n"
 
 	tableCellTmpl = "<td class=\"tableblock {{ halign .HAlign }} {{ valign .VAlign }}\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
 )
