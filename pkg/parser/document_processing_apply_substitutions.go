@@ -170,6 +170,11 @@ func applySubstitutionsOnBlockWithElements(ctx *ParseContext, block types.BlockW
 				return err
 			}
 		}
+		if b.Footer != nil {
+			if err = s.processBlockWithElements(ctx, b.Footer, opts...); err != nil {
+				return err
+			}
+		}
 	}
 	if err := s.processBlockWithElements(ctx, block, opts...); err != nil {
 		return err

@@ -25,10 +25,6 @@ var _ = Describe("tables", func() {
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Table{
-						// Columns: []*types.TableColumn{
-						// 	{Width: "50", VAlign: "top", HAlign: "left"},
-						// 	{Width: "50", VAlign: "top", HAlign: "left"},
-						// },
 						Rows: []*types.TableRow{
 							{
 								Cells: []*types.TableCell{
@@ -78,11 +74,6 @@ var _ = Describe("tables", func() {
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Table{
-						// Columns: []*types.TableColumn{
-						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
-						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
-						// 	{Width: "33.3334", VAlign: "top", HAlign: "left"},
-						// },
 						Rows: []*types.TableRow{
 							{
 								Cells: []*types.TableCell{
@@ -140,11 +131,6 @@ var _ = Describe("tables", func() {
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Table{
-						// Columns: []*types.TableColumn{
-						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
-						// 	{Width: "33.3333", VAlign: "top", HAlign: "left"},
-						// 	{Width: "33.3334", VAlign: "top", HAlign: "left"},
-						// },
 						Rows: []*types.TableRow{
 							{
 								Cells: []*types.TableCell{
@@ -220,11 +206,6 @@ var _ = Describe("tables", func() {
 						Attributes: types.Attributes{
 							types.AttrTitle: "table title",
 						},
-						// Columns: []*types.TableColumn{
-						// 	{Width: "50", HAlign: "left", VAlign: "top"},
-						// 	{Width: "50", HAlign: "left", VAlign: "top"},
-						// },
-
 						Header: &types.TableRow{
 							Cells: []*types.TableCell{
 								{
@@ -327,11 +308,6 @@ var _ = Describe("tables", func() {
 								},
 							},
 						},
-						// Columns: []*types.TableColumn{
-						// 	// autowidth clears width
-						// 	{HAlign: "left", VAlign: "top"},
-						// 	{HAlign: "left", VAlign: "top"},
-						// },
 						Rows: []*types.TableRow{
 							{
 								Cells: []*types.TableCell{
@@ -381,10 +357,7 @@ var _ = Describe("tables", func() {
 |===`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.Table{
-						// Columns: []*types.TableColumn{},
-						// Lines:   []*types.TableLine{},
-					},
+					&types.Table{},
 				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -432,9 +405,6 @@ var _ = Describe("tables", func() {
 |===
 |===`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"cols": "2*^.^d,<e,.>s",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "cols",
@@ -463,6 +433,260 @@ var _ = Describe("tables", func() {
 									VAlign:     types.VAlignBottom,
 									Style:      types.StrongStyle,
 									Weight:     1,
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with header option", func() {
+			source := `[cols="3*^",options="header"]
+|===
+|Dir (X,Y,Z) |Num Cells |Size
+|X |10 |0.1
+|Y |5  |0.2
+|Z |10 |0.1
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 3,
+									HAlign:     types.HAlignCenter,
+									VAlign:     types.VAlignTop,
+									Weight:     1,
+								},
+							},
+							types.AttrOptions: []interface{}{"header"},
+						},
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Dir (X,Y,Z) ",
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Num Cells ",
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Size",
+										},
+									},
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "X ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "10 ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "0.1",
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "Y ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "5  ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "0.2",
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "Z ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "10 ",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "0.1",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with header and footer options", func() {
+			source := `[%header%footer,cols="2,2,1"] 
+|===
+|Column 1, header row
+|Column 2, header row
+|Column 3, header row
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+
+|Column 1, footer row
+|Column 2, footer row
+|Column 3, footer row
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignLeft,
+									VAlign:     types.VAlignTop,
+									Weight:     2,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignLeft,
+									VAlign:     types.VAlignTop,
+									Weight:     2,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignLeft,
+									VAlign:     types.VAlignTop,
+									Weight:     1,
+								},
+							},
+							types.AttrOptions: []interface{}{"header", "footer"},
+						},
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Column 1, header row",
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Column 2, header row",
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Column 3, header row",
+										},
+									},
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "Cell in column 1, row 2",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "Cell in column 2, row 2",
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "Cell in column 3, row 2",
+											},
+										},
+									},
+								},
+							},
+						},
+						Footer: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Column 1, footer row",
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Column 2, footer row",
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Column 3, footer row",
+										},
+									},
 								},
 							},
 						},
@@ -509,6 +733,30 @@ var _ = Describe("table cols", func() {
 					VAlign:     types.VAlignTop,
 					Weight:     1,
 					Width:      "100",
+				},
+			}),
+		Entry(`3*^`, `3*^`,
+			[]*types.TableColumn{
+				{
+					Multiplier: 3,
+					HAlign:     types.HAlignCenter,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "33.3333",
+				},
+				{
+					Multiplier: 3,
+					HAlign:     types.HAlignCenter,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "33.3333",
+				},
+				{
+					Multiplier: 3,
+					HAlign:     types.HAlignCenter,
+					VAlign:     types.VAlignTop,
+					Weight:     1,
+					Width:      "33.3334",
 				},
 			}),
 		Entry(`20,~,~`, `20,~,~`,

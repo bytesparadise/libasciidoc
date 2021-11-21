@@ -2947,8 +2947,8 @@ func (p *ElementPlaceHolder) String() string {
 type Table struct {
 	Attributes Attributes
 	Header     *TableRow
-	// Columns    []*TableColumn
-	Rows []*TableRow
+	Footer     *TableRow
+	Rows       []*TableRow
 }
 
 func NewTable(header interface{}, elements []interface{}) (*Table, error) {
@@ -3009,6 +3009,16 @@ func (t *Table) AddAttributes(attributes Attributes) {
 
 func (t *Table) SetAttributes(attributes Attributes) {
 	t.Attributes = attributes
+	// if `header` option, then make sure that the first row is the header
+	if t.Header == nil && len(t.Rows) > 0 && t.Attributes.HasOption("header") {
+		t.Header = t.Rows[0]
+		t.Rows = t.Rows[1:]
+	}
+	// if `footer` option, then make sure that the last row is the header
+	if t.Footer == nil && len(t.Rows) > 0 && t.Attributes.HasOption("footer") {
+		t.Footer = t.Rows[len(t.Rows)-1]
+		t.Rows = t.Rows[:len(t.Rows)-1]
+	}
 }
 
 type HAlign string
@@ -3093,7 +3103,9 @@ func (t *Table) Columns() ([]*TableColumn, error) {
 			switch col := col.(type) {
 			case *TableColumn:
 				for i := 0; i < col.Multiplier; i++ {
-					result = append(result, col)
+					// affect in new variable so we have a *copy*!
+					c := *col
+					result = append(result, &c)
 				}
 			default:
 				return nil, fmt.Errorf("invalid type of column definition: '%T'", col)
@@ -3111,7 +3123,7 @@ func (t *Table) Columns() ([]*TableColumn, error) {
 		}
 	}
 	// unless table is set with "full autowidth"
-	if !t.Attributes.HasOption(AttrAutowidth) {
+	if !t.Attributes.HasOption(AttrAutoWidth) {
 		sumWeight := 0
 		colsWithAutowidth := false
 		for _, col := range result {
@@ -3134,13 +3146,18 @@ func (t *Table) Columns() ([]*TableColumn, error) {
 					width := float64(col.Weight*100) / float64(sumWeight)
 					col.Width = strconv.FormatFloat(width, 'g', 6, 64)
 					sumWidth += int(width * 1e4)
+					log.Debugf("col %d width: %s", i, col.Width)
 				} else {
 					// rounding on the last column, to make sure that the sum reaches 100
 					width := (float64(1e6-sumWidth) / 1e4)
 					col.Width = strconv.FormatFloat(width, 'g', 6, 64)
+					log.Debugf("col %d width (last): %s", i, col.Width)
 				}
 			}
 		}
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("cols: %s", spew.Sdump(result))
 	}
 	return result, nil
 }
