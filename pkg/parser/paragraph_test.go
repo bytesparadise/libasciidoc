@@ -1530,6 +1530,9 @@ NOTE: this is a note.`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"cookie": "chocolate",
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1586,6 +1589,9 @@ this is a
 								},
 							},
 						},
+					},
+					ElementReferences: types.ElementReferences{
+						"cookie": "chocolate",
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1721,6 +1727,9 @@ I am a verse paragraph.`
 								},
 							},
 						},
+					},
+					ElementReferences: types.ElementReferences{
+						"universal": "universe",
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))

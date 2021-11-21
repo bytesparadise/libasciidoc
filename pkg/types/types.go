@@ -64,6 +64,10 @@ type BlockWithLocation interface {
 	SetLocation(*Location) // TODO: unused?
 }
 
+type Referencable interface {
+	Ref() (string, interface{})
+}
+
 // ------------------------------------------
 // Substitution support
 // ------------------------------------------
@@ -1503,6 +1507,14 @@ func (p *Paragraph) mapAttributes() {
 	}
 }
 
+var _ Referencable = &Paragraph{}
+
+func (p *Paragraph) Ref() (string, interface{}) {
+	id := p.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := p.Attributes[AttrTitle]
+	return id, title
+}
+
 var _ WithFootnotes = &Paragraph{}
 
 // SubstituteFootnotes replaces the footnotes in the paragraph lines
@@ -1968,6 +1980,14 @@ func (b *DelimitedBlock) mapAttributes() {
 	}
 }
 
+var _ Referencable = &DelimitedBlock{}
+
+func (b *DelimitedBlock) Ref() (string, interface{}) {
+	id := b.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := b.Attributes[AttrTitle]
+	return id, title
+}
+
 // TODO: not needed?
 const (
 	// AttrLiteralBlockType the type of literal block, ie, how it was parsed
@@ -2040,7 +2060,6 @@ func (s *Section) ResolveID(attrs map[string]interface{}, refs ElementReferences
 			log.Debugf("updated section id to '%s' (to avoid duplicate refs)", s.Attributes[AttrID])
 		}
 		if _, exists := refs[id]; !exists {
-			refs[id] = s.Title
 			s.Attributes[AttrID] = id
 			break
 		}
@@ -2075,6 +2094,13 @@ func (s *Section) resolveID(attrs Attributes) (string, error) {
 	s.Attributes[AttrID] = id
 	log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
 	return id, nil
+}
+
+var _ Referencable = &Section{}
+
+func (s *Section) Ref() (string, interface{}) {
+	id := s.Attributes.GetAsStringWithDefault(AttrID, "")
+	return id, s.Title
 }
 
 var _ WithElementAddition = &Section{}
@@ -3019,6 +3045,14 @@ func (t *Table) SetAttributes(attributes Attributes) {
 		t.Footer = t.Rows[len(t.Rows)-1]
 		t.Rows = t.Rows[:len(t.Rows)-1]
 	}
+}
+
+var _ Referencable = &Table{}
+
+func (t *Table) Ref() (string, interface{}) {
+	id := t.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := t.Attributes[AttrTitle]
+	return id, title
 }
 
 type HAlign string

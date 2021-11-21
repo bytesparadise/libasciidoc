@@ -110,6 +110,9 @@ end`,
 						},
 					},
 				},
+				ElementReferences: types.ElementReferences{
+					"id-for-source-block": "app.rb",
+				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})

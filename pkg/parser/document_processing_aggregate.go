@@ -92,6 +92,12 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 					return nil, nil, err
 				}
 			}
+			// also, check if the element has refs
+			if e, ok := element.(types.Referencable); ok {
+				if id, title := e.Ref(); id != "" && title != nil {
+					refs[id] = title
+				}
+			}
 		}
 	}
 

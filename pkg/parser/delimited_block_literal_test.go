@@ -108,6 +108,9 @@ a normal paragraph.`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"ID": "title",
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -165,6 +168,9 @@ a normal paragraph.`
 								},
 							},
 						},
+					},
+					ElementReferences: types.ElementReferences{
+						"ID": "title",
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -233,6 +239,9 @@ a normal paragraph.`
 								},
 							},
 						},
+					},
+					ElementReferences: types.ElementReferences{
+						"ID": "title",
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))

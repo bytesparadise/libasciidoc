@@ -14,7 +14,7 @@ var _ = Describe("cross references", func() {
 
 		Context("internal references", func() {
 
-			It("cross reference with custom id alone", func() {
+			It("with custom id alone", func() {
 				source := `[[thetitle]]
 == a title
 
@@ -57,7 +57,7 @@ with some content linked to <<thetitle>>!`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("cross reference with custom id and label", func() {
+			It("with custom id and label", func() {
 				source := `[[thetitle]]
 == a title
 
@@ -96,6 +96,199 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 					ElementReferences: types.ElementReferences{
 						"thetitle": title,
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("to section defined later in the document", func() {
+				source := `a reference to <<section>>
+	
+[#section]
+== A section with a link to https://example.com
+
+some content`
+				title := []interface{}{
+					&types.StringElement{
+						Content: "A section with a link to ",
+					},
+					&types.InlineLink{
+						Location: &types.Location{
+							Scheme: "https://",
+							Path: []interface{}{
+								&types.StringElement{
+									Content: "example.com",
+								},
+							},
+						},
+					},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a reference to ",
+								},
+								&types.InternalCrossReference{
+									ID: "section",
+								},
+							},
+						},
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID:       "section",
+								types.AttrCustomID: true,
+							},
+							Level: 1,
+							Title: title,
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "some content",
+										},
+									},
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"section": title,
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("to delimited block defined later in the document", func() {
+				source := `a reference to <<block>>
+	
+[#block]
+.The block
+----
+some content
+----`
+
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a reference to ",
+								},
+								&types.InternalCrossReference{
+									ID: "block",
+								},
+							},
+						},
+						&types.DelimitedBlock{
+							Kind: types.Listing,
+							Attributes: types.Attributes{
+								types.AttrID:    "block",
+								types.AttrTitle: "The block",
+							},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some content",
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"block": "The block",
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("to paragraph defined later in the document", func() {
+				source := `a reference to <<a-paragraph>>
+	
+[#a-paragraph]
+.another paragraph
+some content`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a reference to ",
+								},
+								&types.InternalCrossReference{
+									ID: "a-paragraph",
+								},
+							},
+						},
+						&types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrID:    "a-paragraph",
+								types.AttrTitle: "another paragraph",
+							},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some content",
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"a-paragraph": "another paragraph",
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("to table defined later in the document", func() {
+				source := `a reference to <<table>>
+	
+[#table]
+.The table
+|===
+| A | B
+|===
+`
+
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a reference to ",
+								},
+								&types.InternalCrossReference{
+									ID: "table",
+								},
+							},
+						},
+						&types.Table{
+							Attributes: types.Attributes{
+								types.AttrID:    "table",
+								types.AttrTitle: "The table",
+							},
+							Rows: []*types.TableRow{
+								{
+									Cells: []*types.TableCell{
+										{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "A ",
+												},
+											},
+										},
+										{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "B",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"table": "The table",
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))

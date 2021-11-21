@@ -11,7 +11,7 @@ var _ = Describe("cross references", func() {
 
 	Context("internal references", func() {
 
-		It("cross reference with custom id", func() {
+		It("with custom id", func() {
 
 			source := `[[thetitle]]
 == a title
@@ -29,7 +29,7 @@ with some content linked to <<thetitle>>!`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("cross reference with custom id and label", func() {
+		It("custom id and label", func() {
 			source := `[[thetitle]]
 == a title
 
@@ -39,6 +39,45 @@ with some content linked to <<thetitle,a label to the title>>!`
 <div class="sectionbody">
 <div class="paragraph">
 <p>with some content linked to <a href="#thetitle">a label to the title</a>!</p>
+</div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("to paragraph defined later in the document", func() {
+			source := `a reference to <<a-paragraph>>
+
+[#a-paragraph]
+.another paragraph
+some content`
+			expected := `<div class="paragraph">
+<p>a reference to <a href="#a-paragraph">another paragraph</a></p>
+</div>
+<div id="a-paragraph" class="paragraph">
+<div class="title">another paragraph</div>
+<p>some content</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("to section defined later in the document", func() {
+			source := `a reference to <<section>>
+
+[#section]
+== A section with a link to https://example.com
+
+some content`
+			expected := `<div class="paragraph">
+<p>a reference to <a href="#section">A section with a link to https://example.com</a></p>
+</div>
+<div class="sect1">
+<h2 id="section">A section with a link to <a href="https://example.com" class="bare">https://example.com</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>some content</p>
 </div>
 </div>
 </div>
