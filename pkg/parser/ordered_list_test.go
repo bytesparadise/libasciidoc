@@ -1110,7 +1110,7 @@ image::chocolate.png[]`
 											Location: &types.Location{
 												Path: []interface{}{
 													&types.StringElement{
-														"cookie.png",
+														Content: "cookie.png",
 													},
 												},
 											},
@@ -1131,7 +1131,7 @@ image::chocolate.png[]`
 											Location: &types.Location{
 												Path: []interface{}{
 													&types.StringElement{
-														"chocolate.png",
+														Content: "chocolate.png",
 													},
 												},
 											},
