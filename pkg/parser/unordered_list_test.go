@@ -997,7 +997,7 @@ on 2 lines, too.`
 
 		Context("list element continuation", func() {
 
-			It("with item continuation - case 1", func() {
+			It("case 1", func() {
 				source := `* foo
 +
 ----
@@ -1063,7 +1063,7 @@ another delimited block
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("with item continuation - case 2", func() {
+			It("case 2", func() {
 				source := `.Unordered, complex
 * level 1
 ** level 2
@@ -1199,7 +1199,7 @@ The {plus} symbol is on a new line.
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("with list element continuation - case 3", func() {
+			It("case 3", func() {
 				source := `- here
 +
 _there_`
@@ -1239,76 +1239,6 @@ _there_`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
-
-			It("without item continuation", func() {
-				source := `* foo
-
-----
-a delimited block
-----
-
-* bar
-
-----
-another delimited block
-----`
-				expected := &types.Document{
-					Elements: []interface{}{
-						&types.List{
-							Kind: types.UnorderedListKind,
-							Elements: []types.ListElement{
-								&types.UnorderedListElement{
-									BulletStyle: types.OneAsterisk,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										&types.Paragraph{
-											Elements: []interface{}{
-												&types.StringElement{Content: "foo"},
-											},
-										},
-									},
-								},
-							},
-						},
-						&types.DelimitedBlock{
-							Kind: types.Listing,
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "a delimited block",
-								},
-							},
-						},
-						&types.List{
-							Kind: types.UnorderedListKind,
-							Elements: []types.ListElement{
-								&types.UnorderedListElement{
-									BulletStyle: types.OneAsterisk,
-									CheckStyle:  types.NoCheck,
-									Elements: []interface{}{
-										&types.Paragraph{
-											Elements: []interface{}{
-												&types.StringElement{Content: "bar"},
-											},
-										},
-									},
-								},
-							},
-						},
-						&types.DelimitedBlock{
-							Kind: types.Listing,
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "another delimited block",
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
-			})
-		})
-
-		Context("attach to ancestor", func() {
 
 			It("attach to grandparent item", func() {
 				source := `* grandparent list element
@@ -1453,5 +1383,73 @@ paragraph attached to parent list element`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
+
+		It("without item continuation", func() {
+			source := `* foo
+
+----
+a delimited block
+----
+
+* bar
+
+----
+another delimited block
+----`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "foo"},
+										},
+									},
+								},
+							},
+						},
+					},
+					&types.DelimitedBlock{
+						Kind: types.Listing,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a delimited block",
+							},
+						},
+					},
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "bar"},
+										},
+									},
+								},
+							},
+						},
+					},
+					&types.DelimitedBlock{
+						Kind: types.Listing,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "another delimited block",
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
 	})
 })

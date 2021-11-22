@@ -88,7 +88,7 @@ lines</p>
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list item reversed with explicit quoted numbering and start", func() {
+	It("item reversed with explicit quoted numbering and start", func() {
 		source := `[lowerroman%reversed, start="5"]
 . item 1
 . item 2`
@@ -106,11 +106,13 @@ lines</p>
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("with paragraph continuation", func() {
-		source := `. item 1
+	Context("with list element continuation", func() {
+
+		It("case 1", func() {
+			source := `. item 1
 +
 foo`
-		expected := `<div class="olist arabic">
+			expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>item 1</p>
@@ -121,16 +123,16 @@ foo`
 </ol>
 </div>
 `
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
-	})
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 
-	It("with delimited block continuation", func() {
-		source := `. item 1
+		It("case 2", func() {
+			source := `. item 1
 +
 ----
 foo
 ----`
-		expected := `<div class="olist arabic">
+			expected := `<div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>item 1</p>
@@ -143,7 +145,106 @@ foo
 </ol>
 </div>
 `
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("case 3", func() {
+			source := `. cookie
++
+image::cookie.png[]
++
+. chocolate
++
+image::chocolate.png[]`
+			expected := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>cookie</p>
+<div class="imageblock">
+<div class="content">
+<img src="cookie.png" alt="cookie">
+</div>
+</div>
+</li>
+<li>
+<p>chocolate</p>
+<div class="imageblock">
+<div class="content">
+<img src="chocolate.png" alt="chocolate">
+</div>
+</div>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("case 4", func() {
+			source := `. In the table, enter the data shown in <<non-uniform-mesh>>
++
+[#non-uniform-mesh]
+.Non-Uniform Mesh Parameters
+[cols="3*^",options="header"]
+|===
+|Dir (X,Y,Z) |Num Cells |Size
+|X |10 |0.1
+|Y |10 |0.1
+|Y |5  |0.2
+|Z |10 |0.1
+|===
++
+. Click *OK*`
+			expected := `<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the table, enter the data shown in <a href="#non-uniform-mesh">Non-Uniform Mesh Parameters</a></p>
+<table id="non-uniform-mesh" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Non-Uniform Mesh Parameters</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Dir (X,Y,Z)</th>
+<th class="tableblock halign-center valign-top">Num Cells</th>
+<th class="tableblock halign-center valign-top">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Y</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Y</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Z</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>Click <strong>OK</strong></p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	It("with unnumbered items", func() {
@@ -195,7 +296,7 @@ foo
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list mixed with unordered list - simple case", func() {
+	It("mixed with unordered list - simple case", func() {
 		source := `. Linux
 * Fedora
 * Ubuntu
@@ -240,7 +341,7 @@ foo
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("ordered list mixed with unordered list - complex case", func() {
+	It("mixed with unordered list - complex case", func() {
 		source := `- unordered 1
 1. ordered 1.1
 	a. ordered 1.1.a

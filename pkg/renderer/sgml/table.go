@@ -7,9 +7,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (string, error) {
@@ -94,6 +92,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 	}
 	err = r.table.Execute(result, struct {
 		Context     *renderer.Context
+		ID          string
 		Title       string
 		Columns     []*types.TableColumn
 		TableNumber int
@@ -110,6 +109,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 		Footer      string
 	}{
 		Context:     ctx,
+		ID:          r.renderElementID(t.Attributes),
 		Title:       title,
 		Columns:     columns,
 		TableNumber: number,
@@ -186,11 +186,11 @@ func (r *sgmlRenderer) renderTableFooter(ctx *renderer.Context, f *types.TableRo
 }
 
 func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.TableRow, columns []*types.TableColumn) (string, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("rendering table body")
-		log.Debugf("columns:\n%s", spew.Sdump(columns))
-		log.Debugf("rows:\n%s", spew.Sdump(rows))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debug("rendering table body")
+	// 	log.Debugf("columns:\n%s", spew.Sdump(columns))
+	// 	log.Debugf("rows:\n%s", spew.Sdump(rows))
+	// }
 	result := &strings.Builder{}
 	content := &strings.Builder{}
 	for _, row := range rows {
@@ -242,9 +242,9 @@ func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, tmpl *template.Tem
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render cell")
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("rendering cell with content '%s' and def %s", content, spew.Sdump(col))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("rendering cell with content '%s' and def %s", content, spew.Sdump(col))
+	// }
 	err = tmpl.Execute(result, struct {
 		Context *renderer.Context
 		Content string
