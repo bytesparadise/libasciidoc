@@ -281,7 +281,7 @@ var _ = Describe("ordered lists", func() {
 
 		Context("elements without numbers", func() {
 
-			It("ordered list with simple unnumbered elements", func() {
+			It("with simple unnumbered elements", func() {
 				source := `. a
 . b`
 
@@ -344,7 +344,7 @@ var _ = Describe("ordered lists", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("ordered list with unnumbered elements", func() {
+			It("with unnumbered elements", func() {
 				source := `. element 1
 . element 2`
 
@@ -380,7 +380,7 @@ var _ = Describe("ordered lists", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("ordered list with custom numbering on child elements with tabs ", func() {
+			It("with custom numbering on child elements with tabs ", func() {
 				// note: the [upperroman] attribute must be at the beginning of the line
 				source := `. element 1
 			.. element 1.1
@@ -491,7 +491,7 @@ var _ = Describe("ordered lists", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("ordered list with all default styles and blank lines", func() {
+			It("with all default styles and blank lines", func() {
 				source := `. level 1
 
 .. level 2
@@ -588,7 +588,7 @@ var _ = Describe("ordered lists", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("ordered list with all default styles and no blank line", func() {
+			It("with all default styles and no blank line", func() {
 				source := `. level 1
 .. level 2
 ... level 3
@@ -680,7 +680,7 @@ var _ = Describe("ordered lists", func() {
 
 		Context("numbered elements", func() {
 
-			It("ordered list with simple numbered elements", func() {
+			It("with simple numbered elements", func() {
 				source := `1. a
 2. b`
 				expected := &types.Document{
@@ -830,7 +830,7 @@ var _ = Describe("ordered lists", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("ordered list with numbered elements", func() {
+			It("with numbered elements", func() {
 				source := `1. element 1
 a. element 1.a
 2. element 2
@@ -900,7 +900,7 @@ b. element 2.a`
 
 		Context("list element continuation", func() {
 
-			It("ordered list with element continuation - case 1", func() {
+			It("case 1", func() {
 				source := `. foo
 +
 ----
@@ -960,7 +960,7 @@ another delimited block
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("ordered list with element continuation - case 2", func() {
+			It("case 2", func() {
 				source := `. {blank}
 +
 ----
@@ -1019,7 +1019,7 @@ print("two")
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("ordered list with element continuation - case 3", func() {
+			It("case 3", func() {
 				// continuation with "continued element" being a list element (ie, kinda invalid/empty continuation in the middle of a list)
 				source := `. element 1
 +
@@ -1071,6 +1071,68 @@ a paragraph
 											Elements: []interface{}{
 												&types.StringElement{
 													Content: "element 3",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("case 4", func() {
+				source := `. cookie
++
+image::cookie.png[]
++
+. chocolate
++
+image::chocolate.png[]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.List{
+							Kind: types.OrderedListKind,
+							Elements: []types.ListElement{
+								&types.OrderedListElement{
+									Style: types.Arabic,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "cookie",
+												},
+											},
+										},
+										&types.ImageBlock{
+											Location: &types.Location{
+												Path: []interface{}{
+													&types.StringElement{
+														"cookie.png",
+													},
+												},
+											},
+										},
+									},
+								},
+								&types.OrderedListElement{
+									Style: types.Arabic,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "chocolate",
+												},
+											},
+										},
+										&types.ImageBlock{
+											Location: &types.Location{
+												Path: []interface{}{
+													&types.StringElement{
+														"chocolate.png",
+													},
 												},
 											},
 										},

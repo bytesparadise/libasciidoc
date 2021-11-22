@@ -1,7 +1,7 @@
 package xhtml5
 
 const (
-	tableTmpl = "<table class=\"tableblock" +
+	tableTmpl = "<table {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"tableblock" +
 		" frame-{{ .Frame }} grid-{{ .Grid }}" +
 		"{{ if .Stripes }} stripes-{{ .Stripes }}{{ end }}" +
 		"{{ if .Fit }} {{ .Fit }}{{ end }}" +

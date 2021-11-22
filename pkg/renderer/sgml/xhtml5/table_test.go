@@ -498,8 +498,6 @@ var _ = Describe("tables", func() {
 	})
 
 	It("columns with alignment changes", func() {
-		// source := "[cols=\"2*^.^,<,.>,>\"]\n|===\n|==="
-
 		source := "[cols=\"2*^.^,<,.>,>\"]\n|===\n|h1|h2|h3|h4|h5\n\n|one|two|three|four|five\n|==="
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -617,6 +615,59 @@ var _ = Describe("tables", func() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">Column 3, footer row</p></td>
 </tr>
 </tfoot>
+</table>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("with id and title", func() {
+		source := `[#non-uniform-mesh]
+.Non-Uniform Mesh Parameters
+[cols="3*^",options="header"]
+|===
+|Dir (X,Y,Z) |Num Cells |Size
+|X |10 |0.1
+|Y |10 |0.1
+|Y |5  |0.2
+|Z |10 |0.1
+|===`
+
+		expected := `<table id="non-uniform-mesh" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Non-Uniform Mesh Parameters</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Dir (X,Y,Z)</th>
+<th class="tableblock halign-center valign-top">Num Cells</th>
+<th class="tableblock halign-center valign-top">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Y</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Y</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Z</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+</tbody>
 </table>
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))

@@ -134,13 +134,15 @@ short) breaks</p>
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("simple unordered list with continuation", func() {
-		source := `* item 1
+	Context("with list element continuation", func() {
+
+		It("case 1", func() {
+			source := `* item 1
 +
 foo
 
 * item 2`
-		expected := `<div class="ulist">
+			expected := `<div class="ulist">
 <ul>
 <li>
 <p>item 1</p>
@@ -154,7 +156,63 @@ foo
 </ul>
 </div>
 `
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("case 2", func() {
+			source := `* foo
++
+----
+a delimited block
+----
++
+----
+another delimited block
+----
+* bar
+`
+			expected := `<div class="ulist">
+<ul>
+<li>
+<p>foo</p>
+<div class="listingblock">
+<div class="content">
+<pre>a delimited block</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>another delimited block</pre>
+</div>
+</div>
+</li>
+<li>
+<p>bar</p>
+</li>
+</ul>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("case 3", func() {
+			source := `- here
++
+_there_
+`
+			expected := `<div class="ulist">
+<ul>
+<li>
+<p>here</p>
+<div class="paragraph">
+<p><em>there</em></p>
+</div>
+</li>
+</ul>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	It("nested unordered lists without a title", func() {
@@ -209,61 +267,6 @@ foo
 </li>
 <li>
 <p>item 2</p>
-</li>
-</ul>
-</div>
-`
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
-	})
-
-	It("unordered list with item continuation - case 1", func() {
-		source := `* foo
-+
-----
-a delimited block
-----
-+
-----
-another delimited block
-----
-* bar
-`
-		expected := `<div class="ulist">
-<ul>
-<li>
-<p>foo</p>
-<div class="listingblock">
-<div class="content">
-<pre>a delimited block</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>another delimited block</pre>
-</div>
-</div>
-</li>
-<li>
-<p>bar</p>
-</li>
-</ul>
-</div>
-`
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
-	})
-
-	It("unordered list with item continuation - case 2", func() {
-		source := `- here
-+
-_there_
-`
-		expected := `<div class="ulist">
-<ul>
-<li>
-<p>here</p>
-<div class="paragraph">
-<p><em>there</em></p>
-</div>
 </li>
 </ul>
 </div>
