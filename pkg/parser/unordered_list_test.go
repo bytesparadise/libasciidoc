@@ -68,6 +68,9 @@ var _ = Describe("unordered lists", func() {
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"listID": "mytitle",
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})

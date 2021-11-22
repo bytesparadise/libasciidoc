@@ -293,6 +293,81 @@ some content`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("to attached element in a list", func() {
+				source := `a reference to <<table>>
+	
+. list element
++				
+[#table]
+.The table
+|===
+| A | B
+|===
+`
+
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a reference to ",
+								},
+								&types.InternalCrossReference{
+									ID: "table",
+								},
+							},
+						},
+						&types.List{
+							Kind: types.OrderedListKind,
+							Elements: []types.ListElement{
+								&types.OrderedListElement{
+									Style: types.Arabic,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "list element",
+												},
+											},
+										},
+										&types.Table{
+											Attributes: types.Attributes{
+												types.AttrID:    "table",
+												types.AttrTitle: "The table",
+											},
+											Rows: []*types.TableRow{
+												{
+													Cells: []*types.TableCell{
+														{
+															Elements: []interface{}{
+																&types.StringElement{
+																	Content: "A ",
+																},
+															},
+														},
+														{
+															Elements: []interface{}{
+																&types.StringElement{
+																	Content: "B",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"table": "The table",
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 
 		Context("external references", func() {
