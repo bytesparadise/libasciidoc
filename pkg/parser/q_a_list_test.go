@@ -124,6 +124,9 @@ What is the answer to the Ultimate Question?:: 42`
 					},
 				},
 			},
+			ElementReferences: types.ElementReferences{
+				"quiz": "Q&A",
+			},
 		}
 		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})

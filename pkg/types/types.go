@@ -65,7 +65,7 @@ type BlockWithLocation interface {
 }
 
 type Referencable interface {
-	Ref() (string, interface{})
+	Reference(refs ElementReferences)
 }
 
 // ------------------------------------------
@@ -717,6 +717,20 @@ func (l *List) AddElement(element interface{}) error {
 	return errors.Errorf("cannot add element of type '%T' to list of kind '%s'", element, l.Kind)
 }
 
+func (l *List) Reference(refs ElementReferences) {
+	id := l.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := l.Attributes[AttrTitle]
+	if id != "" && title != nil {
+		refs[id] = title
+	}
+	// also, visit elements
+	for _, e := range l.Elements {
+		if e, ok := e.(Referencable); ok {
+			e.Reference(refs)
+		}
+	}
+}
+
 func (l *List) LastElement() ListElement {
 	if len(l.Elements) == 0 {
 		return nil
@@ -898,6 +912,22 @@ func NewCalloutListElement(ref int, content RawLine) (*CalloutListElement, error
 	}, nil
 }
 
+var _ Referencable = &CalloutListElement{}
+
+func (e *CalloutListElement) Reference(refs ElementReferences) {
+	id := e.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := e.Attributes[AttrTitle]
+	if id != "" && title != nil {
+		refs[id] = title
+	}
+	// also, visit elements
+	for _, e := range e.Elements {
+		if e, ok := e.(Referencable); ok {
+			e.Reference(refs)
+		}
+	}
+}
+
 // checks if the given list element matches the level of this element
 func (e *CalloutListElement) matchesStyle(other ListElement) bool {
 	_, ok := other.(*CalloutListElement)
@@ -989,6 +1019,22 @@ func NewOrderedListElement(prefix OrderedListElementPrefix, content interface{})
 			content,
 		},
 	}, nil
+}
+
+var _ Referencable = &OrderedListElement{}
+
+func (e *OrderedListElement) Reference(refs ElementReferences) {
+	id := e.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := e.Attributes[AttrTitle]
+	if id != "" && title != nil {
+		refs[id] = title
+	}
+	// also, visit elements
+	for _, e := range e.Elements {
+		if e, ok := e.(Referencable); ok {
+			e.Reference(refs)
+		}
+	}
 }
 
 // checks if the given list element matches the level of this element
@@ -1103,6 +1149,22 @@ func NewUnorderedListElement(prefix UnorderedListElementPrefix, checkstyle inter
 			content,
 		},
 	}, nil
+}
+
+var _ Referencable = &UnorderedListElement{}
+
+func (e *UnorderedListElement) Reference(refs ElementReferences) {
+	id := e.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := e.Attributes[AttrTitle]
+	if id != "" && title != nil {
+		refs[id] = title
+	}
+	// also, visit elements
+	for _, e := range e.Elements {
+		if e, ok := e.(Referencable); ok {
+			e.Reference(refs)
+		}
+	}
 }
 
 // checks if the given list element matches the level of this element
@@ -1331,6 +1393,22 @@ func NewLabeledListElement(level int, term, description interface{}) (*LabeledLi
 	}, nil
 }
 
+var _ Referencable = &LabeledListElement{}
+
+func (e *LabeledListElement) Reference(refs ElementReferences) {
+	id := e.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := e.Attributes[AttrTitle]
+	if id != "" && title != nil {
+		refs[id] = title
+	}
+	// also, visit elements
+	for _, e := range e.Elements {
+		if e, ok := e.(Referencable); ok {
+			e.Reference(refs)
+		}
+	}
+}
+
 // making sure that the `ListElement` interface is implemented by `LabeledListElement`
 var _ ListElement = &LabeledListElement{}
 
@@ -1509,10 +1587,12 @@ func (p *Paragraph) mapAttributes() {
 
 var _ Referencable = &Paragraph{}
 
-func (p *Paragraph) Ref() (string, interface{}) {
+func (p *Paragraph) Reference(refs ElementReferences) {
 	id := p.Attributes.GetAsStringWithDefault(AttrID, "")
 	title := p.Attributes[AttrTitle]
-	return id, title
+	if id != "" && title != nil {
+		refs[id] = title
+	}
 }
 
 var _ WithFootnotes = &Paragraph{}
@@ -1982,10 +2062,18 @@ func (b *DelimitedBlock) mapAttributes() {
 
 var _ Referencable = &DelimitedBlock{}
 
-func (b *DelimitedBlock) Ref() (string, interface{}) {
+func (b *DelimitedBlock) Reference(refs ElementReferences) {
 	id := b.Attributes.GetAsStringWithDefault(AttrID, "")
 	title := b.Attributes[AttrTitle]
-	return id, title
+	if id != "" && title != nil {
+		refs[id] = title
+	}
+	// also, visit elements
+	for _, e := range b.Elements {
+		if e, ok := e.(Referencable); ok {
+			e.Reference(refs)
+		}
+	}
 }
 
 // TODO: not needed?
@@ -2098,9 +2186,11 @@ func (s *Section) resolveID(attrs Attributes) (string, error) {
 
 var _ Referencable = &Section{}
 
-func (s *Section) Ref() (string, interface{}) {
+func (s *Section) Reference(refs ElementReferences) {
 	id := s.Attributes.GetAsStringWithDefault(AttrID, "")
-	return id, s.Title
+	if id != "" && s.Title != nil {
+		refs[id] = s.Title
+	}
 }
 
 var _ WithElementAddition = &Section{}
@@ -3049,10 +3139,12 @@ func (t *Table) SetAttributes(attributes Attributes) {
 
 var _ Referencable = &Table{}
 
-func (t *Table) Ref() (string, interface{}) {
+func (t *Table) Reference(refs ElementReferences) {
 	id := t.Attributes.GetAsStringWithDefault(AttrID, "")
 	title := t.Attributes[AttrTitle]
-	return id, title
+	if id != "" && title != nil {
+		refs[id] = title
+	}
 }
 
 type HAlign string
