@@ -35,7 +35,7 @@ _foo_
 
 <input>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 	})

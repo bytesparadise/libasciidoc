@@ -18,6 +18,7 @@ const (
 		"</colgroup>\n" +
 		"{{ .Header }}" +
 		"{{ .Body }}" +
+		"{{ .Footer }}" +
 		"{{ end }}" +
 		"</table>\n"
 )
