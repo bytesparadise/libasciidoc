@@ -274,7 +274,7 @@ this is a note.
 </table>
 </div>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("admonition warning default caption", func() {
@@ -293,7 +293,7 @@ Missiles inbound.
 </table>
 </div>
 `
-			Expect(RenderHTML(source)).To(MatchHTML(expected))
+			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
 	})
 

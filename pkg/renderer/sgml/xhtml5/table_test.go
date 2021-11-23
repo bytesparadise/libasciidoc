@@ -540,9 +540,9 @@ var _ = Describe("tables", func() {
 |===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 33.3333%;"/>
+<col style="width: 33.3333%;"/>
+<col style="width: 33.3334%;"/>
 </colgroup>
 <thead>
 <tr>
@@ -570,7 +570,7 @@ var _ = Describe("tables", func() {
 </tbody>
 </table>
 `
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
+		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("with header and footer options", func() {
@@ -590,9 +590,9 @@ var _ = Describe("tables", func() {
 |===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 40%;">
-<col style="width: 40%;">
-<col style="width: 20%;">
+<col style="width: 40%;"/>
+<col style="width: 40%;"/>
+<col style="width: 20%;"/>
 </colgroup>
 <thead>
 <tr>
@@ -617,7 +617,7 @@ var _ = Describe("tables", func() {
 </tfoot>
 </table>
 `
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
+		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 
 	It("with id and title", func() {
@@ -635,9 +635,9 @@ var _ = Describe("tables", func() {
 		expected := `<table id="non-uniform-mesh" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Non-Uniform Mesh Parameters</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 33.3333%;"/>
+<col style="width: 33.3333%;"/>
+<col style="width: 33.3334%;"/>
 </colgroup>
 <thead>
 <tr>
@@ -670,7 +670,7 @@ var _ = Describe("tables", func() {
 </tbody>
 </table>
 `
-		Expect(RenderHTML(source)).To(MatchHTML(expected))
+		Expect(RenderXHTML(source)).To(MatchHTML(expected))
 	})
 	// TODO: Verify styles -- it's verified in the parser for now, but we still need to implement styles.
 })
