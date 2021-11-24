@@ -2741,7 +2741,10 @@ Column <-
 // -------------------------------------------------------------------------------------
 // Thematic break
 // -------------------------------------------------------------------------------------
-ThematicBreak <- ("***" / "* * *" / "---" / "- - -" / "___" / "_ _ _") EOF { // TODO: Space* before EOF
+ThematicBreak <- (
+        "'''" // Asciidoc flavour
+        / "***" / "* * *" / "---" / "- - -" / "___" / "_ _ _" // Markdown flavours are supported, too
+        ) Space* EOL EOL { 
         return types.NewThematicBreak()
     }
 
