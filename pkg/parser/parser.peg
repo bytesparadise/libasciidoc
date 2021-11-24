@@ -50,48 +50,6 @@ DocumentFragment <-
         return element, nil
     }
 
-// DocumentFragment <-
-//     element:(
-//         DocumentFragmentWithoutAttributes
-//         / DocumentFragmentWithAttributes
-//     ) {
-//         c.setFrontMatterAllowed(false) // not allowed anymore
-//         c.setDocumentHeaderAllowed(false) // not allowed anymore
-//         return element, nil
-//     }
-    
-
-// DocumentFragmentWithoutAttributes <-
-//     AttributeDeclaration
-//     / AttributeReset
-//     / FileInclusion
-//     / UserMacroBlock
-//     / BlankLine
-//     / ThematicBreak // must appear before ListElement :/
-//     / FrontMatter
-
-// DocumentFragmentWithAttributes <-
-//     attributes:(BlockAttributes)?
-//     element:(
-//         ImageBlock
-//         / ShortcutParagraph // taking a shortcut here
-//         / BlankLine
-//         / DelimitedBlock
-//         / Section // must appear after delimited block (because of example delimiter)
-//         / ListElements
-//         / Table
-//         / SingleLineComment
-//         / AdmonitionParagraph
-//         / LiteralParagraph
-//         / DocumentHeader
-//         / Paragraph // must be the last one... 
-//     ) {
-//         if element, ok := element.(types.BlockWithAttributes); ok && attributes != nil {
-//             element.AddAttributes(attributes.(types.Attributes))
-//         }
-//         return element, nil
-//     }
-
 DocumentFragmentWithinVerbatimBlock <-
     elements:(
         FileInclusion
@@ -391,11 +349,6 @@ SingleQuotedAttributeRawValue <-
         return content, nil
     }
 
-// SingleQuotedAttributeRawValueContent <- 
-//     ([^\r\n'\]])+ { // until '
-//         return string(c.text), nil
-//     }
-
 SingleQuotedAttributeRawValueContent <- 
     elements:(
         Alphanums
@@ -420,11 +373,6 @@ DoubleQuotedAttributeRawValue <-
     "\"" &(!(Space* "=")) {
         return content, nil
     }
-// DoubleQuotedAttributeRawValueContent <- 
-//     ([^\r\n"\]])+ { // until "
-//         return string(c.text), nil
-//     }
-
 DoubleQuotedAttributeRawValueContent <- 
     elements:(
         Alphanums
@@ -459,31 +407,6 @@ UnquotedAttributeRawValue <-
     )+ {
         return types.Reduce(elements, strings.TrimSpace), nil
     }
-
-// UnquotedAttributeRawValue <- 
-//     !Space
-//     elements:(
-//         !("]" / ",") // Quick escape
-//         element:(
-//             Alphanums
-//             / Space
-//             / Quote
-//             / AttributeSubstitution
-//             / ElementPlaceHolder
-//             / ([^,=\r\n\] ]+ { // = and , signs are NOT allowed within unquoted values
-//                 return types.NewStringElement(string(c.text))
-//             }) 
-//         ) {
-//             return element, nil
-//         }
-//     )+ 
-//     &{
-//         // post-parsing condition to verify that the value is not an empty string
-//         return types.Reduce(elements, strings.TrimSpace) != "", nil
-//     }
-//     {
-//         return types.Reduce(elements, strings.TrimSpace), nil
-//     }
 
 // -------------------------------------------------------------------------------------
 // Attribute Substitution
@@ -1625,6 +1548,7 @@ ShortcutParagraph <-
     otherLines:(
         !EOF 
         !BlankLine
+        !BlockAttributes
         !ListElementContinuationMarker
         line:(SingleLineComment / ParagraphRawLine) {
             return line, nil
@@ -1637,6 +1561,8 @@ Paragraph <-
     firstLine:(ParagraphRawLine) 
     otherLines:(
         !EOF
+        !BlankLine
+        !BlockAttributes
         !ListElementContinuationMarker
         line:(SingleLineComment / ParagraphRawLine) {
             return line, nil
@@ -2874,20 +2800,6 @@ Word <-
     } / [\pL0-9]+ ([=*_`] [\pL0-9]+)+ {  // allow `
         return types.NewStringElement(string(c.text))
     }
-
-    
-// InlineWord <- 
-//     // same as word, but:
-//     // - may also contain some punctuation markers
-//     // - must be followed by space / newline / EOF / ElementPlaceHolder delimiter (not consumed)
-//     content:([\pL0-9,?!;]+ {
-//         return types.NewStringElement(string(c.text))
-//     })
-//     &(Space / "." / Alphanum / ElementPlaceHolderDelimiter / EOL) {
-//       return content, nil  
-//     } 
-//     / Word
-//     / Punctuation
 
 InlineWord <- 
     [\pL0-9,;!?]+ 
