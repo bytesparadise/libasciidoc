@@ -159,6 +159,79 @@ pasta`
 				Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 			})
 
+			It("with block attributes splitting 2 paragraphs", func() {
+				source := `a paragraph
+[.left.text-center]
+another paragraph with an image image:cookie.jpg[cookie]
+`
+				expected := []types.DocumentFragment{
+					{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									types.RawLine("a paragraph"),
+								},
+							},
+						},
+					},
+					{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrRoles: []interface{}{
+										"left",
+										"text-center",
+									},
+								},
+								Elements: []interface{}{
+									types.RawLine("another paragraph with an image image:cookie.jpg[cookie]"),
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
+			})
+
+			It("with block attributes splitting paragraph and block image", func() {
+				source := `a paragraph
+[.left.text-center]
+image::cookie.jpg[cookie]
+`
+				expected := []types.DocumentFragment{
+					{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									types.RawLine("a paragraph"),
+								},
+							},
+						},
+					},
+					{
+						Elements: []interface{}{
+							&types.ImageBlock{
+								Attributes: types.Attributes{
+									types.AttrRoles: []interface{}{
+										"left",
+										"text-center",
+									},
+									types.AttrImageAlt: "cookie",
+								},
+								Location: &types.Location{
+									Path: []interface{}{
+										&types.StringElement{
+											Content: "cookie.jpg",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
+			})
+
 			Context("with custom substitutions", func() {
 
 				// using the same input for all substitution tests
@@ -506,6 +579,85 @@ cookie`
 							Elements: []interface{}{
 								&types.StringElement{
 									Content: "C++\ncookie",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with block attributes splitting 2 paragraphs", func() {
+				source := `a paragraph
+[.left.text-center]
+another paragraph with an image image:cookie.jpg[cookie]
+`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a paragraph",
+								},
+							},
+						},
+						&types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrRoles: []interface{}{
+									"left",
+									"text-center",
+								},
+							},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "another paragraph with an image ",
+								},
+								&types.InlineImage{
+									Attributes: types.Attributes{
+										types.AttrImageAlt: "cookie",
+									},
+									Location: &types.Location{
+										Path: []interface{}{
+											&types.StringElement{
+												Content: "cookie.jpg",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with block attributes splitting paragraph and block image", func() {
+				source := `a paragraph
+[.left.text-center]
+image::cookie.jpg[cookie]
+`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a paragraph",
+								},
+							},
+						},
+						&types.ImageBlock{
+							Attributes: types.Attributes{
+								types.AttrRoles: []interface{}{
+									"left",
+									"text-center",
+								},
+								types.AttrImageAlt: "cookie",
+							},
+							Location: &types.Location{
+								Path: []interface{}{
+									&types.StringElement{
+										Content: "cookie.jpg",
+									},
 								},
 							},
 						},

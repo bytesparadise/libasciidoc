@@ -174,6 +174,38 @@ some content`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with block attributes splitting 2 paragraphs", func() {
+			source := `a paragraph
+[.left.text-center]
+another paragraph with an image image:cookie.jpg[cookie]
+`
+			expected := `<div class="paragraph">
+<p>a paragraph</p>
+</div>
+<div class="paragraph left text-center">
+<p>another paragraph with an image <span class="image"><img src="cookie.jpg" alt="cookie"></span></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with block attributes splitting paragraph and block image", func() {
+			source := `a paragraph
+[.left.text-center]
+image::cookie.jpg[cookie]
+`
+			expected := `<div class="paragraph">
+<p>a paragraph</p>
+</div>
+<div class="imageblock left text-center">
+<div class="content">
+<img src="cookie.jpg" alt="cookie">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		Context("with custom substitutions", func() {
 
 			It("with attributes substitution", func() {
