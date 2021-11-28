@@ -8,7 +8,7 @@ const (
 	//
 	// Only the img tag needs to be made XHTML safe.
 
-	iconImageTmpl = `<img src="{{ .Path }}"` +
+	iconImageTmpl = `<img src="{{ .Src }}"` +
 		`{{ if .Alt }} alt="{{ .Alt }}{{ end }}"` +
 		`{{ if .Width }} width="{{ .Width }}"{{ end }}` +
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +

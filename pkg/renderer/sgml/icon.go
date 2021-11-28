@@ -98,7 +98,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		Flip       string
 		Width      string
 		Height     string
-		Path       string
+		Src        string
 		Admonition bool
 	}{
 		Class:      icon.Class,
@@ -111,7 +111,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		Flip:       icon.Attributes.GetAsStringWithDefault(types.AttrIconFlip, ""),
 		Link:       icon.Attributes.GetAsStringWithDefault(types.AttrInlineLink, ""),
 		Window:     icon.Attributes.GetAsStringWithDefault(types.AttrImageWindow, ""),
-		Path:       renderIconPath(ctx, icon.Class),
+		Src:        renderIconPath(ctx, icon.Class),
 		Admonition: admonition,
 	})
 	return string(s.String()), err

@@ -1,6 +1,8 @@
 package sgml
 
 import (
+	"encoding/base64"
+	"io/ioutil"
 	"net/url"
 	"path/filepath"
 	"strconv"
@@ -50,13 +52,14 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
-	path := img.Location.Stringify()
-	alt, err := r.renderImageAlt(img.Attributes, path)
+	src := r.getImageSrc(ctx, img.Location)
+	alt, err := r.renderImageAlt(img.Attributes, src)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
 	err = r.blockImage.Execute(result, struct {
 		ID          string
+		Src         string
 		Title       string
 		ImageNumber int
 		Caption     string
@@ -65,9 +68,9 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 		Alt         string
 		Width       string
 		Height      string
-		Path        string
 	}{
 		ID:          r.renderElementID(img.Attributes),
+		Src:         src,
 		Title:       title,
 		ImageNumber: number,
 		Caption:     caption.String(),
@@ -76,7 +79,6 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 		Alt:         alt,
 		Width:       img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height:      img.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
-		Path:        path,
 	})
 
 	if err != nil {
@@ -92,8 +94,8 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img *types.InlineImage) (
 		return "", errors.Wrap(err, "unable to render image")
 	}
 	href := img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, "")
-	path := img.Location.Stringify()
-	alt, err := r.renderImageAlt(img.Attributes, path)
+	src := r.getImageSrc(ctx, img.Location)
+	alt, err := r.renderImageAlt(img.Attributes, src)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
@@ -103,21 +105,21 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img *types.InlineImage) (
 	}
 
 	err = r.inlineImage.Execute(result, struct {
+		Src    string
 		Roles  string
 		Title  string
 		Href   string
 		Alt    string
 		Width  string
 		Height string
-		Path   string
 	}{
+		Src:    src,
 		Title:  title,
 		Roles:  roles,
 		Href:   href,
 		Alt:    alt,
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
-		Path:   path,
 	})
 
 	if err != nil {
@@ -127,6 +129,25 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img *types.InlineImage) (
 		log.Debugf("rendered inline image: %s", result.String())
 	}
 	return result.String(), nil
+}
+
+func (r *sgmlRenderer) getImageSrc(ctx *Context, location *types.Location) string {
+	src := location.Stringify()
+
+	// if Data URI is enables, then include the content of the file in the `src` attribute of the `<img>` tag
+	if !ctx.Attributes.Has("data-uri") {
+		return src
+	}
+	dir := filepath.Dir(ctx.Config.Filename)
+	src = filepath.Join(dir, src)
+	result := "data:image/" + strings.TrimPrefix(filepath.Ext(src), ".") + ";base64,"
+	data, err := ioutil.ReadFile(src)
+	if err != nil {
+		log.Warnf("image to embed not found or not readable: %s", src)
+		return result
+	}
+	result += base64.StdEncoding.EncodeToString(data)
+	return result
 }
 
 func (r *sgmlRenderer) renderImageAlt(attrs types.Attributes, path string) (string, error) {

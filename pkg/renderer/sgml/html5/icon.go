@@ -11,7 +11,7 @@ const (
 		`{{ if .Link }}</a>{{ end }}` +
 		`</span>`
 
-	iconImageTmpl = `<img src="{{ .Path }}"` +
+	iconImageTmpl = `<img src="{{ .Src }}"` +
 		`{{ if .Alt }} alt="{{ .Alt }}{{ end }}"` +
 		`{{ if .Width }} width="{{ .Width }}"{{ end }}` +
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
