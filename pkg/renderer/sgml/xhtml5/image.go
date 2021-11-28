@@ -6,7 +6,7 @@ const (
 		" class=\"imageblock{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
 		"<div class=\"content\">\n" +
 		`{{ if .Href }}<a class="image" href="{{ .Href }}">{{ end }}` +
-		`<img src="{{ .Path }}" alt="{{ .Alt }}"` +
+		`<img src="{{ .Src }}" alt="{{ .Alt }}"` +
 		`{{ if .Width }} width="{{ .Width }}"{{ end }}` +
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
 		"/>{{ if .Href }}</a>{{ end }}\n" +
@@ -16,7 +16,7 @@ const (
 
 	inlineImageTmpl = `<span class="image{{ if .Roles }} {{ .Roles }}{{ end }}">` +
 		`{{ if .Href }}<a class="image" href="{{ .Href }}">{{ end }}` +
-		`<img src="{{ .Path }}" alt="{{ .Alt }}"` +
+		`<img src="{{ .Src }}" alt="{{ .Alt }}"` +
 		`{{ if .Width }} width="{{ .Width }}"{{ end }}` +
 		`{{ if .Height }} height="{{ .Height }}"{{ end }}` +
 		`{{ if .Title }} title="{{ .Title }}"{{ end }}` +
