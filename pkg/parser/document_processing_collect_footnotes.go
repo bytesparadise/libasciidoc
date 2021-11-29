@@ -24,6 +24,9 @@ func CollectFootnotes(n *types.Footnotes, done <-chan interface{}, fragmentStrea
 
 func collectFootnotes(n *types.Footnotes, f types.DocumentFragment) types.DocumentFragment {
 	for _, e := range f.Elements {
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debugf("collecting footnotes in element of type '%T'", e)
+		}
 		if e, ok := e.(types.WithFootnotes); ok {
 			e.SubstituteFootnotes(n)
 		}

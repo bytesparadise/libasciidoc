@@ -105,4 +105,82 @@ a paragraph with another footnote:[baz]`
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
+
+	It("in unordered list elements", func() {
+		source := `- This is a list.footnote:[And this is a footnote.]`
+		expected := `<div class="ulist">
+<ul>
+<li>
+<p>This is a list.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</li>
+</ul>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. And this is a footnote.
+</div>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("in callout list elements", func() {
+		source := `<1> This is a list.footnote:[And this is a footnote.]`
+		expected := `<div class="colist arabic">
+<ol>
+<li>
+<p>This is a list.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</li>
+</ol>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. And this is a footnote.
+</div>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("in labeled list element terms", func() {
+		source := `This is a list.footnote:[And this is a footnote.]:: description`
+		expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1">This is a list.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></dt>
+<dd>
+<p>description</p>
+</dd>
+</dl>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. And this is a footnote.
+</div>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("in labeled list element descriptions", func() {
+		source := `Term:: This is a list.footnote:[And this is a footnote.]`
+		expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1">Term</dt>
+<dd>
+<p>This is a list.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</dd>
+</dl>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. And this is a footnote.
+</div>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
 })

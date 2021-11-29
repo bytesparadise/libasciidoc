@@ -1521,7 +1521,7 @@ CalloutListElementPrefix <-
         return ref, nil
     }
 
-CalloutListElementContent <- 
+CalloutListElementContent <- // TODO: remove in favor of `ListElementContent`
     rawline:([^\r\n]+ {
         return string(c.text), nil
     })

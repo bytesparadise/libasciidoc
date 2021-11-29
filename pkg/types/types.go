@@ -820,6 +820,21 @@ func (l *ListElements) SetElements(elements []interface{}) error {
 	return nil
 }
 
+var _ WithFootnotes = &ListElements{}
+
+// SubstituteFootnotes replaces the footnotes in the list element
+// with footnote references. The footnotes are stored in the given 'notes' param
+func (l *ListElements) SubstituteFootnotes(notes *Footnotes) {
+	for _, e := range l.Elements {
+		if e, ok := e.(WithFootnotes); ok {
+			if log.IsLevelEnabled(log.DebugLevel) {
+				log.Debugf("collecting footnotes in element of type '%T'", e)
+			}
+			e.SubstituteFootnotes(notes)
+		}
+	}
+}
+
 type ListKind string
 
 const (
@@ -983,6 +998,18 @@ func (e *CalloutListElement) SetElements(elements []interface{}) error {
 	return nil
 }
 
+var _ WithFootnotes = &CalloutListElement{}
+
+// SubstituteFootnotes replaces the footnotes in the list element
+// with footnote references. The footnotes are stored in the given 'notes' param
+func (e *CalloutListElement) SubstituteFootnotes(notes *Footnotes) {
+	for _, e := range e.Elements {
+		if e, ok := e.(WithFootnotes); ok {
+			e.SubstituteFootnotes(notes)
+		}
+	}
+}
+
 const (
 	// TODO: define a `NumberingStyle` type
 	// Arabic the arabic numbering (1, 2, 3, etc.)
@@ -1102,6 +1129,18 @@ func (e *OrderedListElement) mapAttributes() {
 	e.Attributes = toAttributesWithMapping(e.Attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 	})
+}
+
+var _ WithFootnotes = &OrderedListElement{}
+
+// SubstituteFootnotes replaces the footnotes in the list element
+// with footnote references. The footnotes are stored in the given 'notes' param
+func (e *OrderedListElement) SubstituteFootnotes(notes *Footnotes) {
+	for _, e := range e.Elements {
+		if e, ok := e.(WithFootnotes); ok {
+			e.SubstituteFootnotes(notes)
+		}
+	}
 }
 
 // OrderedListElementPrefix the prefix used to construct an OrderedListElement
@@ -1256,6 +1295,18 @@ func (e *UnorderedListElement) mapAttributes() {
 	e.Attributes = toAttributesWithMapping(e.Attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 	})
+}
+
+var _ WithFootnotes = &UnorderedListElement{}
+
+// SubstituteFootnotes replaces the footnotes in the list element
+// with footnote references. The footnotes are stored in the given 'notes' param
+func (e *UnorderedListElement) SubstituteFootnotes(notes *Footnotes) {
+	for _, e := range e.Elements {
+		if e, ok := e.(WithFootnotes); ok {
+			e.SubstituteFootnotes(notes)
+		}
+	}
 }
 
 // UnorderedListElementCheckStyle the check style that applies on an unordered list item
@@ -1477,6 +1528,23 @@ func (e *LabeledListElement) mapAttributes() {
 	e.Attributes = toAttributesWithMapping(e.Attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 	})
+}
+
+var _ WithFootnotes = &LabeledListElement{}
+
+// SubstituteFootnotes replaces the footnotes in the list element
+// with footnote references. The footnotes are stored in the given 'notes' param
+func (e *LabeledListElement) SubstituteFootnotes(notes *Footnotes) {
+	for i, element := range e.Term {
+		if note, ok := element.(*Footnote); ok {
+			e.Term[i] = notes.Reference(note)
+		}
+	}
+	for _, element := range e.Elements {
+		if e, ok := element.(WithFootnotes); ok {
+			e.SubstituteFootnotes(notes)
+		}
+	}
 }
 
 // ------------------------------------------
@@ -1908,6 +1976,9 @@ const (
 
 // Reference adds the given footnote and returns a FootnoteReference in replacement
 func (f *Footnotes) Reference(note *Footnote) *FootnoteReference {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("referencing footnote")
+	}
 	r := &FootnoteReference{}
 	if len(note.Elements) > 0 {
 		note.ID = f.sequence.nextVal()
