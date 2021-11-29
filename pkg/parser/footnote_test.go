@@ -283,5 +283,211 @@ a paragraph with another footnote.footnote:[baz]`
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
 		})
+
+		It("in ordered list elements", func() {
+			source := `. This is a list.footnote:[And this is a footnote.]`
+			expected := &types.Document{
+				Footnotes: []*types.Footnote{
+					{
+						ID: 1,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "And this is a footnote.",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.OrderedListKind,
+						Elements: []types.ListElement{
+							&types.OrderedListElement{
+								Style: types.Arabic,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "This is a list.",
+											},
+											&types.FootnoteReference{
+												ID: 1,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("in unordered list elements", func() {
+			source := `- This is a list.footnote:[And this is a footnote.]`
+			expected := &types.Document{
+				Footnotes: []*types.Footnote{
+					{
+						ID: 1,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "And this is a footnote.",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								BulletStyle: types.Dash,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "This is a list.",
+											},
+											&types.FootnoteReference{
+												ID: 1,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("in callout list elements", func() {
+			source := `<1> This is a list.footnote:[And this is a footnote.]`
+			expected := &types.Document{
+				Footnotes: []*types.Footnote{
+					{
+						ID: 1,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "And this is a footnote.",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.CalloutListKind,
+						Elements: []types.ListElement{
+							&types.CalloutListElement{
+								Ref: 1,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "This is a list.",
+											},
+											&types.FootnoteReference{
+												ID: 1,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("in labeled list element terms", func() {
+			source := `This is a list.footnote:[And this is a footnote.]:: description`
+			expected := &types.Document{
+				Footnotes: []*types.Footnote{
+					{
+						ID: 1,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "And this is a footnote.",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "This is a list.",
+									},
+									&types.FootnoteReference{
+										ID: 1,
+									},
+								},
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "description",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("in labeled list element descriptions", func() {
+			source := `Term:: This is a list.footnote:[And this is a footnote.]`
+			expected := &types.Document{
+				Footnotes: []*types.Footnote{
+					{
+						ID: 1,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "And this is a footnote.",
+							},
+						},
+					},
+				},
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "Term",
+									},
+								},
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "This is a list.",
+											},
+											&types.FootnoteReference{
+												ID: 1,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 	})
 })
