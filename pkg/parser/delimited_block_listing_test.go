@@ -5,6 +5,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
+	log "github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo" //nolint golint
 	. "github.com/onsi/gomega" //nolint golint
@@ -1161,9 +1162,19 @@ and <more text> on the +
 				})
 
 				It("should fail when substitution is unknown", func() {
+					logs, reset := ConfigureLogger(log.DebugLevel) //, DiscardStdout)
+					defer reset()
 					s := strings.ReplaceAll(source, "$SUBS", "unknown")
-					_, err := ParseDocument(s)
-					Expect(err).To(HaveOccurred())
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: string("https://github.com"),
+							},
+						},
+					}
+					Expect(ParseDocument(s)).To(MatchDocument(expected))
+					Expect(logs).To(ContainJSONLog(log.ErrorLevel, 33, 183, "unsupported kind of substitution: 'unknown'"))
 				})
 			})
 		})

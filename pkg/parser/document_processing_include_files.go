@@ -21,9 +21,9 @@ func IncludeFiles(ctx *ParseContext, done <-chan interface{}, fragmentStream <-c
 	resultStream := make(chan types.DocumentFragment, bufferSize)
 	go func() {
 		defer close(resultStream)
-		for fragment := range fragmentStream {
+		for f := range fragmentStream {
 			select {
-			case resultStream <- includeFiles(ctx, fragment.Elements, done):
+			case resultStream <- includeFiles(ctx, f, done):
 			case <-done:
 				log.WithField("pipeline_task", "include_files").Debug("received 'done' signal")
 				return
@@ -34,7 +34,20 @@ func IncludeFiles(ctx *ParseContext, done <-chan interface{}, fragmentStream <-c
 	return resultStream
 }
 
-func includeFiles(ctx *ParseContext, elements []interface{}, done <-chan interface{}) types.DocumentFragment {
+func includeFiles(ctx *ParseContext, f types.DocumentFragment, done <-chan interface{}) types.DocumentFragment {
+	// if the fragment already contains an error, then send it as-is downstream
+	if f.Error != nil {
+		log.Debugf("skipping file inclusions because of fragment with error: %v", f.Error)
+		return f
+	}
+	elements, err := doIncludeFiles(ctx, f.Elements, done)
+	if err != nil {
+		return types.NewErrorFragment(f.Position, err)
+	}
+	return types.NewDocumentFragment(f.Position, elements...)
+}
+
+func doIncludeFiles(ctx *ParseContext, elements []interface{}, done <-chan interface{}) ([]interface{}, error) {
 	result := make([]interface{}, 0, len(elements))
 	for _, element := range elements {
 		switch e := element.(type) {
@@ -46,42 +59,51 @@ func includeFiles(ctx *ParseContext, elements []interface{}, done <-chan interfa
 			result = append(result, element)
 		case *types.FileInclusion:
 			// use an Entrypoint based on the Delimited block kind
-			f := doIncludeFile(ctx.Clone(), e, done)
-			if f.Error != nil {
-				return f
+			elmts, err := doIncludeFile(ctx.Clone(), e, done)
+			if err != nil {
+				return nil, err
 			}
-			result = append(result, f.Elements...)
+			result = append(result, elmts...)
 		case *types.DelimitedBlock:
-			f := includeFiles(ctx.WithinDelimitedBlock(e), e.Elements, done)
-			if f.Error != nil {
-				return f
+			elmts, err := doIncludeFiles(ctx.WithinDelimitedBlock(e), e.Elements, done)
+			if err != nil {
+				return nil, err
 			}
-			e.Elements = f.Elements
+			e.Elements = elmts
+			switch e.Kind {
+			case types.Example, types.Quote, types.Sidebar:
+				if e.Elements, err = parseDelimitedBlockElements(ctx, e); err != nil {
+					// log the error, but keep the delimited block empty so we can carry on with the whole processing
+					log.WithError(err).Error("unable to parse content of delimited block")
+					e.Elements = nil
+					break
+				}
+			}
 			result = append(result, e)
 		default:
 			result = append(result, element)
 		}
 	}
-	return types.NewDocumentFragment(result...)
+	return result, nil
 }
 
 // replace the content of this FileInclusion element the content of the target file
 // note: there is a trade-off here: we include the whole content of the file in the current
 // fragment, making it potentially big, but at the same time we ensure that the context
 // of the inclusion (for example, within a delimited block) is not lost.
-func doIncludeFile(ctx *ParseContext, e *types.FileInclusion, done <-chan interface{}) types.DocumentFragment {
+func doIncludeFile(ctx *ParseContext, e *types.FileInclusion, done <-chan interface{}) ([]interface{}, error) {
 	// ctx.Opts = append(ctx.Opts, GlobalStore(documentHeaderKey, true))
 	fileContent, err := contentOf(ctx, e)
 	if err != nil {
-		return types.NewErrorFragment(err)
+		return nil, err
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("including content of '%s' with offsets %v", e.Location.Stringify(), ctx.levelOffsets)
 	}
 	elements := []interface{}{}
 	for f := range ParseFragments(ctx, fileContent, done) {
-		if f.Error != nil {
-			return f
+		if err := f.Error; err != nil {
+			return nil, err
 		}
 		// apply level offset on sections
 		for i, e := range f.Elements {
@@ -117,7 +139,7 @@ func doIncludeFile(ctx *ParseContext, e *types.FileInclusion, done <-chan interf
 		elements = append(elements, f.Elements...)
 	}
 	// and recursively...
-	return includeFiles(ctx, elements, done)
+	return doIncludeFiles(ctx, elements, done)
 }
 
 func contentOf(ctx *ParseContext, incl *types.FileInclusion) (io.Reader, error) {
@@ -138,19 +160,15 @@ func contentOf(ctx *ParseContext, incl *types.FileInclusion) (io.Reader, error) 
 		log.Debugf("parsing file to %s", incl.RawText)
 	}
 	if lr, ok, err := lineRanges(incl); err != nil {
-		log.Error(err)
 		return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	} else if ok {
 		if err := readWithinLines(scanner, content, lr); err != nil {
-			log.Error(err)
 			return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 		}
 	} else if tr, ok, err := tagRanges(incl); err != nil {
-		log.Error(err)
 		return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	} else if ok {
 		if err := readWithinTags(path, scanner, content, tr); err != nil {
-			log.Error(err)
 			return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 		}
 	} else {

@@ -21,6 +21,10 @@ var _ = Describe("sections", func() {
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   10,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
@@ -38,6 +42,10 @@ var _ = Describe("sections", func() {
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   13,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
@@ -58,6 +66,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
@@ -65,11 +77,19 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 12,
+							End:   27,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -95,6 +115,10 @@ and a paragraph`
 
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   17,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
@@ -102,11 +126,19 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 17,
+							End:   18,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 18,
+							End:   35,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 0,
@@ -125,6 +157,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -145,6 +181,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   16,
+						},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  types.AttrIDSeparator,
@@ -153,11 +193,19 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 16,
+							End:   21,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 21,
+							End:   33,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -176,6 +224,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   31,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -199,6 +251,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
@@ -206,11 +262,19 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 12,
+							End:   24,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -234,6 +298,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
@@ -241,11 +309,19 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 12,
+							End:   25,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 2,
@@ -265,6 +341,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -273,6 +353,10 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   26,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -294,6 +378,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -302,11 +390,19 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   15,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 15,
+							End:   30,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -326,6 +422,10 @@ and a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -334,11 +434,19 @@ and a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   16,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 16,
+							End:   31,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -364,6 +472,10 @@ a paragraph
 a paragraph`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: []interface{}{
@@ -373,11 +485,19 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 12,
+							End:   25,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -388,6 +508,10 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 25,
+							End:   37,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -397,11 +521,19 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 37,
+							End:   38,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 38,
+							End:   54,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 2,
@@ -412,6 +544,10 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 54,
+							End:   66,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -421,11 +557,19 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 66,
+							End:   67,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 67,
+							End:   80,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -436,6 +580,10 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 80,
+							End:   91,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -456,6 +604,10 @@ a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   29,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -490,6 +642,10 @@ a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   29,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
@@ -500,11 +656,19 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 29,
+							End:   30,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 30,
+							End:   63,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -513,11 +677,19 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 63,
+							End:   64,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 64,
+							End:   85,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -529,6 +701,10 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 85,
+							End:   96,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -553,6 +729,10 @@ a paragraph`
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   13,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -561,11 +741,19 @@ a paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 13,
+							End:   14,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 14,
+							End:   26,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -585,6 +773,10 @@ a short preamble
 == section 1`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   10,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: []interface{}{
@@ -594,11 +786,19 @@ a short preamble
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 10,
+							End:   13,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 13,
+							End:   30,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -608,11 +808,19 @@ a short preamble
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 30,
+							End:   31,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 31,
+							End:   43,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -635,6 +843,10 @@ a short preamble
 == section 1`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   16,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: []interface{}{
@@ -649,11 +861,19 @@ a short preamble
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 16,
+							End:   19,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 19,
+							End:   36,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -663,11 +883,19 @@ a short preamble
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 36,
+							End:   37,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 37,
+							End:   49,
+						},
 						Elements: []interface{}{
 							&types.Section{
 								Level: 1,
@@ -685,6 +913,10 @@ a short preamble
 				source := "= a title\r\n\r\na first paragraph\r\n\r\na second paragraph"
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: []interface{}{
@@ -694,11 +926,19 @@ a short preamble
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   13,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 13,
+							End:   32,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -708,11 +948,19 @@ a short preamble
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 32,
+							End:   34,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 34,
+							End:   52,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -732,6 +980,10 @@ a short preamble
 				source := "=a header"
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   9,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -748,6 +1000,10 @@ a short preamble
 				source := " = a header with a prefix space"
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   31,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -773,6 +1029,10 @@ a short preamble
 				}
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   11,
+						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: title,
@@ -780,11 +1040,19 @@ a short preamble
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 11,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 12,
+							End:   43,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{

@@ -22,6 +22,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png[]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   16,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Location: &types.Location{
@@ -40,6 +44,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png[ ]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   17,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Location: &types.Location{
@@ -58,6 +66,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png[ , , ]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   21,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Location: &types.Location{
@@ -76,6 +88,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png[ , 200, ]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   24,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -97,6 +113,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png["Quoted, Here"]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   30,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -118,6 +138,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png["The Foo\"Bar\" here"]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   37,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -139,6 +163,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png['The Foo\'Bar\' here']`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   37,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -160,6 +188,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png["The Foo\Bar here"]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   34,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -181,6 +213,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png['The Foo\Bar here']`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   34,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -202,6 +238,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png["Quoted, Here", height=100]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   42,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -226,6 +266,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png["Quoted, Here", 1, 2, height=100]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   48,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -249,6 +293,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png["Quoted, Here", 1, 2, height=100, test1=123 ,test2 = second test ]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   81,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -274,6 +322,10 @@ var _ = Describe("attributes", func() {
 			source := "image::foo.png[\"Quoted, Here\", 1, 2, height=100, test1=123 ,test2 = second \"test\" ]"
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   83,
+					},
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Attributes: types.Attributes{
@@ -305,6 +357,10 @@ var _ = Describe("attributes", func() {
 			source := `image::foo.png[ "This \Backslash  2Spaced End Space " ]`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   55,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -689,6 +745,9 @@ var _ = DescribeTable("invalid block attributes",
 
 	func(source string) {
 		// given
+		// do not show parse errors in the logs for this test
+		_, reset := ConfigureLogger(log.FatalLevel)
+		defer reset()
 		content := strings.NewReader(source + "\n")
 		// when parsing only (ie, no substitution applied)
 		_, err := parser.ParseReader("", content, parser.Entrypoint("BlockAttributes"))

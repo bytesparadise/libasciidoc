@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
@@ -20,17 +21,15 @@ import (
 
 type TeeOption func(*tee)
 
-func DiscardStdout() TeeOption {
-	return func(t *tee) {
-		t.out = ioutil.Discard
-	}
+var IncludeStdOut = func(t *tee) {
+	t.out = os.Stdout
 }
 
 func ConfigureLogger(level log.Level, opts ...TeeOption) (io.Reader, func()) {
 	fmtr := log.StandardLogger().Formatter
 	t := tee{
 		buf: bytes.NewBuffer(nil),
-		out: os.Stdout,
+		out: ioutil.Discard,
 	}
 	for _, apply := range opts {
 		apply(&t)
@@ -54,11 +53,9 @@ type tee struct {
 }
 
 func (t tee) Write(p []byte) (n int, err error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		n, err = t.out.Write(p)
-		if err != nil {
-			return n, err
-		}
+	n, err = t.out.Write(p)
+	if err != nil {
+		return n, err
 	}
 	return t.buf.Write(p)
 }
@@ -68,39 +65,44 @@ func (t tee) Read(p []byte) (n int, err error) {
 }
 
 // ---------------------------
-// ContainMessageWithLevel
+// ContainLogWithLevel
 // ---------------------------
 
-// ContainMessageWithLevel a custom Matcher to verify that a message with at a given level was logged
-func ContainMessageWithLevel(level log.Level, msg string) types.GomegaMatcher {
+// ContainJSONLog a custom Matcher to verify that a message with at a given level was logged
+func ContainJSONLog(level log.Level, startOffset int, endOffset int, msg string) types.GomegaMatcher {
 	return &containMessageMatcher{
-		level: level,
-		msg:   msg,
+		level:       level,
+		msg:         msg,
+		startOffset: float64(startOffset),
+		endOffset:   float64(endOffset),
 	}
 }
 
 type containMessageMatcher struct {
-	level log.Level
-	msg   string
+	level       log.Level
+	msg         string
+	startOffset float64
+	endOffset   float64
 }
 
 func (m *containMessageMatcher) Match(actual interface{}) (success bool, err error) {
 	console, ok := actual.(io.Reader)
 	if !ok {
-		return false, errors.Errorf("ContainMessageWithLevel matcher expects an io.Reader (actual: %T)", actual)
+		return false, errors.Errorf("ContainJSONLog matcher expects an io.Reader (actual: %T)", actual)
 	}
 	scanner := bufio.NewScanner(console)
+scan:
 	for scanner.Scan() {
 		out := make(map[string]interface{})
 		err := json.Unmarshal(scanner.Bytes(), &out)
 		if err != nil {
 			return false, errors.Wrapf(err, "failed to decode console line")
 		}
-		if level, ok := out["level"].(string); !ok || level != m.level.String() {
-			continue
-		}
-		if msg, ok := out["msg"].(string); !ok || msg != m.msg {
-			continue
+		if !strings.HasPrefix(out["msg"].(string), m.msg) ||
+			out["level"] != m.level.String() ||
+			(m.startOffset != -1 && out["start_offset"] != m.startOffset) ||
+			(m.endOffset != -1 && out["end_offset"] != m.endOffset) {
+			continue scan
 		}
 		// match found
 		return true, nil
@@ -110,11 +112,11 @@ func (m *containMessageMatcher) Match(actual interface{}) (success bool, err err
 }
 
 func (m *containMessageMatcher) FailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected console to contain message '%s' with level '%v'", m.msg, m.level)
+	return fmt.Sprintf(`expected console to contain log {"level": "%s", "start_offset":%d, "end_offset":%d, "msg":"%s"}`, m.level.String(), int(m.startOffset), int(m.endOffset), m.msg)
 }
 
 func (m *containMessageMatcher) NegatedFailureMessage(_ interface{}) (message string) {
-	return fmt.Sprintf("expected console not to contain message '%s' with level '%v'", m.msg, m.level)
+	return fmt.Sprintf(`expected console not to contain log {"level": "%s", "start_offset":%d, "end_offset":%d, "msg":"%s"}`, m.level.String(), int(m.startOffset), int(m.endOffset), m.msg)
 }
 
 // ---------------------------

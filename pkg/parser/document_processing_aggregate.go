@@ -33,8 +33,8 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 	var toc *types.TableOfContents
 	for f := range fragmentStream {
 		if f.Error != nil {
-			log.Debugf("skipping aggregation because of fragment with error: %v", f.Error)
-			return nil, nil, f.Error
+			log.WithField("start_offset", f.Position.Start).WithField("end_offset", f.Position.End).Error(f.Error)
+			continue
 		}
 		for _, element := range f.Elements {
 			switch e := element.(type) {

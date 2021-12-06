@@ -12,6 +12,10 @@ var _ = Describe("parse document fragment groups", func() {
 
 	expected := []types.DocumentFragment{
 		{
+			Position: types.Position{
+				Start: 0,
+				End:   13,
+			},
 			Elements: []interface{}{
 				&types.Paragraph{
 					Elements: []interface{}{

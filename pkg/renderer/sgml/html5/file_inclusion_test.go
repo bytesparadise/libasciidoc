@@ -725,11 +725,7 @@ func helloworld() {
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 			// verify error in logs
-			Expect(logs).To(
-				ContainMessageWithLevel(
-					log.WarnLevel,
-					"detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../../test/includes/tag-include-unclosed.adoc",
-				))
+			Expect(logs).To(ContainJSONLog(log.WarnLevel, -1, -1, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../../../test/includes/tag-include-unclosed.adoc"))
 		})
 
 		It("file inclusion with no tag", func() {

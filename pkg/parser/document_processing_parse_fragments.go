@@ -16,44 +16,47 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 		defer close(resultStream)
 		b, err := ioutil.ReadAll(source)
 		if err != nil {
-			resultStream <- types.NewErrorFragment(err)
+			resultStream <- types.NewErrorFragment(types.Position{}, err)
 			return
 		}
 		p := newParser(ctx.filename, b, ctx.Opts...)
 		if err := p.setup(g); err != nil {
-			resultStream <- types.NewErrorFragment(err)
+			resultStream <- types.NewErrorFragment(types.Position{}, err)
 			return
 		}
 		log.WithField("pipeline_task", "document_parsing").Debug("start of document parsing")
 	parsing:
 		for {
+			// if log.IsLevelEnabled(log.DebugLevel) {
+			// 	log.Debugf("starting new fragment at line %d", p.pt.line)
+			// }
+			// line := p.pt.line
+			if log.IsLevelEnabled(log.DebugLevel) {
+				log.Debugf("parsing fragment starting at p.pt.line:%d / p.cur.pos.line:%d", p.pt.line, p.cur.pos.line)
+			}
+			startOffset := p.pt.offset
 			element, err := p.next()
+			endOffset := p.pt.offset
+			p := types.Position{
+				Start: startOffset,
+				End:   endOffset,
+			}
 			if err != nil {
 				log.WithError(err).Error("error while parsing")
-				resultStream <- types.NewErrorFragment(err)
+				resultStream <- types.NewErrorFragment(p, err)
 				break parsing
 			}
 			if element == nil {
 				break parsing
 			}
-			f := types.DocumentFragment{}
+			f := types.DocumentFragment{
+				Position: p,
+			}
 			if elements, ok := element.([]interface{}); ok {
 				f.Elements = elements
 			} else {
 				f.Elements = []interface{}{element}
 			}
-			// look-up delimited blocks with normal content (will need 2nd pass to parse their content)
-			for _, e := range f.Elements {
-				if b, ok := e.(*types.DelimitedBlock); ok &&
-					(b.Kind == types.Example || b.Kind == types.Quote || b.Kind == types.Sidebar) {
-					// if parsing failed, delimited block will be empty
-					if b.Elements, err = parseDelimitedBlockElements(ctx, b); err != nil {
-						f.Error = err
-						break
-					}
-				}
-			}
-
 			if log.IsLevelEnabled(log.DebugLevel) {
 				log.Debugf("parsed fragment:\n%s", spew.Sdump(f))
 			}
@@ -72,15 +75,15 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) ([]interface{}, error) {
 	log.Debugf("parsing content of delimited block of kind '%s'", b.Kind)
 	// TODO: use real Substitution?
-	content, placeholders := serialize(b.Elements) // don't expect placeholders
+	content, placeholders := serialize(b.Elements)
 	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), GlobalStore(delimitedBlockScopeKey, b.Kind))
-	f, err := Parse("", content, opts...)
+	elements, err := Parse("", content, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to parse content") // ignore error (malformed content)
 	}
-	result, ok := f.([]interface{})
+	result, ok := elements.([]interface{})
 	if !ok {
-		return nil, errors.Errorf("unexpected type of result after parsing fragments: '%T'", result)
+		return nil, errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", result)
 	}
 	return placeholders.restore(result)
 }

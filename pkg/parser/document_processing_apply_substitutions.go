@@ -32,11 +32,11 @@ func ApplySubstitutions(ctx *ParseContext, done <-chan interface{}, fragmentStre
 }
 
 func applySubstitutions(ctx *ParseContext, f types.DocumentFragment) types.DocumentFragment {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.WithField("pipeline_stage", "apply_substitutions").Debugf("incoming fragment:\n%s", spew.Sdump(f))
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.WithField("pipeline_stage", "apply_substitutions").Debugf("incoming fragment:\n%s", spew.Sdump(f))
+	}
 	// if the fragment already contains an error, then send it as-is downstream
-	if err := f.Error; err != nil {
+	if f.Error != nil {
 		log.Debugf("skipping substitutions because of fragment with error: %v", f.Error)
 		return f
 	}
@@ -44,15 +44,13 @@ func applySubstitutions(ctx *ParseContext, f types.DocumentFragment) types.Docum
 	opts := append(ctx.Opts,
 		GlobalStore(types.AttrImagesDir, ctx.attributes.get(types.AttrImagesDir)),
 		GlobalStore(usermacrosKey, ctx.userMacros),
-		// Debug(true),
-		// Statistics(stats, "NoMatch"),
 	)
 
 	elements := make([]interface{}, len(f.Elements))
 	for i, element := range f.Elements {
 		var err error
 		if elements[i], err = applySubstitutionsOnElement(ctx, element, opts...); err != nil {
-			return types.NewErrorFragment(err)
+			return types.NewErrorFragment(f.Position, err)
 		}
 	}
 	f.Elements = elements
