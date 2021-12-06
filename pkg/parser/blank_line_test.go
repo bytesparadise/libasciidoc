@@ -18,6 +18,10 @@ var _ = Describe("blank lines", func() {
 second paragraph`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   16,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -27,11 +31,19 @@ second paragraph`
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 16,
+						End:   18,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 18,
+						End:   34,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -53,6 +65,10 @@ second paragraph
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   16,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -62,21 +78,37 @@ second paragraph
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 16,
+						End:   20,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 20,
+						End:   21,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 21,
+						End:   24,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 24,
+						End:   41,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -95,10 +127,11 @@ second paragraph
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   11,
+					},
 					Elements: []interface{}{
-						// types.Attributes{
-						// 	types.AttrTitle: "ignored",
-						// },
 						&types.BlankLine{},
 					},
 				},

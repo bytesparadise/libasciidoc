@@ -22,15 +22,15 @@ DocumentFragment <-
     !EOF
     attributes:(BlockAttributes)?
     element:(
-        ImageBlock
-        / UserMacroBlock
-        / FileInclusion
+        ImageBlock // must appear before ShortcutParagraph
+        / UserMacroBlock // must appear before ShortcutParagraph
+        / FileInclusion // must appear before ShortcutParagraph
         / ShortcutParagraph
         / AttributeDeclaration
         / AttributeReset
         / DocumentHeader // must appear before Section
-        / BlankLine // must appear after DocumentHeader
-        / Section // must appear after delimited block (because of example delimiter)
+        / BlankLine // must appear after DocumentHeader // TODO: refactor `isDocumentHeaderAllowed` so this rule can be moved at first position
+        / Section 
         / DelimitedBlock
         / ThematicBreak // must appear before ListElement :/
         / ListElements
@@ -935,7 +935,7 @@ FileInclusion <-
         return c.isRuleEnabled(FileInclusion)
     }
     #{
-        // force/enable attribute substitution 
+        // force/enable attribute substitution // TODO: why? 
         // log.Debug("entering FileInclusion rule")
         return c.setCurrentSubstitution("attributes")
     }
@@ -2647,6 +2647,7 @@ Table <-
         return types.NewTable(header, rows.([]interface{}))
     }
 
+
 TableDelimiter <- "|===" Space* EOL 
 
 TableStartDelimiter <- TableDelimiter
@@ -2861,7 +2862,6 @@ Number <- ("-"? Digit+) {
     }
 
 Space <- (" " / "\t") {
-        log.Debug("matched single space")
         return string(c.text), nil
     }
 

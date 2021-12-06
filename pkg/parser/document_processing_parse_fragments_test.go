@@ -16,6 +16,10 @@ var _ = Describe("document fragment parsing", func() {
 			source := `a line`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   6,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -34,6 +38,10 @@ var _ = Describe("document fragment parsing", func() {
 another line`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   7,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -43,11 +51,19 @@ another line`
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 7,
+						End:   10,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 10,
+						End:   22,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -66,6 +82,10 @@ on *multiple lines*`
 
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   31,
+					},
 					Elements: []interface{}{
 						&types.DelimitedBlock{
 							Kind: types.MarkdownQuote,
@@ -86,6 +106,10 @@ on *multiple lines*`
 
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   33,
+					},
 					Elements: []interface{}{
 						&types.DelimitedBlock{
 							Kind: types.MarkdownQuote,
@@ -109,6 +133,10 @@ a line
 ----`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   16,
+					},
 					Elements: []interface{}{
 						&types.DelimitedBlock{
 							Kind: types.Listing,
@@ -133,6 +161,10 @@ not a sidebar block
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   48,
+					},
 					Elements: []interface{}{
 						&types.DelimitedBlock{
 							Kind: types.Listing,
@@ -166,6 +198,10 @@ on
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   45,
+					},
 					Elements: []interface{}{
 						&types.DelimitedBlock{
 							Kind: types.Listing,
@@ -182,16 +218,28 @@ on
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 45,
+						End:   46,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 46,
+						End:   47,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 47,
+						End:   71,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -203,6 +251,10 @@ on
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 71,
+						End:   72,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
@@ -225,6 +277,10 @@ on
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   17,
+					},
 					Elements: []interface{}{
 						&types.Section{
 							Level: 1,
@@ -235,16 +291,28 @@ on
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 17,
+						End:   18,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 18,
+						End:   19,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 19,
+						End:   43,
+					},
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -256,6 +324,10 @@ on
 					},
 				},
 				{
+					Position: types.Position{
+						Start: 43,
+						End:   44,
+					},
 					Elements: []interface{}{
 						&types.BlankLine{},
 					},
@@ -273,6 +345,10 @@ on
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   37,
+					},
 					Elements: []interface{}{
 						&types.ListElements{
 							Elements: []interface{}{
@@ -312,6 +388,10 @@ on
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   41,
+					},
 					Elements: []interface{}{
 						&types.ListElements{
 							Elements: []interface{}{
@@ -349,6 +429,10 @@ on
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   33,
+					},
 					Elements: []interface{}{
 						&types.ListElements{
 							Elements: []interface{}{
@@ -388,6 +472,10 @@ on
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   35,
+					},
 					Elements: []interface{}{
 						&types.ListElements{
 							Elements: []interface{}{
@@ -427,6 +515,10 @@ lines
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   31,
+					},
 					Elements: []interface{}{
 						&types.ListElements{
 							Elements: []interface{}{
@@ -464,6 +556,10 @@ lines
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   75,
+					},
 					Elements: []interface{}{
 						&types.ListElements{
 							Elements: []interface{}{

@@ -22,6 +22,10 @@ chocolate
 pasta`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   22,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -43,6 +47,10 @@ chocolate
 pasta`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   36,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -66,6 +74,10 @@ cookie
 pasta`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   29,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -90,6 +102,10 @@ cookie
 pasta`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   16,
+						},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "title",
@@ -98,11 +114,19 @@ pasta`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 16,
+							End:   21,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 21,
+							End:   52,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -136,16 +160,28 @@ cookie
 pasta`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   27,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 27,
+							End:   38,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 38,
+							End:   50,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -166,6 +202,10 @@ another paragraph with an image image:cookie.jpg[cookie]
 `
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -175,6 +215,10 @@ another paragraph with an image image:cookie.jpg[cookie]
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 12,
+							End:   89,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -200,6 +244,10 @@ image::cookie.jpg[cookie]
 `
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   12,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -209,6 +257,10 @@ image::cookie.jpg[cookie]
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 12,
+							End:   58,
+						},
 						Elements: []interface{}{
 							&types.ImageBlock{
 								Attributes: types.Attributes{
@@ -247,6 +299,10 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "normal")
 					expected := []types.DocumentFragment{
 						{
+							Position: types.Position{
+								Start: 0,
+								End:   32,
+							},
 							Elements: []interface{}{
 								&types.AttributeDeclaration{
 									Name:  "github-url",
@@ -255,6 +311,10 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 							},
 						},
 						{
+							Position: types.Position{
+								Start: 32,
+								End:   54,
+							},
 							Elements: []interface{}{
 								&types.AttributeDeclaration{
 									Name:  "github-title",
@@ -263,11 +323,19 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 							},
 						},
 						{
+							Position: types.Position{
+								Start: 54,
+								End:   55,
+							},
 							Elements: []interface{}{
 								&types.BlankLine{},
 							},
 						},
 						{
+							Position: types.Position{
+								Start: 55,
+								End:   277,
+							},
 							Elements: []interface{}{
 								&types.Paragraph{
 									Attributes: types.Attributes{

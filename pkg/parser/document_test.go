@@ -25,6 +25,10 @@ Garrett D'Amore
 `
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   45,
+					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -65,6 +69,10 @@ Garrett D'Amore
 1.0, July 4, 2020`
 			expected := []types.DocumentFragment{
 				{
+					Position: types.Position{
+						Start: 0,
+						End:   45,
+					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{

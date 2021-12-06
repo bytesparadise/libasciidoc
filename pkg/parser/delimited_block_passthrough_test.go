@@ -22,6 +22,10 @@ _foo_
 another paragraph`
 				expected := []types.DocumentFragment{
 					{
+						Position: types.Position{
+							Start: 0,
+							End:   19,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -35,11 +39,19 @@ another paragraph`
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 19,
+							End:   20,
+						},
 						Elements: []interface{}{
 							&types.BlankLine{},
 						},
 					},
 					{
+						Position: types.Position{
+							Start: 20,
+							End:   37,
+						},
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{

@@ -74,19 +74,27 @@ type Referencable interface {
 
 // DocumentFragment a single fragment of document
 type DocumentFragment struct {
+	Position Position
 	Elements []interface{}
 	Error    error
 }
 
-func NewDocumentFragment(elements ...interface{}) DocumentFragment {
+type Position struct {
+	Start int
+	End   int
+}
+
+func NewDocumentFragment(p Position, elements ...interface{}) DocumentFragment {
 	return DocumentFragment{
+		Position: p,
 		Elements: elements,
 	}
 }
 
-func NewErrorFragment(err error) DocumentFragment {
+func NewErrorFragment(p Position, err error) DocumentFragment {
 	return DocumentFragment{
-		Error: err,
+		Position: p,
+		Error:    err,
 	}
 }
 

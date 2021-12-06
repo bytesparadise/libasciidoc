@@ -33,9 +33,9 @@ func filterOut(f types.DocumentFragment, matchers ...filterMatcher) types.Docume
 	}
 	elements, err := doFilterOut(f.Elements, matchers...)
 	if err != nil {
-		return types.NewErrorFragment(err)
+		return types.NewErrorFragment(f.Position, err)
 	}
-	return types.NewDocumentFragment(elements...)
+	return types.NewDocumentFragment(f.Position, elements...)
 }
 
 func doFilterOut(elements []interface{}, matchers ...filterMatcher) ([]interface{}, error) {
