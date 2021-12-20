@@ -17,9 +17,6 @@ var _ = Describe("attribute substitutions", func() {
 
 a paragraph written by {author}.`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"author": "Xavier",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "author",
@@ -44,9 +41,6 @@ a paragraph written by {author}.`
 :author2!:
 a paragraph written by {author}.`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"author": "Xavier",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "author",

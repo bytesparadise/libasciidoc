@@ -54,9 +54,6 @@ var _ = Describe("include preamble and table of contents when aggregating fragme
 		}
 		close(c)
 		expected := &types.Document{
-			// Attributes: types.Attributes{
-			// 	types.AttrTableOfContents: nil,
-			// },
 			Elements: []interface{}{
 				&types.AttributeDeclaration{
 					Name: types.AttrTableOfContents,

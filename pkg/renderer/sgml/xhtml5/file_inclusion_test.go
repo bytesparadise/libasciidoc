@@ -31,7 +31,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"), configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
+		Expect(RenderXHTML(source, configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
 		Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 			Title:       "",
 			LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
@@ -83,7 +83,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderXHTML(source)).To(Equal(expected))
 	})
 
 	It("should include grandchild content with absolute offset", func() {
@@ -100,7 +100,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderXHTML(source)).To(Equal(expected))
 	})
 
 	It("should include child and grandchild content with relative level offset", func() {
@@ -141,7 +141,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderXHTML(source)).To(Equal(expected))
 	})
 
 	It("should include child and grandchild content with relative then absolute level offset", func() {
@@ -182,7 +182,7 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
+		Expect(RenderXHTML(source)).To(Equal(expected))
 	})
 
 	It("include adoc file with leveloffset attribute", func() {

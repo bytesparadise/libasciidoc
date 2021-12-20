@@ -333,11 +333,6 @@ a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
-							// Attributes: types.Attributes{
-							// 	types.AttrRoles: []interface{}{
-							// 		"a_role",
-							// 	},
-							// },
 							Elements: []interface{}{
 								&types.StringElement{
 									Content: "a paragraph",
@@ -360,11 +355,6 @@ a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
-							// Attributes: types.Attributes{
-							// 	types.AttrID:    "ID",
-							// 	types.AttrTitle: "title",
-							// 	types.AttrRoles: []interface{}{"a_role"},
-							// },
 							Elements: []interface{}{
 								&types.StringElement{
 									Content: "a paragraph",

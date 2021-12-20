@@ -1038,12 +1038,6 @@ v1.0:`
 :hardbreaks:
 a paragraph`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"toc":                        nil,
-					// 	"date":                       "2017-01-01",
-					// 	"author":                     "Xavier",
-					// 	types.DocumentAttrHardBreaks: nil,
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name: "toc",
@@ -1079,11 +1073,6 @@ a paragraph`
 
 a paragraph`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"toc":    nil,
-					// 	"date":   "2017-01-01",
-					// 	"author": "Xavier",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name: "toc",
@@ -1117,12 +1106,6 @@ a paragraph`
 
 a paragraph`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"toc":        nil,
-					// 	"date":       "2017-01-01",
-					// 	"author":     "Xavier",
-					// 	"hardbreaks": nil,
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name: "toc",
@@ -1156,11 +1139,6 @@ a paragraph`
 :date: 2017-01-01
 :author: Xavier`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"toc":    nil,
-					// 	"date":   "2017-01-01",
-					// 	"author": "Xavier",
-					// },
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{

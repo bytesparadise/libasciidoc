@@ -639,9 +639,6 @@ next lines`
 a link to {url}`
 
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"url": "https://foo2.bar", // overridden by second declaration
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "url",
@@ -680,10 +677,6 @@ a link to {url}`
 a link to {scheme}://{path} and https://foo.com`
 
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"scheme": "https",
-						// 	"path":   "example.com",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "scheme",
@@ -731,10 +724,6 @@ a link to {scheme}://{path} and https://foo.com`
 a link to *{scheme}://{path}[] and https://foo.com[]*`
 
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"scheme": "https",
-						// 	"path":   "example.com",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "scheme",
@@ -793,9 +782,6 @@ a link to *{scheme}://{path}[] and https://foo.com[]*`
 a link to {scheme}://{path} and https://foo.com`
 
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"scheme": "https",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "scheme",
@@ -920,10 +906,6 @@ a link to {scheme}://{path} and https://foo.com`
 						},
 					}
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"scheme": "https",
-						// 	"path":   "example.com",
-						// },
 						ElementReferences: types.ElementReferences{
 							"_a_title_to_httpsexample_com_and_httpsfoo_com": title,
 						},
@@ -1234,9 +1216,6 @@ Test 2: link:/test/a%20b[with encoded space]`
 a link to {scheme}:{path}[] and https://foo.com`
 
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"scheme": "link",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "scheme",

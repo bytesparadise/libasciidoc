@@ -226,7 +226,7 @@ a paragraph with _italic content_`
 </div>
 </div>
 `
-				Expect(RenderHTML(source, configuration.WithFilename("test.adoc"))).To(Equal(expected))
+				Expect(RenderHTML(source)).To(Equal(expected))
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),

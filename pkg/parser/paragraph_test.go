@@ -429,9 +429,6 @@ pasta`
 cookie
 pasta`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"title": "cookies",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "title",
@@ -459,9 +456,6 @@ pasta`
 cookie
 pasta`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"title": "cookies",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "title",
@@ -489,9 +483,6 @@ pasta`
 cookie
 pasta`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"title": "cookies",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "title",
@@ -519,9 +510,6 @@ pasta`
 cookie
 pasta`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"title": "cookies",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "title",
@@ -577,11 +565,6 @@ pasta`
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
-							// Attributes: types.Attributes{
-							// 	types.AttrID:      "anchor",
-							// 	types.AttrRoles:   []interface{}{string("role1"), string("role2")},
-							// 	types.AttrOptions: []interface{}{string("hardbreaks")},
-							// },
 							Elements: []interface{}{
 								&types.StringElement{
 									Content: "cookie\npasta",
@@ -791,9 +774,6 @@ image::cookie.jpg[cookie]
 .a title
 a paragraph`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrIDPrefix: "bar_",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "idprefix",
@@ -917,10 +897,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// quoted text is parsed but inline link macro is not
 					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1014,10 +990,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// quoted text is parsed but inline link macro is not
 					s := strings.ReplaceAll(source, "$SUBS", "normal")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1113,10 +1085,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 				It("should apply the 'none' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "none")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1146,10 +1114,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// quoted text is parsed but inline link macros are not
 					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1200,10 +1164,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// quoted text is not parsed but inline link macro is
 					s := strings.ReplaceAll(source, "$SUBS", "macros")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1264,10 +1224,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// quoted text is not parsed but inline link macro is
 					s := strings.ReplaceAll(source, "$SUBS", "attributes")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1297,10 +1253,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// quoted text is not parsed but inline link macro is
 					s := strings.ReplaceAll(source, "$SUBS", "specialchars")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1342,10 +1294,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// quoted text is not parsed but inline link macro is
 					s := strings.ReplaceAll(source, "$SUBS", "replacements")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1378,10 +1326,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// 2nd link of the first line is not detected
 					s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1463,10 +1407,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// (same as above, but with subs in reversed order)
 					s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1547,10 +1487,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// inline links are fully parsed
 					s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -1628,10 +1564,6 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					// however, inline link 'text' attribute coming from attribute susbtitutions are replaced
 					s := strings.ReplaceAll(source, "$SUBS", "macros,attributes")
 					expected := &types.Document{
-						// Attributes: types.Attributes{
-						// 	"github-url":   "https://github.com",
-						// 	"github-title": "GitHub",
-						// },
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",

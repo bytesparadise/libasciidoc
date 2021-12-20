@@ -452,9 +452,6 @@ some content`
 
 some content linked to xref:{foo}[another_doc()]!`
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"foo": "another-doc.adoc",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "foo",
