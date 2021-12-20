@@ -811,10 +811,6 @@ DocumentHeader <-
         c.setDocumentHeaderAllowed(false) // not allowed anymore
         return types.NewDocumentHeader(title.([]interface{}), info, extraAttrs.([]interface{}))
     }
-    // {
-    //     return append([]interface{}{header}, attrs.([]interface{})...), nil
-    // }
-
 
 DocumentTitle <- 
     "=" Spaces title:(RawSectionTitle) EOL {

@@ -16,8 +16,8 @@ import (
 )
 
 func RenderXHTML(actual string, settings ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration(settings...)
-	configuration.WithBackEnd("xhtml5")(config)
+	allSettings := append([]configuration.Setting{configuration.WithFilename("test.adoc"), configuration.WithBackEnd("xhtml5")}, settings...)
+	config := configuration.NewConfiguration(allSettings...)
 
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)

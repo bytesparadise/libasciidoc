@@ -57,9 +57,6 @@ var _ = Describe("passthroughs", func() {
 				
 +++ {hello}, world +++` // attribute susbsitution must not occur
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	"hello": "HELLO",
-					// },
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "hello",

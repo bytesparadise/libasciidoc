@@ -1,7 +1,6 @@
 package parser_test
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -36,7 +35,7 @@ var _ = Describe("file inclusions", func() {
 					},
 				},
 			}
-			result, err := ParseDocument(source, configuration.WithFilename("test.adoc"))
+			result, err := ParseDocument(source)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(MatchDocument(expected))
 			// verify no error/warning in logs
@@ -75,7 +74,7 @@ var _ = Describe("file inclusions", func() {
 					"_chapter_a": title,
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 			// verify no error/warning in logs
 			Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 		})
@@ -90,9 +89,6 @@ include::{includedir}/chapter-a.adoc[]`
 				},
 			}
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"includedir": "../../test/includes",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "includedir",
@@ -110,7 +106,7 @@ include::{includedir}/chapter-a.adoc[]`
 					},
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should not further process with non-asciidoc files", func() {
@@ -118,9 +114,6 @@ include::{includedir}/chapter-a.adoc[]`
 
 include::{includedir}/include.foo[]`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"includedir": "../../test/includes",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "includedir",
@@ -148,7 +141,7 @@ include::{includedir}/include.foo[]`
 				},
 			}
 			// Expect(ParseDocument(source, WithFilename("foo.bar"))).To(MatchDocumentFragments(expected)) // parent doc may not need to be a '.adoc'
-			result, err := ParseDocument(source, configuration.WithFilename("test.adoc"))
+			result, err := ParseDocument(source)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(MatchDocument(expected)) // parent doc may not need to be a '.adoc'
 		})
@@ -190,7 +183,7 @@ include::{includedir}/include.foo[]`
 					"_grandchild_title": title,
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include grandchild content with relative offset", func() {
@@ -230,7 +223,7 @@ include::{includedir}/include.foo[]`
 					"_grandchild_title": title,
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include grandchild content with absolute offset", func() {
@@ -270,7 +263,7 @@ include::{includedir}/include.foo[]`
 					"_grandchild_title": title,
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include child and grandchild content with relative level offset", func() {
@@ -390,7 +383,7 @@ include::{includedir}/include.foo[]`
 					"_grandchild_title": grandchildTitle,
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include child and grandchild content with relative then absolute level offset", func() {
@@ -510,7 +503,7 @@ include::{includedir}/include.foo[]`
 					"_grandchild_title": grandchildTitle,
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include adoc with attributes file within main content", func() {
@@ -534,7 +527,7 @@ include::{includedir}/include.foo[]`
 					},
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include adoc with attributes file within listing block", func() {
@@ -556,7 +549,7 @@ some content`,
 					},
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include adoc file within fenced block", func() {
@@ -618,7 +611,7 @@ last line of parent `,
 					},
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		It("should include adoc file within quote block", func() {
@@ -713,7 +706,7 @@ last line of parent `,
 					},
 				},
 			}
-			Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
 		Context("with line ranges", func() {
@@ -733,7 +726,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("with multiple unquoted lines", func() {
@@ -756,7 +749,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("with multiple unquoted ranges (becoming authors)", func() {
@@ -784,7 +777,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("with invalid unquoted range - case 1", func() {
@@ -792,7 +785,7 @@ last line of parent `,
 					defer reset()
 					source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
 					expected := &types.Document{}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 					Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 64, "Unresolved directive in test.adoc - include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]"))
 				})
 
@@ -809,7 +802,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 
@@ -830,7 +823,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 					// verify no error/warning in logs
 					Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 				})
@@ -848,7 +841,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("with multiple ranges with colons (becoming authors)", func() {
@@ -877,7 +870,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("with multiple ranges with semicolons (becoming authors)", func() {
@@ -906,14 +899,14 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("with invalid range - case 1", func() {
 					logs, reset := ConfigureLogger(log.WarnLevel)
 					defer reset()
 					source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
-					_, err := ParseDocument(source, configuration.WithFilename("test.adoc"))
+					_, err := ParseDocument(source)
 					Expect(err).NotTo(HaveOccurred()) // parsing does not fail, but an error is logged for the fragment with the `include` macro
 					Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 66, "Unresolved directive in test.adoc - include::../../test/includes/chapter-a.adoc[lines=\"1,3..4,6..foo\"]"))
 				})
@@ -940,7 +933,7 @@ last line of parent `,
 							"_section_1": title,
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 		})
@@ -970,7 +963,7 @@ last line of parent `,
 						"_section_1": title,
 					},
 				}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				// verify no error/warning in logs
 				Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
@@ -1007,7 +1000,7 @@ last line of parent `,
 						"_section_1": title,
 					},
 				}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				// verify no error/warning in logs
 				Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 			})
@@ -1035,7 +1028,7 @@ last line of parent `,
 						},
 					},
 				}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				// verify error in logs
 				Expect(logs).To(ContainJSONLog(log.WarnLevel, -1, -1, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include-unclosed.adoc"))
 			})
@@ -1047,7 +1040,7 @@ last line of parent `,
 				defer reset()
 				source := `include::../../test/includes/tag-include.adoc[tag=unknown]`
 				// when/then
-				_, err := ParseDocument(source, configuration.WithFilename("test.adoc"))
+				_, err := ParseDocument(source)
 				// verify error in logs
 				Expect(err).NotTo(HaveOccurred()) // parsing does not fail, but an error is logged for the fragment with the `include` macro
 				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 58, "Unresolved directive in test.adoc - include::../../test/includes/tag-include.adoc[tag=unknown]: tag 'unknown' not found in file to include"))
@@ -1090,7 +1083,7 @@ last line of parent `,
 						"_section_1": title,
 					},
 				}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			Context("permutations", func() {
@@ -1132,7 +1125,7 @@ last line of parent `,
 							"_section_1": title,
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("all tagged regions", func() {
@@ -1165,7 +1158,7 @@ last line of parent `,
 							"_section_1": title,
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("all the lines outside and inside of tagged regions", func() {
@@ -1205,7 +1198,7 @@ last line of parent `,
 							"_section_1": title,
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("regions tagged doc, but not nested regions tagged content", func() {
@@ -1229,7 +1222,7 @@ last line of parent `,
 							"_section_1": title,
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("all tagged regions, but excludes any regions tagged content", func() {
@@ -1253,7 +1246,7 @@ last line of parent `,
 							"_section_1": title,
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("all tagged regions, but excludes any regions tagged content", func() {
@@ -1286,7 +1279,7 @@ last line of parent `,
 							"_section_1": title,
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
 				It("**;!* — selects only the regions of the document outside of tags", func() {
@@ -1302,7 +1295,7 @@ last line of parent `,
 							},
 						},
 					}
-					Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 		})
@@ -1314,7 +1307,7 @@ last line of parent `,
 				defer reset()
 				source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 				expected := &types.Document{}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 47, "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
 			})
 
@@ -1323,7 +1316,7 @@ last line of parent `,
 				defer reset()
 				source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 				expected := &types.Document{}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 47, "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
 			})
 
@@ -1332,7 +1325,7 @@ last line of parent `,
 				defer reset()
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
 				expected := &types.Document{}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 50, "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 			})
 
@@ -1343,7 +1336,7 @@ last line of parent `,
 include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
 				expected := &types.Document{}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 67, "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]"))
 			})
 
@@ -1354,7 +1347,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
 				expected := &types.Document{}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 60, "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 			})
 		})
@@ -1405,7 +1398,7 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 				}
 				// Expect(ParseDocument(source, WithFilename("foo.adoc"))).To(MatchDocument(expected))
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("should resolve path with attribute in delimited block", func() {
@@ -1430,7 +1423,7 @@ include::{includedir}/grandchild-include.adoc[]
 						},
 					},
 				}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 
@@ -1459,7 +1452,7 @@ func helloworld() {
 						},
 					},
 				}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
 			It("include go file with a simple range in listing block", func() {
@@ -1479,7 +1472,7 @@ include::../../test/includes/hello_world.go.txt[lines=1]
 						},
 					},
 				}
-				Expect(ParseDocument(source, configuration.WithFilename("test.adoc"))).To(MatchDocument(expected))
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 	})

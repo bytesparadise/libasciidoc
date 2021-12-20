@@ -11,8 +11,8 @@ import (
 
 // RenderHTML renders the HTML body using the given source
 func RenderHTML(actual string, settings ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration(settings...)
-	configuration.WithBackEnd("html5")(config)
+	allSettings := append([]configuration.Setting{configuration.WithFilename("test.adoc"), configuration.WithBackEnd("html5")}, settings...)
+	config := configuration.NewConfiguration(allSettings...)
 	contentReader := strings.NewReader(actual)
 	resultWriter := bytes.NewBuffer(nil)
 	_, err := libasciidoc.Convert(contentReader, resultWriter, config)

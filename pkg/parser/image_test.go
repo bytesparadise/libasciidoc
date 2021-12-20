@@ -35,9 +35,6 @@ var _ = Describe("block images", func() {
 			
 image::images/cookie.png[{alt}]`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"alt": "the cookie.png image",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "alt",
@@ -66,9 +63,6 @@ image::images/cookie.png[{alt}]`
 
 image::cookie.png[]`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	types.AttrImagesDir: "./path/to/images",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "imagesdir",
@@ -94,9 +88,6 @@ image::cookie.png[]`
 
 image::{dir}/cookie.png[]`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"dir": "./path/to/images",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "dir",
@@ -122,9 +113,6 @@ image::{dir}/cookie.png[]`
 
 image::cookie.png[]`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	types.AttrImagesDir: "./path/to/images",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "imagesdir",
@@ -150,9 +138,6 @@ image::cookie.png[]`
 
 image::{imagesdir}/cookie.png[]`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	types.AttrImagesDir: "./path/to/images",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "imagesdir",
@@ -322,9 +307,6 @@ var _ = Describe("inline images", func() {
 
 an image:{dir}/cookie.png[].`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	"dir": "./path/to/images",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "dir",
@@ -360,9 +342,6 @@ an image:{dir}/cookie.png[].`
 
 an image:cookie.png[].`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	types.AttrImagesDir: "./path/to/images",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "imagesdir",
@@ -398,9 +377,6 @@ an image:cookie.png[].`
 
 an image:{imagesdir}/cookie.png[].`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	types.AttrImagesDir: "./path/to/images",
-				// },
 				Elements: []interface{}{
 					&types.AttributeDeclaration{
 						Name:  "imagesdir",

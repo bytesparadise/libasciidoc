@@ -79,9 +79,6 @@ var _ = Describe("checked lists", func() {
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									&types.Paragraph{
-										// Attributes: types.Attributes{
-										// 	types.AttrCheckStyle: types.NoCheck,
-										// },
 										Elements: []interface{}{
 											&types.StringElement{
 												Content: "normal list item",
@@ -166,9 +163,6 @@ var _ = Describe("checked lists", func() {
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									&types.Paragraph{
-										// Attributes: types.Attributes{
-										// 	types.AttrCheckStyle: types.NoCheck,
-										// },
 										Elements: []interface{}{
 											&types.StringElement{
 												Content: "normal list item",
@@ -273,9 +267,6 @@ var _ = Describe("checked lists", func() {
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									&types.Paragraph{
-										// Attributes: types.Attributes{
-										// 	types.AttrCheckStyle: types.NoCheck,
-										// },
 										Elements: []interface{}{
 											&types.StringElement{
 												Content: "normal list item",
@@ -327,9 +318,6 @@ var _ = Describe("checked lists", func() {
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													&types.Paragraph{
-														// Attributes: types.Attributes{
-														// 	types.AttrCheckStyle: types.NoCheck,
-														// },
 														Elements: []interface{}{
 															&types.StringElement{
 																Content: "a normal list item",
@@ -343,9 +331,6 @@ var _ = Describe("checked lists", func() {
 												CheckStyle:  types.NoCheck,
 												Elements: []interface{}{
 													&types.Paragraph{
-														// Attributes: types.Attributes{
-														// 	types.AttrCheckStyle: types.NoCheck,
-														// },
 														Elements: []interface{}{
 															&types.StringElement{
 																Content: "another normal list item",
@@ -363,9 +348,6 @@ var _ = Describe("checked lists", func() {
 								CheckStyle:  types.NoCheck,
 								Elements: []interface{}{
 									&types.Paragraph{
-										// Attributes: types.Attributes{
-										// 	types.AttrCheckStyle: types.NoCheck,
-										// },
 										Elements: []interface{}{
 											&types.StringElement{
 												Content: "normal list item",

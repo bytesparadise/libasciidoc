@@ -1807,9 +1807,6 @@ a paragraph`
 					&types.StringElement{Content: "section 1"},
 				}
 				expected := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrIDPrefix: "custom_",
-					// },
 					ElementReferences: types.ElementReferences{
 						"custom_section_1": section1Title,
 					},

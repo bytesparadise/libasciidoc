@@ -327,7 +327,7 @@ Last updated {{.LastUpdated}}
 </html>
 `
 		now := time.Now()
-		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"),
+		Expect(RenderXHTML(source,
 			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),
@@ -445,7 +445,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 </div>
 `
 		now := time.Now()
-		Expect(RenderXHTML(source, configuration.WithFilename("test.adoc"),
+		Expect(RenderXHTML(source,
 			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),

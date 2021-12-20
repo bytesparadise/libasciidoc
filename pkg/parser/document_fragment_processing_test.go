@@ -19,9 +19,6 @@ var _ = Describe("document processing", func() {
 foo
 ----`
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	types.AttrSyntaxHighlighter: "pygments",
-				// },
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Kind: types.Listing,
@@ -75,9 +72,6 @@ Preamble comes here
 				},
 			}
 			expected := &types.Document{
-				// Attributes: types.Attributes{
-				// 	types.AttrTableOfContents: nil,
-				// },
 				Elements: []interface{}{
 					&types.DocumentHeader{
 						Title: []interface{}{

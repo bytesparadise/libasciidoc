@@ -1215,9 +1215,6 @@ a paragraph
 									CheckStyle:  types.NoCheck,
 									Elements: []interface{}{
 										&types.Paragraph{
-											// Attributes: types.Attributes{
-											// 	types.AttrCheckStyle: types.NoCheck,
-											// },
 											Elements: []interface{}{
 												&types.StringElement{
 													Content: "normal list item",

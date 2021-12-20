@@ -12,17 +12,17 @@ import (
 // ParseDocument parses the actual value into a Document
 func ParseDocument(actual string, options ...interface{}) (*types.Document, error) {
 	r := strings.NewReader(actual)
-	settings := []configuration.Setting{}
+	allSettings := []configuration.Setting{configuration.WithFilename("test.adoc")}
 	opts := []parser.Option{}
 	for _, o := range options {
 		switch o := o.(type) {
 		case configuration.Setting:
-			settings = append(settings, o)
+			allSettings = append(allSettings, o)
 		case parser.Option:
 			opts = append(opts, o)
 		default:
 			return nil, errors.Errorf("unexpected type of option: '%T'", o)
 		}
 	}
-	return parser.ParseDocument(r, configuration.NewConfiguration(settings...), opts...)
+	return parser.ParseDocument(r, configuration.NewConfiguration(allSettings...), opts...)
 }

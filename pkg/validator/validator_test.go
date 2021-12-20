@@ -99,9 +99,6 @@ var _ = Describe("document validator", func() {
 			It("missing header - invalid level", func() {
 				// given
 				doc := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrDocType: "manpage",
-					// },
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []*types.Footnote{},
 					Elements: []interface{}{
@@ -163,9 +160,6 @@ var _ = Describe("document validator", func() {
 			It("missing name section - invalid level", func() {
 				// given
 				doc := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrDocType: "manpage",
-					// },
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []*types.Footnote{},
 					Elements: []interface{}{
@@ -227,9 +221,6 @@ var _ = Describe("document validator", func() {
 			It("missing name section - invalid title", func() {
 				// given
 				doc := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrDocType: "manpage",
-					// },
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []*types.Footnote{},
 					Elements: []interface{}{
@@ -291,9 +282,6 @@ var _ = Describe("document validator", func() {
 			It("missing name section - invalid elements", func() {
 				// given
 				doc := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrDocType: "manpage",
-					// },
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []*types.Footnote{},
 					Elements: []interface{}{
@@ -341,9 +329,6 @@ var _ = Describe("document validator", func() {
 			It("missing synopsis section - invalid level", func() {
 				// given
 				doc := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrDocType: "manpage",
-					// },
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []*types.Footnote{},
 					Elements: []interface{}{
@@ -399,9 +384,6 @@ var _ = Describe("document validator", func() {
 			It("missing synopsis section - invalid title", func() {
 				// given
 				doc := &types.Document{
-					// Attributes: types.Attributes{
-					// 	types.AttrDocType: "manpage",
-					// },
 					ElementReferences: types.ElementReferences{},
 					Footnotes:         []*types.Footnote{},
 					Elements: []interface{}{
