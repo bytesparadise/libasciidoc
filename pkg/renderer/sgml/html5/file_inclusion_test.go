@@ -338,7 +338,7 @@ a third paragraph`
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	Context("in delimited blocks", func() {
+	Context("within delimited blocks", func() {
 
 		Context("adoc file inclusion in delimited blocks", func() {
 
@@ -594,6 +594,37 @@ include::../../../../test/includes/hello_world.go.txt[]
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
+		})
+	})
+
+	Context("within tables", func() {
+
+		It("default", func() {
+			source := "include::../../../../test/includes/table_parent.adoc[]"
+			expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Header A</th>
+<th class="tableblock halign-left valign-top">Header B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column A.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column A.2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column B.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column B.2</p></td>
+</tr>
+</tbody>
+</table>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 

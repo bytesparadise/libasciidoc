@@ -1,0 +1,2 @@
+| Header A | Header B
+
