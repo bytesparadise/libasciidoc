@@ -5,13 +5,11 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
-	log "github.com/sirupsen/logrus"
 )
 
 const bufferSize = 10
 
-// ParseDocument parses the content of the reader identitied by the filename
+// ParseDocument parses the content of the reader identitied by the filename and applies all the substitutions and arrangements
 func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Option) (*types.Document, error) {
 	done := make(chan interface{})
 	defer close(done)
@@ -24,9 +22,7 @@ func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Opt
 			ArrangeLists(done,
 				CollectFootnotes(footnotes, done,
 					ApplySubstitutions(ctx.Clone(), done, // needs to be before 'ArrangeLists'
-						IncludeFiles(ctx.Clone(), done,
-							ParseFragments(ctx.Clone(), r, done),
-						),
+						ParseFragments(ctx.Clone(), r, done),
 					),
 				),
 			),
@@ -39,8 +35,8 @@ func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Opt
 	if len(footnotes.Notes) > 0 {
 		doc.Footnotes = footnotes.Notes
 	}
-	if log.IsLevelEnabled(log.InfoLevel) {
-		log.Infof("parsed document:\n%s", spew.Sdump(doc))
-	}
+	// if log.IsLevelEnabled(log.InfoLevel) {
+	// 	log.Infof("parsed document:\n%s", spew.Sdump(doc))
+	// }
 	return doc, nil
 }

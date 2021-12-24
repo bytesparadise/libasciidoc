@@ -1156,12 +1156,6 @@ var _ = DescribeTable("rawtext",
 			Name: "<",
 		},
 		"<"),
-	// attribute substitution
-	Entry("attribute substitution",
-		&types.AttributeSubstitution{
-			Name: "cookie",
-		},
-		"{cookie}"),
 	// mixins
 	Entry("mixins",
 		&types.QuotedText{
@@ -1187,10 +1181,7 @@ var _ = DescribeTable("rawtext",
 				&types.StringElement{
 					Content: " ",
 				},
-				&types.AttributeSubstitution{
-					Name: "here",
-				},
 			},
 		},
-		"*some `\"content<>\"` {here}*"),
+		"*some `\"content<>\"` *"),
 )

@@ -6,13 +6,16 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // ParseDocument parses the actual value into a Document
 func ParseDocument(actual string, options ...interface{}) (*types.Document, error) {
-	r := strings.NewReader(actual)
-	allSettings := []configuration.Setting{configuration.WithFilename("test.adoc")}
+	allSettings := []configuration.Setting{
+		configuration.WithFilename("test.adoc"),
+	}
 	opts := []parser.Option{}
 	for _, o := range options {
 		switch o := o.(type) {
@@ -24,5 +27,13 @@ func ParseDocument(actual string, options ...interface{}) (*types.Document, erro
 			return nil, errors.Errorf("unexpected type of option: '%T'", o)
 		}
 	}
-	return parser.ParseDocument(r, configuration.NewConfiguration(allSettings...), opts...)
+	c := configuration.NewConfiguration(allSettings...)
+	p, err := parser.Preprocess(strings.NewReader(actual), c, opts...)
+	if err != nil {
+		return nil, err
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("preparsed document:\n%s", p)
+	}
+	return parser.ParseDocument(strings.NewReader(p), c, opts...)
 }

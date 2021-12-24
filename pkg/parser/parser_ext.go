@@ -120,9 +120,9 @@ func (c *current) trackSpaceSuffix(element interface{}) {
 }
 
 func (c *current) isPreceededBySpace() bool {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("checking if element ends with space: %t", c.globalStore[spaceSuffixTrackingKey])
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("checking if element ends with space: %t", c.globalStore[spaceSuffixTrackingKey])
+	// }
 	s, ok := c.globalStore[spaceSuffixTrackingKey].(bool)
 	return ok && s
 }
@@ -150,4 +150,92 @@ func validateSingleQuoteElements(elements []interface{}) (bool, error) {
 	default:
 		return true, nil
 	}
+}
+
+// TODO: not needed?
+const rawSectionEnabledKey = "raw_section_enabled"
+
+// sectionEnabled parser option to enable detection of (raw) section during preparsing
+func sectionEnabled() Option {
+	return GlobalStore(rawSectionEnabledKey, true)
+}
+
+// state info to determine if parsing is happening within a delimited block (any kind),
+// in which case some grammar rules need to be disabled
+func (c *current) isSectionEnabled() bool {
+	enabled, found := c.globalStore[rawSectionEnabledKey].(bool)
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("raw sections enabled: %t", found && enabled)
+	// }
+	return found && enabled
+}
+
+const delimitedBlockScopeKey = "delimited_block_scope"
+
+// state info to indicate that parsing is happening within a delimited block of the given kind,
+// in which case some grammar rules may need to be disabled
+func (c *current) setWithinDelimitedBlockOfKind(kind string) {
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("setting scope within block of kind '%s'", kind)
+	// }
+	c.globalStore[delimitedBlockScopeKey] = kind
+}
+
+// state info to indicate that parsing is happening within a delimited block of the given kind,
+// in which case some grammar rules may need to be disabled
+func (c *current) unsetWithinDelimitedBlock() {
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("unsetting scope within block of kind '%s'", kind)
+	// }
+	delete(c.globalStore, delimitedBlockScopeKey)
+}
+
+// state info to determine if parsing is happening within a delimited block (any kind),
+// in which case some grammar rules need to be disabled
+func (c *current) isWithinDelimitedBlock() bool {
+	w, found := c.globalStore[delimitedBlockScopeKey].(bool)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("checking if within delimited block: %t/%t", found, w)
+	}
+	return found && w
+}
+
+// state info to determine if parsing is happening within a delimited block of the given kind,
+// in which case some grammar rules need to be disabled
+func (c *current) isWithinDelimitedBlockOfKind(kind string) bool {
+	if k, found := c.globalStore[delimitedBlockScopeKey].(string); found {
+		// if log.IsLevelEnabled(log.DebugLevel) {
+		// 	log.Debugf("checking if within block of kind '%s': %t (1)", kind, k == kind)
+		// }
+		return k == kind
+	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("checking if within block of kind '%s': false (2)", kind)
+	// }
+	return false
+}
+
+type blockDelimiterTracker struct {
+	stack []types.BlockDelimiterKind
+}
+
+func newBlockDelimiterTracker() *blockDelimiterTracker {
+	return &blockDelimiterTracker{
+		stack: []types.BlockDelimiterKind{},
+	}
+}
+
+func (t *blockDelimiterTracker) push(k types.BlockDelimiterKind) {
+	switch {
+	case len(t.stack) > 0 && t.stack[len(t.stack)-1] == k:
+		// trim
+		t.stack = t.stack[:len(t.stack)-1]
+	default:
+		// append
+		t.stack = append(t.stack, k)
+	}
+}
+
+func (t *blockDelimiterTracker) withinDelimitedBlock() bool {
+	return len(t.stack) > 0
 }

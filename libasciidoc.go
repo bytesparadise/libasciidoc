@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
@@ -67,8 +68,12 @@ func Convert(r io.Reader, output io.Writer, config *configuration.Configuration)
 		duration := time.Since(start)
 		log.Debugf("rendered the output in %v", duration)
 	}()
+	p, err := parser.Preprocess(r, config)
+	if err != nil {
+		return types.Metadata{}, err
+	}
 	// log.Debugf("parsing the asciidoc source...")
-	doc, err := parser.ParseDocument(r, config)
+	doc, err := parser.ParseDocument(strings.NewReader(p), config)
 	if err != nil {
 		return types.Metadata{}, err
 	}

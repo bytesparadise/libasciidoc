@@ -1174,7 +1174,7 @@ and <more text> on the +
 						},
 					}
 					Expect(ParseDocument(s)).To(MatchDocument(expected))
-					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 33, 183, "unsupported kind of substitution: 'unknown'"))
+					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 33, 182, "unsupported kind of substitution: 'unknown'"))
 				})
 			})
 		})

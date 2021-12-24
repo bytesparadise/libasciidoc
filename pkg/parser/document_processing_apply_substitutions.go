@@ -32,9 +32,9 @@ func ApplySubstitutions(ctx *ParseContext, done <-chan interface{}, fragmentStre
 }
 
 func applySubstitutions(ctx *ParseContext, f types.DocumentFragment) types.DocumentFragment {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.WithField("pipeline_stage", "apply_substitutions").Debugf("incoming fragment:\n%s", spew.Sdump(f))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.WithField("pipeline_stage", "apply_substitutions").Debugf("incoming fragment:\n%s", spew.Sdump(f))
+	// }
 	// if the fragment already contains an error, then send it as-is downstream
 	if f.Error != nil {
 		log.Debugf("skipping substitutions because of fragment with error: %v", f.Error)
@@ -575,11 +575,10 @@ func (s *substitution) hasEnablements() bool {
 }
 
 func (s *substitution) processAttributes(ctx *ParseContext, element types.BlockWithAttributes, opts ...Option) error {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.
-			WithField("entrypoint", s.entrypoint).
-			Debugf("processing attributes of %s", spew.Sdump(element))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.WithField("entrypoint", s.entrypoint).
+	// 		Debugf("processing attributes of %s", spew.Sdump(element))
+	// }
 	// TODO: only parse element attributes if an attribute substitution occurred?
 	attrs, err := s.parseAttributes(element.GetAttributes(), opts...)
 	if err != nil {
@@ -597,9 +596,9 @@ func (s *substitution) processAttributes(ctx *ParseContext, element types.BlockW
 		// clone substitution so we start again with `hasAttributeSubstitutions=false` without loosing this `s.hasAttributeSubstitutions` value (needed to re-process elements)
 		return s.clone().processAttributes(ctx, element, opts...)
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.WithField("entrypoint", s.entrypoint).Debugf("done processing attributes of %s", spew.Sdump(element))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.WithField("entrypoint", s.entrypoint).Debugf("done processing attributes of %s", spew.Sdump(element))
+	// }
 	return nil
 }
 
@@ -795,9 +794,9 @@ func (s *substitution) parseAttributes(attributes types.Attributes, opts ...Opti
 			attributes[name] = value
 		}
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("parsed attributes with rule '%s': %s", s.entrypoint, spew.Sdump(attributes))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("parsed attributes with rule '%s': %s", s.entrypoint, spew.Sdump(attributes))
+	// }
 	return attributes, nil
 }
 
@@ -812,6 +811,9 @@ func (s *substitution) parseContent(content []byte, opts ...Option) ([]interface
 	r, ok := result.([]interface{})
 	if !ok {
 		return nil, fmt.Errorf("unexpected type of content after parsing elements: '%T'", result)
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("parsed content:\n%s", spew.Sdump(r))
 	}
 	return r, nil
 }
@@ -1020,7 +1022,6 @@ func (p *placeholders) restore(elements []interface{}) ([]interface{}, error) {
 		return elements, nil
 	}
 	for i, e := range elements {
-		//
 		if e, ok := e.(*types.ElementPlaceHolder); ok {
 			elements[i] = p.elements[e.Ref]
 		}
@@ -1257,48 +1258,3 @@ const (
 	// SpecialCharacters the "specialchars" substitution
 	SpecialCharacters substitutionKind = "specialchars"
 )
-
-const delimitedBlockScopeKey = "delimited_block_scope"
-
-// state info to indicate that parsing is happening within a delimited block of the given kind,
-// in which case some grammar rules may need to be disabled
-func (c *current) setWithinDelimitedBlockOfKind(kind string) {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("setting scope within block of kind '%s'", kind)
-	// }
-	c.globalStore[delimitedBlockScopeKey] = kind
-}
-
-// state info to indicate that parsing is happening within a delimited block of the given kind,
-// in which case some grammar rules may need to be disabled
-func (c *current) unsetWithinDelimitedBlock() {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("unsetting scope within block of kind '%s'", kind)
-	// }
-	delete(c.globalStore, delimitedBlockScopeKey)
-}
-
-// state info to determine if parsing is happening within a delimited block (any kind),
-// in which case some grammar rules need to be disabled
-func (c *current) isWithinDelimitedBlock() bool {
-	_, found := c.globalStore[delimitedBlockScopeKey].(string)
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("checking if within delimited block: %t", found)
-	// }
-	return found
-}
-
-// state info to determine if parsing is happening within a delimited block of the given kind,
-// in which case some grammar rules need to be disabled
-func (c *current) isWithinDelimitedBlockOfKind(kind string) bool {
-	if k, found := c.globalStore[delimitedBlockScopeKey].(string); found {
-		// if log.IsLevelEnabled(log.DebugLevel) {
-		// 	log.Debugf("checking if within block of kind '%s': %t (1)", kind, k == kind)
-		// }
-		return k == kind
-	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("checking if within block of kind '%s': false (2)", kind)
-	// }
-	return false
-}

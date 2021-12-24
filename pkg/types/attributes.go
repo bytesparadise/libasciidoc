@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -378,9 +377,9 @@ func NewIDAttribute(id interface{}) (*Attribute, error) {
 // with some `key` replacements/grouping (Role->Roles and Option->Options)
 // returns the new `Attributes` if the current instance was `nil`
 func (a Attributes) Set(key string, value interface{}) Attributes {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("setting attribute %s=%s", key, spew.Sdump(value))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("setting attribute %s=%s", key, spew.Sdump(value))
+	// }
 	if a == nil {
 		a = Attributes{}
 	}

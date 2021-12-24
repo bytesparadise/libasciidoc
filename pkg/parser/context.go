@@ -22,6 +22,7 @@ func NewParseContext(config *configuration.Configuration, opts ...Option) *Parse
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("new parser context with attributes: %s", spew.Sdump(config.Attributes))
 	}
+	opts = append(opts, Entrypoint("DocumentFragment"))
 	opts = append(opts, GlobalStore(frontMatterKey, true))
 	opts = append(opts, GlobalStore(documentHeaderKey, true))
 	opts = append(opts, GlobalStore(substitutionKey, newNormalSubstitution()))
@@ -48,20 +49,6 @@ func (c *ParseContext) Clone() *ParseContext {
 		userMacros:   c.userMacros,
 		counters:     c.counters,
 	}
-}
-
-func (c *ParseContext) WithinDelimitedBlock(b *types.DelimitedBlock) *ParseContext {
-	clone := c.Clone()
-	switch b.Kind {
-	case types.Example, types.Quote, types.Sidebar:
-		clone.Opts = append(c.Opts, Entrypoint("DocumentFragment"), GlobalStore(delimitedBlockScopeKey, b.Kind))
-	case types.Fenced, types.Listing, types.Literal, types.Verse:
-		clone.Opts = append(c.Opts, Entrypoint("DocumentFragmentWithinVerbatimBlock"), GlobalStore(delimitedBlockScopeKey, b.Kind))
-	default:
-		// TODO: do we need to parse the content of Passthrough and Comments?
-		clone.Opts = append(c.Opts, Entrypoint("DocumentFragmentWithinVerbatimBlock"), GlobalStore(delimitedBlockScopeKey, b.Kind))
-	}
-	return clone
 }
 
 type contextAttributes struct {
