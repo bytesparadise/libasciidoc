@@ -90,25 +90,11 @@ func NewErrorFragment(p Position, err error) DocumentFragment {
 }
 
 // ------------------------------------------
-// Draft Document: document in which
-// all substitutions have been applied
-// DEPRECATED
-// ------------------------------------------
-
-// DraftDocument the linear-level structure for a document
-type DraftDocument struct {
-	Attributes  Attributes
-	FrontMatter FrontMatter
-	Elements    []interface{}
-}
-
-// ------------------------------------------
 // Document
 // ------------------------------------------
 
 // Document the top-level structure for a document
 type Document struct {
-	// Attributes        Attributes    // DEPRECATED
 	Elements          []interface{} // TODO: rename to `Blocks`?
 	ElementReferences ElementReferences
 	Footnotes         []*Footnote
@@ -2067,9 +2053,6 @@ const (
 	Source string = "source"
 	// Passthrough a passthrough block
 	Passthrough string = "pass"
-
-	// AttrSourceBlockOption the option set on a source block, using the `source%<option>` attribute
-	AttrSourceBlockOption = "source-option" // DEPRECATED
 )
 
 type BlockDelimiter struct { // TODO: use BlockDelimiterKind directly?
