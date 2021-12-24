@@ -690,16 +690,7 @@ DelimitedBlockRawLine <-
 // Comment Blocks
 // ----------------
 CommentBlock <-
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Comment), nil
-    }
     CommentBlockStartDelimiter
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Comment)
-        return true, nil
-    }
     content:(CommentBlockContent)
     CommentBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
@@ -720,18 +711,9 @@ CommentBlockContent <-
 // Example Blocks
 // ----------------------
 ExampleBlock <-
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Example), nil
-    }
     ExampleBlockStartDelimiter
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Example)
-        return true, nil
-    }
     content:(ExampleBlockContent)
-    ExampleBlockEndDelimiter {
+    ExampleBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
         return types.NewDelimitedBlock(types.Example, content.([]interface{}))
     }
@@ -750,18 +732,9 @@ ExampleBlockContent <-
 // Fenced Blocks
 // ----------------------
 FencedBlock <-
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Fenced), nil
-    }
     FencedBlockStartDelimiter
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Fenced)
-        return true, nil
-    }
     content:(FencedBlockContent)
-    FencedBlockEndDelimiter {
+    FencedBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
         return types.NewDelimitedBlock(types.Fenced, content.([]interface{}))
     }
@@ -780,18 +753,9 @@ FencedBlockContent <-
 // Listing Blocks
 // ----------------------
 ListingBlock <-
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Listing), nil
-    }
     ListingBlockStartDelimiter
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Listing)
-        return true, nil
-    }
     content:(ListingBlockContent)
-    ListingBlockEndDelimiter {
+    ListingBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
         return types.NewDelimitedBlock(types.Listing, content.([]interface{}))
     }
@@ -811,16 +775,7 @@ ListingBlockContent <-
 // ----------------------
 LiteralBlock <-
     LiteralBlockStartDelimiter
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Literal), nil
-    }
     content:(LiteralBlockContent)
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Literal)
-        return true, nil
-    }
     LiteralBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
         return types.NewDelimitedBlock(types.Literal, content.([]interface{}))
@@ -866,16 +821,7 @@ MarkdownQuoteAttribution <-
 // Passthrough Blocks
 // ----------------------
 PassthroughBlock <-
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Passthrough), nil
-    }
     PassthroughBlockStartDelimiter
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Passthrough)
-        return true, nil
-    }
     content:(PassthroughBlockContent)
     PassthroughBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
@@ -896,18 +842,9 @@ PassthroughBlockContent <-
 // Quote Blocks
 // ----------------------
 QuoteBlock <-
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Quote), nil
-    }
     QuoteBlockStartDelimiter
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Quote)
-        return true, nil
-    }
     content:(QuoteBlockContent)
-    QuoteBlockEndDelimiter {
+    QuoteBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
         return types.NewDelimitedBlock(types.Quote, content.([]interface{}))
     }
@@ -926,18 +863,9 @@ QuoteBlockContent <-
 // Sidebar Blocks
 // ----------------------
 SidebarBlock <-
-    &{
-        // only accept if not already in a delimited block of this kind
-        return !c.isWithinDelimitedBlockOfKind(types.Sidebar), nil
-    }
     SidebarBlockStartDelimiter
-    &{
-        // only accept if the delimiter matches the current delimited block or if no kind is registered yet
-        c.setWithinDelimitedBlockOfKind(types.Sidebar)
-        return true, nil
-    }
     content:(SidebarBlockContent)
-    SidebarBlockEndDelimiter {
+    SidebarBlockEndDelimiter? {
         c.unsetWithinDelimitedBlock()
         return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}))
     }
