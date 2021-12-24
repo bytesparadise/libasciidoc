@@ -637,21 +637,24 @@ end`
 				source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 				_, err := PreparseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]: chdir %s: no such file or directory", filepath.Join(wd, "{unknown}"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]: chdir %s", filepath.Join(wd, "{unknown}"))))
 			})
 
 			It("should fail if file is missing in standalone block", func() {
 				source := `include::unknown.adoc[leveloffset=+1]`
 				_, err := PreparseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::unknown.adoc[leveloffset=+1]: open %s: no such file or directory", filepath.Join(wd, "unknown.adoc"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::unknown.adoc[leveloffset=+1]: open %s", filepath.Join(wd, "unknown.adoc"))))
 			})
 
 			It("should fail if file with attribute in path is not resolved in standalone block", func() {
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
 				_, err := PreparseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s: no such file or directory", filepath.Join(wd, "{includedir}"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s", filepath.Join(wd, "{includedir}"))))
 			})
 
 			It("should fail if file is missing in delimited block", func() {
@@ -660,7 +663,8 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
 				_, err := PreparseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]: open %s: no such file or directory", filepath.Join(wd, "../../test/includes/unknown.adoc"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]: open %s", filepath.Join(wd, "../../test/includes/unknown.adoc"))))
 			})
 
 			It("should fail if file with attribute in path is not resolved in delimited block", func() {
@@ -669,7 +673,8 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
 				_, err := PreparseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s: no such file or directory", filepath.Join(wd, "{includedir}"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s", filepath.Join(wd, "{includedir}"))))
 			})
 		})
 
@@ -2068,21 +2073,24 @@ ____`
 				source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 				_, err := ParseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]: chdir %s: no such file or directory", filepath.Join(wd, "{unknown}"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]: chdir %s", filepath.Join(wd, "{unknown}"))))
 			})
 
 			It("should fail if file is missing in standalone block", func() {
 				source := `include::unknown.adoc[leveloffset=+1]`
 				_, err := ParseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::unknown.adoc[leveloffset=+1]: open %s: no such file or directory", filepath.Join(wd, "unknown.adoc"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::unknown.adoc[leveloffset=+1]: open %s", filepath.Join(wd, "unknown.adoc"))))
 			})
 
 			It("should fail if file with attribute in path is not resolved in standalone block", func() {
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
 				_, err := ParseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s: no such file or directory", filepath.Join(wd, "{includedir}"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s", filepath.Join(wd, "{includedir}"))))
 			})
 
 			It("should fail if file is missing in delimited block", func() {
@@ -2091,7 +2099,8 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
 				_, err := ParseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]: open %s: no such file or directory", filepath.Join(wd, "../../test/includes/unknown.adoc"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]: open %s", filepath.Join(wd, "../../test/includes/unknown.adoc"))))
 			})
 
 			It("should fail if file with attribute in path is not resolved in delimited block", func() {
@@ -2100,7 +2109,8 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
 				_, err := ParseDocument(source)
 				GinkgoT().Log(err.Error())
-				Expect(err).To(MatchError(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s: no such file or directory", filepath.Join(wd, "{includedir}"))))
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(fmt.Sprintf("Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]: chdir %s", filepath.Join(wd, "{includedir}"))))
 			})
 		})
 
