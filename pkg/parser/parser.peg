@@ -16,6 +16,150 @@ import (
 }
 
 // -------------------------------------------------------------------------------------
+//
+//
+// Document Preprocessing
+//
+//
+// -------------------------------------------------------------------------------------
+DocumentRawLine <- 
+    element:(
+        AttributeDeclaration
+        / AttributeReset
+        / FileInclusion
+        / BlockDelimiter
+        / RawSection
+    ) EOF {
+        // in case of parse error, we'll keep the rawline content as-is
+        return element, nil
+    }
+
+// ----------------------------------------------------------
+// File inclusions
+// ----------------------------------------------------------
+RawSection <- 
+    &{
+        // should only be enabled when reading files to include, not the main (root) file
+        return c.isSectionEnabled(), nil
+    }
+    &{  
+        return !c.isWithinDelimitedBlock(), nil
+    }
+    level:(("=")+ {   
+        // `=` is level 0, `==` is level 1, etc.
+        return (len(c.text)-1), nil 
+    })
+    &{  
+        // use a predicate to make sure that only `=` (level 0) to `======` (level 5) are allowed
+        return level.(int) <= 5, nil 
+    } 
+    Spaces [^\r\n]+ EOF{
+        return types.NewRawSection(level.(int), string(c.text)) // just retain the raw content
+    }
+
+// ----------------------------------------------------------
+// File inclusions
+// ----------------------------------------------------------
+FileInclusion <- 
+    &{
+        // skip if disabled
+        return c.isRuleEnabled(FileInclusion)
+    }
+    #{
+        // force/enable attribute substitution // TODO: why? 
+        // log.Debug("entering FileInclusion rule")
+        return c.setCurrentSubstitution("attributes")
+    }
+    incl:(
+        "include::" 
+        path:(FileLocation) 
+        inlineAttributes:(InlineAttributes) { 
+            return types.NewFileInclusion(path.(*types.Location), inlineAttributes.(types.Attributes), string(c.text))
+        }
+    ) 
+    Space* EOL {
+        return incl.(*types.FileInclusion), nil
+    }
+
+FileIncludeAttributes <- LongHandAttributes
+
+// extra entrypoint
+LineRanges <- value:(MultipleLineRanges 
+    / MultiLineRange 
+    / SingleLineRange 
+    ) EOF { // must make sure that the whole content is parsed
+        return value, nil
+    }
+
+MultipleLineRanges <- first:(MultiLineRange / SingleLineRange) 
+    others:(
+        ("," / ";") // at this point, we already got rid of the surrounding quotes, so we can accept both `,` and `;`
+        other:(MultiLineRange / SingleLineRange) {
+            return other, nil
+    })+ {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+MultiLineRange <- start:(Number) ".." end:(Number) { // eg: lines=12..14
+        return types.NewLineRange(start.(int), end.(int))
+    } 
+
+SingleLineRange <- singleline:(Number) { // eg: lines=12
+        return types.NewLineRange(singleline.(int), singleline.(int))
+    }
+
+// extra entrypoint
+TagRanges <- value:(MultipleTagRanges) EOF { // must make sure that the whole content is parsed
+        return value, nil
+    }
+
+MultipleTagRanges <- first:(TagRange)
+    others:(
+        ("," / ";") // at this point, we already got rid of the surrounding quotes, so we can accept both `,` and `;`
+        other:(TagRange) {
+            return other, nil
+    })* {
+        return append([]interface{}{first}, others.([]interface{})...), nil
+    }
+
+TagRange <- tag:(Alphanums / TagWildcard) {
+        return types.NewTagRange(tag.(string), true)
+    } / "!" tag:(Alphanums / TagWildcard) {
+        return types.NewTagRange(tag.(string), false)
+    }
+
+TagWildcard <- stars:(("*")+ {
+        return string(c.text), nil
+    })
+    &{  
+        // use a predicate to make sure that only `*` and `**` are allowed
+        return len(stars.(string)) <= 2, nil 
+    } {
+        return stars, nil
+    }
+
+IncludedFileLine <- content:(IncludedFileStartTag / IncludedFileEndTag / . {return string(c.text), nil})* EOL {
+        return types.NewIncludedFileLine(content.([]interface{}))
+    }
+
+IncludedFileStartTag <- "tag::" tag:(Alphanums {return string(c.text), nil}) "[]" {
+        return types.NewIncludedFileStartTag(tag.(string))
+    }
+
+IncludedFileEndTag <- "end::" tag:(Alphanums {return string(c.text), nil}) "[]" {
+        return types.NewIncludedFileEndTag(tag.(string))
+    }
+
+
+// -------------------------------------------------------------------------------------
+//
+//
+// Document Processing
+//
+//
+// -------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------
 // Document Fragments
 // -------------------------------------------------------------------------------------
 DocumentFragment <-
@@ -24,7 +168,6 @@ DocumentFragment <-
     element:(
         ImageBlock // must appear before ShortcutParagraph
         / UserMacroBlock // must appear before ShortcutParagraph
-        / FileInclusion // must appear before ShortcutParagraph
         / ShortcutParagraph
         / AttributeDeclaration
         / AttributeReset
@@ -40,22 +183,22 @@ DocumentFragment <-
         / LiteralParagraph
         / FrontMatter
         / Paragraph // must be the last one... 
-    ) {
-        c.setFrontMatterAllowed(false) // not allowed anymore
-        c.setDocumentHeaderAllowed(false) // not allowed anymore
+    )? // allow attribute on empty/no element
+    &{
+        if attributes != nil && element == nil {
+            // do not return an error, but do not accept such a kind of content (standalone attributes)
+            return false, fmt.Errorf("standalone attribute")
+        }
+        return true, nil
+    }
+    {
+        c.disableFrontMatterRule() // not allowed as soon as a single element is found
+        c.disableDocumentHeaderRule(element) // not allowed anymore, based on element that was found
     
         if element, ok := element.(types.BlockWithAttributes); ok && attributes != nil {
             element.AddAttributes(attributes.(types.Attributes))
         }
         return element, nil
-    }
-
-DocumentFragmentWithinVerbatimBlock <-
-    elements:(
-        FileInclusion
-        / RawLine
-    )* EOF {
-        return elements, nil
     }
 
 RawLine <- 
@@ -110,8 +253,7 @@ AttributeDeclaration <-
     ":" name:(AttributeName) ":" 
     value:(AttributeDeclarationValue)? 
     EOL {
-        d := types.NewAttributeDeclaration(name.(string), types.Reduce(value, strings.TrimSpace))
-        return d, nil
+        return types.NewAttributeDeclaration(name.(string), types.Reduce(value, strings.TrimSpace), string(c.text))
     }
 
 // AttributeName must be at least one character long, 
@@ -140,9 +282,9 @@ AttributeDeclarationValueElement <- !EOL
     }
 
 AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {
-    return types.NewAttributeReset(name.(string))
+    return types.NewAttributeReset(name.(string), string(c.text))
 } / ":" name:(AttributeName) "!:" Space* EOL {
-    return types.NewAttributeReset(name.(string))
+    return types.NewAttributeReset(name.(string), string(c.text))
 }
 
 // -------------------------------------------------------------------------------------
@@ -297,7 +439,6 @@ ShortHandAttributeValue <-
             return types.NewStringElement(string(c.text))
         }) 
         / ElementPlaceHolder
-        // / Quote 
         / AttributeSubstitution
         / ("{" { 
             return types.NewStringElement(string(c.text))
@@ -421,18 +562,18 @@ AttributeSubstitution <-
     }
 
 AttributeValueSubstitution <- "{" name:AttributeName "}" { 
-    return types.NewAttributeSubstitution(name.(string))
+    return types.NewAttributeSubstitution(name.(string), string(c.text))
 }
 
 // TODO: simplify the 'start' optional attribute
-CounterSubstitution <- CounterSubstitution1 / CounterSubstitution2  // / CounterSubstitutionAlpha / CounterSubstitutionAlpha2 / CounterSubstitutionStart / CounterSubstitutionStart2
+CounterSubstitution <- CounterSubstitution1 / CounterSubstitution2
 
 CounterSubstitution1 <- "{counter:" name:AttributeName start:(CounterStart)? "}" {
-    return types.NewCounterSubstitution(name.(string), false, start)
+    return types.NewCounterSubstitution(name.(string), false, start, string(c.text))
 }
 
 CounterSubstitution2 <- "{counter2:" name:AttributeName start:(CounterStart)? "}" {
-    return types.NewCounterSubstitution(name.(string), true, nil)
+    return types.NewCounterSubstitution(name.(string), true, nil, string(c.text))
 }
 
 CounterStart <- ":" start:([A-Za-z] {
@@ -505,21 +646,37 @@ BlockDelimiter <-
         }
 
 
-CommentBlockDelimiter <- "////" Space* EOL
+CommentBlockDelimiter <- "////" Space* EOL {
+    return types.NewBlockDelimiter(types.Comment, string(c.text))
+}
 
-ExampleBlockDelimiter <- "====" Space* EOL
+ExampleBlockDelimiter <- "====" Space* EOL {
+    return types.NewBlockDelimiter(types.Example, string(c.text))
+}
 
-FencedBlockDelimiter <- "```" Space* EOL
+FencedBlockDelimiter <- "```" Space* EOL {
+    return types.NewBlockDelimiter(types.Fenced, string(c.text))
+}
 
-ListingBlockDelimiter <- "----" Space* EOL
+ListingBlockDelimiter <- "----" Space* EOL {
+    return types.NewBlockDelimiter(types.Listing, string(c.text))
+}
 
-LiteralBlockDelimiter <- "...." Space* EOL
+LiteralBlockDelimiter <- "...." Space* EOL {
+    return types.NewBlockDelimiter(types.Literal, string(c.text))
+}
 
-PassthroughBlockDelimiter <- "++++" Space* EOL
+PassthroughBlockDelimiter <- "++++" Space* EOL {
+    return types.NewBlockDelimiter(types.Passthrough, string(c.text))
+}
 
-QuoteBlockDelimiter <- "____" Space* EOL
+QuoteBlockDelimiter <- "____" Space* EOL {
+    return types.NewBlockDelimiter(types.Quote, string(c.text))
+}
 
-SidebarBlockDelimiter <- "****" Space* EOL
+SidebarBlockDelimiter <- "****" Space* EOL {
+    return types.NewBlockDelimiter(types.Sidebar, string(c.text))
+}
 
 DelimitedBlockRawLine <- 
     !EOF // in case the block is unclosed and at the end of the document
@@ -585,7 +742,7 @@ ExampleBlockEndDelimiter <- ExampleBlockDelimiter / EOF
 
 ExampleBlockContent <- 
    (!ExampleBlockEndDelimiter
-    line:(FileInclusion/DelimitedBlockRawLine) {
+    line:(DelimitedBlockRawLine) {
         return line, nil
     })*
 
@@ -615,7 +772,7 @@ FencedBlockEndDelimiter <- FencedBlockDelimiter / EOF
 
 FencedBlockContent <- 
     (!FencedBlockEndDelimiter
-    line:(FileInclusion/DelimitedBlockRawLine) {
+    line:(DelimitedBlockRawLine) {
         return line, nil
     })*
 
@@ -645,7 +802,7 @@ ListingBlockEndDelimiter <- ListingBlockDelimiter / EOF
 
 ListingBlockContent <- 
     (!ListingBlockEndDelimiter
-    line:(FileInclusion/DelimitedBlockRawLine) {
+    line:(DelimitedBlockRawLine) {
         return line, nil
     })*
 
@@ -675,7 +832,7 @@ LiteralBlockEndDelimiter <- LiteralBlockDelimiter / EOF
 
 LiteralBlockContent <- 
     (!LiteralBlockEndDelimiter
-    line:(FileInclusion/DelimitedBlockRawLine) {
+    line:(DelimitedBlockRawLine) {
         return line, nil
     })*
 
@@ -731,7 +888,7 @@ PassthroughBlockEndDelimiter <- PassthroughBlockDelimiter / EOF
 
 PassthroughBlockContent <- 
     (!PassthroughBlockEndDelimiter
-    line:(FileInclusion/DelimitedBlockRawLine) {
+    line:(DelimitedBlockRawLine) {
         return line, nil
     })*
 
@@ -761,7 +918,7 @@ QuoteBlockEndDelimiter <- QuoteBlockDelimiter / EOF
 
 QuoteBlockContent <- 
    (!QuoteBlockEndDelimiter
-    line:(FileInclusion/DelimitedBlockRawLine) {
+    line:(DelimitedBlockRawLine) {
         return line, nil
     })*
 
@@ -791,7 +948,7 @@ SidebarBlockEndDelimiter <- SidebarBlockDelimiter / EOF
 
 SidebarBlockContent <- 
    (!SidebarBlockEndDelimiter
-    line:(FileInclusion/DelimitedBlockRawLine) {
+    line:(DelimitedBlockRawLine) {
         return line, nil
     })*
 
@@ -807,13 +964,11 @@ DocumentHeader <-
     info:DocumentInformation?
     extraAttrs:(AttributeDeclaration / AttributeReset)* // we need to collect extra attrs to process substitution on the title
     {
-        c.setFrontMatterAllowed(false) // not allowed anymore
-        c.setDocumentHeaderAllowed(false) // not allowed anymore
         return types.NewDocumentHeader(title.([]interface{}), info, extraAttrs.([]interface{}))
     }
 
 DocumentTitle <- 
-    "=" Spaces title:(RawSectionTitle) EOL {
+    "=" Spaces title:(SectionTitle) EOL {
         return title, nil
     }
        
@@ -923,99 +1078,6 @@ LineBreak <-
     }
 
 // -------------------------------------------------------------------------------------
-// File inclusions
-// -------------------------------------------------------------------------------------
-FileInclusion <- 
-    &{
-        // skip if disabled
-        return c.isRuleEnabled(FileInclusion)
-    }
-    #{
-        // force/enable attribute substitution // TODO: why? 
-        // log.Debug("entering FileInclusion rule")
-        return c.setCurrentSubstitution("attributes")
-    }
-    incl:(
-        "include::" 
-        path:(FileLocation) 
-        inlineAttributes:(InlineAttributes) { 
-            return types.NewFileInclusion(path.(*types.Location), inlineAttributes.(types.Attributes), string(c.text))
-        }
-    ) 
-    Space* EOL {
-        return incl.(*types.FileInclusion), nil
-    }
-
-FileIncludeAttributes <- LongHandAttributes
-
-// extra entrypoint
-LineRanges <- value:(MultipleLineRanges 
-    / MultiLineRange 
-    / SingleLineRange 
-    ) EOF { // must make sure that the whole content is parsed
-        return value, nil
-    }
-
-MultipleLineRanges <- first:(MultiLineRange / SingleLineRange) 
-    others:(
-        ("," / ";") // at this point, we already got rid of the surrounding quotes, so we can accept both `,` and `;`
-        other:(MultiLineRange / SingleLineRange) {
-            return other, nil
-    })+ {
-        return append([]interface{}{first}, others.([]interface{})...), nil
-    }
-
-MultiLineRange <- start:(Number) ".." end:(Number) { // eg: lines=12..14
-        return types.NewLineRange(start.(int), end.(int))
-    } 
-
-SingleLineRange <- singleline:(Number) { // eg: lines=12
-        return types.NewLineRange(singleline.(int), singleline.(int))
-    }
-
-// extra entrypoint
-TagRanges <- value:(MultipleTagRanges) EOF { // must make sure that the whole content is parsed
-        return value, nil
-    }
-
-MultipleTagRanges <- first:(TagRange)
-    others:(
-        ("," / ";") // at this point, we already got rid of the surrounding quotes, so we can accept both `,` and `;`
-        other:(TagRange) {
-            return other, nil
-    })* {
-        return append([]interface{}{first}, others.([]interface{})...), nil
-    }
-
-TagRange <- tag:(Alphanums / TagWildcard) {
-        return types.NewTagRange(tag.(string), true)
-    } / "!" tag:(Alphanums / TagWildcard) {
-        return types.NewTagRange(tag.(string), false)
-    }
-
-TagWildcard <- stars:(("*")+ {
-        return string(c.text), nil
-    })
-    &{  
-        // use a predicate to make sure that only `*` and `**` are allowed
-        return len(stars.(string)) <= 2, nil 
-    } {
-        return stars, nil
-    }
-
-IncludedFileLine <- content:(IncludedFileStartTag / IncludedFileEndTag / . {return string(c.text), nil})* EOL {
-        return types.NewIncludedFileLine(content.([]interface{}))
-    }
-
-IncludedFileStartTag <- "tag::" tag:(Alphanums {return string(c.text), nil}) "[]" {
-        return types.NewIncludedFileStartTag(tag.(string))
-    }
-
-IncludedFileEndTag <- "end::" tag:(Alphanums {return string(c.text), nil}) "[]" {
-        return types.NewIncludedFileEndTag(tag.(string))
-    }
-
-// -------------------------------------------------------------------------------------
 // Front Matter
 // -------------------------------------------------------------------------------------
 FrontMatter <- 
@@ -1024,7 +1086,6 @@ FrontMatter <-
     }
     frontmatter:(YamlFrontMatter) 
     {
-        c.setFrontMatterAllowed(false) // not allowed anymore
         return frontmatter, nil
     }
 
@@ -1321,7 +1382,6 @@ ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
         / DelimitedBlock
         / ThematicBreak // must appear before ListElement :/
         / ImageBlock
-        / FileInclusion
         / Table
         / SingleLineComment
         / AdmonitionParagraph
@@ -2344,11 +2404,11 @@ Section <-
         // use a predicate to make sure that only `=` (level 0) to `======` (level 5) are allowed
         return level.(int) <= 5, nil 
     } 
-    Spaces title:(RawSectionTitle) EOL {
-        return types.NewRawSection(level.(int), title.([]interface{})) 
+    Spaces title:(SectionTitle) EOL {
+        return types.NewSection(level.(int), title.([]interface{})) 
     }
 
-RawSectionTitle <- [^\r\n]+ { // can't have empty title, that may collide with example block delimiter (`====`)
+SectionTitle <- [^\r\n]+ { // can't have empty title, that may collide with example block delimiter (`====`)
     return []interface{}{
         types.RawLine(c.text),
     }, nil 
@@ -2836,7 +2896,6 @@ Filename <- elements:(
     }
     / AttributeSubstitution 
     / SpecialCharacter
-    // / ElementPlaceHolder
     / "{" {
         return types.NewStringElement(string(c.text))
     })+ {
@@ -2862,7 +2921,7 @@ Space <- (" " / "\t") {
     }
 
 Spaces <- (" " / "\t")+ {
-        log.Debug("matched multiple spaces")
+        // log.Debug("matched multiple spaces")
         return string(c.text), nil
     }
 

@@ -52,17 +52,17 @@ func validateManpage(doc *types.Document) []Problem {
 	if nameSection, ok := assertThatElement(elements[0]).isSection(withLevel(1), withTitle("name")); !ok {
 		problems = append(problems, Problem{
 			Severity: Error,
-			Message:  "manpage document is missing the 'Name' section'",
+			Message:  "manpage document is missing the 'Name' section",
 		})
 	} else if ok := assertThatElements(nameSection.Elements).haveCount(1); !ok {
 		problems = append(problems, Problem{
 			Severity: Error,
-			Message:  "'Name' section' should contain a single paragraph",
+			Message:  "'Name' section should contain a single paragraph",
 		})
 	} else if _, ok := assertThatElement(elements[1]).isSection(withLevel(1), withTitle("synopsis")); !ok {
 		problems = append(problems, Problem{
 			Severity: Error,
-			Message:  "manpage document is missing the 'Synopsis' section'",
+			Message:  "manpage document is missing the 'Synopsis' section",
 		})
 	}
 	return problems

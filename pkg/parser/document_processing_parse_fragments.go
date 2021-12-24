@@ -57,6 +57,20 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			} else {
 				f.Elements = []interface{}{element}
 			}
+			for _, e := range f.Elements { // TODO: change the grammar rules of these delimited blocks to avoid 2nd parsing
+				switch e := e.(type) {
+				case *types.DelimitedBlock:
+					switch e.Kind {
+					case types.Example, types.Quote, types.Sidebar:
+						if e.Elements, err = parseDelimitedBlockElements(ctx, e); err != nil {
+							// log the error, but keep the delimited block empty so we can carry on with the whole processing
+							log.WithError(err).Error("unable to parse content of delimited block")
+							e.Elements = nil
+							break
+						}
+					}
+				}
+			}
 			if log.IsLevelEnabled(log.DebugLevel) {
 				log.Debugf("parsed fragment:\n%s", spew.Sdump(f))
 			}
@@ -76,16 +90,18 @@ func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) ([]
 	log.Debugf("parsing content of delimited block of kind '%s'", b.Kind)
 	// TODO: use real Substitution?
 	content, placeholders := serialize(b.Elements)
-	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), GlobalStore(delimitedBlockScopeKey, b.Kind))
+	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), GlobalStore(delimitedBlockScopeKey, true))
 	elements, err := Parse("", content, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to parse content") // ignore error (malformed content)
 	}
-	result, ok := elements.([]interface{})
-	if !ok {
-		return nil, errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", result)
+	log.Debugf("elements: '%s'", spew.Sdump(elements))
+	switch e := elements.(type) {
+	case []interface{}:
+		return placeholders.restore(e)
+	default:
+		return nil, errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", e)
 	}
-	return placeholders.restore(result)
 }
 
 const documentHeaderKey = "document_header"
@@ -99,18 +115,33 @@ func (c *current) isFrontMatterAllowed() bool {
 	return found && allowed && !c.isWithinDelimitedBlock()
 }
 
-func (c *current) setFrontMatterAllowed(a bool) {
-	c.globalStore[frontMatterKey] = a
+func (c *current) disableFrontMatterRule() {
+	c.globalStore[frontMatterKey] = false
 }
 
 func (c *current) isDocumentHeaderAllowed() bool {
 	allowed, found := c.globalStore[documentHeaderKey].(bool)
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("checking if DocumentHeader is allowed: %t", found && allowed && !c.isWithinDelimitedBlock())
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("checking if DocumentHeader is allowed: %t", found && allowed && !c.isWithinDelimitedBlock())
+	}
 	return found && allowed && !c.isWithinDelimitedBlock()
 }
 
-func (c *current) setDocumentHeaderAllowed(a bool) {
-	c.globalStore[documentHeaderKey] = a
+func (c *current) disableDocumentHeaderRule(element interface{}) {
+	// if already disabled, then skip
+	if enabled, found := c.globalStore[documentHeaderKey].(bool); found && !enabled {
+		return
+	}
+	// disable based on type of element
+	switch element.(type) {
+	case *types.AttributeDeclaration, *types.AttributeReset, *types.BlankLine:
+		// do not disable yet
+		return
+	default:
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debugf("disabling DocumentHeader after parsing element of type '%T'", element)
+		}
+		c.globalStore[documentHeaderKey] = false
+
+	}
 }

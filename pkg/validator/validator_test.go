@@ -213,7 +213,7 @@ var _ = Describe("document validator", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
-					Message:  "manpage document is missing the 'Name' section'",
+					Message:  "manpage document is missing the 'Name' section",
 				}))
 				// Expect(doc.Attributes.GetAsStringWithDefault(types.AttrDocType, "")).To(Equal("article")) // changed
 			})
@@ -274,7 +274,7 @@ var _ = Describe("document validator", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
-					Message:  "manpage document is missing the 'Name' section'",
+					Message:  "manpage document is missing the 'Name' section",
 				}))
 				// Expect(doc.Attributes.GetAsStringWithDefault(types.AttrDocType, "")).To(Equal("article")) // changed
 			})
@@ -322,7 +322,7 @@ var _ = Describe("document validator", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
-					Message:  "'Name' section' should contain a single paragraph",
+					Message:  "'Name' section should contain a single paragraph",
 				}))
 			})
 
@@ -377,7 +377,7 @@ var _ = Describe("document validator", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
-					Message:  "'Name' section' should contain a single paragraph",
+					Message:  "'Name' section should contain a single paragraph",
 				}))
 			})
 
@@ -432,7 +432,7 @@ var _ = Describe("document validator", func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(problems).To(ContainElement(Problem{
 					Severity: Error,
-					Message:  "manpage document is missing the 'Synopsis' section'",
+					Message:  "manpage document is missing the 'Synopsis' section",
 				}))
 			})
 		})

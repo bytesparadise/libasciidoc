@@ -32,6 +32,9 @@ func ConfigureLogger(level log.Level, opts ...TeeOption) (*ConsoleOutput, func()
 	if level == log.DebugLevel {
 		t.out = os.Stdout // assume tee to stdout is needed too
 	}
+	if level == log.DebugLevel {
+		t.out = os.Stdout // assume tee to stdout is needed too
+	}
 	log.SetOutput(t)
 	fmtr := log.StandardLogger().Formatter
 	log.SetFormatter(&log.JSONFormatter{
@@ -39,6 +42,7 @@ func ConfigureLogger(level log.Level, opts ...TeeOption) (*ConsoleOutput, func()
 	})
 	oldLevel := log.GetLevel()
 	log.SetLevel(level)
+
 	return t, func() {
 		log.SetOutput(os.Stdout)
 		log.SetFormatter(fmtr)

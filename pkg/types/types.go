@@ -13,15 +13,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// NewRawSection returns a new RawSection
-func NewRawSection(level int, title []interface{}) (*Section, error) {
-	// log.Debugf("new rawsection: '%s' (%d)", title, level)
-	return &Section{
-		Level: level,
-		Title: title,
-	}, nil
-}
-
 // ------------------------------------------
 // common interfaces
 // ------------------------------------------
@@ -529,48 +520,75 @@ func (r *DocumentRevision) Expand() Attributes {
 
 // AttributeDeclaration the type for Document Attribute Declarations
 type AttributeDeclaration struct {
-	Name  string
-	Value interface{}
+	Name    string
+	Value   interface{}
+	rawText string
 }
 
 // NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
-func NewAttributeDeclaration(name string, value interface{}) *AttributeDeclaration {
-	return &AttributeDeclaration{
-		Name:  name,
-		Value: value,
+func NewAttributeDeclaration(name string, value interface{}, rawText string) (*AttributeDeclaration, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new attribute declaration: '%s'", spew.Sdump(rawText))
 	}
+	return &AttributeDeclaration{
+		Name:    name,
+		Value:   value,
+		rawText: rawText,
+	}, nil
+}
+
+var _ RawText = &AttributeDeclaration{}
+
+func (a *AttributeDeclaration) RawText() (string, error) {
+	return a.rawText, nil
 }
 
 // AttributeReset the type for AttributeReset
 type AttributeReset struct {
-	Name string
+	Name    string
+	rawText string
 }
 
 // NewAttributeReset initializes a new Document Attribute Resets.
-func NewAttributeReset(attrName string) (*AttributeReset, error) {
-	log.Debugf("new AttributeReset: '%s'", attrName)
-	return &AttributeReset{Name: attrName}, nil
+func NewAttributeReset(attrName string, rawText string) (*AttributeReset, error) {
+	// log.Debugf("new AttributeReset: '%s'", attrName)
+	return &AttributeReset{
+		Name:    attrName,
+		rawText: rawText,
+	}, nil
+}
+
+var _ RawText = &AttributeReset{}
+
+func (a *AttributeReset) RawText() (string, error) {
+	return a.rawText, nil
 }
 
 // AttributeSubstitution the type for AttributeSubstitution
 type AttributeSubstitution struct {
-	Name string
+	Name    string
+	rawText string
 }
 
 // NewAttributeSubstitution initializes a new Attribute Substitutions
-func NewAttributeSubstitution(name string) (interface{}, error) {
+func NewAttributeSubstitution(name, rawText string) (interface{}, error) {
 	if isPrefedinedAttribute(name) {
-		return &PredefinedAttribute{Name: name}, nil
+		return &PredefinedAttribute{
+				Name:    name,
+				rawText: rawText},
+			nil
 	}
-	// log.Debugf("new AttributeSubstitution: '%s'", name)
-	return &AttributeSubstitution{Name: name}, nil
+	return &AttributeSubstitution{
+			Name:    name,
+			rawText: rawText},
+		nil
 }
 
 var _ RawText = &AttributeSubstitution{}
 
 // RawText returns the raw text representation of this element as it was (supposedly) written in the source document
 func (s *AttributeSubstitution) RawText() (string, error) {
-	return "{" + s.Name + "}", nil
+	return s.rawText, nil
 }
 
 // PredefinedAttribute a special kind of attribute substitution, which
@@ -580,21 +598,29 @@ type PredefinedAttribute AttributeSubstitution
 // CounterSubstitution is a counter, that may increment when it is substituted.
 // If Increment is set, then it will increment before being expanded.
 type CounterSubstitution struct {
-	Name   string
-	Hidden bool
-	Value  interface{} // may be a byte for character
+	Name    string
+	Hidden  bool
+	Value   interface{} // may be a byte for character
+	rawText string
 }
 
 // NewCounterSubstitution returns a counter substitution.
-func NewCounterSubstitution(name string, hidden bool, val interface{}) (CounterSubstitution, error) {
+func NewCounterSubstitution(name string, hidden bool, val interface{}, rawText string) (CounterSubstitution, error) {
 	if v, ok := val.(string); ok {
 		val = rune(v[0])
 	}
 	return CounterSubstitution{
-		Name:   name,
-		Hidden: hidden,
-		Value:  val,
+		Name:    name,
+		Hidden:  hidden,
+		Value:   val,
+		rawText: rawText,
 	}, nil
+}
+
+var _ RawText = &CounterSubstitution{}
+
+func (s *CounterSubstitution) RawText() (string, error) {
+	return s.rawText, nil
 }
 
 // ------------------------------------------
@@ -2046,6 +2072,24 @@ const (
 	AttrSourceBlockOption = "source-option" // DEPRECATED
 )
 
+type BlockDelimiter struct { // TODO: use BlockDelimiterKind directly?
+	Kind    string
+	rawText string
+}
+
+func NewBlockDelimiter(kind, rawText string) (*BlockDelimiter, error) {
+	return &BlockDelimiter{
+		Kind:    kind,
+		rawText: rawText,
+	}, nil
+}
+
+var _ RawText = &BlockDelimiter{}
+
+func (b *BlockDelimiter) RawText() (string, error) {
+	return b.rawText, nil
+}
+
 // DelimitedBlock the structure for the Listing blocks
 type DelimitedBlock struct {
 	Kind       string
@@ -2171,12 +2215,43 @@ const (
 // Sections
 // ------------------------------------------
 
+// RawSection the structure for a raw section, using during preparsing (needed to support level offsets)
+type RawSection struct {
+	Level   int
+	RawText string
+}
+
+func NewRawSection(level int, rawText string) (*RawSection, error) {
+	return &RawSection{
+		Level:   level,
+		RawText: rawText,
+	}, nil
+}
+
+func (s *RawSection) OffsetLevel(offset int) {
+	s.RawText = strings.Replace(s.RawText, strings.Repeat("=", s.Level+1)+" ", strings.Repeat("=", s.Level+1+offset)+" ", 1)
+	s.Level = s.Level + offset
+}
+
+func (s *RawSection) Stringify() string {
+	return s.RawText
+}
+
 // Section the structure for a section
 type Section struct {
 	Level      int
 	Attributes Attributes
 	Title      []interface{}
 	Elements   []interface{}
+}
+
+// NewSection returns a new Section
+func NewSection(level int, title []interface{}) (*Section, error) {
+	// log.Debugf("new rawsection: '%s' (%d)", title, level)
+	return &Section{
+		Level: level,
+		Title: title,
+	}, nil
 }
 
 var _ BlockWithElements = &Section{}
@@ -2427,6 +2502,7 @@ func NewLineBreak() (*LineBreak, error) {
 // ------------------------------------------
 
 // QuotedText the structure for quoted text
+// TODO implement RawText
 type QuotedText struct {
 	Kind       QuotedTextKind
 	Elements   []interface{}
@@ -2581,6 +2657,7 @@ const (
 )
 
 // QuotedString a quoted string
+// TODO implement RawText
 type QuotedString struct {
 	Kind     QuotedStringKind
 	Elements []interface{}
@@ -2765,9 +2842,7 @@ type RawLine string
 
 // NewRawLine returns a new RawLine wrapper for the given string
 func NewRawLine(content string) (RawLine, error) {
-	// log.Debugf("new line: '%v'", content)
 	return RawLine(strings.TrimRight(content, " \t")), nil
-	// return RawLine(strings.Trim(content, " \t")), nil
 }
 
 func (l RawLine) trim() RawLine {

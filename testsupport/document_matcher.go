@@ -31,6 +31,11 @@ var opts = []cmp.Option{cmpopts.IgnoreUnexported(
 	types.DelimitedBlock{},
 	types.Footnotes{},
 	types.TableOfContents{},
+	types.AttributeDeclaration{},
+	types.AttributeSubstitution{},
+	types.AttributeReset{},
+	types.CounterSubstitution{},
+	types.PredefinedAttribute{},
 )}
 
 func (m *documentMatcher) Match(actual interface{}) (success bool, err error) {
