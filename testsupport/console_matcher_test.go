@@ -2,7 +2,6 @@ package testsupport_test
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
@@ -13,19 +12,26 @@ import (
 
 var _ = Describe("console assertions", func() {
 
-	console := `{"level":"debug","msg":"processing foo.adoc: ----\ninclude::../../test/includes/unknown.adoc[leveloffset=+1]\n----"}
+	content := `{"level":"debug","msg":"processing foo.adoc: ----\ninclude::../../test/includes/unknown.adoc[leveloffset=+1]\n----"}
 {"level":"debug","line":1,"msg":"initializing a new DraftDocument with 1 block element(s)"}
 {"level":"debug","line":1,"msg":"parsing '../../test/includes/unknown.adoc'..."}
 {"error":"open unknown.adoc: no such file or directory","level":"error","start_offset":0,"end_offset":60,"msg":"failed to include '../../test/includes/unknown.adoc'"}
 {"level":"debug","line":1,"msg":"restoring current working dir to: github.com/bytesparadise/libasciidoc/pkg/parser"}`
 
-	Context("with message and level", func() {
+	var out testsupport.ConsoleOutput
+	BeforeEach(func() {
+		out = *testsupport.NewConsoleOutput()
+		_, err := out.Write([]byte(content))
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	Context("with message, offset and level", func() {
 
 		It("should find expected level/message", func() {
 			// given
-			matcher := testsupport.ContainJSONLog(log.ErrorLevel, 0, 60, "failed to include '../../test/includes/unknown.adoc'")
+			matcher := testsupport.ContainJSONLogWithOffset(log.ErrorLevel, 0, 60, "failed to include '../../test/includes/unknown.adoc'")
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeTrue())
@@ -33,9 +39,9 @@ var _ = Describe("console assertions", func() {
 
 		It("should not find expected level/message with wrong level", func() {
 			// given an incorrect log level
-			matcher := testsupport.ContainJSONLog(log.WarnLevel, 0, 60, "failed to include '../../test/includes/unknown.adoc'")
+			matcher := testsupport.ContainJSONLogWithOffset(log.WarnLevel, 0, 60, "failed to include '../../test/includes/unknown.adoc'")
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())
@@ -43,9 +49,9 @@ var _ = Describe("console assertions", func() {
 
 		It("should not find expected level/message with wrong start_offset", func() {
 			// given an incorrect start_offset value
-			matcher := testsupport.ContainJSONLog(log.WarnLevel, 10, 60, "failed to include '../../test/includes/unknown.adoc'")
+			matcher := testsupport.ContainJSONLogWithOffset(log.WarnLevel, 10, 60, "failed to include '../../test/includes/unknown.adoc'")
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())
@@ -53,9 +59,9 @@ var _ = Describe("console assertions", func() {
 
 		It("should not find expected level/message with wrong end_offset", func() {
 			// given an incorrect end_offset value
-			matcher := testsupport.ContainJSONLog(log.WarnLevel, 0, 10, "failed to include '../../test/includes/unknown.adoc'")
+			matcher := testsupport.ContainJSONLogWithOffset(log.WarnLevel, 0, 10, "failed to include '../../test/includes/unknown.adoc'")
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())
@@ -63,15 +69,51 @@ var _ = Describe("console assertions", func() {
 
 		It("should not find expected level/message with wrong msg", func() {
 			// given an incorrect msg value
-			matcher := testsupport.ContainJSONLog(log.WarnLevel, 0, 10, "something else")
+			matcher := testsupport.ContainJSONLogWithOffset(log.WarnLevel, 0, 10, "something else")
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())
 			// also verify the messages
-			Expect(matcher.FailureMessage(strings.NewReader(console))).To(Equal(fmt.Sprintf(`expected console to contain log {"level": "%s", "start_offset":%d, "end_offset":%d, "msg":"%s"}`, log.WarnLevel, 0, 10, "something else")))
-			Expect(matcher.NegatedFailureMessage(strings.NewReader(console))).To(Equal(fmt.Sprintf(`expected console not to contain log {"level": "%s", "start_offset":%d, "end_offset":%d, "msg":"%s"}`, log.WarnLevel, 0, 10, "something else")))
+			Expect(matcher.FailureMessage(out)).To(Equal(fmt.Sprintf(`expected console to contain log {"level": "%s", "start_offset":%d, "end_offset":%d, "msg":"%s"}`, log.WarnLevel, 0, 10, "something else")))
+			Expect(matcher.NegatedFailureMessage(out)).To(Equal(fmt.Sprintf(`expected console not to contain log {"level": "%s", "start_offset":%d, "end_offset":%d, "msg":"%s"}`, log.WarnLevel, 0, 10, "something else")))
+		})
+	})
+
+	Context("with message and level", func() {
+
+		It("should find expected level/message", func() {
+			// given
+			matcher := testsupport.ContainJSONLog(log.ErrorLevel, "failed to include '../../test/includes/unknown.adoc'")
+			// when
+			result, err := matcher.Match(out)
+			// then
+			Expect(err).ToNot(HaveOccurred())
+			Expect(result).To(BeTrue())
+		})
+
+		It("should not find expected level/message with wrong level", func() {
+			// given an incorrect log level
+			matcher := testsupport.ContainJSONLog(log.WarnLevel, "failed to include '../../test/includes/unknown.adoc'")
+			// when
+			result, err := matcher.Match(out)
+			// then
+			Expect(err).ToNot(HaveOccurred())
+			Expect(result).To(BeFalse())
+		})
+
+		It("should not find expected level/message with wrong msg", func() {
+			// given an incorrect msg value
+			matcher := testsupport.ContainJSONLog(log.WarnLevel, "something else")
+			// when
+			result, err := matcher.Match(out)
+			// then
+			Expect(err).ToNot(HaveOccurred())
+			Expect(result).To(BeFalse())
+			// also verify the messages
+			Expect(matcher.FailureMessage(out)).To(Equal(fmt.Sprintf(`expected console to contain log {"level": "%s", "msg":"%s"}`, log.WarnLevel, "something else")))
+			Expect(matcher.NegatedFailureMessage(out)).To(Equal(fmt.Sprintf(`expected console not to contain log {"level": "%s", "msg":"%s"}`, log.WarnLevel, "something else")))
 		})
 	})
 
@@ -81,7 +123,7 @@ var _ = Describe("console assertions", func() {
 			// given
 			matcher := testsupport.ContainAnyMessageWithLevels(log.ErrorLevel)
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeTrue())
@@ -91,7 +133,7 @@ var _ = Describe("console assertions", func() {
 			// given
 			matcher := testsupport.ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel)
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeTrue())
@@ -101,7 +143,7 @@ var _ = Describe("console assertions", func() {
 			// given
 			matcher := testsupport.ContainAnyMessageWithLevels(log.WarnLevel)
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())
@@ -112,7 +154,7 @@ var _ = Describe("console assertions", func() {
 			// given
 			matcher := testsupport.ContainAnyMessageWithLevels(log.WarnLevel, log.InfoLevel)
 			// when
-			result, err := matcher.Match(strings.NewReader(console))
+			result, err := matcher.Match(out)
 			// then
 			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(BeFalse())

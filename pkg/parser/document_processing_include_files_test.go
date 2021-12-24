@@ -786,7 +786,7 @@ last line of parent `,
 					source := `include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]` // not a number
 					expected := &types.Document{}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
-					Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 64, "Unresolved directive in test.adoc - include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]"))
+					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 64, "Unresolved directive in test.adoc - include::../../test/includes/chapter-a.adoc[lines=1;3..4;6..foo]"))
 				})
 
 				It("with invalid unquoted range - case 2", func() {
@@ -908,7 +908,7 @@ last line of parent `,
 					source := `include::../../test/includes/chapter-a.adoc[lines="1,3..4,6..foo"]` // not a number
 					_, err := ParseDocument(source)
 					Expect(err).NotTo(HaveOccurred()) // parsing does not fail, but an error is logged for the fragment with the `include` macro
-					Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 66, "Unresolved directive in test.adoc - include::../../test/includes/chapter-a.adoc[lines=\"1,3..4,6..foo\"]"))
+					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 66, "Unresolved directive in test.adoc - include::../../test/includes/chapter-a.adoc[lines=\"1,3..4,6..foo\"]"))
 				})
 
 				It("with ignored tags", func() {
@@ -1030,7 +1030,7 @@ last line of parent `,
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 				// verify error in logs
-				Expect(logs).To(ContainJSONLog(log.WarnLevel, -1, -1, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include-unclosed.adoc"))
+				Expect(logs).To(ContainJSONLog(log.WarnLevel, "detected unclosed tag 'unclosed' starting at line 6 of include file: ../../test/includes/tag-include-unclosed.adoc"))
 			})
 
 			It("with unknown tag", func() {
@@ -1043,7 +1043,7 @@ last line of parent `,
 				_, err := ParseDocument(source)
 				// verify error in logs
 				Expect(err).NotTo(HaveOccurred()) // parsing does not fail, but an error is logged for the fragment with the `include` macro
-				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 58, "Unresolved directive in test.adoc - include::../../test/includes/tag-include.adoc[tag=unknown]: tag 'unknown' not found in file to include"))
+				Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 58, "Unresolved directive in test.adoc - include::../../test/includes/tag-include.adoc[tag=unknown]: tag 'unknown' not found in file to include"))
 			})
 
 			It("with no tag", func() {
@@ -1308,7 +1308,7 @@ last line of parent `,
 				source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 				expected := &types.Document{}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
-				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 47, "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
+				Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 47, "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
 			})
 
 			It("should fail if file is missing in standalone block", func() {
@@ -1317,7 +1317,7 @@ last line of parent `,
 				source := `include::{unknown}/unknown.adoc[leveloffset=+1]`
 				expected := &types.Document{}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
-				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 47, "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
+				Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 47, "Unresolved directive in test.adoc - include::{unknown}/unknown.adoc[leveloffset=+1]"))
 			})
 
 			It("should fail if file with attribute in path is not resolved in standalone block", func() {
@@ -1326,7 +1326,7 @@ last line of parent `,
 				source := `include::{includedir}/unknown.adoc[leveloffset=+1]`
 				expected := &types.Document{}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
-				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 50, "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
+				Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 50, "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 			})
 
 			It("should fail if file is missing in delimited block", func() {
@@ -1337,7 +1337,7 @@ include::../../test/includes/unknown.adoc[leveloffset=+1]
 ----`
 				expected := &types.Document{}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
-				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 67, "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]"))
+				Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 67, "Unresolved directive in test.adoc - include::../../test/includes/unknown.adoc[leveloffset=+1]"))
 			})
 
 			It("should fail if file with attribute in path is not resolved in delimited block", func() {
@@ -1348,7 +1348,7 @@ include::{includedir}/unknown.adoc[leveloffset=+1]
 ----`
 				expected := &types.Document{}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
-				Expect(logs).To(ContainJSONLog(log.ErrorLevel, 0, 60, "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
+				Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 0, 60, "Unresolved directive in test.adoc - include::{includedir}/unknown.adoc[leveloffset=+1]"))
 			})
 		})
 

@@ -1162,7 +1162,7 @@ and <more text> on the +
 				})
 
 				It("should fail when substitution is unknown", func() {
-					logs, reset := ConfigureLogger(log.DebugLevel) //, DiscardStdout)
+					logs, reset := ConfigureLogger(log.ErrorLevel)
 					defer reset()
 					s := strings.ReplaceAll(source, "$SUBS", "unknown")
 					expected := &types.Document{
@@ -1174,7 +1174,7 @@ and <more text> on the +
 						},
 					}
 					Expect(ParseDocument(s)).To(MatchDocument(expected))
-					Expect(logs).To(ContainJSONLog(log.ErrorLevel, 33, 183, "unsupported kind of substitution: 'unknown'"))
+					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 33, 183, "unsupported kind of substitution: 'unknown'"))
 				})
 			})
 		})
