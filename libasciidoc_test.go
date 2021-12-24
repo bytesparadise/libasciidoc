@@ -316,6 +316,8 @@ Last updated {{.LastUpdated}}
 		Context("with body only", func() {
 
 			It("should render valid manpage", func() {
+				logs, reset := ConfigureLogger(log.WarnLevel)
+				defer reset()
 				source := `= eve(1)
 Andrew Stanton
 v1.0.0
@@ -364,12 +366,15 @@ Free use of this software is granted under the terms of the MIT License.</p>
 					))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(out.String()).To(MatchHTML(expectedContent))
+				Expect(logs).To(ContainJSONLog(log.WarnLevel, "unable to find attribute 'author'"))
 			})
 		})
 
 		Context("full", func() {
 
 			It("should render valid manpage", func() {
+				logs, reset := ConfigureLogger(log.WarnLevel)
+				defer reset()
 				source := `= eve(1)
 Andrew Stanton
 v1.0.0
@@ -446,9 +451,12 @@ Last updated {{.LastUpdated}}
 					))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				Expect(logs).To(ContainJSONLog(log.WarnLevel, "unable to find attribute 'author'"))
 			})
 
 			It("should render invalid manpage as article", func() {
+				logs, reset := ConfigureLogger(log.WarnLevel)
+				defer reset()
 				source := `= eve(1)
 Andrew Stanton
 v1.0.0
@@ -533,6 +541,9 @@ Last updated {{.LastUpdated}}
 					))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				Expect(logs).To(ContainJSONLog(log.WarnLevel, "unable to find attribute 'author'"))
+				Expect(logs).To(ContainJSONLog(log.WarnLevel, "changing doctype to 'article' because problems were found in the document"))
+				Expect(logs).To(ContainJSONLog(log.ErrorLevel, "manpage document is missing the 'Name' section"))
 			})
 
 			It("should render html", func() {
@@ -622,6 +633,8 @@ Last updated {{.LastUpdated}}
 			})
 
 			It("should fail given bogus backend", func() {
+				_, reset := ConfigureLogger(log.WarnLevel)
+				defer reset()
 				source := `= Story
 
 Our story begins.`
