@@ -118,8 +118,6 @@ const (
 	AttrCols = "cols"
 	// AttrAutoWidth the `autowidth` attribute on a table
 	AttrAutoWidth = "autowidth"
-	// AttrPositionalPrefix positional parameter prefix (DEPRECATED - use `AttrPositionalIndex`)
-	AttrPositionalPrefix = "@"
 	// AttrPositionalIndex positional parameter index
 	AttrPositionalIndex = "@positional-"
 	// AttrPositional1 positional parameter 1
