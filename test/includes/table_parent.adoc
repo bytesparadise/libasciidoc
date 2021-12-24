@@ -1,0 +1,4 @@
+|===
+include::table_common.txt[]
+include::table_specific.txt[]
+|===

@@ -160,7 +160,7 @@ some content`
 			Expect(PreparseDocument(source)).To(Equal(expected))
 		})
 
-		Context("with delimited blocks", func() {
+		Context("within delimited blocks", func() {
 
 			It("should include adoc with attributes file within listing block", func() {
 				// the `leveloffset=+1` attribute does not have effect on sections within a delimited block
@@ -423,6 +423,20 @@ last line of parent <1>
 
 :leveloffset!:
 ****`
+				Expect(PreparseDocument(source)).To(Equal(expected))
+			})
+		})
+
+		Context("within tables", func() {
+
+			It("default", func() {
+				source := "include::../../test/includes/table_parent.adoc[]"
+				expected := `|===
+| Header A | Header B
+
+| Column A.1 | Column A.2
+| Column B.1 | Column B.2
+|===`
 				Expect(PreparseDocument(source)).To(Equal(expected))
 			})
 		})
