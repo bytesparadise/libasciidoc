@@ -53,7 +53,7 @@ func processFileInclusions(ctx *ParseContext, source io.Reader) (string, error) 
 				content.WriteString(f)
 			case *types.BlockDelimiter:
 				t.push(types.BlockDelimiterKind(e.Kind))
-				ctx.Opts = append(ctx.Opts, GlobalStore(delimitedBlockScopeKey, t.withinDelimitedBlock()))
+				ctx.Opts = append(ctx.Opts, withinDelimitedBlock(t.withinDelimitedBlock()))
 				t, _ := e.RawText()
 				content.WriteString(t)
 			default:

@@ -170,15 +170,10 @@ func (c *current) isSectionEnabled() bool {
 	return found && enabled
 }
 
-const delimitedBlockScopeKey = "delimited_block_scope"
+const withinDelimitedBlockKey = "within_delimited_block"
 
-// state info to indicate that parsing is happening within a delimited block of the given kind,
-// in which case some grammar rules may need to be disabled
-func (c *current) setWithinDelimitedBlockOfKind(kind string) {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("setting scope within block of kind '%s'", kind)
-	// }
-	c.globalStore[delimitedBlockScopeKey] = kind
+func withinDelimitedBlock(v bool) Option {
+	return GlobalStore(withinDelimitedBlockKey, v)
 }
 
 // state info to indicate that parsing is happening within a delimited block of the given kind,
@@ -187,32 +182,17 @@ func (c *current) unsetWithinDelimitedBlock() {
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("unsetting scope within block of kind '%s'", kind)
 	// }
-	delete(c.globalStore, delimitedBlockScopeKey)
+	delete(c.globalStore, withinDelimitedBlockKey)
 }
 
 // state info to determine if parsing is happening within a delimited block (any kind),
 // in which case some grammar rules need to be disabled
 func (c *current) isWithinDelimitedBlock() bool {
-	w, found := c.globalStore[delimitedBlockScopeKey].(bool)
+	w, found := c.globalStore[withinDelimitedBlockKey].(bool)
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("checking if within delimited block: %t/%t", found, w)
 	}
 	return found && w
-}
-
-// state info to determine if parsing is happening within a delimited block of the given kind,
-// in which case some grammar rules need to be disabled
-func (c *current) isWithinDelimitedBlockOfKind(kind string) bool {
-	if k, found := c.globalStore[delimitedBlockScopeKey].(string); found {
-		// if log.IsLevelEnabled(log.DebugLevel) {
-		// 	log.Debugf("checking if within block of kind '%s': %t (1)", kind, k == kind)
-		// }
-		return k == kind
-	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("checking if within block of kind '%s': false (2)", kind)
-	// }
-	return false
 }
 
 type blockDelimiterTracker struct {

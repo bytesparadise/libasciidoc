@@ -90,7 +90,7 @@ func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) ([]
 	log.Debugf("parsing content of delimited block of kind '%s'", b.Kind)
 	// TODO: use real Substitution?
 	content, placeholders := serialize(b.Elements)
-	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), GlobalStore(delimitedBlockScopeKey, true))
+	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
 	elements, err := Parse("", content, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to parse content") // ignore error (malformed content)
