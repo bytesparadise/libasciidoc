@@ -65,7 +65,8 @@ include::{includedir}/include.foo[]`
 
 *some strong content*
 
-include::hello_world.go.txt[]`
+include::hello_world.go.txt[]
+`
 			Expect(PreparseDocument(source)).To(Equal(expected))
 		})
 

@@ -1166,54 +1166,7 @@ func serialize(content interface{}) ([]byte, *placeholders) {
 	return result.Bytes(), placeholders
 }
 
-type grammarRule string
-
-const FileInclusion grammarRule = "FileInclusion"
-
-const disabledRules = "disabled_rules"
-
-func DisableRule(rule grammarRule) Option {
-	return func(p *parser) Option {
-		rules, ok := p.cur.globalStore[disabledRules].(map[grammarRule]bool)
-		if !ok { // 'rules' doesn't exist yet
-			rules = map[grammarRule]bool{}
-			p.cur.globalStore[disabledRules] = rules
-
-		}
-		rules[rule] = true // mark as disabled
-		return nil         // no need to provide an Option restore the setting
-	}
-}
-
-func (c *current) isRuleEnabled(rule grammarRule) (bool, error) {
-	if rules, ok := c.globalStore[disabledRules].(map[grammarRule]bool); ok {
-		if disabled, found := rules[rule]; found {
-			return !disabled, nil
-		}
-	}
-	return true, nil
-
-}
-
-// sets the new substitution plan in the golbal store, overriding any exist–ing one
-// NOTE: will override any existing substitution context
-func (c *current) setCurrentSubstitution(kind string) error {
-	// log.Debugf("setting current substitution kind to '%s'", kind)
-	p, err := newSubstitution(kind)
-	if err != nil {
-		return err
-	}
-	c.state[substitutionKey] = p
-	return nil
-}
-
 func (c *current) lookupCurrentSubstitution() (*substitution, bool) {
-	// look-up in the current state
-	if s, found := c.state[substitutionKey].(*substitution); found {
-		// log.Debug("found substitution in current state")
-		return s, found
-	}
-	// otherwise, lookup in the global-store
 	s, found := c.globalStore[substitutionKey].(*substitution)
 	return s, found
 }

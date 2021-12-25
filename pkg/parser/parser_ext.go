@@ -112,7 +112,7 @@ func (c *current) trackSpaceSuffix(element interface{}) {
 	case *types.StringElement:
 		c.globalStore[spaceSuffixTrackingKey] = strings.HasSuffix(e.Content, " ")
 	default:
-		delete(c.state, spaceSuffixTrackingKey)
+		delete(c.globalStore, spaceSuffixTrackingKey)
 	}
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("space suffix detected: %t", c.globalStore[spaceSuffixTrackingKey])
