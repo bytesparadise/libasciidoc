@@ -35,7 +35,7 @@ DocumentRawLine <-
     }
 
 // ----------------------------------------------------------
-// File inclusions
+// Raw Sections
 // ----------------------------------------------------------
 RawSection <- 
     &{
@@ -61,15 +61,6 @@ RawSection <-
 // File inclusions
 // ----------------------------------------------------------
 FileInclusion <- 
-    &{
-        // skip if disabled
-        return c.isRuleEnabled(FileInclusion)
-    }
-    #{
-        // force/enable attribute substitution // TODO: why? 
-        // log.Debug("entering FileInclusion rule")
-        return c.setCurrentSubstitution("attributes")
-    }
     incl:(
         "include::" 
         path:(FileLocation) 

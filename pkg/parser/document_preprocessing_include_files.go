@@ -72,9 +72,12 @@ func includeFile(ctx *ParseContext, incl *types.FileInclusion) (string, error) {
 	if err := applySubstitutionsOnBlockWithLocation(ctx, incl); err != nil {
 		return "", errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	}
-	content, err := contentOf(ctx, incl)
+	content, adoc, err := contentOf(ctx, incl)
 	if err != nil {
 		return "", err
+	}
+	if !adoc {
+		return string(content), nil
 	}
 	ctx.Opts = append(ctx.Opts, sectionEnabled())
 	return processFileInclusions(ctx, bytes.NewReader(content))
@@ -103,7 +106,7 @@ func (b *builder) doInsertLF() {
 	b.insertLF = true
 }
 
-func contentOf(ctx *ParseContext, incl *types.FileInclusion) ([]byte, error) {
+func contentOf(ctx *ParseContext, incl *types.FileInclusion) ([]byte, bool, error) {
 	path := incl.Location.Stringify()
 	currentDir := filepath.Dir(ctx.filename)
 	filename := filepath.Join(currentDir, path)
@@ -111,7 +114,7 @@ func contentOf(ctx *ParseContext, incl *types.FileInclusion) ([]byte, error) {
 	f, absPath, closeFile, err := open(filename)
 	defer closeFile()
 	if err != nil {
-		return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+		return nil, false, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	}
 	result := bytes.NewBuffer(nil)
 	scanner := bufio.NewScanner(bufio.NewReader(f))
@@ -119,47 +122,41 @@ func contentOf(ctx *ParseContext, incl *types.FileInclusion) ([]byte, error) {
 		log.Debugf("reading %s", filename)
 	}
 	if lr, ok, err := lineRanges(incl); err != nil {
-		return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+		return nil, false, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	} else if ok {
 		if err := readWithinLines(scanner, result, lr); err != nil {
-			return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+			return nil, false, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 		}
 	} else if tr, ok, err := tagRanges(incl); err != nil {
-		return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+		return nil, false, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	} else if ok {
 		if err := readWithinTags(path, scanner, result, tr); err != nil {
-			return nil, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+			return nil, false, errors.Wrapf(err, "Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 		}
 	} else {
 		if err := readAll(scanner, result); err != nil {
 			log.Error(err)
-			return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+			return nil, false, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 		}
 	}
 	if err := scanner.Err(); err != nil {
 		log.Error(err)
-		return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+		return nil, false, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	}
 	// cloning the context to avoid altering the original as we process recursively embedded file inclusions
 	ctx.filename = absPath
 	// if the file to include is not an Asciidoc document, just return the content as "raw lines"
-	if !IsAsciidoc(absPath) {
-		log.Debugf("file '%s' is not an Asciidoc file. Scanning content without looking for nested file inclusions", absPath)
-		// send(types.NewDocumentFragment(lineOffset, []interface{}{types.RawLine(content.String())}), done, resultStream)
-		// return
-		ctx.Opts = append(ctx.Opts, DisableRule(FileInclusion))
-	}
 
 	// level offset
 	// parse the content, and returns the corresponding elements
 	if lvl, found, err := incl.Attributes.GetAsString(types.AttrLevelOffset); err != nil {
 		log.Error(err)
-		return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+		return nil, false, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 	} else if found {
 		offset, err := strconv.Atoi(lvl)
 		if err != nil {
 			log.Error(err)
-			return nil, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+			return nil, false, errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 		}
 		if strings.HasPrefix(lvl, "+") || strings.HasPrefix(lvl, "-") {
 			ctx.levelOffsets = append(ctx.levelOffsets, relativeOffset(offset))
@@ -170,7 +167,7 @@ func contentOf(ctx *ParseContext, incl *types.FileInclusion) ([]byte, error) {
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("content of '%s':\n%s", absPath, result.String())
 	// }
-	return result.Bytes(), nil
+	return result.Bytes(), IsAsciidoc(absPath), nil
 }
 
 type levelOffsets []*levelOffset
