@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	log "github.com/sirupsen/logrus"
 )
@@ -218,4 +219,15 @@ func (t *blockDelimiterTracker) push(k types.BlockDelimiterKind) {
 
 func (t *blockDelimiterTracker) withinDelimitedBlock() bool {
 	return len(t.stack) > 0
+}
+
+const usermacrosKey = "user_macros"
+
+func (c storeDict) hasUserMacro(name string) bool {
+	if macros, exists := c[usermacrosKey].(map[string]configuration.MacroTemplate); exists {
+		_, exists := macros[name]
+		return exists
+	}
+	// log.Debugf("no user macro registered")
+	return false
 }
