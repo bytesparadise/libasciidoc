@@ -1102,14 +1102,9 @@ ConcealedIndexTermContent <- (Alphanum / Space)+ {
 // Images
 // -------------------------------------------------------------------------------------
 ImageBlock <- 
-    &{
-        // AttrPositional1 must not be set
-        return types.HasNotAttribute(c.globalStore.getAttributes(), types.AttrPositional1), nil
-    }
     "image::" path:(Location) inlineAttributes:(InlineAttributes) Space* EOL {
-        // c.unsetCurrentSubstitution()
         // 'imagesdir' attribute is added after applying the attribute substitutions on the image location
-        return types.NewImageBlock(path.(*types.Location), inlineAttributes.(types.Attributes), c.globalStore.getAttributes())
+        return types.NewImageBlock(path.(*types.Location), inlineAttributes.(types.Attributes))
     }
 
 InlineImage <- "image:" !":" path:(Location) inlineAttributes:(InlineAttributes) {

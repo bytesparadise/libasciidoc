@@ -1805,11 +1805,10 @@ type ImageBlock struct {
 }
 
 // NewImageBlock initializes a new `ImageBlock`
-func NewImageBlock(location *Location, inlineAttributes Attributes, attributes interface{}) (*ImageBlock, error) {
+func NewImageBlock(location *Location, inlineAttributes Attributes) (*ImageBlock, error) {
 	// inline attributes trump block attributes
 	attrs := Attributes{}
 	attrs.SetAll(inlineAttributes)
-	attrs.SetAll(attributes)
 	attrs = toAttributesWithMapping(attrs, map[string]string{
 		AttrPositional1: AttrImageAlt,
 		AttrPositional2: AttrWidth,
