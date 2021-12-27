@@ -61,7 +61,7 @@ func WithAttributes(attrs map[string]interface{}) Setting {
 }
 
 // WithAttribute function to set an attribute as if it was passed as an argument in the CLI
-func WithAttribute(key, value string) Setting {
+func WithAttribute(key string, value interface{}) Setting {
 	return func(config *Configuration) {
 		config.Attributes[key] = value
 	}
@@ -84,6 +84,7 @@ func WithCSS(href string) Setting {
 // WithBackEnd sets the backend format, valid values are "html", "html5", "xhtml", "xhtml5", and "" (defaults to html5)
 func WithBackEnd(backend string) Setting {
 	return func(config *Configuration) {
+		config.Attributes.Set("backend", backend)
 		config.BackEnd = backend
 	}
 }

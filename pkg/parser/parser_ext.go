@@ -153,7 +153,6 @@ func validateSingleQuoteElements(elements []interface{}) (bool, error) {
 	}
 }
 
-// TODO: not needed?
 const rawSectionEnabledKey = "raw_section_enabled"
 
 // sectionEnabled parser option to enable detection of (raw) section during preparsing

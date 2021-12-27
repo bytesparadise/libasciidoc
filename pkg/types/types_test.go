@@ -1185,3 +1185,70 @@ var _ = DescribeTable("rawtext",
 		},
 		"*some `\"content<>\"` *"),
 )
+
+var _ = DescribeTable("ifeval operands",
+
+	func(operand types.IfevalOperand, left, right interface{}, expected bool) {
+		Expect(operand(left, right)).To(Equal(expected))
+	},
+
+	// Equal (==)
+	Entry(`2==1`, types.EqualOperand, 2, 1, false),
+	Entry(`2==2`, types.EqualOperand, 2, 2, true),
+	Entry(`2.0==1.0`, types.EqualOperand, 2.0, 1.0, false),
+	Entry(`2.0==2.0`, types.EqualOperand, 2.0, 2.0, true),
+	Entry(`"2"=="1"`, types.EqualOperand, "2", "1", false),
+	Entry(`"2"=="2"`, types.EqualOperand, "2", "2", true),
+
+	// Not Equal (!=)
+	Entry(`2!=1`, types.NotEqualOperand, 2, 1, true),
+	Entry(`2!=2`, types.NotEqualOperand, 2, 2, false),
+	Entry(`2.0!=1.0`, types.NotEqualOperand, 2.0, 1.0, true),
+	Entry(`2.0!=2.0`, types.NotEqualOperand, 2.0, 2.0, false),
+	Entry(`"2"!="1"`, types.NotEqualOperand, "2", "1", true),
+	Entry(`"2"!="2"`, types.NotEqualOperand, "2", "2", false),
+
+	// Greater than (>)
+	Entry(`2>1`, types.GreaterThanOperand, 2, 1, true),
+	Entry(`2>2`, types.GreaterThanOperand, 2, 2, false),
+	Entry(`1>2`, types.GreaterThanOperand, 1, 2, false),
+	Entry(`2.0>1.0`, types.GreaterThanOperand, 2.0, 1.0, true),
+	Entry(`2.0>2.0`, types.GreaterThanOperand, 2.0, 2.0, false),
+	Entry(`1.0>2.0`, types.GreaterThanOperand, 1.0, 2.0, false),
+	Entry(`"2">"1"`, types.GreaterThanOperand, "2", "1", true),
+	Entry(`"2">"2"`, types.GreaterThanOperand, "2", "2", false),
+	Entry(`"1">"2"`, types.GreaterThanOperand, "1", "2", false),
+
+	// Greater than or Equal (>=)
+	Entry(`3>=2`, types.GreaterOrEqualOperand, 3, 2, true),
+	Entry(`2>=2`, types.GreaterOrEqualOperand, 2, 2, true),
+	Entry(`1>=2`, types.GreaterOrEqualOperand, 1, 2, false),
+	Entry(`3.0>=2.0`, types.GreaterOrEqualOperand, 3.0, 2.0, true),
+	Entry(`2.0>=2.0`, types.GreaterOrEqualOperand, 2.0, 2.0, true),
+	Entry(`1.0>=2.0`, types.GreaterOrEqualOperand, 1.0, 2.0, false),
+	Entry(`"3">="2"`, types.GreaterOrEqualOperand, "3", "2", true),
+	Entry(`"2">="2"`, types.GreaterOrEqualOperand, "2", "2", true),
+	Entry(`"1">="2"`, types.GreaterOrEqualOperand, "1", "2", false),
+
+	// Less than (<)
+	Entry(`2<1`, types.LessThanOperand, 2, 1, false),
+	Entry(`2<2`, types.LessThanOperand, 2, 2, false),
+	Entry(`1<2`, types.LessThanOperand, 1, 2, true),
+	Entry(`2.0<1.0`, types.LessThanOperand, 2.0, 1.0, false),
+	Entry(`2.0<2.0`, types.LessThanOperand, 2.0, 2.0, false),
+	Entry(`1.0<2.0`, types.LessThanOperand, 1.0, 2.0, true),
+	Entry(`"2"<"1"`, types.LessThanOperand, "2", "1", false),
+	Entry(`"2"<"2"`, types.LessThanOperand, "2", "2", false),
+	Entry(`"1"<"2"`, types.LessThanOperand, "1", "2", true),
+
+	// Less than or Equal (>=)
+	Entry(`2<=3`, types.LessOrEqualOperand, 2, 3, true),
+	Entry(`2<=2`, types.LessOrEqualOperand, 2, 2, true),
+	Entry(`2<=1`, types.LessOrEqualOperand, 2, 1, false),
+	Entry(`2.0<=3.0`, types.LessOrEqualOperand, 2.0, 3.0, true),
+	Entry(`2.0<=2.0`, types.LessOrEqualOperand, 2.0, 2.0, true),
+	Entry(`2.0<=1.0`, types.LessOrEqualOperand, 2.0, 1.0, false),
+	Entry(`"2"<="3"`, types.LessOrEqualOperand, "2", "3", true),
+	Entry(`"2"<="2"`, types.LessOrEqualOperand, "2", "2", true),
+	Entry(`"2"<="1"`, types.LessOrEqualOperand, "2", "1", false),
+)

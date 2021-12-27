@@ -27,7 +27,7 @@ func PreparseDocument(source string, options ...interface{}) (string, error) {
 	}
 	result, err := parser.Preprocess(strings.NewReader(source), configuration.NewConfiguration(settings...), opts...)
 	if log.IsLevelEnabled(log.DebugLevel) && err == nil {
-		log.Debugf("preparsed document:\n%s", result)
+		log.Debugf("preparsed document:\n'%s'", result)
 	}
 	return result, err
 

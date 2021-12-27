@@ -370,7 +370,6 @@ a paragraph`
 		Context("standalone attributes", func() {
 
 			It("single standalone attribute", func() {
-				// TODO: find a way to avoid error in the logs
 				_, restoreLogger := ConfigureLogger(logrus.FatalLevel)
 				defer restoreLogger()
 				source := `[.a_role]
