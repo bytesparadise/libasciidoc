@@ -27,7 +27,7 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 	refs := types.ElementReferences{}
 	root := &types.Document{}
 
-	lvls := &levels{ // TODO: unused?
+	lvls := &levels{
 		root,
 	}
 	var toc *types.TableOfContents

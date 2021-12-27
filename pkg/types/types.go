@@ -2770,6 +2770,274 @@ func (l *InlineLink) SetLocation(value *Location) {
 }
 
 // ------------------------------------------
+// Conditionals
+// ------------------------------------------
+
+type ConditionalInclusion interface {
+	Eval(attributes map[string]interface{}) bool
+}
+
+type IfdefCondition struct {
+	Name string
+}
+
+func NewIfdefCondition(name string) (*IfdefCondition, error) {
+	log.Debugf("new Ifdef::%s conditional inclusion", name)
+	return &IfdefCondition{
+		Name: name,
+	}, nil
+}
+
+var _ ConditionalInclusion = &IfdefCondition{}
+
+func (c *IfdefCondition) Eval(attributes map[string]interface{}) bool {
+	_, found := attributes[c.Name]
+	return found
+}
+
+type IfndefCondition struct {
+	Name string
+}
+
+func NewIfndefCondition(name string) (*IfndefCondition, error) {
+	log.Debugf("new Ifndef::%s conditional inclusion", name)
+	return &IfndefCondition{
+		Name: name,
+	}, nil
+}
+
+var _ ConditionalInclusion = &IfndefCondition{}
+
+func (c *IfndefCondition) Eval(attributes map[string]interface{}) bool {
+	_, found := attributes[c.Name]
+	return !found
+}
+
+type IfevalCondition struct {
+	Left    interface{}
+	Right   interface{}
+	Operand IfevalOperand
+}
+
+func NewIfevalCondition(left, right interface{}, operand IfevalOperand) (*IfevalCondition, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new Ifeval conditional inclusion")
+	}
+	return &IfevalCondition{
+		Left:    left,
+		Right:   right,
+		Operand: operand,
+	}, nil
+}
+
+var _ ConditionalInclusion = &IfevalCondition{}
+
+func (c *IfevalCondition) Eval(attributes map[string]interface{}) bool {
+	return c.Operand(c.left(attributes), c.right(attributes))
+}
+
+func (c *IfevalCondition) left(attributes map[string]interface{}) interface{} {
+	if s, ok := c.Left.(*AttributeSubstitution); ok {
+		if v, found := attributes[s.Name]; found {
+			return v
+		}
+	}
+	return c.Left
+}
+
+func (c *IfevalCondition) right(attributes map[string]interface{}) interface{} {
+	if s, ok := c.Right.(*AttributeSubstitution); ok {
+		if v, found := attributes[s.Name]; found {
+			return v
+		}
+	}
+	return c.Right
+}
+
+type IfevalOperand func(left, right interface{}) bool
+
+var EqualOperand = func(left, right interface{}) bool {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("comparing %v==%v", left, right)
+	}
+	// comparing strings
+	if left, ok := left.(string); ok {
+		if right, ok := right.(string); ok {
+			return left == right
+		}
+	}
+	// comparing floats
+	if left, ok := left.(float64); ok {
+		if right, ok := right.(float64); ok {
+			return left == right
+		}
+	}
+	// comparing ints
+	if left, ok := left.(int); ok {
+		if right, ok := right.(int); ok {
+			return left == right
+		}
+	}
+	return false
+}
+
+func NewEqualOperand() (IfevalOperand, error) {
+	return EqualOperand, nil
+}
+
+var NotEqualOperand = func(left, right interface{}) bool {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("comparing %v!=%v", left, right)
+	}
+	// comparing strings
+	if left, ok := left.(string); ok {
+		if right, ok := right.(string); ok {
+			return left != right
+		}
+	}
+	// comparing floats
+	if left, ok := left.(float64); ok {
+		if right, ok := right.(float64); ok {
+			return left != right
+		}
+	}
+	// comparing ints
+	if left, ok := left.(int); ok {
+		if right, ok := right.(int); ok {
+			return left != right
+		}
+	}
+	return false
+}
+
+func NewNotEqualOperand() (IfevalOperand, error) {
+	return NotEqualOperand, nil
+}
+
+var LessThanOperand = func(left, right interface{}) bool {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("comparing %v<%v", left, right)
+	}
+	// comparing strings
+	if left, ok := left.(string); ok {
+		if right, ok := right.(string); ok {
+			return left < right
+		}
+	}
+	// comparing floats
+	if left, ok := left.(float64); ok {
+		if right, ok := right.(float64); ok {
+			return left < right
+		}
+	}
+	// comparing ints
+	if left, ok := left.(int); ok {
+		if right, ok := right.(int); ok {
+			return left < right
+		}
+	}
+	return false
+}
+
+func NewLessThanOperand() (IfevalOperand, error) {
+	return LessThanOperand, nil
+}
+
+var LessOrEqualOperand = func(left, right interface{}) bool {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("comparing %v<=%v", left, right)
+	}
+	// comparing strings
+	if left, ok := left.(string); ok {
+		if right, ok := right.(string); ok {
+			return left <= right
+		}
+	}
+	// comparing floats
+	if left, ok := left.(float64); ok {
+		if right, ok := right.(float64); ok {
+			return left <= right
+		}
+	}
+	// comparing ints
+	if left, ok := left.(int); ok {
+		if right, ok := right.(int); ok {
+			return left <= right
+		}
+	}
+	return false
+}
+
+func NewLessOrEqualOperand() (IfevalOperand, error) {
+	return LessOrEqualOperand, nil
+}
+
+var GreaterThanOperand = func(left, right interface{}) bool {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("comparing %v>%v", left, right)
+	}
+	// comparing strings
+	if left, ok := left.(string); ok {
+		if right, ok := right.(string); ok {
+			return left > right
+		}
+	}
+	// comparing floats
+	if left, ok := left.(float64); ok {
+		if right, ok := right.(float64); ok {
+			return left > right
+		}
+	}
+	// comparing ints
+	if left, ok := left.(int); ok {
+		if right, ok := right.(int); ok {
+			return left > right
+		}
+	}
+	return false
+}
+
+func NewGreaterThanOperand() (IfevalOperand, error) {
+	return GreaterThanOperand, nil
+}
+
+var GreaterOrEqualOperand = func(left, right interface{}) bool {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("comparing %v>=%v", left, right)
+	}
+	// comparing strings
+	if left, ok := left.(string); ok {
+		if right, ok := right.(string); ok {
+			return left >= right
+		}
+	}
+	// comparing floats
+	if left, ok := left.(float64); ok {
+		if right, ok := right.(float64); ok {
+			return left >= right
+		}
+	}
+	// comparing ints
+	if left, ok := left.(int); ok {
+		if right, ok := right.(int); ok {
+			return left >= right
+		}
+	}
+	return false
+}
+
+func NewGreaterOrEqualOperand() (IfevalOperand, error) {
+	return GreaterOrEqualOperand, nil
+}
+
+type EndOfCondition struct{}
+
+func NewEndOfCondition() (*EndOfCondition, error) {
+	log.Debug("new end of conditional inclusion")
+	return &EndOfCondition{}, nil
+}
+
+// ------------------------------------------
 // File Inclusions
 // ------------------------------------------
 

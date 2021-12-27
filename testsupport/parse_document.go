@@ -33,7 +33,7 @@ func ParseDocument(actual string, options ...interface{}) (*types.Document, erro
 		return nil, err
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("preparsed document:\n%s", p)
+		log.Debugf("preparsed document:\n'%s'", p)
 	}
 	return parser.ParseDocument(strings.NewReader(p), c, opts...)
 }

@@ -23,10 +23,12 @@ import (
 //
 // -------------------------------------------------------------------------------------
 DocumentRawLine <- 
+    // TODO: include blanklines?
     element:(
         AttributeDeclaration
         / AttributeReset
         / FileInclusion
+        / ConditionalInclusion
         / BlockDelimiter
         / RawSection
     ) EOF {
@@ -53,8 +55,79 @@ RawSection <-
         // use a predicate to make sure that only `=` (level 0) to `======` (level 5) are allowed
         return level.(int) <= 5, nil 
     } 
-    Spaces [^\r\n]+ EOF{
+    Spaces [^\r\n]+ EOF {
         return types.NewRawSection(level.(int), string(c.text)) // just retain the raw content
+    }
+
+// ----------------------------------------------------------
+// Conditional inclusions
+// ----------------------------------------------------------
+ConditionalInclusion <- 
+    Ifdef
+    / Ifndef
+    / Ifeval
+    / EndIf 
+
+Ifdef <- "ifdef::" name:(ConditionalVariableName) InlineAttributes Space* EOF {
+        return types.NewIfdefCondition(name.(string)) // attributes are parsed but ignored
+    }
+
+Ifndef <- "ifndef::" name:(ConditionalVariableName) InlineAttributes Space* EOF {
+        return types.NewIfndefCondition(name.(string)) // attributes are parsed but ignored
+    }
+
+Ifeval <- "ifeval::" 
+    "[" 
+    left:(IfevalExpressionMember) Space* 
+    operand:(IfevalExpressionOperand) Space* 
+    right:(IfevalExpressionMember) "]" 
+    Space* EOF {
+        return types.NewIfevalCondition(left, right, operand.(types.IfevalOperand))
+    }
+
+
+
+IfevalExpressionMember <- 
+    ("\"" s:AttributeValueSubstitution "\"" { return s, nil })
+    / ("'" s:AttributeValueSubstitution "'" { return s, nil })
+    / (s:AttributeValueSubstitution { return s, nil })
+    / ("\"" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "\"" { return w, nil })
+    / ("'" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "'" { return w, nil })
+    / Integer
+
+IfevalExpressionOperand <-
+    ("==" {
+        return types.NewEqualOperand()
+    })
+    / ("!=" {
+        return types.NewNotEqualOperand()
+    })
+    / ("<" {
+        return types.NewLessThanOperand()
+    })
+    / ("<=" {
+        return types.NewLessOrEqualOperand()
+    })
+    / (">" {
+        return types.NewGreaterThanOperand()
+    })
+    / (">=" {
+        return types.NewGreaterOrEqualOperand()
+    })
+    
+
+
+IfevalExpressionValue <- 
+    Number
+    / InlineWord
+
+
+EndIf <- "endif::" InlineAttributes Space* EOF {
+         return types.NewEndOfCondition() // attributes are parsed but ignored
+    }
+
+ConditionalVariableName <- [^\r\n []+ { 
+        return string(c.text), nil 
     }
 
 // ----------------------------------------------------------
@@ -64,8 +137,8 @@ FileInclusion <-
     incl:(
         "include::" 
         path:(FileLocation) 
-        inlineAttributes:(InlineAttributes) { 
-            return types.NewFileInclusion(path.(*types.Location), inlineAttributes.(types.Attributes), string(c.text))
+        attributes:(InlineAttributes) { 
+            return types.NewFileInclusion(path.(*types.Location), attributes.(types.Attributes), string(c.text))
         }
     ) 
     Space* EOL {
@@ -91,11 +164,11 @@ MultipleLineRanges <- first:(MultiLineRange / SingleLineRange)
         return append([]interface{}{first}, others.([]interface{})...), nil
     }
 
-MultiLineRange <- start:(Number) ".." end:(Number) { // eg: lines=12..14
+MultiLineRange <- start:(Integer) ".." end:(Integer) { // eg: lines=12..14
         return types.NewLineRange(start.(int), end.(int))
     } 
 
-SingleLineRange <- singleline:(Number) { // eg: lines=12
+SingleLineRange <- singleline:(Integer) { // eg: lines=12
         return types.NewLineRange(singleline.(int), singleline.(int))
     }
 
@@ -593,8 +666,8 @@ InternalCrossReference <- "<<" id:(Id) Space* "," label:(CrossReferenceLabel) ">
         return types.NewInternalCrossReference(id, nil)
     } 
 
-ExternalCrossReference <- "xref:" url:(FileLocation) inlineAttributes:(InlineAttributes) {
-        return types.NewExternalCrossReference(url.(*types.Location), inlineAttributes.(types.Attributes))
+ExternalCrossReference <- "xref:" url:(FileLocation) attributes:(InlineAttributes) {
+        return types.NewExternalCrossReference(url.(*types.Location), attributes.(types.Attributes))
     }
 
 CrossReferenceLabel <- (
@@ -962,9 +1035,9 @@ DocumentRevision <- Space* !":" revision:(
 }
 
 // DocumentRevisionNumber MUST start with a `v` or MAY start with a `v` but MUST end with a `,`
-DocumentRevisionNumber <- "v"i Digit  [^:,\r\n]+ {
+DocumentRevisionNumber <- "v"i [0-9] [^:,\r\n]+ {
     return string(c.text), nil
-} / "v"i? Digit  [^:,\r\n]+ Space* &"," {
+} / "v"i? [0-9] [^:,\r\n]+ Space* &"," {
     return string(c.text), nil
 }
 
@@ -1102,13 +1175,13 @@ ConcealedIndexTermContent <- (Alphanum / Space)+ {
 // Images
 // -------------------------------------------------------------------------------------
 ImageBlock <- 
-    "image::" path:(Location) inlineAttributes:(InlineAttributes) Space* EOL {
+    "image::" path:(Location) attributes:(InlineAttributes) Space* EOL {
         // 'imagesdir' attribute is added after applying the attribute substitutions on the image location
-        return types.NewImageBlock(path.(*types.Location), inlineAttributes.(types.Attributes))
+        return types.NewImageBlock(path.(*types.Location), attributes.(types.Attributes))
     }
 
-InlineImage <- "image:" !":" path:(Location) inlineAttributes:(InlineAttributes) {
-        return types.NewInlineImage(path.(*types.Location), inlineAttributes.(types.Attributes), c.globalStore["imagesdir"])
+InlineImage <- "image:" !":" path:(Location) attributes:(InlineAttributes) {
+        return types.NewInlineImage(path.(*types.Location), attributes.(types.Attributes), c.globalStore["imagesdir"])
     }
 
 // -------------------------------------------------------------------------------------------------------------------------------
@@ -1177,12 +1250,12 @@ PassthroughMacroCharacter <- [^\]] {
 Link <- RelativeLink / ExternalLink
 
 // url preceeding with `link:` MUST be followed by square brackets
-RelativeLink <- "link:" url:(Location) inlineAttributes:(InlineAttributes) {
-        return types.NewInlineLink(url.(*types.Location), inlineAttributes.(types.Attributes))
+RelativeLink <- "link:" url:(Location) attributes:(InlineAttributes) {
+        return types.NewInlineLink(url.(*types.Location), attributes.(types.Attributes))
     }
 
-ExternalLink <- url:(LocationWithScheme) inlineAttributes:(InlineAttributes)? {
-        return types.NewInlineLink(url.(*types.Location), inlineAttributes)
+ExternalLink <- url:(LocationWithScheme) attributes:(InlineAttributes)? {
+        return types.NewInlineLink(url.(*types.Location), attributes)
     }
 
 
@@ -2680,7 +2753,7 @@ Column <-
     !EOF
     // TODO: `multiplier` and `weight` with multiple digits and max values
     // TODO: also support column styles
-    multiplier:(n:Number "*" { return n, nil })?
+    multiplier:(n:Integer "*" { return n, nil })?
     halign:(
         "<" { return types.HAlignLeft, nil }
         / ">" { return types.HAlignRight, nil }
@@ -2691,7 +2764,7 @@ Column <-
         / ".>" { return types.VAlignBottom, nil }
         / ".^" { return types.VAlignMiddle, nil }
     )?
-    weight:(Number / ("~" { return string(c.text), nil }))?
+    weight:(Integer / ("~" { return string(c.text), nil }))?
     style:([adehlms] { return string(c.text), nil })?
     // style:(("a" / "e" / "h" / "l" / "m" / "s") { return string(c.text), nil })?
     comma:(",")?
@@ -2730,8 +2803,8 @@ UserMacroBlock <-
     }
     "::" 
     value:(UserMacroValue) 
-    inlineAttributes:(InlineAttributes) EOL {
-        return types.NewUserMacroBlock(name.(string), value.(string), inlineAttributes.(types.Attributes), string(c.text))
+    attributes:(InlineAttributes) EOL {
+        return types.NewUserMacroBlock(name.(string), value.(string), attributes.(types.Attributes), string(c.text))
     }
 
 InlineUserMacro <- 
@@ -2742,8 +2815,8 @@ InlineUserMacro <-
     }
     ":" 
     value:(UserMacroValue) 
-    inlineAttributes:(InlineAttributes) {
-        return types.NewInlineUserMacro(name.(string), value.(string), inlineAttributes.(types.Attributes), string(c.text))
+    attributes:(InlineAttributes) {
+        return types.NewInlineUserMacro(name.(string), value.(string), attributes.(types.Attributes), string(c.text))
     }
 
 UserMacroName <- ([\pL0-9_-]+) {
@@ -2776,7 +2849,7 @@ Word <-
     }
 
 InlineWord <- 
-    [\pL0-9,;!?]+ 
+    [\pL0-9,;!?]+ // TODO: support `_` and `-` ?
     (Space / &("." / ElementPlaceHolderDelimiter / EOL)) {
         return types.NewStringElement(string(c.text))
     }
@@ -2822,12 +2895,15 @@ Id <- [^[\]<>,]+ { // previously: (Alphanums / (!Newline !Space !"[" !"]" !"<<" 
         return string(c.text), nil
     }
 
-Digit <- [0-9] {
-        return string(c.text), nil
+Number <- Float
+    / Integer
+
+Integer <- ("-"? [0-9]+) {
+        return strconv.Atoi(string(c.text))
     }
 
-Number <- ("-"? Digit+) {
-        return strconv.Atoi(string(c.text))
+Float <- ("-"? [0-9]+ "." [0-9]+) {
+        return strconv.ParseFloat(string(c.text), 64)
     }
 
 Space <- (" " / "\t") {
