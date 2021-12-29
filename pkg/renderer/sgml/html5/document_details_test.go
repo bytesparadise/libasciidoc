@@ -137,6 +137,52 @@ Last updated {{.LastUpdated}}
 			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
 				To(MatchHTMLTemplate(expected, now))
 		})
+
+		It("header with sotf-wrapped description", func() {
+			source := `= Document Title
+:author: Xavier
+:description: a long \
+			description on \
+			multiple \
+			lines.
+
+{description}`
+
+			expected := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<meta name="description" content="a long description on multiple lines.">
+<meta name="author" content="Xavier">
+<title>Document Title</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Document Title</h1>
+<div class="details">
+<span id="author" class="author">Xavier</span><br>
+</div>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>a long description on multiple lines.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{.LastUpdated}}
+</div>
+</div>
+</body>
+</html>
+`
+			now := time.Now()
+			Expect(RenderHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
+				To(MatchHTMLTemplate(expected, now))
+		})
 	})
 
 	Context("custom header and footer", func() {
