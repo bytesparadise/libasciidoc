@@ -1161,6 +1161,75 @@ a paragraph`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			Context("with soft-wrapping", func() {
+
+				It("alone without indentation", func() {
+					source := `:description: a long \
+description on \
+multiple \
+lines.`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "description",
+								Value: "a long description on multiple lines.",
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with other attributes without indentation", func() {
+					source := `:hardbreaks:
+:description: a long \
+description on \
+multiple \
+lines.
+:author: Xavier`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name: "hardbreaks",
+							},
+							&types.AttributeDeclaration{
+								Name:  "description",
+								Value: "a long description on multiple lines.",
+							},
+							&types.AttributeDeclaration{
+								Name:  "author",
+								Value: "Xavier",
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with other attributes and with variable indentation", func() {
+					source := `:hardbreaks:
+:description: a long \
+    description on \
+      multiple \
+    lines.
+:author: Xavier`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name: "hardbreaks",
+							},
+							&types.AttributeDeclaration{
+								Name:  "description",
+								Value: "a long description on multiple lines.",
+							},
+							&types.AttributeDeclaration{
+								Name:  "author",
+								Value: "Xavier",
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
 		})
 
 		Context("invalid cases", func() {

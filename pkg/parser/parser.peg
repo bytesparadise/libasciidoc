@@ -315,8 +315,14 @@ AdmonitionKind <- "TIP" {
 // -------------------------------------------------------------------------------------
 AttributeDeclaration <- 
     ":" name:(AttributeName) ":" 
-    value:(AttributeDeclarationValue)? 
-    EOL {
+    value:(
+        Spaces // value is optional, but there must be a space between `:` and value itself
+        value:(AttributeDeclarationValue) {
+            return value, nil
+        }
+    )? 
+    EOL
+    {
         return types.NewAttributeDeclaration(name.(string), types.Reduce(value, strings.TrimSpace), string(c.text))
     }
 
@@ -328,15 +334,33 @@ AttributeName <- [\pL0-9_] ([\pL0-9-])* {
     }
 
 AttributeDeclarationValue <- 
-    Spaces elements:(AttributeDeclarationValueElement)* {
+    elements:(AttributeDeclarationValueElements) 
+    otherElements:(
+        "\\" Newline 
+        Space*
+        elements:(AttributeDeclarationValue) {
+           return elements, nil
+        }
+    )*
+    {
+        if otherElements, ok := otherElements.([]interface{}); ok {
+            return types.Reduce(append(elements.([]interface{}), otherElements...), strings.TrimSpace), nil
+        }
         return types.Reduce(elements.([]interface{}), strings.TrimSpace), nil
     }
 
-AttributeDeclarationValueElement <- !EOL 
+AttributeDeclarationValueElements <- 
+    elements:(AttributeDeclarationValueElement)* {
+        return elements.([]interface{}), nil
+    }
+
+AttributeDeclarationValueElement <- 
+    !("\\"? Space* EOL)
     element:(
-        ([^\r\n{]+ {
+        ([^\r\n{ ]+ {
                 return types.NewStringElement(string(c.text))
         })
+        / Space
         / AttributeSubstitution
         / ("{" { // standalone '{'
             return types.NewStringElement(string(c.text))
