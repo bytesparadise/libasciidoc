@@ -8,6 +8,7 @@ const (
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {{ if .Generator }}<meta name="generator" content="{{ .Generator }}">
+{{ end }}{{ if .Description }}<meta name="description" content="{{ .Description }}">
 {{ end }}{{ if .Authors }}<meta name="author" content="{{ .Authors }}">
 {{ end }}{{ if .CSS}}<link type="text/css" rel="stylesheet" href="{{ .CSS }}">
 {{ end }}<title>{{ .Title }}</title>
