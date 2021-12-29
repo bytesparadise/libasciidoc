@@ -202,11 +202,12 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 	if ctx.Config.WrapInHTMLBodyElement {
 		log.Debugf("Rendering full document...")
 		err = r.article.Execute(output, struct {
-			Generator string
-			Doctype   string
-			Title     string
-			Authors   string
-			Header    string
+			Doctype     string
+			Generator   string
+			Description string
+			Title       string
+			Authors     string
+			Header      string
 			// Role                  string
 			ID                    string
 			Roles                 string
@@ -217,8 +218,9 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 			IncludeHTMLBodyHeader bool
 			IncludeHTMLBodyFooter bool
 		}{
-			Generator:             "libasciidoc", // TODO: externalize this value and include the lib version ?
 			Doctype:               ctx.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"),
+			Generator:             "libasciidoc", // TODO: externalize this value and include the lib version ?
+			Description:           ctx.Attributes.GetAsStringWithDefault(types.AttrDescription, ""),
 			Title:                 renderedTitle,
 			Authors:               r.renderAuthors(ctx, doc),
 			Header:                renderedHeader,

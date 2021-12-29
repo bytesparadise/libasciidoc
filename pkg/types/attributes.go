@@ -15,6 +15,8 @@ import (
 const (
 	// AttrDocType the "doctype" attribute
 	AttrDocType = "doctype"
+	// AttrDocType the "description" attribute
+	AttrDescription = "description"
 	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
 	AttrSyntaxHighlighter = "source-highlighter"
 	// AttrID the key to retrieve the ID
