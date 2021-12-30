@@ -2775,17 +2775,23 @@ func (l *InlineLink) SetLocation(value *Location) {
 
 type ConditionalInclusion interface {
 	Eval(attributes map[string]interface{}) bool
+	SingleLineContent() (string, bool)
 }
 
 type IfdefCondition struct {
-	Name string
+	Name         string
+	Substitution string
 }
 
-func NewIfdefCondition(name string) (*IfdefCondition, error) {
+func NewIfdefCondition(name string, attr interface{}) (*IfdefCondition, error) {
 	log.Debugf("new Ifdef::%s conditional inclusion", name)
-	return &IfdefCondition{
+	c := &IfdefCondition{
 		Name: name,
-	}, nil
+	}
+	if subs, ok := attr.(string); ok {
+		c.Substitution = subs
+	}
+	return c, nil
 }
 
 var _ ConditionalInclusion = &IfdefCondition{}
@@ -2795,15 +2801,24 @@ func (c *IfdefCondition) Eval(attributes map[string]interface{}) bool {
 	return found
 }
 
-type IfndefCondition struct {
-	Name string
+func (c *IfdefCondition) SingleLineContent() (string, bool) {
+	return c.Substitution, c.Substitution != ""
 }
 
-func NewIfndefCondition(name string) (*IfndefCondition, error) {
+type IfndefCondition struct {
+	Name         string
+	Substitution string
+}
+
+func NewIfndefCondition(name string, attr interface{}) (*IfndefCondition, error) {
 	log.Debugf("new Ifndef::%s conditional inclusion", name)
-	return &IfndefCondition{
+	c := &IfndefCondition{
 		Name: name,
-	}, nil
+	}
+	if subs, ok := attr.(string); ok {
+		c.Substitution = subs
+	}
+	return c, nil
 }
 
 var _ ConditionalInclusion = &IfndefCondition{}
@@ -2811,6 +2826,10 @@ var _ ConditionalInclusion = &IfndefCondition{}
 func (c *IfndefCondition) Eval(attributes map[string]interface{}) bool {
 	_, found := attributes[c.Name]
 	return !found
+}
+
+func (c *IfndefCondition) SingleLineContent() (string, bool) {
+	return c.Substitution, c.Substitution != ""
 }
 
 type IfevalCondition struct {
@@ -2852,6 +2871,10 @@ func (c *IfevalCondition) right(attributes map[string]interface{}) interface{} {
 		}
 	}
 	return c.Right
+}
+
+func (c *IfevalCondition) SingleLineContent() (string, bool) {
+	return "", false
 }
 
 type IfevalOperand func(left, right interface{}) bool

@@ -68,12 +68,16 @@ ConditionalInclusion <-
     / Ifeval
     / EndIf 
 
-Ifdef <- "ifdef::" name:(ConditionalVariableName) InlineAttributes Space* EOF {
-        return types.NewIfdefCondition(name.(string)) // attributes are parsed but ignored
+Ifdef <- "ifdef::" name:(ConditionalVariableName) "[" attr:(ConditionalInclusionAttribute)? "]" Space* EOF {
+        return types.NewIfdefCondition(name.(string), attr)
     }
 
-Ifndef <- "ifndef::" name:(ConditionalVariableName) InlineAttributes Space* EOF {
-        return types.NewIfndefCondition(name.(string)) // attributes are parsed but ignored
+Ifndef <- "ifndef::" name:(ConditionalVariableName) "[" attr:(ConditionalInclusionAttribute)? "]" Space* EOF {
+        return types.NewIfndefCondition(name.(string), attr)
+    }
+
+ConditionalInclusionAttribute <- [^\r\n\]]+ {
+        return string(c.text), nil
     }
 
 Ifeval <- "ifeval::" 
