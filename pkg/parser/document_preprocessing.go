@@ -67,7 +67,13 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 				t, _ := e.RawText()
 				b.WriteString(t)
 			case types.ConditionalInclusion:
-				b.enabled = c.push(ctx, e)
+				if content, ok := e.SingleLineContent(); ok {
+					if e.Eval(ctx.attributes.allAttributes()) {
+						b.WriteString(content)
+					}
+				} else {
+					b.enabled = c.push(ctx, e)
+				}
 			case *types.EndOfCondition:
 				b.enabled = c.pop()
 			default:

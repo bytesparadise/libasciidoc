@@ -106,6 +106,33 @@ cookie content (2)
 closing content`
 				Expect(PreparseDocument(source)).To(Equal(expected))
 			})
+
+			Context("single-line", func() {
+
+				It("with attribute not defined", func() {
+					source := `* some content
+ifdef::cookie[* conditional content]
+* more content`
+					expected := `* some content
+* more content`
+
+					Expect(PreparseDocument(source)).To(Equal(expected))
+				})
+
+				It("with attribute defined", func() {
+					source := `:cookie:
+
+* some content
+ifdef::cookie[* conditional content]
+* more content`
+					expected := `:cookie:
+
+* some content
+* conditional content
+* more content`
+					Expect(PreparseDocument(source)).To(Equal(expected))
+				})
+			})
 		})
 
 		Context("ifndef", func() {
@@ -196,6 +223,33 @@ cookie content (2)
 
 closing content`
 				Expect(PreparseDocument(source)).To(Equal(expected))
+			})
+
+			Context("single-line", func() {
+
+				It("with attribute not defined", func() {
+					source := `* some content
+ifndef::cookie[* conditional content]
+* more content`
+					expected := `* some content
+* conditional content
+* more content`
+
+					Expect(PreparseDocument(source)).To(Equal(expected))
+				})
+
+				It("with attribute defined", func() {
+					source := `:cookie:
+
+* some content
+ifndef::cookie[* conditional content]
+* more content`
+					expected := `:cookie:
+
+* some content
+* more content`
+					Expect(PreparseDocument(source)).To(Equal(expected))
+				})
 			})
 		})
 
