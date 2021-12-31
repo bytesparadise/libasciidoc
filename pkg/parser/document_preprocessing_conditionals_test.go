@@ -133,6 +133,7 @@ ifdef::cookie[* conditional content]
 					Expect(PreparseDocument(source)).To(Equal(expected))
 				})
 			})
+
 		})
 
 		Context("ifndef", func() {
@@ -331,6 +332,37 @@ closing content`
 
 closing content`
 				Expect(PreparseDocument(source, configuration.WithAttribute("sectnumlevels", "2"))).To(Equal(expected))
+			})
+		})
+
+		Context("endif with attribute name", func() {
+
+			It("should support attribute name in endif directive", func() {
+				source := `:cookie:
+
+intro content
+
+ifdef::cookie[]
+cookie content (1)
+
+ifdef::chocolate[]
+chocolate content
+
+endif::chocolate[]
+cookie content (2)
+endif::cookie[]
+
+closing content`
+				expected := `:cookie:
+
+intro content
+
+cookie content (1)
+
+cookie content (2)
+
+closing content`
+				Expect(PreparseDocument(source)).To(Equal(expected))
 			})
 		})
 	})
