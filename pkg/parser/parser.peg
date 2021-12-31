@@ -126,8 +126,8 @@ IfevalExpressionValue <-
     / InlineWord
 
 
-EndIf <- "endif::" InlineAttributes Space* EOF {
-         return types.NewEndOfCondition() // attributes are parsed but ignored
+EndIf <- "endif::" name:(ConditionalVariableName)? "[" attr:(ConditionalInclusionAttribute)? "]" Space* EOF {
+         return types.NewEndOfCondition() // name and attributes are parsed but ignored
     }
 
 ConditionalVariableName <- [^\r\n []+ { 
