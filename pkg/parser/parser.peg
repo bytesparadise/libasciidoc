@@ -1172,7 +1172,7 @@ InlineElement <-
 // InlineElement ID
 // -------------------------------------------------------------------------------------
 InlineElementID <- "[[" id:(Id) "]]" Space* { // no EOL here since there can be multiple InlineElementID on the same line
-    return types.NewInlineIDAttribute(id.(string))
+    return types.NewInlineAnchor(id.(string))
 }
 
 // -------------------------------------------------------------------------------------

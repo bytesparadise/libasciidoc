@@ -339,14 +339,6 @@ func NewNamedAttribute(key string, value interface{}) (*Attribute, error) {
 	}, nil
 }
 
-// NewInlineIDAttribute initializes a new attribute map with a single entry for the ID using the given value
-func NewInlineIDAttribute(id string) (*Attribute, error) {
-	return &Attribute{
-		Key:   AttrID,
-		Value: id,
-	}, nil
-}
-
 // NewTitleAttribute initializes a new attribute map with a single entry for the title using the given value
 func NewTitleAttribute(title interface{}) (*Attribute, error) {
 	// log.Debugf("initializing a new Title attribute with content=%v", title)
