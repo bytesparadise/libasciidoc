@@ -2769,6 +2769,15 @@ func (l *InlineLink) SetLocation(value *Location) {
 	l.Location = value
 }
 
+// NewInlineAnchor initializes a new InlineLink map with a single entry for the ID using the given value
+func NewInlineAnchor(id string) (*InlineLink, error) {
+	return &InlineLink{
+		Attributes: Attributes{
+			AttrID: id,
+		},
+	}, nil
+}
+
 // ------------------------------------------
 // Conditionals
 // ------------------------------------------

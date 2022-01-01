@@ -934,7 +934,7 @@ a link to {scheme}://{path} and https://foo.com`
 
 		Context("relative links", func() {
 
-			It("relative link to doc without text", func() {
+			It("to doc without text", func() {
 				source := "a link to link:foo.adoc[]"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -958,7 +958,7 @@ a link to {scheme}://{path} and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("relative link to doc with text", func() {
+			It("to doc with text", func() {
 				source := "a link to link:foo.adoc[foo doc]"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -985,7 +985,7 @@ a link to {scheme}://{path} and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("relative link to external URL with text only", func() {
+			It("to external URL with text only", func() {
 				source := "a link to link:https://example.com[foo doc]"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1012,7 +1012,7 @@ a link to {scheme}://{path} and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("relative link to external URL with text and extra attributes", func() {
+			It("to external URL with text and extra attributes", func() {
 				source := "a link to link:https://example.com[foo doc, foo=bar]"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1040,7 +1040,7 @@ a link to {scheme}://{path} and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("relative link to external URL with extra attributes only", func() {
+			It("to external URL with extra attributes only", func() {
 				source := "a link to link:https://example.com[foo=bar]"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1067,7 +1067,7 @@ a link to {scheme}://{path} and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("invalid relative link to doc", func() {
+			It("invalid syntax", func() {
 				source := "a link to link:foo.adoc"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1262,7 +1262,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("relative link within quoted text", func() {
+			It("within quoted text", func() {
 				source := "*link:foo[]*"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1289,7 +1289,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("links with underscores", func() {
+			It("with underscores", func() {
 				source := "link:a_[A] link:a_[A]"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1329,7 +1329,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("links with line breaks in attributes", func() {
+			It("with line breaks in attributes", func() {
 				source := `link:x[
 title]`
 				expected := &types.Document{
@@ -1357,7 +1357,7 @@ title]`
 
 			Context("text attribute with comma", func() {
 
-				It("relative link only with text having comma", func() {
+				It("with text having comma", func() {
 					source := `a link to link:https://example.com[A, B, and C]`
 					expected := &types.Document{
 						Elements: []interface{}{
@@ -1386,7 +1386,7 @@ title]`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("relative link only with doublequoted text having comma", func() {
+				It("with doublequoted text having comma", func() {
 					source := `a link to link:https://example.com["A, B, and C"]`
 					expected := &types.Document{
 						Elements: []interface{}{
@@ -1470,6 +1470,30 @@ title]`
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
+			})
+		})
+
+		Context("inline anchors", func() {
+
+			It("opening a paragraph", func() {
+				source := `[[bookmark-a]]Inline anchors make arbitrary content referenceable.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrID: "bookmark-a",
+									},
+								},
+								&types.StringElement{
+									Content: "Inline anchors make arbitrary content referenceable.",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
 	})

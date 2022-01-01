@@ -922,6 +922,9 @@ func replaceAttributeRefsInElement(ctx *ParseContext, element interface{}) (inte
 }
 
 func replaceAttributeRefsInLocation(ctx *ParseContext, b types.BlockWithLocation) (bool, error) {
+	if b.GetLocation() == nil {
+		return false, nil
+	}
 	path, found, err := replaceAttributeRefsInElements(ctx, b.GetLocation().Path)
 	if err != nil {
 		return false, err
