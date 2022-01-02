@@ -2245,6 +2245,15 @@ func (s *Section) GetElements() []interface{} {
 
 // SetElements sets this section's title
 func (s *Section) SetElements(title []interface{}) error {
+	// inline ID attribute foud at the end is *moved* at the attributes level of the section
+	if id, ok := title[len(title)-1].(*Attribute); ok {
+		sectionID := stringify(id.Value)
+		s.AddAttributes(Attributes{
+			AttrID:       sectionID,
+			AttrCustomID: true,
+		})
+		title = title[:len(title)-1]
+	}
 	s.Title = title
 	return nil
 }
@@ -2299,13 +2308,6 @@ func (s *Section) resolveID(attrs Attributes) (string, error) {
 	// block attribute
 	if id := s.Attributes.GetAsStringWithDefault(AttrID, ""); id != "" {
 		return id, nil
-	}
-	// inline attribute
-	if id, ok := s.Title[len(s.Title)-1].(*Attribute); ok {
-		sectionID := stringify(id.Value)
-		s.Attributes[AttrID] = sectionID
-		s.Attributes[AttrCustomID] = true
-		return sectionID, nil
 	}
 	log.Debugf("resolving section id")
 	separator := attrs.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
@@ -3405,7 +3407,11 @@ func (l *Location) SetPathPrefix(p interface{}) {
 }
 
 // Stringify returns a string representation of the location
-func (l Location) Stringify() string {
+// or empty string if the location is nil
+func (l *Location) Stringify() string {
+	if l == nil {
+		return ""
+	}
 	result := &strings.Builder{}
 	result.WriteString(l.Scheme)
 	result.WriteString(stringify(l.Path))

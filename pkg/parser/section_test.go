@@ -1669,7 +1669,7 @@ a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("single section with custom ID", func() {
+			It("single with custom block ID", func() {
 				source := `[[custom_header]]
 == a header`
 				sectionTitle := []interface{}{
@@ -1693,7 +1693,113 @@ a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("multiple sections with custom IDs", func() {
+			It("single with custom inline ID", func() {
+				source := `== a header [[custom_header]]`
+				sectionTitle := []interface{}{
+					&types.StringElement{Content: "a header"},
+				}
+				expected := &types.Document{
+					ElementReferences: types.ElementReferences{
+						"custom_header": sectionTitle,
+					},
+					Elements: []interface{}{
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID:       "custom_header",
+								types.AttrCustomID: true,
+							},
+							Level: 1,
+							Title: sectionTitle,
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("single with attached inline anchor", func() {
+				source := `== a header[[bookmark]]`
+				sectionTitle := []interface{}{
+					&types.StringElement{Content: "a header"},
+					&types.InlineLink{
+						Attributes: types.Attributes{
+							types.AttrID: "bookmark",
+						},
+					},
+				}
+				expected := &types.Document{
+					ElementReferences: types.ElementReferences{
+						"_a_header": sectionTitle,
+					},
+					Elements: []interface{}{
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID: "_a_header",
+							},
+							Level: 1,
+							Title: sectionTitle,
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("single with attached inline anchor and inline ID", func() {
+				source := `== a header[[bookmark]] [[custom_header]]`
+				sectionTitle := []interface{}{
+					&types.StringElement{Content: "a header"},
+					&types.InlineLink{
+						Attributes: types.Attributes{
+							types.AttrID: "bookmark",
+						},
+					},
+				}
+				expected := &types.Document{
+					ElementReferences: types.ElementReferences{
+						"custom_header": sectionTitle,
+					},
+					Elements: []interface{}{
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID:       "custom_header",
+								types.AttrCustomID: true,
+							},
+							Level: 1,
+							Title: sectionTitle,
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("single with detached inline anchor and inline ID", func() {
+				source := `== a header [[bookmark]] [[custom_header]]`
+				sectionTitle := []interface{}{
+					&types.StringElement{Content: "a header "},
+					&types.InlineLink{
+						Attributes: types.Attributes{
+							types.AttrID: "bookmark",
+						},
+					},
+				}
+				expected := &types.Document{
+					ElementReferences: types.ElementReferences{
+						"custom_header": sectionTitle,
+					},
+					Elements: []interface{}{
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID:       "custom_header",
+								types.AttrCustomID: true,
+							},
+							Level: 1,
+							Title: sectionTitle,
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("multiple sections with multiple inline custom IDs", func() {
 				source := `[[custom_header]]
 = a header
 
@@ -1704,16 +1810,10 @@ a paragraph`
 a paragraph`
 				fooTitle := []interface{}{
 					&types.StringElement{Content: "Section F "},
-					&types.Attribute{
-						Key:   "id",
-						Value: "ignored",
-					},
-					&types.StringElement{
-						Content: " ",
-					},
-					&types.Attribute{
-						Key:   "id",
-						Value: "foo",
+					&types.InlineLink{
+						Attributes: types.Attributes{
+							types.AttrID: "ignored",
+						},
 					},
 				}
 				barTitle := []interface{}{
@@ -1731,7 +1831,6 @@ a paragraph`
 							},
 							Attributes: types.Attributes{
 								types.AttrID: "custom_header",
-								// types.AttrCustomID: true,
 							},
 						},
 						&types.Section{

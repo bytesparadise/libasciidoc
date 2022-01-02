@@ -39,9 +39,6 @@ var _ = Describe("icons", func() {
 								&types.Icon{
 									Class: "note",
 								},
-								// &types.StringElement{
-								// 	Content: "  \t\t  ",
-								// },
 							},
 						},
 					},

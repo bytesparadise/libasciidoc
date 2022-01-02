@@ -287,6 +287,76 @@ Listing block content is commonly used to preserve code input.</pre>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("single with custom inline ID", func() {
+			source := `== a header [[custom_header]]`
+			expected := `<div class="sect1">
+<h2 id="custom_header">a header</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("single with attached inline anchor", func() {
+			source := `== a header[[bookmark]]`
+			expected := `<div class="sect1">
+<h2 id="_a_header">a header<a id="bookmark"></a></h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("single with attached inline anchor and inline ID", func() {
+			source := `== a header[[bookmark]] [[custom_header]]`
+			expected := `<div class="sect1">
+<h2 id="custom_header">a header<a id="bookmark"></a></h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("single with detached inline anchor and inline ID", func() {
+			source := `== a header [[bookmark]] [[custom_header]]`
+			expected := `<div class="sect1">
+<h2 id="custom_header">a header <a id="bookmark"></a></h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("multiple sections with multiple inline custom IDs", func() {
+			source := `[[custom_header]]
+= a header
+
+== Section F [[ignored]] [[foo]]
+
+[[bar]]
+== Section B
+a paragraph`
+			expected := `<div class="sect1">
+<h2 id="foo">Section F <a id="ignored"></a></h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
+<h2 id="bar">Section B</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>a paragraph</p>
+</div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("preambles", func() {

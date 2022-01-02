@@ -56,7 +56,6 @@ var _ = Describe("element filters", func() {
 				Kind: types.Listing,
 				Elements: []interface{}{
 					&types.StringElement{},
-					// &types.BlankLine{},
 					&types.StringElement{},
 				},
 			},
