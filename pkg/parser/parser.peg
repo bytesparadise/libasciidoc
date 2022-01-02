@@ -385,7 +385,7 @@ AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {
 BlockAttributes <-
     attributes:(
         // shorthand syntax for anchors. Eg: `[[an_id]]`
-        (anchor:(ShortHandAnchor) Space* EOL {
+        (anchor:(LegacyElementID) Space* EOL {
             return anchor, nil
         })
         // shorthand syntax for titles. Eg: `.a title`
@@ -416,7 +416,7 @@ InlineAttributes <-
     }
 
 // shorthand syntax for anchors. Eg: `[[An ID]]`
-ShortHandAnchor <-
+LegacyElementID <-
    "[[" 
     id:(
         elements:(
@@ -1130,16 +1130,6 @@ FrontMatterLine <- (.)* {
 // -------------------------------------------------------------------------------------
 // Inline Elements
 // -------------------------------------------------------------------------------------
-InlineElements <- 
-    elements:(comment:(SingleLineComment) {
-        return types.NewInlineElements([]interface{}{comment})
-    } / elements:(InlineElement)+ EOL { 
-        return types.NewInlineElements(elements.([]interface{}))
-    }) {
-        c.resetSpaceSuffixTracking()
-        return elements, nil
-    }
-
 
 // TODO: group as below and enable based on substitution context.
 // Also, add Callouts
@@ -1169,9 +1159,9 @@ InlineElement <-
 }
 
 // -------------------------------------------------------------------------------------
-// InlineElement ID
+// InlineAnchor 
 // -------------------------------------------------------------------------------------
-InlineElementID <- "[[" id:(Id) "]]" Space* { // no EOL here since there can be multiple InlineElementID on the same line
+InlineAnchor <- "[[" id:(Id) "]]" { // no EOL here since there can be multiple InlineElementID on the same line
     return types.NewInlineAnchor(id.(string))
 }
 
@@ -2467,7 +2457,8 @@ HeaderGroup <-
 HeaderGroupElement <-
     !EOF
     element:(
-        InlineWord
+        Word
+        / (Space+ id:(LegacyElementID) Space* &EOF { return id, nil}) // (legacy) element ID
         / Space
         / InlinePassthrough
         / SpecialCharacter
@@ -2477,7 +2468,7 @@ HeaderGroupElement <-
         / AttributeSubstitution
         / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
         / Replacement
-        / ShortHandAnchor
+        / InlineAnchor // must be after LegacyElementID
         / InlineFootnote
         / AnyChar) {
             return element, nil
@@ -2602,7 +2593,7 @@ InlineMacro <-
         / InlineFootnote 
         / CrossReference 
         / InlineUserMacro 
-        / InlineElementID
+        / InlineAnchor
         / ConcealedIndexTerm
         / IndexTerm
         / InlineUserMacro) {

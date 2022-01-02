@@ -517,7 +517,6 @@ var _ = DescribeTable("valid block attributes",
 		types.Attributes{
 			types.AttrPositional1: nil,
 			types.AttrPositional2: nil,
-			// types.AttrPositional3: nil,
 		},
 	),
 	// quoted values

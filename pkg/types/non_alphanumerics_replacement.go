@@ -31,14 +31,16 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 			}
 			buf.WriteString(r)
 		case *InlineLink:
-			r, err := replaceNonAlphanumerics(element.Location.Stringify(), replacement)
-			if err != nil {
-				return "", err
+			if element.Location != nil {
+				r, err := replaceNonAlphanumerics(element.Location.Stringify(), replacement)
+				if err != nil {
+					return "", err
+				}
+				if buf.Len() > 0 {
+					buf.WriteString(replacement)
+				}
+				buf.WriteString(r)
 			}
-			if buf.Len() > 0 {
-				buf.WriteString(replacement)
-			}
-			buf.WriteString(r)
 		case *Icon:
 			s := element.Attributes.GetAsStringWithDefault(AttrImageAlt, element.Class)
 			r, err := replaceNonAlphanumerics(s, replacement)

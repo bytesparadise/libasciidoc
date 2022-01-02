@@ -1281,9 +1281,6 @@ a paragraph
 												},
 											},
 										},
-										// &types.SingleLineComment{
-										// 	Content: " -",
-										// },
 									},
 								},
 								&types.OrderedListElement{
@@ -1326,15 +1323,6 @@ a paragraph
 												},
 											},
 										},
-										// &types.SingleLineComment{
-										// 	Content: " -",
-										// },
-										// &types.SingleLineComment{
-										// 	Content: " -",
-										// },
-										// &types.SingleLineComment{
-										// 	Content: " -",
-										// },
 									},
 								},
 								&types.OrderedListElement{
@@ -1380,9 +1368,6 @@ a paragraph
 								},
 							},
 						},
-						// &types.SingleLineComment{
-						// 	Content: " -",
-						// },
 						&types.List{
 							Kind: types.OrderedListKind,
 							Elements: []types.ListElement{
@@ -1431,15 +1416,6 @@ a paragraph
 								},
 							},
 						},
-						// &types.SingleLineComment{
-						// 	Content: " -",
-						// },
-						// &types.SingleLineComment{
-						// 	Content: " -",
-						// },
-						// &types.SingleLineComment{
-						// 	Content: " -",
-						// },
 						&types.List{
 							Kind: types.OrderedListKind,
 							Elements: []types.ListElement{

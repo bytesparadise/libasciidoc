@@ -15,6 +15,7 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (s
 	location := l.Location.Stringify()
 	text := ""
 	class := ""
+	id := l.Attributes.GetAsStringWithDefault(types.AttrID, "")
 	roles, err := r.renderElementRoles(ctx, l.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render link")
@@ -35,16 +36,18 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (s
 		text = html.EscapeString(location)
 		if len(roles) > 0 {
 			class = "bare " + roles
-		} else {
+		} else if len(text) > 0 { // keep empty 'class' when there's no location
 			class = "bare"
 		}
 	}
 	err = r.link.Execute(result, struct {
+		ID     string
 		URL    string
 		Text   string
 		Class  string
 		Target string
 	}{
+		ID:     id,
 		URL:    location,
 		Text:   text,
 		Class:  class,
