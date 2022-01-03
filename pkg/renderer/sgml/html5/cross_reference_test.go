@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("cross references", func() {
 
-	Context("internal references", func() {
+	Context("using shorthand syntax", func() {
 
 		It("with custom id", func() {
 
@@ -29,7 +29,7 @@ with some content linked to <<thetitle>>!`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("custom id and label", func() {
+		It("with custom id and label", func() {
 			source := `[[thetitle]]
 == a title
 
@@ -104,9 +104,9 @@ with some content linked to <<thewrongtitle>>!`
 		})
 	})
 
-	Context("external references", func() {
+	Context("using macro syntax", func() {
 
-		It("external cross reference to other doc with plain text location and rich label", func() {
+		It("to other doc with plain text location and rich label", func() {
 			source := `some content linked to xref:another-doc.adoc[*another doc*]!`
 			expected := `<div class="paragraph">
 <p>some content linked to <a href="another-doc.html"><strong>another doc</strong></a>!</p>
@@ -115,11 +115,29 @@ with some content linked to <<thewrongtitle>>!`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("external cross reference to other doc with document attribute in location and label with special chars", func() {
+		It("to other doc with document attribute in location and label", func() {
 			source := `:foo: foo-doc
 some content linked to xref:{foo}.adoc[another_doc()]!`
 			expected := `<div class="paragraph">
 <p>some content linked to <a href="foo-doc.html">another_doc()</a>!</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("to other section with empty label", func() {
+			source := `some content linked to xref:section_a[]!`
+			expected := `<div class="paragraph">
+<p>some content linked to <a href="#section_a">[section_a]</a>!</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("to other doc with empty label", func() {
+			source := `some content linked to xref:foo.adoc[]!`
+			expected := `<div class="paragraph">
+<p>some content linked to <a href="foo.html">foo.html</a>!</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))

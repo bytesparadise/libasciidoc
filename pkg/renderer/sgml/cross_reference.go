@@ -61,7 +61,7 @@ func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref 
 			return "", errors.Wrap(err, "unable to render external cross reference")
 		}
 	default:
-		return "", errors.Errorf("unable to render external cross reference label of type '%T'", xref.Attributes)
+		label = defaultXrefLabel(xref)
 	}
 	err = r.externalCrossReference.Execute(result, struct {
 		Href  string
@@ -76,9 +76,20 @@ func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref 
 	return result.String(), nil
 }
 
+func defaultXrefLabel(xref *types.ExternalCrossReference) string {
+	loc := xref.Location.Stringify()
+	ext := filepath.Ext(xref.Location.Stringify())
+	if ext == "" {
+		return "[" + loc + "]" // intenal references are within brackets
+	}
+	return loc[:len(loc)-len(ext)] + ".html"
+}
+
 func getCrossReferenceLocation(xref *types.ExternalCrossReference) string {
 	loc := xref.Location.Stringify()
 	ext := filepath.Ext(xref.Location.Stringify())
-	// log.Debugf("ext of '%s': '%s'", loc, ext)
+	if ext == "" { // internal reference
+		return "#" + loc
+	}
 	return loc[:len(loc)-len(ext)] + ".html" // TODO output extension
 }
