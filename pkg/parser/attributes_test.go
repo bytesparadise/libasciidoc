@@ -29,9 +29,7 @@ var _ = Describe("attributes", func() {
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -51,9 +49,7 @@ var _ = Describe("attributes", func() {
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -73,9 +69,7 @@ var _ = Describe("attributes", func() {
 					Elements: []interface{}{
 						&types.ImageBlock{
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -98,9 +92,7 @@ var _ = Describe("attributes", func() {
 								types.AttrWidth: "200",
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -123,9 +115,7 @@ var _ = Describe("attributes", func() {
 								types.AttrImageAlt: `Quoted, Here`,
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -148,9 +138,7 @@ var _ = Describe("attributes", func() {
 								types.AttrImageAlt: `The Foo"Bar" here`,
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -173,9 +161,7 @@ var _ = Describe("attributes", func() {
 								types.AttrImageAlt: `The Foo'Bar' here`,
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -198,9 +184,7 @@ var _ = Describe("attributes", func() {
 								types.AttrImageAlt: `The Foo\Bar here`,
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -223,9 +207,7 @@ var _ = Describe("attributes", func() {
 								types.AttrImageAlt: `The Foo\Bar here`,
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -249,9 +231,7 @@ var _ = Describe("attributes", func() {
 								types.AttrHeight:   "100",
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -278,9 +258,7 @@ var _ = Describe("attributes", func() {
 								types.AttrWidth:    "1",
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -307,9 +285,7 @@ var _ = Describe("attributes", func() {
 								"test2":            "second test", // shows trailing pad removed
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -336,9 +312,7 @@ var _ = Describe("attributes", func() {
 								"test2":            `second "test"`, // shows trailing pad removed
 							},
 							Location: &types.Location{
-								Path: []interface{}{
-									&types.StringElement{Content: "foo.png"},
-								},
+								Path: "foo.png",
 							},
 						},
 					},
@@ -555,19 +529,19 @@ var _ = DescribeTable("valid block attributes",
 	// role shorthand
 	Entry(`[.a_role]`, `[.a_role]`,
 		types.Attributes{
-			types.AttrRoles: []interface{}{`a_role`},
+			types.AttrRoles: types.Roles{`a_role`},
 		},
 	),
 	Entry(`[.a_role.another_role]`, `[.a_role.another_role]`,
 		types.Attributes{
-			types.AttrRoles: []interface{}{`a_role`, `another_role`},
+			types.AttrRoles: types.Roles{`a_role`, `another_role`},
 		},
 	),
 	Entry(`[source.a_role,go]`, `[source.a_role,go]`,
 		types.Attributes{
 			types.AttrPositional1: `source`,
 			types.AttrPositional2: `go`,
-			types.AttrRoles:       []interface{}{`a_role`},
+			types.AttrRoles:       types.Roles{`a_role`},
 		},
 	),
 	Entry(`[source,go.not_a_role]`, `[source,go.not_a_role]`,
@@ -580,34 +554,34 @@ var _ = DescribeTable("valid block attributes",
 	// options (explicit)
 	Entry(`[options=header]`, `[options=header]`,
 		types.Attributes{
-			types.AttrOptions: []interface{}{"header"},
+			types.AttrOptions: types.Options{"header"},
 		},
 	),
 	Entry(`[options="header,footer"]`, `[options="header,footer"]`,
 		types.Attributes{
-			types.AttrOptions: []interface{}{"header", "footer"},
+			types.AttrOptions: types.Options{"header", "footer"},
 		},
 	),
 
 	// option shorthand
 	Entry(`[%hardbreaks]`, `[%hardbreaks]`,
 		types.Attributes{
-			types.AttrOptions: []interface{}{"hardbreaks"},
+			types.AttrOptions: types.Options{"hardbreaks"},
 		},
 	),
 	Entry(`[%header]`, `[%header]`,
 		types.Attributes{
-			types.AttrOptions: []interface{}{"header"},
+			types.AttrOptions: types.Options{"header"},
 		},
 	),
 	Entry(`[%footer]`, `[%footer]`,
 		types.Attributes{
-			types.AttrOptions: []interface{}{"footer"},
+			types.AttrOptions: types.Options{"footer"},
 		},
 	),
 	Entry(`[%header%footer]`, `[%header%footer]`,
 		types.Attributes{
-			types.AttrOptions: []interface{}{"header", "footer"},
+			types.AttrOptions: types.Options{"header", "footer"},
 		},
 	),
 
@@ -621,27 +595,27 @@ var _ = DescribeTable("valid block attributes",
 	Entry(`[#an_id.a_role]`, `[#an_id.a_role]`,
 		types.Attributes{
 			types.AttrID:    `an_id`,
-			types.AttrRoles: []interface{}{`a_role`},
+			types.AttrRoles: types.Roles{`a_role`},
 		},
 	),
 	Entry(`[#an_id.role_1%option_1.role_2]`, `[#an_id.role_1%option_1.role_2]`,
 		types.Attributes{
 			types.AttrID:      `an_id`,
-			types.AttrRoles:   []interface{}{`role_1`, `role_2`},
-			types.AttrOptions: []interface{}{`option_1`},
+			types.AttrRoles:   types.Roles{`role_1`, `role_2`},
+			types.AttrOptions: types.Options{`option_1`},
 		},
 	),
 	Entry(`[#an_id.role_1%option_1.role_2%option_2]`, `[#an_id.role_1%option_1.role_2%option_2]`,
 		types.Attributes{
 			types.AttrID:      `an_id`,
-			types.AttrRoles:   []interface{}{`role_1`, `role_2`},
-			types.AttrOptions: []interface{}{`option_1`, `option_2`},
+			types.AttrRoles:   types.Roles{`role_1`, `role_2`},
+			types.AttrOptions: types.Options{`option_1`, `option_2`},
 		},
 	),
 	Entry(`[#an_id,role="a role"]`, `[#an_id,role="a role"]`,
 		types.Attributes{
 			types.AttrID:    `an_id`,
-			types.AttrRoles: []interface{}{`a role`},
+			types.AttrRoles: types.Roles{`a role`},
 		},
 	),
 	Entry(`[qanda#quiz]`, `[qanda#quiz]`,

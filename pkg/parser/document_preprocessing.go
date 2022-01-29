@@ -89,8 +89,12 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 // fragment, making it potentially big, but at the same time we ensure that the context
 // of the inclusion (for example, within a delimited block) is not lost.
 func includeFile(ctx *ParseContext, incl *types.FileInclusion) (string, error) {
-	if err := applySubstitutionsOnBlockWithLocation(ctx, incl); err != nil {
-		return "", errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+	if l, ok := incl.GetLocation().Path.([]interface{}); ok {
+		l, _, err := replaceAttributeRefsInSlice(ctx, l)
+		if err != nil {
+			return "", errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
+		}
+		incl.GetLocation().SetPath(l)
 	}
 	content, adoc, err := contentOf(ctx, incl)
 	if err != nil {

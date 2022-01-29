@@ -30,6 +30,24 @@ ____`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("single line verse with author and title and empty lines around", func() {
+			source := `[verse, john doe, verse title]
+____
+
+some *verse* content
+
+____`
+			expected := `<div class="verseblock">
+<pre class="content">some <strong>verse</strong> content</pre>
+<div class="attribution">
+&#8212; john doe<br>
+<cite>verse title</cite>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("single-line verse with author, id and title ", func() {
 			source := `[verse, john doe, verse title]
 [#id-for-verse-block]

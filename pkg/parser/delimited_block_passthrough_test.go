@@ -32,7 +32,7 @@ another paragraph`
 									types.AttrStyle: "pass",
 								},
 								Elements: []interface{}{
-									types.RawLine("_foo_"),
+									types.RawLine("_foo_\n"),
 									types.RawLine("*bar*"),
 								},
 							},

@@ -33,7 +33,7 @@ func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b *types.De
 		Context: ctx,
 		ID:      r.renderElementID(b.Attributes),
 		Roles:   roles,
-		Content: content,
+		Content: strings.Trim(content, "\n"),
 	})
 	return result.String(), err
 }

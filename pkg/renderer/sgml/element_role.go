@@ -8,7 +8,7 @@ import (
 )
 
 func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) (string, error) {
-	if roles, ok := attrs[types.AttrRoles].([]interface{}); ok {
+	if roles, ok := attrs[types.AttrRoles].(types.Roles); ok {
 		result := make([]string, len(roles))
 		for i, e := range roles {
 			s, err := r.renderElementRole(ctx, e)
@@ -35,7 +35,7 @@ func (r *sgmlRenderer) renderImageRoles(ctx *Context, attrs types.Attributes) (s
 	} else if ok {
 		result = append(result, "text-"+val)
 	}
-	if roles, ok := attrs[types.AttrRoles].([]interface{}); ok {
+	if roles, ok := attrs[types.AttrRoles].(types.Roles); ok {
 		for _, e := range roles {
 			s, err := r.renderElementRole(ctx, e)
 			if err != nil {

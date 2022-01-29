@@ -8,7 +8,7 @@ type Attribution struct { // TODO: unexport this type?
 	Second string
 }
 
-func newAttribution(b types.BlockWithAttributes) (Attribution, error) {
+func newAttribution(b types.WithAttributes) (Attribution, error) {
 	result := Attribution{}
 	if author, found, err := b.GetAttributes().GetAsString(types.AttrQuoteAuthor); err != nil {
 		return Attribution{}, err

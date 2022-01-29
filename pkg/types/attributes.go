@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -235,7 +236,7 @@ func toAttributesWithMapping(attrs interface{}, mapping map[string]string) Attri
 				if v != nil && v != "" { // nil and empty values are discarded (ie, not mapped to target key)
 					// (a bit hack-ish) make sure that `roles` is an `[]interface{}` if it came from a positional (1) attribute
 					if source == AttrPositional1 && target == AttrRoles {
-						v = []interface{}{v}
+						v = Roles{v}
 					}
 
 					// do not override if already exists
@@ -309,6 +310,7 @@ type PositionalAttribute struct {
 
 // NewPositionalAttribute returns a new attribute who key is the position in the group
 func NewPositionalAttribute(value interface{}) (*PositionalAttribute, error) {
+	// log.Debugf("new positional attribute: '%s'", value)
 	return &PositionalAttribute{
 		Value: value,
 	}, nil
@@ -319,11 +321,17 @@ func (a *PositionalAttribute) Key() string {
 	return AttrPositionalIndex + strconv.Itoa(a.Index)
 }
 
+type Options []interface{} // more explicit than `[]interface{}`, and to bypass the `Reduce` func that would merge all roles into a single string :/
+
 // NewOptionAttribute sets a boolean option.
-func NewOptionAttribute(options interface{}) (*Attribute, error) {
+func NewOptionAttribute(option interface{}) (*Attribute, error) {
+	option = Reduce(option)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new option attribute: '%s'", spew.Sdump(option))
+	}
 	return &Attribute{
 		Key:   AttrOption,
-		Value: Reduce(options),
+		Value: option,
 	}, nil
 }
 
@@ -341,7 +349,9 @@ func NewNamedAttribute(key string, value interface{}) (*Attribute, error) {
 
 // NewTitleAttribute initializes a new attribute map with a single entry for the title using the given value
 func NewTitleAttribute(title interface{}) (*Attribute, error) {
-	// log.Debugf("initializing a new Title attribute with content=%v", title)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("initializing a new Title attribute with %s", spew.Sdump(title))
+	}
 	return &Attribute{
 		Key:   AttrTitle,
 		Value: title,
@@ -351,11 +361,16 @@ func NewTitleAttribute(title interface{}) (*Attribute, error) {
 // NewRoleAttribute initializes a new attribute map with a single entry for the title using the given value
 func NewRoleAttribute(role interface{}) (*Attribute, error) {
 	role = Reduce(role)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new role attribute: '%s'", spew.Sdump(role))
+	}
 	return &Attribute{
 		Key:   AttrRole,
 		Value: role,
 	}, nil
 }
+
+type Roles []interface{} // more explicit than `[]interface{}`, and to bypass the `Reduce` func that would merge all roles into a single string :/
 
 // NewIDAttribute initializes a new attribute map with a single entry for the ID using the given value
 func NewIDAttribute(id interface{}) (*Attribute, error) {
@@ -377,42 +392,42 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 	}
 	switch key {
 	case AttrRole:
-		if roles, ok := a[AttrRoles].([]interface{}); ok {
+		if roles, ok := a[AttrRoles].(Roles); ok {
 			log.Debugf("appending role to existing ones: %v", value)
 			a[AttrRoles] = append(roles, value)
 		} else {
 			log.Debugf("setting first role: %v", value)
-			a[AttrRoles] = []interface{}{value}
+			a[AttrRoles] = Roles{value}
 		}
 	case AttrRoles:
-		if r, ok := value.([]interface{}); ok { // value should be an []interface{}
-			if roles, ok := a[AttrRoles].([]interface{}); ok {
+		if r, ok := value.(Roles); ok {
+			if roles, ok := a[AttrRoles].(Roles); ok {
 				log.Debugf("appending role to existing ones: %v", value)
 				a[AttrRoles] = append(roles, r...)
 			} else {
 				log.Debugf("overridding roles: %v -> %v", a[AttrRoles], r)
-				a[AttrRoles] = r
+				a[AttrRoles] = Roles(r)
 			}
 		}
 	case AttrOption: // move into `options`
-		if options, ok := a[AttrOptions].([]interface{}); ok {
+		if options, ok := a[AttrOptions].(Options); ok {
 			a[AttrOptions] = append(options, value)
 		} else {
-			a[AttrOptions] = []interface{}{value}
+			a[AttrOptions] = Options{value}
 		}
 	case AttrOptions: // make sure the value is wrapped into a []interface{}
 		switch v := value.(type) {
-		case []interface{}:
+		case Options:
 			a[AttrOptions] = v
 		case string:
 			values := strings.Split(v, ",")
-			options := make([]interface{}, len(values))
+			options := make(Options, len(values))
 			for i, v := range values {
 				options[i] = v
 			}
 			a[AttrOptions] = options
 		default:
-			a[AttrOptions] = []interface{}{value}
+			a[AttrOptions] = Options{value}
 		}
 	default:
 		a[key] = value
@@ -456,7 +471,7 @@ func (a Attributes) Has(key string) bool {
 // HasOption returns true if the option is set.
 func (a Attributes) HasOption(key string) bool {
 	// in block attributes: search key in the `Options`
-	if opts, ok := a[AttrOptions].([]interface{}); ok {
+	if opts, ok := a[AttrOptions].(Options); ok {
 		for _, opt := range opts {
 			if opt == key {
 				return true

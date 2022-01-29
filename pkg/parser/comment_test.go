@@ -85,10 +85,10 @@ another line`
 						&types.Paragraph{
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "a first line",
+									Content: "a first line\n",
 								},
 								&types.StringElement{
-									Content: "\nanother line",
+									Content: "another line",
 								},
 							},
 						},

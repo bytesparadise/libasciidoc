@@ -178,8 +178,8 @@ some <strong>example</strong> content
 
 		source := `:github-url: https://github.com
 			
-[subs="$SUBS"]
 ====
+[subs="$SUBS"]
 a link to https://example.com[] <1>
 and <more text> on the +
 *next* lines with a link to {github-url}[]

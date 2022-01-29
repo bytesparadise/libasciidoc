@@ -20,39 +20,19 @@ var _ = DescribeTable("'FileLocation' pattern",
 		Expect(actual).To(Equal(expected))
 	},
 	Entry("'chapter-a.adoc'", "chapter-a.adoc", &types.Location{
-		Path: []interface{}{
-			&types.StringElement{
-				Content: "chapter-a.adoc",
-			},
-		},
+		Path: "chapter-a.adoc",
 	}),
 	Entry("'chapter_a.adoc'", "chapter_a.adoc", &types.Location{
-		Path: []interface{}{
-			&types.StringElement{
-				Content: "chapter_a.adoc",
-			},
-		},
+		Path: "chapter_a.adoc",
 	}),
 	Entry("'../../test/includes/chapter_a.adoc'", "../../test/includes/chapter_a.adoc", &types.Location{
-		Path: []interface{}{
-			&types.StringElement{
-				Content: "../../test/includes/chapter_a.adoc",
-			},
-		},
+		Path: "../../test/includes/chapter_a.adoc",
 	}),
 	Entry("'{includedir}/chapter-{foo}.adoc'", "{includedir}/chapter-{foo}.adoc", &types.Location{
-		Path: []interface{}{
-			&types.StringElement{
-				Content: "{includedir}/chapter-{foo}.adoc", // attribute substitutions are treared as part of the string element
-			},
-		},
+		Path: "{includedir}/chapter-{foo}.adoc", // attribute substitutions are treared as part of the string element
 	}),
 	Entry("'{scheme}://{path}'", "{scheme}://{path}", &types.Location{
-		Path: []interface{}{
-			&types.StringElement{ // attribute substitutions are treared as part of the string element
-				Content: "{scheme}://{path}",
-			},
-		},
+		Path: "{scheme}://{path}",
 	}),
 )
 

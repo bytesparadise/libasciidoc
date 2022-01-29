@@ -70,7 +70,7 @@ ____`
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "some ",
+									Content: "\nsome ",
 								},
 								&types.QuotedText{
 									Kind: types.SingleQuoteBold,
@@ -81,7 +81,7 @@ ____`
 									},
 								},
 								&types.StringElement{
-									Content: " content", // without trailing `\n` for the empty line afterwards
+									Content: " content\n",
 								},
 							},
 						},
@@ -279,11 +279,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -331,11 +327,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "github.com",
-												},
-											},
+											Path:   "github.com",
 										},
 									},
 									&types.StringElement{
@@ -391,11 +383,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -443,11 +431,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "github.com",
-												},
-											},
+											Path:   "github.com",
 										},
 									},
 									&types.StringElement{
@@ -561,11 +545,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -668,11 +648,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -681,11 +657,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "github.com",
-												},
-											},
+											Path:   "github.com",
 										},
 									},
 									&types.StringElement{
@@ -912,11 +884,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -983,11 +951,7 @@ ____
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{

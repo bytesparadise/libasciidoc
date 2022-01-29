@@ -54,7 +54,7 @@ var _ = Describe("tables", func() {
 	It("table with title, headers and 1 line per cell", func() {
 		source := `.table title
 |===
-|Column heading 1 |Column heading 2
+|Column header 1 |Column header 2
 
 |Column 1, row 1
 |Column 2, row 1
@@ -70,8 +70,8 @@ var _ = Describe("tables", func() {
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Column heading 1</th>
-<th class="tableblock halign-left valign-top">Column heading 2</th>
+<th class="tableblock halign-left valign-top">Column header 1</th>
+<th class="tableblock halign-left valign-top">Column header 2</th>
 </tr>
 </thead>
 <tbody>
@@ -93,7 +93,7 @@ var _ = Describe("tables", func() {
 		source := `.table title
 [caption="Example I. "]
 |===
-|Column heading 1 |Column heading 2
+|Column header 1 |Column header 2
 
 |Column 1, row 1
 |Column 2, row 1
@@ -109,8 +109,8 @@ var _ = Describe("tables", func() {
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Column heading 1</th>
-<th class="tableblock halign-left valign-top">Column heading 2</th>
+<th class="tableblock halign-left valign-top">Column header 1</th>
+<th class="tableblock halign-left valign-top">Column header 2</th>
 </tr>
 </thead>
 <tbody>

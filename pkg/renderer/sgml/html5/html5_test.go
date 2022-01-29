@@ -276,7 +276,7 @@ Image is not a picture of a life form.
 
 == Resources
 
-*Project web site:* http://eve.example.org
+*Project web site:* http://eve.example.com
 
 == Copying
 
@@ -351,7 +351,7 @@ Image is not a picture of a life form.</p>
 <h2 id="_resources">Resources</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Project web site:</strong> <a href="http://eve.example.org" class="bare">http://eve.example.org</a></p>
+<p><strong>Project web site:</strong> <a href="http://eve.example.com" class="bare">http://eve.example.com</a></p>
 </div>
 </div>
 </div>
@@ -419,7 +419,7 @@ Image is not a picture of a life form.
 
 == Resources
 
-*Project web site:* http://eve.example.org
+*Project web site:* http://eve.example.com
 
 == Copying
 
@@ -478,7 +478,7 @@ Image is not a picture of a life form.</p>
 <h2 id="_resources">Resources</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Project web site:</strong> <a href="http://eve.example.org" class="bare">http://eve.example.org</a></p>
+<p><strong>Project web site:</strong> <a href="http://eve.example.com" class="bare">http://eve.example.com</a></p>
 </div>
 </div>
 </div>

@@ -81,6 +81,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("no footnote", func() {
+			// given
 			c := make(chan types.DocumentFragment, 1)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -89,7 +90,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					sectionWithoutFootnote,
@@ -99,6 +102,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("single footnote", func() {
+			// given
 			c := make(chan types.DocumentFragment, 1)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -108,7 +112,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					sectionWithFootnoteRef1,
@@ -129,6 +135,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("multiple footnotes in same fragment", func() {
+			// given
 			c := make(chan types.DocumentFragment, 1)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -139,7 +146,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					sectionWithFootnoteRef1,
@@ -170,6 +179,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("multiple footnotes in separate fragments", func() {
+			// given
 			c := make(chan types.DocumentFragment, 2)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -187,7 +197,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					sectionWithoutFootnote,
@@ -295,6 +307,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("no footnote", func() {
+			// given
 			c := make(chan types.DocumentFragment, 1)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -303,7 +316,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					paragraphWithoutFootnote,
@@ -313,6 +328,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("single footnote", func() {
+			// given
 			c := make(chan types.DocumentFragment, 1)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -322,7 +338,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					paragraphWithFootnoteRef1,
@@ -343,6 +361,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("multiple footnotes in same fragment", func() {
+			// given
 			c := make(chan types.DocumentFragment, 1)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -353,7 +372,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					paragraphWithFootnoteRef1,
@@ -384,6 +405,7 @@ var _ = Describe("collect footnotes", func() {
 		})
 
 		It("multiple footnotes in separate fragments", func() {
+			// given
 			c := make(chan types.DocumentFragment, 2)
 			c <- types.DocumentFragment{
 				Elements: []interface{}{
@@ -401,7 +423,9 @@ var _ = Describe("collect footnotes", func() {
 			}
 			close(c)
 			footnotes := types.NewFootnotes()
+			// when
 			result := parser.CollectFootnotes(footnotes, make(<-chan interface{}), c)
+			// then
 			Expect(<-result).To(MatchDocumentFragment(types.DocumentFragment{
 				Elements: []interface{}{
 					paragraphWithoutFootnote,

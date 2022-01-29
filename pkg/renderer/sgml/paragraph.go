@@ -69,7 +69,7 @@ func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Pa
 		ID:      r.renderElementID(p.Attributes),
 		Title:   title,
 		Roles:   roles,
-		Content: string(content),
+		Content: strings.Trim(string(content), "\n"),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph")

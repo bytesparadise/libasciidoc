@@ -32,7 +32,7 @@ var opts = []cmp.Option{cmpopts.IgnoreUnexported(
 	types.Footnotes{},
 	types.TableOfContents{},
 	types.AttributeDeclaration{},
-	types.AttributeSubstitution{},
+	types.AttributeReference{},
 	types.AttributeReset{},
 	types.CounterSubstitution{},
 	types.PredefinedAttribute{},

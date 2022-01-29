@@ -18,7 +18,6 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 	}()
 	ctx.WithinDelimitedBlock = true
 	result := &strings.Builder{}
-	// lines := [][]interface{}{} // discardEmptyLines(b.Elements)
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
@@ -43,7 +42,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 		ID:      r.renderElementID(b.Attributes),
 		Title:   title,
 		Roles:   roles,
-		Content: content,
+		Content: strings.Trim(content, "\n"),
 	})
 	return result.String(), err
 }

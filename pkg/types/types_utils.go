@@ -145,7 +145,7 @@ func stringify(element interface{}) string {
 		return element.Content
 	case *SpecialCharacter:
 		return element.Name
-	case *AttributeSubstitution: // TODO: should never happen?
+	case *AttributeReference: // TODO: should never happen?
 		return "{" + element.Name + "}"
 	default:
 		return fmt.Sprintf("%v", element) // "best-effort" here

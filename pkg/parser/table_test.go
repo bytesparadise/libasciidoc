@@ -192,7 +192,7 @@ var _ = Describe("tables", func() {
 		It("table with title, headers and 1 line per cell", func() {
 			source := `.table title
 |===
-|heading 1 |heading 2
+|header 1 |header 2
 
 |row 1, column 1
 |row 1, column 2
@@ -211,14 +211,14 @@ var _ = Describe("tables", func() {
 								{
 									Elements: []interface{}{
 										&types.StringElement{
-											Content: "heading 1 ",
+											Content: "header 1 ",
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
 										&types.StringElement{
-											Content: "heading 2",
+											Content: "header 2",
 										},
 									},
 								},
@@ -273,7 +273,7 @@ var _ = Describe("tables", func() {
 			source := `.table title
 [#anchor.role1%autowidth.stretch]
 |===
-|heading 1 |heading 2
+|header 1 |header 2
 
 |row 1, column 1
 |row 1, column 2
@@ -286,8 +286,8 @@ var _ = Describe("tables", func() {
 					&types.Table{
 						Attributes: types.Attributes{
 							types.AttrTitle:   "table title",
-							types.AttrOptions: []interface{}{"autowidth"},
-							types.AttrRoles:   []interface{}{"role1", "stretch"},
+							types.AttrOptions: types.Options{"autowidth"},
+							types.AttrRoles:   types.Roles{"role1", "stretch"},
 							types.AttrID:      "anchor",
 						},
 						Header: &types.TableRow{
@@ -295,14 +295,14 @@ var _ = Describe("tables", func() {
 								{
 									Elements: []interface{}{
 										&types.StringElement{
-											Content: "heading 1 ",
+											Content: "header 1 ",
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
 										&types.StringElement{
-											Content: "heading 2",
+											Content: "header 2",
 										},
 									},
 								},
@@ -465,7 +465,7 @@ var _ = Describe("tables", func() {
 									Weight:     1,
 								},
 							},
-							types.AttrOptions: []interface{}{"header"},
+							types.AttrOptions: types.Options{"header"},
 						},
 						Header: &types.TableRow{
 							Cells: []*types.TableCell{
@@ -614,7 +614,7 @@ var _ = Describe("tables", func() {
 									Weight:     1,
 								},
 							},
-							types.AttrOptions: []interface{}{"header", "footer"},
+							types.AttrOptions: types.Options{"header", "footer"},
 						},
 						Header: &types.TableRow{
 							Cells: []*types.TableCell{

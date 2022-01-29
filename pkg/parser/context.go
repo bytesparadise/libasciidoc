@@ -11,7 +11,7 @@ import (
 
 type ParseContext struct {
 	filename     string
-	Opts         []Option
+	Opts         []Option // TODO: unexport this field?
 	levelOffsets levelOffsets
 	attributes   *contextAttributes
 	userMacros   map[string]configuration.MacroTemplate
@@ -25,7 +25,7 @@ func NewParseContext(config *configuration.Configuration, opts ...Option) *Parse
 	opts = append(opts, Entrypoint("DocumentFragment"))
 	opts = append(opts, GlobalStore(frontMatterKey, true))
 	opts = append(opts, GlobalStore(documentHeaderKey, true))
-	opts = append(opts, GlobalStore(substitutionKey, newNormalSubstitution()))
+	opts = append(opts, GlobalStore(enabledSubstitutions, []string{Attributes}))
 	opts = append(opts, GlobalStore(usermacrosKey, config.Macros))
 	return &ParseContext{
 		filename:     config.Filename,
@@ -38,17 +38,22 @@ func NewParseContext(config *configuration.Configuration, opts ...Option) *Parse
 }
 
 func (c *ParseContext) Clone() *ParseContext {
-	opts := make([]Option, len(c.Opts))
-	copy(opts, c.Opts)
-	attributes := c.attributes.clone()
 	return &ParseContext{
 		filename:     c.filename,
-		Opts:         opts,
+		Opts:         options(c.Opts).clone(),
 		levelOffsets: c.levelOffsets.clone(),
-		attributes:   attributes,
+		attributes:   c.attributes.clone(),
 		userMacros:   c.userMacros,
 		counters:     c.counters,
 	}
+}
+
+type options []Option
+
+func (o options) clone() []Option {
+	result := make([]Option, len(o))
+	copy(result, o)
+	return result
 }
 
 type contextAttributes struct {
@@ -84,14 +89,6 @@ func (a *contextAttributes) has(k string) bool {
 	return found
 }
 
-func (a *contextAttributes) get(k string) interface{} {
-	value, found := a.immutableAttributes[k]
-	if found {
-		return value
-	}
-	return a.attributes[k]
-}
-
 func (a *contextAttributes) allAttributes() map[string]interface{} {
 	result := make(map[string]interface{}, len(a.attributes)+len(a.immutableAttributes))
 	for k, v := range a.attributes {
@@ -109,13 +106,6 @@ func (a *contextAttributes) getAsString(k string) (string, bool, error) {
 		return a.immutableAttributes.GetAsString(k)
 	}
 	return a.attributes.GetAsString(k)
-}
-
-func (a *contextAttributes) getAsStringWithDefault(k string, defaultValue string) string {
-	if a.immutableAttributes.Has(k) {
-		return a.immutableAttributes.GetAsStringWithDefault(k, defaultValue)
-	}
-	return a.attributes.GetAsStringWithDefault(k, defaultValue)
 }
 
 func (a *contextAttributes) getAsIntWithDefault(k string, defaultValue int) int {

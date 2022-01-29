@@ -1,6 +1,8 @@
 package html5_test
 
 import (
+	"strings"
+
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo" //nolint golint
@@ -208,19 +210,34 @@ image::cookie.jpg[cookie]
 
 		Context("with custom substitutions", func() {
 
-			It("with attributes substitution", func() {
-				source := `:github-url: https://github.com
+			// using the same input for all substitution tests
+			source := `:github-url: https://github.com
+:github-title: GitHub
 
-[subs="attributes"]
-a link to https://github.com[] <using the *inline link macro*>
-another one using attribute substitution: {github-url}[]...
-// a single-line comment`
+[subs="$SUBS"]
+links to {github-title}: https://github.com[{github-title}] and *<https://github.com[_{github-title}_]>*
+and another one using attribute substitution: {github-url}[{github-title}]...
+// a single-line comment.`
+
+			It("should apply the 'attributes' substitution", func() {
+				s := strings.ReplaceAll(source, "$SUBS", "attributes")
 				expected := `<div class="paragraph">
-<p>a link to https://github.com[] <using the *inline link macro*>
-another one using attribute substitution: https://github.com[]...</p>
+<p>links to GitHub: https://github.com[GitHub] and *<https://github.com[_GitHub_]>*
+and another one using attribute substitution: https://github.com[GitHub]...</p>
 </div>
 `
-				Expect(RenderHTML(source)).To(MatchHTML(expected))
+				Expect(RenderHTML(s)).To(MatchHTML(expected))
+			})
+
+			It("should apply the 'attributes,macros' substitution", func() {
+				s := strings.ReplaceAll(source, "$SUBS", "macros,attributes")
+				// differs from Asciidoctor
+				expected := `<div class="paragraph">
+<p>links to GitHub: <a href="https://github.com">GitHub</a> and *<<a href="https://github.com">_GitHub_</a>>*
+and another one using attribute substitution: https://github.com[GitHub]...</p>
+</div>
+`
+				Expect(RenderHTML(s)).To(MatchHTML(expected))
 			})
 		})
 

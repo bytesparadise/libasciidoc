@@ -22,8 +22,8 @@ var _ = Describe("ordered lists", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("with implicit numbering style on multiple lines with heading tabs", func() {
-		// heading tabs should be trimmed
+	It("with implicit numbering style on multiple lines with leading tabs", func() {
+		// leading tabs should be trimmed
 		source := `. item 
 	on 
 	multiple 

@@ -27,7 +27,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b *types.Delimit
 		return "", errors.Wrap(err, "unable to render source block roles")
 	}
 	var nowrap bool
-	if options, ok := b.Attributes[types.AttrOptions].([]interface{}); ok {
+	if options, ok := b.Attributes[types.AttrOptions].(types.Options); ok {
 		for _, opt := range options {
 			if opt == "nowrap" {
 				nowrap = true
@@ -56,7 +56,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b *types.Delimit
 		Roles:             roles,
 		Language:          language,
 		Nowrap:            nowrap,
-		Content:           content,
+		Content:           strings.Trim(content, "\n"),
 	})
 
 	return result.String(), err

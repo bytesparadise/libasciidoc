@@ -9,7 +9,7 @@ func discardBlankLines(lines []interface{}) []interface{} {
 	// log.Debugf("discarding blank lines on %d elements...", len(lines))
 	filteredLines := make([]interface{}, len(lines))
 	copy(filteredLines, lines)
-	// heading empty lines
+	// leading empty lines
 	for {
 		if len(filteredLines) == 0 {
 			break
