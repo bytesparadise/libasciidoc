@@ -52,7 +52,7 @@ var _ = Describe("ordered lists", func() {
 			})
 
 			It("with implicit numbering style on multiple lines with tabs", func() {
-				// heading and trailing spaces must be trimmed on each line
+				// leading and trailing spaces must be trimmed on each line
 				source := `. element 
 	on 
 	multiple 
@@ -1108,11 +1108,7 @@ image::chocolate.png[]`
 										},
 										&types.ImageBlock{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "cookie.png",
-													},
-												},
+												Path: "cookie.png",
 											},
 										},
 									},
@@ -1129,11 +1125,7 @@ image::chocolate.png[]`
 										},
 										&types.ImageBlock{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "chocolate.png",
-													},
-												},
+												Path: "chocolate.png",
 											},
 										},
 									},

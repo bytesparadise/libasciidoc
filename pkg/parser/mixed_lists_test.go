@@ -499,7 +499,7 @@ ii) ordered 1.2.ii
 																	Elements: []interface{}{
 																		&types.Paragraph{
 																			Elements: []interface{}{
-																				&types.StringElement{Content: "unordered 2.1.1\nwith some\nextra lines."}, // heading tabs are trimmed
+																				&types.StringElement{Content: "unordered 2.1.1\nwith some\nextra lines."}, // leading tabs are trimmed
 																			},
 																		},
 																	},

@@ -40,7 +40,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b *types.Delimit
 		ID:      r.renderElementID(b.Attributes),
 		Title:   title,
 		Roles:   roles,
-		Content: content,
+		Content: strings.Trim(content, "\n"),
 	})
 	return result.String(), err
 }

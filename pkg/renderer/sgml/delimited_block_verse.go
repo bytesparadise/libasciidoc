@@ -46,7 +46,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b *types.Delimite
 		Title:       title,
 		Roles:       roles,
 		Attribution: attribution,
-		Content:     string(content),
+		Content:     strings.Trim(string(content), "\n"),
 	})
 	return result.String(), err
 }

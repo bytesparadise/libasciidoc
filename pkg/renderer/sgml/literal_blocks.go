@@ -12,7 +12,7 @@ import (
 
 func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
 	log.Debugf("rendering literal block")
-	elements, err := r.renderElements(ctx, b.Elements)
+	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", err
 	}
@@ -38,7 +38,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.Delimi
 		ID:      r.renderElementID(b.Attributes),
 		Title:   title,
 		Roles:   roles,
-		Content: elements,
+		Content: strings.Trim(content, "\n"),
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render literal block")

@@ -66,11 +66,7 @@ var _ = Describe("normalizing string", func() {
 				Attributes: types.Attributes{},
 				Location: &types.Location{
 					Scheme: "https://",
-					Path: []interface{}{
-						&types.StringElement{
-							Content: "foo.bar",
-						},
-					},
+					Path:   "foo.bar",
 				},
 			},
 		}

@@ -47,57 +47,6 @@ some *verse* content
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("with title, paragraph and sourcecode block", func() {
-			source := `.a title
-****
-some *verse* content
-
-----
-foo
-bar
-----
-****`
-			expected := &types.Document{
-				Elements: []interface{}{
-					&types.DelimitedBlock{
-						Kind: types.Sidebar,
-						Attributes: types.Attributes{
-							types.AttrTitle: "a title",
-						},
-						Elements: []interface{}{
-							&types.Paragraph{
-								Elements: []interface{}{
-									&types.StringElement{
-										Content: "some ",
-									},
-									&types.QuotedText{
-										Kind: types.SingleQuoteBold,
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "verse",
-											},
-										},
-									},
-									&types.StringElement{
-										Content: " content",
-									},
-								},
-							},
-							&types.DelimitedBlock{
-								Kind: types.Listing,
-								Elements: []interface{}{
-									&types.StringElement{
-										Content: "foo\nbar",
-									},
-								},
-							},
-						},
-					},
-				},
-			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
-		})
-
 		It("with single line starting with a dot", func() {
 			// do not show parse errors in the logs for this test
 			_, reset := ConfigureLogger(log.FatalLevel)

@@ -19,7 +19,7 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			resultStream <- types.NewErrorFragment(types.Position{}, err)
 			return
 		}
-		p := newParser(ctx.filename, b, ctx.Opts...)
+		p := newParser(ctx.filename, b, ctx.Opts...) // we want to parse block attributes to detect AttributeReferences
 		if err := p.setup(g); err != nil {
 			resultStream <- types.NewErrorFragment(types.Position{}, err)
 			return

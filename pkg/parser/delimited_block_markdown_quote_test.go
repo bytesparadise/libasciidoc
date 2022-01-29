@@ -88,6 +88,9 @@ on *multiple lines*`
 									},
 								},
 							},
+							&types.StringElement{
+								Content: "\n",
+							},
 						},
 					},
 				},
@@ -119,6 +122,9 @@ on *multiple lines*`
 										Content: "multiple lines",
 									},
 								},
+							},
+							&types.StringElement{
+								Content: "\n",
 							},
 						},
 					},

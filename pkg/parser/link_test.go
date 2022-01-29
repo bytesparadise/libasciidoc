@@ -24,11 +24,7 @@ var _ = Describe("links", func() {
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 							},
@@ -48,11 +44,7 @@ var _ = Describe("links", func() {
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 							},
@@ -72,11 +64,7 @@ var _ = Describe("links", func() {
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "mailto:",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "foo@bar",
-											},
-										},
+										Path:   "foo@bar",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "the foo@bar email",
@@ -102,11 +90,7 @@ var _ = Describe("links", func() {
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "mailto:",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "foo@bar",
-											},
-										},
+										Path:   "foo@bar",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "the foo@bar email",
@@ -135,11 +119,7 @@ next lines`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "http://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "website.com",
-											},
-										},
+										Path:   "website.com",
 									},
 								},
 								&types.StringElement{
@@ -167,11 +147,7 @@ next lines`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "http://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "website.com",
-											},
-										},
+										Path:   "website.com",
 									},
 								},
 								&types.StringElement{
@@ -194,11 +170,7 @@ next lines`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 								&types.StringElement{Content: " and more text"},
@@ -221,11 +193,7 @@ next lines`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "http://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "website.com",
-												},
-											},
+											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A",
@@ -250,11 +218,7 @@ next lines`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "http://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "website.com",
-												},
-											},
+											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A, B, and C",
@@ -277,15 +241,11 @@ next lines`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "http://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "website.com",
-												},
-											},
+											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A, B, and C",
-											types.AttrRoles:          []interface{}{"foo"},
+											types.AttrRoles:          types.Roles{"foo"},
 										},
 									},
 								},
@@ -305,17 +265,13 @@ next lines`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "http://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "website.com",
-												},
-											},
+											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A",
 											types.AttrPositional2:    "B",
 											types.AttrPositional3:    "and C",
-											types.AttrRoles:          []interface{}{"foo"},
+											types.AttrRoles:          types.Roles{"foo"},
 										},
 									},
 								},
@@ -336,11 +292,7 @@ next lines`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "foo*_.com",
-											},
-										},
+										Path:   "foo*_.com",
 									},
 								},
 							},
@@ -396,11 +348,7 @@ next lines`
 									},
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 							},
@@ -423,7 +371,7 @@ next lines`
 											&types.QuotedText{
 												Kind: types.SingleQuoteItalic,
 												Attributes: types.Attributes{
-													types.AttrRoles: []interface{}{"myrole1"},
+													types.AttrRoles: types.Roles{"myrole1"},
 												},
 												Elements: []interface{}{
 													&types.StringElement{
@@ -435,11 +383,7 @@ next lines`
 									},
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 							},
@@ -462,7 +406,7 @@ next lines`
 											&types.QuotedText{
 												Kind: types.SingleQuoteItalic,
 												Attributes: types.Attributes{
-													types.AttrRoles: []interface{}{"myrole1"},
+													types.AttrRoles: types.Roles{"myrole1"},
 												},
 												Elements: []interface{}{
 													&types.StringElement{
@@ -476,7 +420,7 @@ next lines`
 											&types.QuotedText{
 												Kind: types.SingleQuoteBold,
 												Attributes: types.Attributes{
-													types.AttrRoles: []interface{}{"myrole2"},
+													types.AttrRoles: types.Roles{"myrole2"},
 												},
 												Elements: []interface{}{
 													&types.StringElement{
@@ -490,7 +434,7 @@ next lines`
 											&types.QuotedText{
 												Kind: types.SingleQuoteMonospace,
 												Attributes: types.Attributes{
-													types.AttrRoles: []interface{}{"myrole3"},
+													types.AttrRoles: types.Roles{"myrole3"},
 												},
 												Elements: []interface{}{
 													&types.StringElement{
@@ -502,11 +446,7 @@ next lines`
 									},
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 							},
@@ -530,11 +470,7 @@ next lines`
 										&types.InlineLink{
 											Location: &types.Location{
 												Scheme: "https://",
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "example.com",
-													},
-												},
+												Path:   "example.com",
 											},
 										},
 									},
@@ -556,11 +492,7 @@ next lines`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "foo*_.com",
-											},
-										},
+										Path:   "foo*_.com",
 									},
 								},
 							},
@@ -584,11 +516,7 @@ next lines`
 										&types.InlineLink{
 											Location: &types.Location{
 												Scheme: "https://",
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "example.com",
-													},
-												},
+												Path:   "example.com",
 											},
 										},
 									},
@@ -614,11 +542,7 @@ next lines`
 										&types.InlineLink{
 											Location: &types.Location{
 												Scheme: "https://",
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "example.com",
-													},
-												},
+												Path:   "example.com",
 											},
 										},
 									},
@@ -656,11 +580,7 @@ a link to {url}`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo2.bar",
-												},
-											},
+											Path:   "foo2.bar",
 										},
 									},
 								},
@@ -692,22 +612,14 @@ a link to {scheme}://{path} and https://foo.com`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{Content: " and "},
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo.com",
-												},
-											},
+											Path:   "foo.com",
 										},
 									},
 								},
@@ -744,11 +656,7 @@ a link to *{scheme}://{path}[] and https://foo.com[]*`
 											&types.InlineLink{
 												Location: &types.Location{
 													Scheme: "https://",
-													Path: []interface{}{
-														&types.StringElement{
-															Content: "example.com",
-														},
-													},
+													Path:   "example.com",
 												},
 											},
 											&types.StringElement{
@@ -757,11 +665,7 @@ a link to *{scheme}://{path}[] and https://foo.com[]*`
 											&types.InlineLink{
 												Location: &types.Location{
 													Scheme: "https://",
-													Path: []interface{}{
-														&types.StringElement{
-															Content: "foo.com",
-														},
-													},
+													Path:   "foo.com",
 												},
 											},
 										},
@@ -800,22 +704,14 @@ a link to {scheme}://{path} and https://foo.com`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.AttributeSubstitution{
-													Name: "path", // substitution failed at during parsing
-												},
-											},
+											Path:   "{path}", // substitution failed at during parsing
 										},
 									},
 									&types.StringElement{Content: " and "},
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo.com",
-												},
-											},
+											Path:   "foo.com",
 										},
 									},
 								},
@@ -838,22 +734,14 @@ a link to {scheme}://{path} and https://foo.com`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{Content: " and "},
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo.com",
-												},
-											},
+											Path:   "foo.com",
 										},
 									},
 								},
@@ -886,22 +774,14 @@ a link to {scheme}://{path} and https://foo.com`
 						&types.InlineLink{
 							Location: &types.Location{
 								Scheme: "https://",
-								Path: []interface{}{
-									&types.StringElement{
-										Content: "example.com",
-									},
-								},
+								Path:   "example.com",
 							},
 						},
 						&types.StringElement{Content: " and "},
 						&types.InlineLink{
 							Location: &types.Location{
 								Scheme: "https://",
-								Path: []interface{}{
-									&types.StringElement{
-										Content: "foo.com",
-									},
-								},
+								Path:   "foo.com",
 							},
 						},
 					}
@@ -944,11 +824,7 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "foo.adoc",
-											},
-										},
+										Path:   "foo.adoc",
 									},
 								},
 							},
@@ -968,11 +844,7 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "foo.adoc",
-											},
-										},
+										Path:   "foo.adoc",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "foo doc",
@@ -995,11 +867,7 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "foo doc",
@@ -1022,11 +890,7 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "foo doc",
@@ -1050,11 +914,7 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 									Attributes: types.Attributes{
 										"foo": "bar",
@@ -1092,11 +952,7 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "/",
-											},
-										},
+										Path:   "/",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: []interface{}{
@@ -1153,17 +1009,7 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$",
-											},
-											&types.SpecialCharacter{
-												Name: "&",
-											},
-											&types.StringElement{
-												Content: ";=()*+,-_.%",
-											},
-										},
+										Path:   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~:/?#@!$&;=()*+,-_.%",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "as expected",
@@ -1189,11 +1035,7 @@ Test 2: link:/test/a%20b[with encoded space]`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "/test/a%20b",
-											},
-										},
+										Path:   "/test/a%20b",
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "with encoded space",
@@ -1235,11 +1077,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 								},
 								&types.InlineLink{
 									Location: &types.Location{
-										Path: []interface{}{
-											&types.AttributeSubstitution{
-												Name: "path",
-											},
-										},
+										Path: "{path}", // substitution failed
 									},
 								},
 								&types.StringElement{
@@ -1248,11 +1086,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "foo.com",
-											},
-										},
+										Path:   "foo.com",
 									},
 								},
 							},
@@ -1273,11 +1107,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 									Elements: []interface{}{
 										&types.InlineLink{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "foo",
-													},
-												},
+												Path: "foo",
 											},
 										},
 									},
@@ -1300,11 +1130,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 										types.AttrInlineLinkText: "A",
 									},
 									Location: &types.Location{
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "a_",
-											},
-										},
+										Path: "a_",
 									},
 								},
 								&types.StringElement{
@@ -1315,11 +1141,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 										types.AttrInlineLinkText: "A",
 									},
 									Location: &types.Location{
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "a_",
-											},
-										},
+										Path: "a_",
 									},
 								},
 							},
@@ -1341,11 +1163,7 @@ title]`
 										types.AttrInlineLinkText: "title",
 									},
 									Location: &types.Location{
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "x",
-											},
-										},
+										Path: "x",
 									},
 								},
 							},
@@ -1367,11 +1185,7 @@ title]`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A",
@@ -1396,11 +1210,7 @@ title]`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A, B, and C",
@@ -1423,15 +1233,11 @@ title]`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A, B, and C",
-											types.AttrRoles:          []interface{}{"foo"},
+											types.AttrRoles:          types.Roles{"foo"},
 										},
 									},
 								},
@@ -1451,17 +1257,13 @@ title]`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 										Attributes: types.Attributes{
 											types.AttrInlineLinkText: "A",
 											types.AttrPositional2:    "B",
 											types.AttrPositional3:    "and C",
-											types.AttrRoles:          []interface{}{"foo"},
+											types.AttrRoles:          types.Roles{"foo"},
 										},
 									},
 								},

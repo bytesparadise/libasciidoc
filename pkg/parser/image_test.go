@@ -18,11 +18,7 @@ var _ = Describe("block images", func() {
 				Elements: []interface{}{
 					&types.ImageBlock{
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "images/cookie.png",
-								},
-							},
+							Path: "images/cookie.png",
 						},
 					},
 				},
@@ -45,11 +41,7 @@ image::images/cookie.png[{alt}]`
 							types.AttrImageAlt: "the cookie.png image", // substituted
 						},
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "images/cookie.png",
-								},
-							},
+							Path: "images/cookie.png",
 						},
 					},
 				},
@@ -70,11 +62,7 @@ image::cookie.png[]`
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "./path/to/images/cookie.png",
-								},
-							},
+							Path: "cookie.png", // `imagesdir` (image catalog) attribute not preprended at this point
 						},
 					},
 				},
@@ -95,11 +83,7 @@ image::{dir}/cookie.png[]`
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "./path/to/images/cookie.png",
-								},
-							},
+							Path: "./path/to/images/cookie.png",
 						},
 					},
 				},
@@ -120,11 +104,7 @@ image::cookie.png[]`
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "./path/to/images/cookie.png",
-								},
-							},
+							Path: "cookie.png", // `imagesdir` (image catalog) attribute not preprended at this point
 						},
 					},
 				},
@@ -145,11 +125,7 @@ image::{imagesdir}/cookie.png[]`
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "./path/to/images/./path/to/images/cookie.png",
-								},
-							},
+							Path: "./path/to/images/cookie.png", // `imagesdir` (image catalog) attribute not preprended at this point
 						},
 					},
 				},
@@ -164,20 +140,12 @@ image::images/pasta.png[]`
 				Elements: []interface{}{
 					&types.ImageBlock{
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "images/cookie.png",
-								},
-							},
+							Path: "images/cookie.png",
 						},
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "images/pasta.png",
-								},
-							},
+							Path: "images/pasta.png",
 						},
 					},
 				},
@@ -196,7 +164,7 @@ image::cookie.png[cookie image, 600, 400]`
 						Attributes: types.Attributes{
 							types.AttrID:    "myid",
 							types.AttrTitle: "mytitle",
-							types.AttrRoles: []interface{}{
+							types.AttrRoles: types.Roles{
 								"myrole",
 							},
 							types.AttrImageAlt: "cookie image",
@@ -204,11 +172,7 @@ image::cookie.png[cookie image, 600, 400]`
 							types.AttrHeight:   "400",
 						},
 						Location: &types.Location{
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "cookie.png",
-								},
-							},
+							Path: "cookie.png",
 						},
 					},
 				},
@@ -226,51 +190,62 @@ image::cookie.png[cookie image, 600, 400]`
 							types.AttrInlineLink: "https://cookie.dev",
 						},
 						Location: &types.Location{
-							Path: []interface{}{
+							Path: "cookie.png",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with special characters", func() {
+			source := `image::http://example.com/foo.png?a=1&b=2[]`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.ImageBlock{
+						Location: &types.Location{
+							Scheme: "http://",
+							Path:   "example.com/foo.png?a=1&b=2",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		Context("errors", func() {
+
+			It("appending inline content", func() {
+				source := "a paragraph\nimage::images/cookie.png[]"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
 								&types.StringElement{
-									Content: "cookie.png",
+									Content: "a paragraph\nimage::images/cookie.png[]",
 								},
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
-		})
-	})
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 
-	Context("errors", func() {
-
-		It("appending inline content", func() {
-			source := "a paragraph\nimage::images/cookie.png[]"
-			expected := &types.Document{
-				Elements: []interface{}{
-					&types.Paragraph{
-						Elements: []interface{}{
-							&types.StringElement{
-								Content: "a paragraph\nimage::images/cookie.png[]",
+			It("paragraph with block image with alt and dimensions", func() {
+				source := "a cookie image::cookie.png[cookie image, 600, 400] image"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a cookie image::cookie.png[cookie image, 600, 400] image",
+								},
 							},
 						},
 					},
-				},
-			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
-		})
-
-		It("paragraph with block image with alt and dimensions", func() {
-			source := "a cookie image::cookie.png[cookie image, 600, 400] image"
-			expected := &types.Document{
-				Elements: []interface{}{
-					&types.Paragraph{
-						Elements: []interface{}{
-							&types.StringElement{
-								Content: "a cookie image::cookie.png[cookie image, 600, 400] image",
-							},
-						},
-					},
-				},
-			}
-			Expect(ParseDocument(source)).To(MatchDocument(expected))
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 	})
 })
@@ -287,11 +262,7 @@ var _ = Describe("inline images", func() {
 						Elements: []interface{}{
 							&types.InlineImage{
 								Location: &types.Location{
-									Path: []interface{}{
-										&types.StringElement{
-											Content: "images/cookie.png",
-										},
-									},
+									Path: "images/cookie.png",
 								},
 							},
 						},
@@ -319,11 +290,7 @@ an image:{dir}/cookie.png[].`
 							},
 							&types.InlineImage{
 								Location: &types.Location{
-									Path: []interface{}{
-										&types.StringElement{
-											Content: "./path/to/images/cookie.png",
-										},
-									},
+									Path: "./path/to/images/cookie.png",
 								},
 							},
 							&types.StringElement{
@@ -354,11 +321,7 @@ an image:cookie.png[].`
 							},
 							&types.InlineImage{
 								Location: &types.Location{
-									Path: []interface{}{
-										&types.StringElement{
-											Content: "./path/to/images/cookie.png",
-										},
-									},
+									Path: "cookie.png", // `imagesdir` (image catalog) attribute not preprended at this point
 								},
 							},
 							&types.StringElement{
@@ -389,11 +352,7 @@ an image:{imagesdir}/cookie.png[].`
 							},
 							&types.InlineImage{
 								Location: &types.Location{
-									Path: []interface{}{
-										&types.StringElement{
-											Content: "./path/to/images/./path/to/images/cookie.png",
-										},
-									},
+									Path: "./path/to/images/cookie.png", // `imagesdir` (image catalog) attribute not preprended at this point
 								},
 							},
 							&types.StringElement{
@@ -418,11 +377,7 @@ an image:{imagesdir}/cookie.png[].`
 									types.AttrInlineLink: "https://cookie.dev",
 								},
 								Location: &types.Location{
-									Path: []interface{}{
-										&types.StringElement{
-											Content: "cookie.png",
-										},
-									},
+									Path: "cookie.png",
 								},
 							},
 						},

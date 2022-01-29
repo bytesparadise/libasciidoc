@@ -379,13 +379,37 @@ var _ = Describe("quoted texts", func() {
 								&types.QuotedText{
 									Kind: types.SingleQuoteItalic,
 									Attributes: types.Attributes{
-										types.AttrRoles: []interface{}{
+										types.AttrRoles: types.Roles{
 											"myrole",
 										},
 										"and": "nothing_else",
 									},
 									Elements: []interface{}{
 										&types.StringElement{Content: "italics"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with role attribute", func() {
+				source := "[myrole]*bold*"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.SingleQuoteBold,
+									Attributes: types.Attributes{
+										types.AttrRoles: types.Roles{
+											"myrole",
+										},
+									},
+									Elements: []interface{}{
+										&types.StringElement{Content: "bold"},
 									},
 								},
 							},
@@ -713,7 +737,7 @@ var _ = Describe("quoted texts", func() {
 								&types.QuotedText{
 									Kind: types.DoubleQuoteBold,
 									Attributes: types.Attributes{
-										types.AttrRoles: []interface{}{
+										types.AttrRoles: types.Roles{
 											"something <wicked>", // TODO: do we need to parse SpecialCharacters in inline attributes?
 										},
 									},
@@ -1485,11 +1509,7 @@ var _ = Describe("quoted texts", func() {
 												types.AttrInlineLinkText: "b",
 											},
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "/",
-													},
-												},
+												Path: "/",
 											},
 										},
 									},
@@ -1513,11 +1533,7 @@ var _ = Describe("quoted texts", func() {
 										&types.StringElement{Content: "a "},
 										&types.InlineImage{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "foo.png",
-													},
-												},
+												Path: "foo.png",
 											},
 										},
 									},
@@ -1594,11 +1610,7 @@ var _ = Describe("quoted texts", func() {
 												types.AttrInlineLinkText: "b",
 											},
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "/",
-													},
-												},
+												Path: "/",
 											},
 										},
 									},
@@ -1622,11 +1634,7 @@ var _ = Describe("quoted texts", func() {
 										&types.StringElement{Content: "a "},
 										&types.InlineImage{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "foo.png",
-													},
-												},
+												Path: "foo.png",
 											},
 										},
 									},
@@ -1703,11 +1711,7 @@ var _ = Describe("quoted texts", func() {
 												types.AttrInlineLinkText: "b",
 											},
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "/",
-													},
-												},
+												Path: "/",
 											},
 										},
 									},
@@ -1731,11 +1735,7 @@ var _ = Describe("quoted texts", func() {
 										&types.StringElement{Content: "a "},
 										&types.InlineImage{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "foo.png",
-													},
-												},
+												Path: "foo.png",
 											},
 										},
 									},
@@ -2695,11 +2695,7 @@ var _ = Describe("quoted texts", func() {
 										&types.StringElement{Content: "a "},
 										&types.InlineImage{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "foo.png",
-													},
-												},
+												Path: "foo.png",
 											},
 										},
 									},
@@ -2723,11 +2719,7 @@ var _ = Describe("quoted texts", func() {
 										&types.StringElement{Content: "a "},
 										&types.InlineImage{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "foo.png",
-													},
-												},
+												Path: "foo.png",
 											},
 										},
 									},
@@ -2751,11 +2743,7 @@ var _ = Describe("quoted texts", func() {
 										&types.StringElement{Content: "a "},
 										&types.InlineImage{
 											Location: &types.Location{
-												Path: []interface{}{
-													&types.StringElement{
-														Content: "foo.png",
-													},
-												},
+												Path: "foo.png",
 											},
 										},
 									},

@@ -55,13 +55,13 @@ lines.</pre>
 		It("literal block from paragraph with single spaces on each line", func() {
 			source := ` literal content
    on many lines  
-     has some heading spaces preserved.`
+     has some leading spaces preserved.`
 			// note: trailing spaces are removed
 			expected := `<div class="literalblock">
 <div class="content">
 <pre>literal content
   on many lines
-    has some heading spaces preserved.</pre>
+    has some leading spaces preserved.</pre>
 </div>
 </div>
 `
@@ -118,7 +118,7 @@ a normal paragraph.`
 			source := `[literal]   
  literal content
   on many lines 
- has its heading spaces preserved.
+ has its leading spaces preserved.
 
 a normal paragraph.`
 			// note: trailing spaces are removed
@@ -126,7 +126,7 @@ a normal paragraph.`
 <div class="content">
 <pre> literal content
   on many lines
- has its heading spaces preserved.</pre>
+ has its leading spaces preserved.</pre>
 </div>
 </div>
 <div class="paragraph">

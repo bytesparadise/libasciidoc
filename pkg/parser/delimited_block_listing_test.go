@@ -488,11 +488,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -540,11 +536,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "github.com",
-												},
-											},
+											Path:   "github.com",
 										},
 									},
 									&types.StringElement{
@@ -618,11 +610,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -685,11 +673,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -698,11 +682,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "github.com",
-												},
-											},
+											Path:   "github.com",
 										},
 									},
 									&types.StringElement{
@@ -847,11 +827,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -898,11 +874,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{
@@ -1174,7 +1146,7 @@ and <more text> on the +
 						},
 					}
 					Expect(ParseDocument(s)).To(MatchDocument(expected))
-					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 33, 182, "unsupported kind of substitution: 'unknown'"))
+					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 33, 182, "unsupported substitution: 'unknown'"))
 				})
 			})
 		})
@@ -1424,11 +1396,7 @@ and <more text> on the +
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-											},
+											Path:   "example.com",
 										},
 									},
 									&types.StringElement{

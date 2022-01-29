@@ -51,7 +51,7 @@ var _ = Describe("unordered lists", func() {
 							Attributes: types.Attributes{
 								types.AttrID:    "listID",
 								types.AttrTitle: "mytitle",
-								types.AttrRoles: []interface{}{"myrole"},
+								types.AttrRoles: types.Roles{"myrole"},
 							},
 							Elements: []types.ListElement{
 								&types.UnorderedListElement{
@@ -466,7 +466,7 @@ on 2 lines, too.`
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												&types.StringElement{Content: "item 1\non 2 lines."}, // heading spaces are trimmed
+												&types.StringElement{Content: "item 1\non 2 lines."}, // leading spaces are trimmed
 											},
 										},
 									},

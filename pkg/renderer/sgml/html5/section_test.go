@@ -256,7 +256,7 @@ with some text, too`
 		})
 
 		It("section with listing block and subsection", func() {
-			source := `==== Third level heading
+			source := `==== Third level header
 
 [#id-for-listing-block]
 .Listing block title
@@ -265,11 +265,11 @@ Content in a listing block is subject to verbatim substitutions.
 Listing block content is commonly used to preserve code input.
 ----
 
-===== Fourth level heading
+===== Fourth level header
 foo`
 
 			expected := `<div class="sect3">
-<h4 id="_third_level_heading">Third level heading</h4>
+<h4 id="_third_level_header">Third level header</h4>
 <div id="id-for-listing-block" class="listingblock">
 <div class="title">Listing block title</div>
 <div class="content">
@@ -278,7 +278,7 @@ Listing block content is commonly used to preserve code input.</pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_fourth_level_heading">Fourth level heading</h5>
+<h5 id="_fourth_level_header">Fourth level header</h5>
 <div class="paragraph">
 <p>foo</p>
 </div>

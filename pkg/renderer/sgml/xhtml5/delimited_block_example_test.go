@@ -242,9 +242,9 @@ and &lt;more text&gt; on the<br/>
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to https://example.com[] <1>
-and <more text> on the +
-<strong>next</strong> lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -271,9 +271,9 @@ and <more text> on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
-and <more text> on the +
-*next* lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -300,9 +300,9 @@ and <more text> on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to https://example.com[] <1>
-and <more text> on the +
-*next* lines with a link to https://github.com[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -329,9 +329,9 @@ and <more text> on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
-and <more text> on the +
-*next* lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -358,9 +358,9 @@ and <more text> on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to https://example.com[] &lt;1&gt;
-and &lt;more text&gt; on the +
-*next* lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -387,9 +387,9 @@ and &lt;more text&gt; on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to https://example.com[] <1>
-and <more text> on the +
-*next* lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -416,9 +416,9 @@ and <more text> on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to https://example.com[] <1>
-and <more text> on the<br/>
-*next* lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -445,9 +445,9 @@ and <more text> on the<br/>
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
-and <more text> on the +
-<strong>next</strong> lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -474,9 +474,9 @@ and <more text> on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to <a href="https://example.com" class="bare">https://example.com</a> <1>
-and <more text> on the +
-<strong>next</strong> lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -503,9 +503,9 @@ and <more text> on the +
 			expected := `<div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>a link to https://example.com[] <1>
-and <more text> on the +
-*next* lines with a link to {github-url}[]</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a> &lt;1&gt;
+and &lt;more text&gt; on the<br/>
+<strong>next</strong> lines with a link to <a href="https://github.com" class="bare">https://github.com</a></p>
 </div>
 <div class="ulist">
 <ul>

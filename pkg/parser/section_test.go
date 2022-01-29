@@ -1137,9 +1137,7 @@ and a paragraph`
 					&types.InlineLink{
 						Location: &types.Location{
 							Scheme: "https://",
-							Path: []interface{}{
-								&types.StringElement{Content: "foo.bar"},
-							},
+							Path:   "foo.bar",
 						},
 					},
 				}
@@ -1830,7 +1828,8 @@ a paragraph`
 								&types.StringElement{Content: "a header"},
 							},
 							Attributes: types.Attributes{
-								types.AttrID: "custom_header",
+								types.AttrID:       "custom_header",
+								types.AttrCustomID: true,
 							},
 						},
 						&types.Section{

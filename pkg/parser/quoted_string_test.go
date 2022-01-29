@@ -212,7 +212,7 @@ var _ = Describe("quoted strings", func() {
 									&types.QuotedText{
 										Kind: types.SingleQuoteMarked,
 										Attributes: types.Attributes{
-											types.AttrRoles: []interface{}{"strikeout"},
+											types.AttrRoles: types.Roles{"strikeout"},
 										},
 										Elements: []interface{}{
 											&types.StringElement{
@@ -397,9 +397,7 @@ var _ = Describe("quoted strings", func() {
 							&types.InlineLink{
 								Location: &types.Location{
 									Scheme: "https://",
-									Path: []interface{}{
-										&types.StringElement{Content: "www.example.com/a"},
-									},
+									Path:   "www.example.com/a",
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
@@ -430,9 +428,7 @@ var _ = Describe("quoted strings", func() {
 							&types.InlineLink{
 								Location: &types.Location{
 									Scheme: "https://",
-									Path: []interface{}{
-										&types.StringElement{Content: "www.example.com/a"},
-									},
+									Path:   "www.example.com/a",
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
@@ -466,9 +462,7 @@ var _ = Describe("quoted strings", func() {
 							&types.InlineLink{
 								Location: &types.Location{
 									Scheme: "https://",
-									Path: []interface{}{
-										&types.StringElement{Content: "www.example.com/a"},
-									},
+									Path:   "www.example.com/a",
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
@@ -505,11 +499,7 @@ var _ = Describe("quoted strings", func() {
 									&types.StringElement{Content: "a "},
 									&types.InlineImage{
 										Location: &types.Location{
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo.png",
-												},
-											},
+											Path: "foo.png",
 										},
 									},
 								},
@@ -671,7 +661,7 @@ var _ = Describe("quoted strings", func() {
 									&types.QuotedText{
 										Kind: types.SingleQuoteMarked,
 										Attributes: types.Attributes{
-											types.AttrRoles: []interface{}{"strikeout"},
+											types.AttrRoles: types.Roles{"strikeout"},
 										},
 										Elements: []interface{}{
 											&types.StringElement{
@@ -857,9 +847,7 @@ var _ = Describe("quoted strings", func() {
 							&types.InlineLink{
 								Location: &types.Location{
 									Scheme: "https://",
-									Path: []interface{}{
-										&types.StringElement{Content: "www.example.com/a"},
-									},
+									Path:   "www.example.com/a",
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
@@ -891,9 +879,7 @@ var _ = Describe("quoted strings", func() {
 							&types.InlineLink{
 								Location: &types.Location{
 									Scheme: "https://",
-									Path: []interface{}{
-										&types.StringElement{Content: "www.example.com/a"},
-									},
+									Path:   "www.example.com/a",
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
@@ -925,9 +911,7 @@ var _ = Describe("quoted strings", func() {
 							&types.InlineLink{
 								Location: &types.Location{
 									Scheme: "https://",
-									Path: []interface{}{
-										&types.StringElement{Content: "www.example.com/a"},
-									},
+									Path:   "www.example.com/a",
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
@@ -961,11 +945,7 @@ var _ = Describe("quoted strings", func() {
 									&types.StringElement{Content: "a "},
 									&types.InlineImage{
 										Location: &types.Location{
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo.png",
-												},
-											},
+											Path: "foo.png",
 										},
 									},
 								},

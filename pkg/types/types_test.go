@@ -513,11 +513,7 @@ var _ = Describe("section id resolution", func() {
 					&types.InlineLink{
 						Location: &types.Location{
 							Scheme: "https://",
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "foo.com",
-								},
-							},
+							Path:   "foo.com",
 						},
 					},
 				},
@@ -585,11 +581,7 @@ var _ = Describe("section id resolution", func() {
 					&types.InlineLink{
 						Location: &types.Location{
 							Scheme: "https://",
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "foo.com",
-								},
-							},
+							Path:   "foo.com",
 						},
 					},
 				},
@@ -648,11 +640,7 @@ var _ = Describe("section id resolution", func() {
 					&types.InlineLink{
 						Location: &types.Location{
 							Scheme: "https://",
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "foo.com",
-								},
-							},
+							Path:   "foo.com",
 						},
 					},
 				},

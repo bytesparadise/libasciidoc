@@ -17,7 +17,7 @@ var _ = Describe("document details", func() {
 
 		It("header with author and revision", func() {
 			source := `= Document Title
-Xavier <xavier@example.org>
+Xavier <xavier@example.com>
 v1.0, March 22, 2020: Containment
 
 {author} wrote this doc on {revdate}.
@@ -37,7 +37,7 @@ v1.0, March 22, 2020: Containment
 <h1>Document Title</h1>
 <div class="details">
 <span id="author" class="author">Xavier</span><br/>
-<span id="email" class="email"><a href="mailto:xavier@example.org">xavier@example.org</a></span><br/>
+<span id="email" class="email"><a href="mailto:xavier@example.com">xavier@example.com</a></span><br/>
 <span id="revnumber">version 1.0,</span>
 <span id="revdate">March 22, 2020</span>
 <br/><span id="revremark">Containment</span>

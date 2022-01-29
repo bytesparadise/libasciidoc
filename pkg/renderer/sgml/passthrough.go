@@ -35,12 +35,12 @@ func (r *sgmlRenderer) renderInlinePassthrough(ctx *renderer.Context, p *types.I
 
 // renderPassthroughMacro renders the passthrough content in its raw from
 func (r *sgmlRenderer) renderPassthroughContent(ctx *renderer.Context, elements []interface{}) (string, error) {
-	buf := &strings.Builder{}
+	result := &strings.Builder{}
 	for _, element := range elements {
 		switch element := element.(type) {
 		case *types.StringElement:
 			// "string" elements must be rendered as-is, ie, without any HTML escaping.
-			_, err := buf.WriteString(element.Content)
+			_, err := result.WriteString(element.Content)
 			if err != nil {
 				return "", err
 			}
@@ -49,12 +49,12 @@ func (r *sgmlRenderer) renderPassthroughContent(ctx *renderer.Context, elements 
 			if err != nil {
 				return "", err
 			}
-			_, err = buf.WriteString(renderedElement)
+			_, err = result.WriteString(renderedElement)
 			if err != nil {
 				return "", err
 			}
 
 		}
 	}
-	return buf.String(), nil
+	return strings.Trim(result.String(), "\n"), nil // remove leading and trailing empty lines
 }

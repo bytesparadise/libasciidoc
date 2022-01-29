@@ -68,11 +68,7 @@ var _ = Describe("footnotes", func() {
 						},
 						Location: &types.Location{
 							Scheme: "https://",
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "foo.com",
-								},
-							},
+							Path:   "foo.com",
 						},
 					},
 				},

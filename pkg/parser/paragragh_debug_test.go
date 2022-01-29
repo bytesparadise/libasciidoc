@@ -42,11 +42,7 @@ The results of these simulations are used to ensure the safety of buildings befo
 							},
 							Location: &types.Location{
 								Scheme: "https://",
-								Path: []interface{}{
-									&types.StringElement{
-										Content: "github.com/firemodels/fds/releases/tag/FDS6.7.4/",
-									},
-								},
+								Path:   "github.com/firemodels/fds/releases/tag/FDS6.7.4/",
 							},
 						},
 						&types.StringElement{

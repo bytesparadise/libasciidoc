@@ -37,7 +37,7 @@ What is the answer to the Ultimate Question?:: 42`
 								&types.Paragraph{
 									Elements: []interface{}{
 										&types.StringElement{
-											// heading spaces are trimmed
+											// leading spaces are trimmed
 											Content: "An implementation of the AsciiDoc processor in Golang.",
 										},
 									},
@@ -86,7 +86,7 @@ What is the answer to the Ultimate Question?:: 42`
 						types.AttrTitle: "Q&A",
 						types.AttrStyle: "qanda",
 						types.AttrID:    "quiz",
-						types.AttrRoles: []interface{}{"role1", "role2"},
+						types.AttrRoles: types.Roles{"role1", "role2"},
 					},
 					Elements: []types.ListElement{
 						&types.LabeledListElement{
@@ -98,7 +98,7 @@ What is the answer to the Ultimate Question?:: 42`
 								&types.Paragraph{
 									Elements: []interface{}{
 										&types.StringElement{
-											Content: "An implementation of the AsciiDoc processor in Golang.", // heading spaces are trimmed
+											Content: "An implementation of the AsciiDoc processor in Golang.", // leading spaces are trimmed
 										},
 									},
 								},

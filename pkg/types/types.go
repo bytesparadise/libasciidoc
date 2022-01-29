@@ -28,8 +28,8 @@ type RawText interface {
 	RawText() (string, error)
 }
 
-// BlockWithAttributes base interface for types on which attributes can be substituted
-type BlockWithAttributes interface {
+// WithAttributes base interface for types on which attributes can be substituted
+type WithAttributes interface {
 	GetAttributes() Attributes
 	AddAttributes(Attributes)
 	SetAttributes(Attributes)
@@ -39,18 +39,25 @@ type WithElementAddition interface {
 	AddElement(interface{}) error
 }
 
-type WithConditionalElementAddition interface {
+type WithConditionalElementAddition interface { // TODO: still needed?
 	WithElementAddition
 	CanAddElement(interface{}) bool
 }
-type BlockWithElements interface {
-	BlockWithAttributes
+
+type WithElements interface {
+	WithAttributes
 	GetElements() []interface{}
 	SetElements([]interface{}) error
 }
 
-type BlockWithLocation interface {
-	BlockWithAttributes
+type WithTitle interface {
+	WithAttributes
+	GetTitle() []interface{}
+	SetTitle([]interface{}) error
+}
+
+type WithLocation interface {
+	WithAttributes
 	GetLocation() *Location
 	SetLocation(*Location) // TODO: unused?
 }
@@ -268,7 +275,18 @@ func (h *DocumentHeader) Revision() *DocumentRevision {
 	return nil
 }
 
-var _ BlockWithAttributes = &DocumentHeader{}
+var _ WithTitle = &DocumentHeader{}
+
+func (h *DocumentHeader) GetTitle() []interface{} {
+	return h.Title
+}
+
+func (h *DocumentHeader) SetTitle(title []interface{}) error {
+	h.Title = title
+	return nil
+}
+
+var _ WithAttributes = &DocumentHeader{}
 
 func (h *DocumentHeader) GetAttributes() Attributes {
 	return h.Attributes
@@ -348,7 +366,6 @@ func (authors DocumentAuthors) Expand() Attributes {
 			result[key("email", i)] = author.Email
 		}
 	}
-	// result = append(result, NewAttributeDeclaration(AttrAuthors, authors))
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("authors: %s", spew.Sdump(result))
 	}
@@ -467,7 +484,7 @@ func NewDocumentRevision(revnumber, revdate, revremark interface{}) (*DocumentRe
 			})
 	}
 	if revremark, ok := revremark.(string); ok {
-		// then we need to strip the heading ":" and spaces
+		// then we need to strip the leading ":" and spaces
 		remark = Apply(revremark,
 			func(s string) string {
 				return strings.TrimPrefix(s, ":")
@@ -550,8 +567,8 @@ func (a *AttributeReset) RawText() (string, error) {
 	return a.rawText, nil
 }
 
-// AttributeSubstitution the type for AttributeSubstitution
-type AttributeSubstitution struct {
+// AttributeReference the type for AttributeReference
+type AttributeReference struct {
 	Name    string
 	rawText string
 }
@@ -564,22 +581,22 @@ func NewAttributeSubstitution(name, rawText string) (interface{}, error) {
 				rawText: rawText},
 			nil
 	}
-	return &AttributeSubstitution{
+	return &AttributeReference{
 			Name:    name,
 			rawText: rawText},
 		nil
 }
 
-var _ RawText = &AttributeSubstitution{}
+var _ RawText = &AttributeReference{}
 
 // RawText returns the raw text representation of this element as it was (supposedly) written in the source document
-func (s *AttributeSubstitution) RawText() (string, error) {
+func (s *AttributeReference) RawText() (string, error) {
 	return s.rawText, nil
 }
 
 // PredefinedAttribute a special kind of attribute substitution, which
 // uses a predefined attribute
-type PredefinedAttribute AttributeSubstitution
+type PredefinedAttribute AttributeReference
 
 // CounterSubstitution is a counter, that may increment when it is substituted.
 // If Increment is set, then it will increment before being expanded.
@@ -591,11 +608,11 @@ type CounterSubstitution struct {
 }
 
 // NewCounterSubstitution returns a counter substitution.
-func NewCounterSubstitution(name string, hidden bool, val interface{}, rawText string) (CounterSubstitution, error) {
+func NewCounterSubstitution(name string, hidden bool, val interface{}, rawText string) (*CounterSubstitution, error) {
 	if v, ok := val.(string); ok {
 		val = rune(v[0])
 	}
-	return CounterSubstitution{
+	return &CounterSubstitution{
 		Name:    name,
 		Hidden:  hidden,
 		Value:   val,
@@ -663,7 +680,7 @@ func NewYamlFrontMatter(content string) (*FrontMatter, error) {
 
 // ListElement a list item
 type ListElement interface { // TODO: convert to struct and use as composant in OrderedListElement, etc.
-	BlockWithElements
+	WithElements
 	WithElementAddition
 	LastElement() interface{}
 	ListKind() ListKind
@@ -700,6 +717,41 @@ type List struct {
 }
 
 var _ WithConditionalElementAddition = &List{}
+
+var _ WithElements = &List{}
+
+func (l *List) GetAttributes() Attributes {
+	return l.Attributes
+}
+
+func (l *List) AddAttributes(attrs Attributes) {
+	l.Attributes.AddAll(attrs)
+}
+
+func (l *List) SetAttributes(attrs Attributes) {
+	l.Attributes.SetAll(attrs)
+}
+
+func (l *List) GetElements() []interface{} {
+	elements := make([]interface{}, len(l.Elements))
+	for i, e := range l.Elements {
+		elements[i] = e
+	}
+	return elements
+}
+
+func (l *List) SetElements(elements []interface{}) error {
+	elmts := make([]ListElement, len(elements))
+	for i, e := range elements {
+		if e, ok := e.(ListElement); ok {
+			elmts[i] = e
+			continue
+		}
+		return fmt.Errorf("unexpected type of list element: '%T'", e)
+	}
+	l.Elements = elmts
+	return nil
+}
 
 // CanAddElement checks if the given element can be added
 func (l *List) CanAddElement(element interface{}) bool {
@@ -773,7 +825,7 @@ func NewListElements(elements []interface{}) (*ListElements, error) {
 		switch e := e.(type) {
 		case Attributes:
 			attrs = attrs.AddAll(e)
-		case BlockWithAttributes:
+		case WithAttributes:
 			if attrs != nil {
 				e.SetAttributes(attrs)
 				attrs = nil
@@ -810,7 +862,7 @@ func NewListElements(elements []interface{}) (*ListElements, error) {
 	return result, nil
 }
 
-var _ BlockWithElements = &ListElements{}
+var _ WithElements = &ListElements{}
 
 func (l *ListElements) GetAttributes() Attributes {
 	return nil // unused
@@ -1126,7 +1178,7 @@ func (e *OrderedListElement) AddElement(element interface{}) error {
 	return addToListElement(e, element)
 }
 
-var _ BlockWithAttributes = &OrderedListElement{}
+var _ WithAttributes = &OrderedListElement{}
 
 // GetAttributes returns this list item's attributes
 func (e *OrderedListElement) GetAttributes() Attributes {
@@ -1292,7 +1344,7 @@ func (e *UnorderedListElement) SetElements(elements []interface{}) error {
 	return nil
 }
 
-var _ BlockWithAttributes = &UnorderedListElement{}
+var _ WithAttributes = &UnorderedListElement{}
 
 // GetAttributes returns this list item's attributes
 func (e *UnorderedListElement) GetAttributes() Attributes {
@@ -1525,7 +1577,7 @@ func (e *LabeledListElement) SetElements(elements []interface{}) error {
 	return nil
 }
 
-var _ BlockWithAttributes = &LabeledListElement{}
+var _ WithAttributes = &LabeledListElement{}
 
 // GetAttributes returns this list item's attributes
 func (e *LabeledListElement) GetAttributes() Attributes {
@@ -1587,31 +1639,37 @@ const DocumentAttrHardBreaks = "hardbreaks"
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(elements ...interface{}) (*Paragraph, error) {
 	// log.Debugf("new paragraph with attributes: '%v'", attributes)
+	for i, l := range elements {
+		if l, ok := l.(RawLine); ok {
+			// add `\n` unless the we're on the last element
+			if i < len(elements)-1 {
+				elements[i] = RawLine(l + "\n")
+			}
+		}
+	}
 	return &Paragraph{
 		Elements: elements,
 	}, nil
 }
 
 func NewAdmonitionParagraph(kind string, elements []interface{}) (*Paragraph, error) {
-	return &Paragraph{
-		Attributes: Attributes{
-			AttrStyle: kind,
-		},
-		Elements: elements,
-	}, nil
+	p, _ := NewParagraph(elements...)
+	p.Attributes = Attributes{
+		AttrStyle: kind,
+	}
+	return p, nil
 }
 
 func NewLiteralParagraph(kind string, elements []interface{}) (*Paragraph, error) {
-	return &Paragraph{
-		Attributes: Attributes{
-			AttrStyle:            Literal,
-			AttrLiteralBlockType: kind,
-		},
-		Elements: elements,
-	}, nil
+	p, _ := NewParagraph(elements...)
+	p.Attributes = Attributes{
+		AttrStyle:            Literal,
+		AttrLiteralBlockType: kind,
+	}
+	return p, nil
 }
 
-var _ BlockWithElements = &Paragraph{}
+var _ WithElements = &Paragraph{}
 
 // GetElements returns this paragraph's elements (or lines)
 func (p *Paragraph) GetElements() []interface{} {
@@ -1627,11 +1685,14 @@ func (p *Paragraph) SetElements(elements []interface{}) error {
 var _ WithElementAddition = &Paragraph{}
 
 func (p *Paragraph) AddElement(e interface{}) error {
+	if r, ok := p.Elements[len(p.Elements)-1].(RawLine); ok {
+		p.Elements[len(p.Elements)-1] = RawLine(r + "\n")
+	}
 	p.Elements = append(p.Elements, e)
 	return nil
 }
 
-var _ BlockWithAttributes = &Paragraph{}
+var _ WithAttributes = &Paragraph{}
 
 // GetAttributes returns the attributes of this paragraph so that substitutions can be applied onto them
 func (p *Paragraph) GetAttributes() Attributes {
@@ -1769,7 +1830,7 @@ func NewExternalCrossReference(location *Location, attributes interface{}) (*Ext
 	}, nil
 }
 
-var _ BlockWithLocation = &ExternalCrossReference{}
+var _ WithLocation = &ExternalCrossReference{}
 
 func (x *ExternalCrossReference) GetLocation() *Location {
 	return x.Location
@@ -1820,7 +1881,7 @@ func NewImageBlock(location *Location, inlineAttributes Attributes) (*ImageBlock
 	}, nil
 }
 
-var _ BlockWithAttributes = &ImageBlock{}
+var _ WithAttributes = &ImageBlock{}
 
 // GetAttributes returns this list item's attributes
 func (i *ImageBlock) GetAttributes() Attributes {
@@ -1837,7 +1898,7 @@ func (i *ImageBlock) SetAttributes(attributes Attributes) {
 	i.Attributes = attributes
 }
 
-var _ BlockWithLocation = &ImageBlock{}
+var _ WithLocation = &ImageBlock{}
 
 func (i *ImageBlock) GetLocation() *Location {
 	return i.Location
@@ -1854,8 +1915,7 @@ type InlineImage struct {
 }
 
 // NewInlineImage initializes a new `InlineImage` (similar to ImageBlock, but without attributes)
-func NewInlineImage(location *Location, attributes interface{}, imagesdir interface{}) (*InlineImage, error) {
-	location.SetPathPrefix(imagesdir)
+func NewInlineImage(location *Location, attributes interface{}) (*InlineImage, error) {
 	attrs := toAttributesWithMapping(attributes, map[string]string{
 		AttrPositional1: AttrImageAlt,
 		AttrPositional2: AttrWidth,
@@ -1867,7 +1927,7 @@ func NewInlineImage(location *Location, attributes interface{}, imagesdir interf
 	}, nil
 }
 
-var _ BlockWithAttributes = &InlineImage{}
+var _ WithAttributes = &InlineImage{}
 
 // GetAttributes returns this inline image's attributes
 func (i *InlineImage) GetAttributes() Attributes {
@@ -1884,7 +1944,7 @@ func (i *InlineImage) SetAttributes(attributes Attributes) {
 	i.Attributes = attributes
 }
 
-var _ BlockWithLocation = &InlineImage{}
+var _ WithLocation = &InlineImage{}
 
 func (i *InlineImage) GetLocation() *Location {
 	return i.Location
@@ -2080,13 +2140,21 @@ type DelimitedBlock struct {
 }
 
 func NewDelimitedBlock(kind string, elements []interface{}) (*DelimitedBlock, error) {
+	for i, l := range elements {
+		if l, ok := l.(RawLine); ok {
+			// add `\n` unless the we're on the last element
+			if i < len(elements)-1 {
+				elements[i] = RawLine(l + "\n")
+			}
+		}
+	}
 	return &DelimitedBlock{
 		Kind:     kind,
 		Elements: elements,
 	}, nil
 }
 
-var _ BlockWithElements = &DelimitedBlock{}
+var _ WithElements = &DelimitedBlock{}
 
 // GetElements returns this paragraph's elements (or lines)
 func (b *DelimitedBlock) GetElements() []interface{} {
@@ -2099,20 +2167,20 @@ func (b *DelimitedBlock) SetElements(elements []interface{}) error {
 		switch b.Kind {
 		case Listing, Literal:
 			// preserve space but discard empty lines
-			log.Debugf("discarding heading crlf on elements in block of kind '%s'", b.Kind)
-			// discard heading spaces and CR/LF
+			// log.Debugf("discarding leading crlf on elements in block of kind '%s'", b.Kind)
+			// discard leading spaces and CR/LF
 			if s, ok := elements[0].(*StringElement); ok {
 				s.Content = strings.TrimLeft(s.Content, "\r\n")
 			}
 		default:
-			log.Debugf("discarding heading spaces+crlf on elements in block of kind '%s'", b.Kind)
-			// discard heading spaces and CR/LF
+			// log.Debugf("discarding leading spaces+crlf on elements in block of kind '%s'", b.Kind)
+			// discard leading spaces and CR/LF
 			if s, ok := elements[0].(*StringElement); ok {
 				s.Content = strings.TrimLeft(s.Content, " \t\r\n")
 			}
 		}
 		// discard trailing spaces and CR/LF
-		log.Debugf("discarding trailing spaces+crlf on elements in block of kind '%s'", b.Kind)
+		// log.Debugf("discarding trailing spaces+crlf on elements in block of kind '%s'", b.Kind)
 		if s, ok := elements[len(elements)-1].(*StringElement); ok {
 			s.Content = strings.TrimRight(s.Content, " \t\r\n")
 		}
@@ -2121,7 +2189,7 @@ func (b *DelimitedBlock) SetElements(elements []interface{}) error {
 	return nil
 }
 
-var _ BlockWithAttributes = &DelimitedBlock{}
+var _ WithAttributes = &DelimitedBlock{}
 
 // GetAttributes returns the attributes of this paragraph so that substitutions can be applied onto them
 func (b *DelimitedBlock) GetAttributes() Attributes {
@@ -2236,15 +2304,15 @@ func NewSection(level int, title []interface{}) (*Section, error) {
 	}, nil
 }
 
-var _ BlockWithElements = &Section{}
+var _ WithTitle = &Section{}
 
-// GetElements returns this section's title
-func (s *Section) GetElements() []interface{} {
+// GetTitle returns this section's title
+func (s *Section) GetTitle() []interface{} {
 	return s.Title
 }
 
-// SetElements sets this section's title
-func (s *Section) SetElements(title []interface{}) error {
+// SetTitle sets this section's title
+func (s *Section) SetTitle(title []interface{}) error {
 	// inline ID attribute foud at the end is *moved* at the attributes level of the section
 	if id, ok := title[len(title)-1].(*Attribute); ok {
 		sectionID := stringify(id.Value)
@@ -2558,7 +2626,7 @@ func toRawText(elements []interface{}) (string, error) {
 	return result.String(), nil
 }
 
-var _ BlockWithElements = &QuotedText{}
+var _ WithElements = &QuotedText{}
 
 // GetElements returns this QuotedText's elements
 func (t *QuotedText) GetElements() []interface{} {
@@ -2571,7 +2639,7 @@ func (t *QuotedText) SetElements(elements []interface{}) error {
 	return nil
 }
 
-var _ BlockWithAttributes = &QuotedText{}
+var _ WithAttributes = &QuotedText{}
 
 // GetAttributes returns the attributes of this QuotedText
 func (t *QuotedText) GetAttributes() Attributes {
@@ -2745,7 +2813,7 @@ func NewInlineLink(url *Location, attributes interface{}) (*InlineLink, error) {
 	}, nil
 }
 
-var _ BlockWithAttributes = &InlineLink{}
+var _ WithAttributes = &InlineLink{}
 
 // GetAttributes returns this link's attributes
 func (l *InlineLink) GetAttributes() Attributes {
@@ -2761,7 +2829,7 @@ func (l *InlineLink) SetAttributes(attributes Attributes) {
 	l.Attributes = attributes
 }
 
-var _ BlockWithLocation = &InlineLink{}
+var _ WithLocation = &InlineLink{}
 
 func (l *InlineLink) GetLocation() *Location {
 	return l.Location
@@ -2867,7 +2935,7 @@ func (c *IfevalCondition) Eval(attributes map[string]interface{}) bool {
 }
 
 func (c *IfevalCondition) left(attributes map[string]interface{}) interface{} {
-	if s, ok := c.Left.(*AttributeSubstitution); ok {
+	if s, ok := c.Left.(*AttributeReference); ok {
 		if v, found := attributes[s.Name]; found {
 			return v
 		}
@@ -2876,7 +2944,7 @@ func (c *IfevalCondition) left(attributes map[string]interface{}) interface{} {
 }
 
 func (c *IfevalCondition) right(attributes map[string]interface{}) interface{} {
-	if s, ok := c.Right.(*AttributeSubstitution); ok {
+	if s, ok := c.Right.(*AttributeReference); ok {
 		if v, found := attributes[s.Name]; found {
 			return v
 		}
@@ -3094,7 +3162,7 @@ func NewFileInclusion(location *Location, attributes interface{}, rawtext string
 	}, nil
 }
 
-var _ BlockWithLocation = &FileInclusion{}
+var _ WithLocation = &FileInclusion{}
 
 func (f *FileInclusion) GetLocation() *Location {
 	return f.Location
@@ -3365,12 +3433,11 @@ func NewIncludedFileEndTag(tag string) (IncludedFileEndTag, error) {
 // Location a Location contains characters and optionaly, document attributes
 type Location struct {
 	Scheme string
-	Path   []interface{}
+	Path   interface{}
 }
 
 // NewLocation return a new location with the given elements
 func NewLocation(scheme interface{}, path []interface{}) (*Location, error) {
-	path = merge(path)
 	// log.Debugf("new location: scheme='%v' path='%+v", scheme, path)
 	s := ""
 	if scheme, ok := scheme.([]byte); ok {
@@ -3378,17 +3445,24 @@ func NewLocation(scheme interface{}, path []interface{}) (*Location, error) {
 	}
 	return &Location{
 		Scheme: s,
-		Path:   path,
+		Path:   Reduce(path),
 	}, nil
 }
 
-func (l *Location) SetPath(elements []interface{}) {
-	l.Path = merge(elements)
+func (l *Location) SetPath(path interface{}) {
+	p := Reduce(path)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("setting path in location: %v", p)
+	}
+	l.Path = p
 }
 
 // SetPathPrefix adds the given prefix to the path if this latter is NOT an absolute
 // path and if there is no defined scheme
 func (l *Location) SetPathPrefix(p interface{}) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("setting path with prefix: '%s' + '%s'", p, spew.Sdump(l.Path))
+	}
 	if p, ok := p.(string); ok && p != "" {
 		if !strings.HasSuffix(p, "/") {
 			p = p + "/"
@@ -3396,14 +3470,14 @@ func (l *Location) SetPathPrefix(p interface{}) {
 		if l.Scheme == "" && !strings.HasPrefix(l.Stringify(), "/") {
 			if u, err := url.Parse(l.Stringify()); err == nil {
 				if !u.IsAbs() {
-					l.Path = merge(p, l.Path)
+					l.SetPath(merge(p, l.Path))
 				}
 			}
 		}
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("set path with prefix: '%s'", spew.Sdump(l.Path...))
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("set path with prefix: '%s'", spew.Sdump(l.Path))
+	}
 }
 
 // Stringify returns a string representation of the location
@@ -3527,6 +3601,8 @@ func NewTable(header interface{}, elements []interface{}) (*Table, error) {
 	return t, nil
 }
 
+var _ WithElements = &Table{}
+
 // return the optional header line and the cell lines
 func (t *Table) GetElements() []interface{} {
 	rows := make([]interface{}, len(t.Rows))
@@ -3554,7 +3630,7 @@ func (t *Table) SetElements(elements []interface{}) error {
 	return nil
 }
 
-var _ BlockWithAttributes = &Table{}
+var _ WithAttributes = &Table{}
 
 func (t *Table) GetAttributes() Attributes {
 	return t.Attributes
@@ -3750,7 +3826,7 @@ func NewTableRow(elements []interface{}) (*TableRow, error) {
 	}, nil
 }
 
-var _ BlockWithElements = &TableRow{}
+var _ WithElements = &TableRow{}
 
 func (r *TableRow) GetAttributes() Attributes {
 	return nil
@@ -3797,7 +3873,7 @@ func NewTableCell(content RawContent) (*TableCell, error) {
 	}, nil
 }
 
-var _ BlockWithElements = &TableCell{}
+var _ WithElements = &TableCell{}
 
 func (c *TableCell) GetAttributes() Attributes {
 	return nil

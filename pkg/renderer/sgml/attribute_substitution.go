@@ -5,7 +5,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderAttributeSubstitution(ctx *renderer.Context, e *types.AttributeSubstitution) (string, error) {
+// TODO: deprecated?
+func (r *sgmlRenderer) renderAttributeSubstitution(ctx *renderer.Context, e *types.AttributeReference) (string, error) {
 	if v, found := ctx.Attributes[e.Name]; found {
 		switch v := v.(type) {
 		case string:

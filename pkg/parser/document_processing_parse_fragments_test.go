@@ -90,7 +90,7 @@ on *multiple lines*`
 						&types.DelimitedBlock{
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
-								types.RawLine("some text"),
+								types.RawLine("some text\n"),
 								types.RawLine("on *multiple lines*"),
 							},
 						},
@@ -114,7 +114,7 @@ on *multiple lines*`
 						&types.DelimitedBlock{
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
-								types.RawLine("some text"),
+								types.RawLine("some text\n"),
 								types.RawLine("on *multiple lines*"),
 							},
 						},
@@ -169,10 +169,10 @@ not a sidebar block
 						&types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.RawLine("a line"),
-								types.RawLine(""),
-								types.RawLine("****"),
-								types.RawLine("not a sidebar block"),
+								types.RawLine("a line\n"),
+								types.RawLine("\n"),
+								types.RawLine("****\n"),
+								types.RawLine("not a sidebar block\n"),
 								types.RawLine("****"),
 							},
 						},
@@ -210,8 +210,8 @@ on
 								types.AttrLanguage: "text",
 							},
 							Elements: []interface{}{
-								types.RawLine("a line"),
-								types.RawLine(""),
+								types.RawLine("a line\n"),
+								types.RawLine("\n"),
 								types.RawLine("another line"),
 							},
 						},
@@ -243,8 +243,8 @@ on
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("a paragraph"),
-								types.RawLine("on"),
+								types.RawLine("a paragraph\n"),
+								types.RawLine("on\n"),
 								types.RawLine("3 lines."),
 							},
 						},
@@ -316,8 +316,8 @@ on
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("a paragraph"),
-								types.RawLine("on"),
+								types.RawLine("a paragraph\n"),
+								types.RawLine("on\n"),
 								types.RawLine("3 lines."),
 							},
 						},
@@ -528,9 +528,9 @@ lines
 										&types.Paragraph{
 											Elements: []interface{}{
 												// suffix spaces are trimmed
-												types.RawLine("element"),
-												types.RawLine("on"),
-												types.RawLine("multiple"),
+												types.RawLine("element\n"),
+												types.RawLine("on\n"),
+												types.RawLine("multiple\n"),
 												types.RawLine("lines"),
 											},
 										},
@@ -569,9 +569,9 @@ lines
 										&types.Paragraph{
 											Elements: []interface{}{
 												// suffix spaces are trimmed on each line
-												types.RawLine("first element"),
-												types.RawLine("on"),
-												types.RawLine("multiple"),
+												types.RawLine("first element\n"),
+												types.RawLine("on\n"),
+												types.RawLine("multiple\n"),
 												types.RawLine("lines"),
 											},
 										},
@@ -583,9 +583,9 @@ lines
 										&types.Paragraph{
 											Elements: []interface{}{
 												// suffix spaces are trimmed on each line
-												types.RawLine("second element"),
-												types.RawLine("on"),
-												types.RawLine("multiple"),
+												types.RawLine("second element\n"),
+												types.RawLine("on\n"),
+												types.RawLine("multiple\n"),
 												types.RawLine("lines"),
 											},
 										},

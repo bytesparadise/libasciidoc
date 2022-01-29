@@ -40,7 +40,7 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.
 		Title:       title,
 		Roles:       roles,
 		Attribution: attribution,
-		Content:     content,
+		Content:     strings.Trim(content, "\n"),
 	})
 	return result.String(), err
 }

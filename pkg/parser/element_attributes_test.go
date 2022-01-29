@@ -73,11 +73,7 @@ a paragraph`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "http://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo.bar",
-												},
-											},
+											Path:   "foo.bar",
 										},
 									},
 									&types.StringElement{
@@ -104,11 +100,7 @@ a paragraph`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "http://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "foo.bar",
-												},
-											},
+											Path:   "foo.bar",
 										},
 									},
 									&types.StringElement{
@@ -291,7 +283,7 @@ a paragraph`
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrRoles: []interface{}{"a_role"},
+									types.AttrRoles: types.Roles{"a_role"},
 								},
 								Elements: []interface{}{
 									&types.StringElement{
@@ -311,7 +303,7 @@ a paragraph`
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrRoles: []interface{}{"a_role"},
+									types.AttrRoles: types.Roles{"a_role"},
 								},
 								Elements: []interface{}{
 									&types.StringElement{

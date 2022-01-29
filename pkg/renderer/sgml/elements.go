@@ -110,7 +110,7 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	case *types.FrontMatter:
 		ctx.Attributes.AddAll(e.Attributes)
 		return "", nil
-	case *types.AttributeSubstitution:
+	case *types.AttributeReference:
 		return r.renderAttributeSubstitution(ctx, e)
 	default:
 		return "", errors.Errorf("unsupported type of element: %T", element)

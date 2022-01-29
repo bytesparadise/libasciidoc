@@ -115,11 +115,7 @@ some content`
 					&types.InlineLink{
 						Location: &types.Location{
 							Scheme: "https://",
-							Path: []interface{}{
-								&types.StringElement{
-									Content: "example.com",
-								},
-							},
+							Path:   "example.com",
 						},
 					},
 				}
@@ -383,11 +379,7 @@ some content`
 								},
 								&types.ExternalCrossReference{
 									Location: &types.Location{
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "another-doc.adoc",
-											},
-										},
+										Path: "another-doc.adoc",
 									},
 									Attributes: types.Attributes{
 										types.AttrXRefLabel: []interface{}{
@@ -423,14 +415,7 @@ some content`
 								},
 								&types.ExternalCrossReference{
 									Location: &types.Location{
-										Path: []interface{}{
-											&types.AttributeSubstitution{ // attribute substitution failed for `{foo}` during parsing
-												Name: "foo",
-											},
-											&types.StringElement{
-												Content: ".adoc",
-											},
-										},
+										Path: "{foo}.adoc", // attribute resolution failed
 									},
 									Attributes: types.Attributes{
 										types.AttrXRefLabel: "another doc",
@@ -464,11 +449,7 @@ some content linked to xref:{foo}[another_doc()]!`
 								},
 								&types.ExternalCrossReference{
 									Location: &types.Location{
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "another-doc.adoc",
-											},
-										},
+										Path: "another-doc.adoc",
 									},
 									Attributes: types.Attributes{
 										types.AttrXRefLabel: "another_doc()",

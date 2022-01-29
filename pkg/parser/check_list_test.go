@@ -105,7 +105,7 @@ var _ = Describe("checked lists", func() {
 					&types.List{
 						Kind: types.UnorderedListKind,
 						Attributes: types.Attributes{
-							types.AttrOptions: []interface{}{
+							types.AttrOptions: types.Options{
 								types.AttrInteractive,
 							},
 						},

@@ -52,8 +52,9 @@ This journey continues.`
 						&types.DocumentHeader{
 							Title: Title,
 							Attributes: types.Attributes{
-								types.AttrRoles: []interface{}{"role1", "role2"},
-								types.AttrID:    "anchor",
+								types.AttrRoles:    types.Roles{"role1", "role2"},
+								types.AttrID:       "anchor",
+								types.AttrCustomID: true,
 							},
 						},
 						&types.Paragraph{
@@ -442,6 +443,46 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						}
 						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
+				})
+
+				It("with author used in a paragraph", func() {
+					source := `= Title
+Xavier <xavier@example.com>
+
+written by {author}`
+					Title := []interface{}{
+						&types.StringElement{
+							Content: "Title",
+						},
+					}
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DocumentHeader{
+								Title: Title,
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name: types.AttrAuthors,
+										Value: types.DocumentAuthors{
+											{
+												DocumentAuthorFullName: &types.DocumentAuthorFullName{
+													FirstName: "Xavier",
+												},
+												Email: "xavier@example.com",
+											},
+										},
+									},
+								},
+							},
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "written by Xavier", //
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 			})
 
@@ -1264,13 +1305,7 @@ lines.
 						&types.Paragraph{
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: ":@date: 2017-01-01\n:",
-								},
-								&types.AttributeSubstitution{
-									Name: "author",
-								},
-								&types.StringElement{
-									Content: ": Xavier",
+									Content: ":@date: 2017-01-01\n:{author}: Xavier", // attribute susbtitution "failed"
 								},
 							},
 						},

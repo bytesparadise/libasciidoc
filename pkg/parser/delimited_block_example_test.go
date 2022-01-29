@@ -221,11 +221,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "example.com",
-															},
-														},
+														Path:   "example.com",
 													},
 												},
 												&types.StringElement{
@@ -273,11 +269,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "github.com",
-															},
-														},
+														Path:   "github.com",
 													},
 												},
 											},
@@ -311,11 +303,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "example.com",
-															},
-														},
+														Path:   "example.com",
 													},
 												},
 												&types.StringElement{
@@ -363,11 +351,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "github.com",
-															},
-														},
+														Path:   "github.com",
 													},
 												},
 											},
@@ -440,11 +424,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "example.com",
-															},
-														},
+														Path:   "example.com",
 													},
 												},
 												&types.StringElement{
@@ -509,11 +489,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "example.com",
-															},
-														},
+														Path:   "example.com",
 													},
 												},
 												&types.StringElement{
@@ -522,11 +498,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "github.com",
-															},
-														},
+														Path:   "github.com",
 													},
 												},
 											},
@@ -672,11 +644,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "example.com",
-															},
-														},
+														Path:   "example.com",
 													},
 												},
 												&types.StringElement{
@@ -724,11 +692,7 @@ and <more text> on the +
 												&types.InlineLink{
 													Location: &types.Location{
 														Scheme: "https://",
-														Path: []interface{}{
-															&types.StringElement{
-																Content: "example.com",
-															},
-														},
+														Path:   "example.com",
 													},
 												},
 												&types.StringElement{

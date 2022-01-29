@@ -57,7 +57,7 @@ lines.`
 			})
 
 			It("from paragraph with single space on all lines", func() {
-				// spaces at heading of lines are preserved during rendering
+				// spaces at leading of lines are preserved during rendering
 				source := ` some literal content
   on 3
    lines.`
@@ -130,7 +130,7 @@ some content
 							Kind: types.Literal,
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "some content", // empty lines are discarded
+									Content: "\nsome content\n", // empty lines are NOT discarded at this point
 								},
 							},
 						},
@@ -157,7 +157,7 @@ a normal paragraph.`
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "   some literal\n   content", // heading spaces are preserved
+									Content: "   some literal\n   content", // leading spaces are preserved
 								},
 							},
 						},
@@ -356,11 +356,7 @@ and <more text> on the +
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 								&types.StringElement{
@@ -408,11 +404,7 @@ and <more text> on the +
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "github.com",
-											},
-										},
+										Path:   "github.com",
 									},
 								},
 								&types.StringElement{
@@ -477,11 +469,7 @@ and <more text> on the +
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 								&types.StringElement{
@@ -554,11 +542,7 @@ and <more text> on the +
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 								&types.StringElement{
@@ -632,11 +616,7 @@ and <more text> on the +
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-										},
+										Path:   "example.com",
 									},
 								},
 								&types.StringElement{

@@ -92,9 +92,9 @@ Ifeval <- "ifeval::"
 
 
 IfevalExpressionMember <- 
-    ("\"" s:AttributeValueSubstitution "\"" { return s, nil })
-    / ("'" s:AttributeValueSubstitution "'" { return s, nil })
-    / (s:AttributeValueSubstitution { return s, nil })
+    ("\"" s:(AttributeValueReference) "\"" { return s, nil })
+    / ("'" s:(AttributeValueReference) "'" { return s, nil })
+    / (s:(AttributeValueReference) { return s, nil })
     / ("\"" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "\"" { return w, nil })
     / ("'" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "'" { return w, nil })
     / Integer
@@ -263,7 +263,7 @@ DocumentFragment <-
         c.disableFrontMatterRule() // not allowed as soon as a single element is found
         c.disableDocumentHeaderRule(element) // not allowed anymore, based on element that was found
     
-        if element, ok := element.(types.BlockWithAttributes); ok && attributes != nil {
+        if element, ok := element.(types.WithAttributes); ok && attributes != nil {
             element.AddAttributes(attributes.(types.Attributes))
         }
         return element, nil
@@ -365,7 +365,7 @@ AttributeDeclarationValueElement <-
                 return types.NewStringElement(string(c.text))
         })
         / Space
-        / AttributeSubstitution
+        / AttributeReference
         / ("{" { // standalone '{'
             return types.NewStringElement(string(c.text))
         })
@@ -424,7 +424,7 @@ LegacyElementID <-
                 return types.NewStringElement(string(c.text))
             })
             / ElementPlaceHolder
-            / AttributeSubstitution
+            / AttributeReference
             / ("{" { 
                 return types.NewStringElement(string(c.text))
             }))+ {
@@ -440,12 +440,12 @@ ShortHandTitle <- `.` title:(
     ![. ] // may not start with a dot or a space, to avoid confusion with list items or literal block delimiters
     elements:(
         ([^\r\n\uFFFD{]+ {
-            return types.NewStringElement(string(c.text))
+            return string(c.text), nil
         })
-        / ElementPlaceHolder
-        / AttributeSubstitution
+        // / ElementPlaceHolder
+        / AttributeValueReference
         / ("{" { 
-            return types.NewStringElement(string(c.text))
+            return string(c.text), nil
         }))+ {
             return types.Reduce(elements, strings.TrimSpace), nil
         }
@@ -522,25 +522,27 @@ ShortHandOptionAttribute <- "%" option:(ShortHandAttributeValue) {
 
 // Shorthand Attribute Value. 
 ShortHandAttributeValue <- 
-    SingleQuotedAttributeRawValue 
-    / DoubleQuotedAttributeRawValue 
+    SingleQuotedAttributeValue 
+    / DoubleQuotedAttributeValue 
     / elements:(
         // unquoted shorthand value may include placeholders and substitutions but NOT comma, space, equal sign and dots
         // also, cannot be followed by an `=` sign
         ([^,=.%# \r\n\uFFFD{\]]+ {
             return types.NewStringElement(string(c.text))
         }) 
-        / ElementPlaceHolder
-        / AttributeSubstitution
+        // / ElementPlaceHolder
+        / AttributeReference
         / ("{" { 
             return types.NewStringElement(string(c.text))
         })
-    )+ &(!(Space* "=")) {
+    )+ 
+    &(!(Space* "=")) {
         return types.Reduce(elements, strings.TrimSpace), nil
     }
 
+
 PositionalAttribute <- (
-    value:(AttributeRawValue) (("," Space*)? / &"]") { // TODO: see if we can just use `((",")? / &"]")` instead (ie, no need to check for Space*)
+    value:(AttributeValue) (("," Space*)? / &"]") { // TODO: see if we can just use `((",")? / &"]")` instead (ie, no need to check for Space*)
     	return types.NewPositionalAttribute(value)
     }) 
     / 
@@ -556,7 +558,7 @@ PositionalAttribute <- (
         return types.NewPositionalAttribute(nil)
     })
 
-NamedAttribute <- key:(NamedAttributeKey) "=" Space* value:(AttributeRawValue) ("," Space*)? { // TODO: include `,` or expect `]`
+NamedAttribute <- key:(NamedAttributeKey) "=" Space* value:(AttributeValue) ("," Space*)? { // TODO: include `,` or expect `]`
         return types.NewNamedAttribute(key.(string), value)
     }
 
@@ -565,28 +567,29 @@ NamedAttributeKey <- !Space [^\r\n=,\]]+ Space* {
         return strings.TrimSpace(string(c.text)), nil
     }
 
-AttributeRawValue <- 
+AttributeValue <- 
     value:(
-        SingleQuotedAttributeRawValue 
-        / DoubleQuotedAttributeRawValue 
-        / UnquotedAttributeRawValue
+        SingleQuotedAttributeValue 
+        / DoubleQuotedAttributeValue 
+        / UnquotedAttributeValue
     ) 
     &(!(Space* "=")) {
         return value, nil
     }
 
-SingleQuotedAttributeRawValue <- 
+SingleQuotedAttributeValue <- 
     "'" !"`" // prevent entering when the value is a quoted string (eg: '`cookie`')
-    content:(SingleQuotedAttributeRawValueContent)
+    content:(SingleQuotedAttributeValueContent)
     "'" {
         return content, nil
     }
 
-SingleQuotedAttributeRawValueContent <- 
+SingleQuotedAttributeValueContent <- 
     elements:(
         Alphanums
         / Space
-        / AttributeSubstitution
+        / Quote
+        / AttributeReference
         / (`\'` { 
             return types.NewStringElement(`'`) // escaped single quote
         })
@@ -600,17 +603,18 @@ SingleQuotedAttributeRawValueContent <-
         return types.Reduce(elements), nil
     }
 
-DoubleQuotedAttributeRawValue <- 
+DoubleQuotedAttributeValue <- 
     "\"" !"`" // prevent entering when the value is a quoted string (eg: "`cookie`")
-    content:(DoubleQuotedAttributeRawValueContent)
+    content:(DoubleQuotedAttributeValueContent)
     "\"" &(!(Space* "=")) {
         return content, nil
     }
-DoubleQuotedAttributeRawValueContent <- 
+DoubleQuotedAttributeValueContent <- 
     elements:(
         Alphanums
         / Space
-        / AttributeSubstitution
+        / Quote
+        / AttributeReference 
         / (`\"` { 
             return types.NewStringElement(`"`) // escaped double quote
         })
@@ -625,18 +629,20 @@ DoubleQuotedAttributeRawValueContent <-
     }
 
 // Unquoted Attribute Value, may include spaces but not on the first position
-UnquotedAttributeRawValue <-
+UnquotedAttributeValue <-
     // need to support value like `[.myrole1]_a_` in `a link to https://example.com[[.myrole1]_a_]`
     // so we need to count the `[` and `]` to balance
     !Space // can't start with a space (eg: can't have `[ cookie ]`)
     elements:(
-        ("[" UnquotedAttributeRawValue "]") // recursively within brackets (see comment above)
-        / ElementPlaceHolder
-        / AttributeSubstitution
-        / ([^=,\uFFFD\] ]+ { // not within brackets and stop on space
+        Quote // quotes can have their own attributes
+        / ("[" UnquotedAttributeValue "]") // recursively within brackets (see comment above)
+        // / ElementPlaceHolder
+        / ([^=,\uFFFD\]{ ]+ { // not within brackets and stop on space and `{`
             return string(c.text), nil
         }) 
         / Space
+        / AttributeReference
+        / "{"
     )+ {
         return types.Reduce(elements, strings.TrimSpace), nil
     }
@@ -644,21 +650,22 @@ UnquotedAttributeRawValue <-
 // -------------------------------------------------------------------------------------
 // Attribute Substitution
 // -------------------------------------------------------------------------------------
-AttributeSubstitution <-
+AttributeReference <-
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Attributes)
+        return c.isSubstitutionEnabled(Attributes), nil
     }
-    element:(CounterSubstitution / AttributeValueSubstitution) {
+    element:(CounterReference / AttributeValueReference) {
         return element, nil
     }
 
-AttributeValueSubstitution <- "{" name:AttributeName "}" { 
-    return types.NewAttributeSubstitution(name.(string), string(c.text))
-}
-
+AttributeValueReference <- 
+    "{" name:AttributeName "}" { 
+        return types.NewAttributeSubstitution(name.(string), string(c.text))
+    }
+    
 // TODO: simplify the 'start' optional attribute
-CounterSubstitution <- CounterSubstitution1 / CounterSubstitution2
+CounterReference <- CounterSubstitution1 / CounterSubstitution2
 
 CounterSubstitution1 <- "{counter:" name:AttributeName start:(CounterStart)? "}" {
     return types.NewCounterSubstitution(name.(string), false, start, string(c.text))
@@ -702,7 +709,7 @@ CrossReferenceLabel <- (
     ([\pL0-9][^\r\n{<>]+ { // `{`, `>` and `>` characters are not allowed as they are used for attribute substitutions and cross-references 
         return types.NewStringElement(string(c.text))
     })
-    / AttributeSubstitution
+    / AttributeValueReference
     / ("{" { 
         return types.NewStringElement(string(c.text))
     })
@@ -1091,7 +1098,7 @@ ElementPlaceHolder <- ElementPlaceHolderDelimiter ref:([0-9]+ { return string(c.
 // -----------------------------------------------------------------------------------------------------------------------
 LineBreak <- 
     &{ 
-        return c.isPreceededBySpace(), nil
+        return c.isSubstitutionEnabled(PostReplacements) && c.isPreceededBySpace(), nil
     }
     "+" Space* &(EOL) {
         return types.NewLineBreak()    
@@ -1148,7 +1155,7 @@ InlineElement <-
         / !EOL (
             SpecialCharacter
             / Quote
-            / AttributeSubstitution 
+            / AttributeReference 
             / InlineMacro
             / Symbol
             / ElementPlaceHolder // TODO: needed?
@@ -1199,7 +1206,7 @@ ImageBlock <-
     }
 
 InlineImage <- "image:" !":" path:(Location) attributes:(InlineAttributes) {
-        return types.NewInlineImage(path.(*types.Location), attributes.(types.Attributes), c.globalStore["imagesdir"])
+        return types.NewInlineImage(path.(*types.Location), attributes.(types.Attributes))
     }
 
 // -------------------------------------------------------------------------------------------------------------------------------
@@ -1393,7 +1400,7 @@ ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
         / LiteralParagraph
         / ListContinuationParagraph // must be the last one... 
     ) {
-        if element,ok := element.(types.BlockWithAttributes); ok && attributes != nil {
+        if element,ok := element.(types.WithAttributes); ok && attributes != nil {
             element.AddAttributes(attributes.(types.Attributes))
         }
         // if log.IsLevelEnabled(log.DebugLevel) {
@@ -1523,7 +1530,7 @@ LabeledListElement <-
 
 LabeledListElementTerm <- 
     (!LabeledListElementSeparator !EOL .)+ {
-        return types.NewRawLine(string(c.text))
+        return types.NewRawLine(strings.TrimSpace(string(c.text)))
     }
 
 LabeledListElementSeparator <- 
@@ -1565,7 +1572,7 @@ LabeledListElementDescription <-
 Callout <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Callouts)
+        return c.isSubstitutionEnabled(Callouts), nil
     }
     "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
         return types.NewCallout(ref.(int))
@@ -1647,10 +1654,10 @@ AdmonitionParagraph <-
 
 ParagraphRawLine <- 
     content:([^\r\n]+ {
-        return string(c.text), nil
+        return strings.TrimRight(string(c.text), " \t"), nil // trim spaces and tabs
     })
     &{
-        return len(strings.TrimSpace(string(c.text))) > 0, nil
+        return len(strings.TrimSpace(content.(string))) > 0, nil
     }
     EOL {
         return types.NewRawLine(content.(string))
@@ -1761,7 +1768,7 @@ DoubleQuoteBoldTextElement <-
         BoldTextWord
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
-        / AttributeSubstitution
+        / AttributeReference
         / SpecialCharacter
         / Symbol
         / InlineMacro
@@ -1817,7 +1824,7 @@ SingleQuoteBoldTextElement <-
     BoldTextWord
     / Spaces
     / Newline !Newline // 2 newlines split the paragraph
-    / AttributeSubstitution
+    / AttributeReference
     / SpecialCharacter
     / Symbol
     / InlineMacro
@@ -1886,7 +1893,7 @@ DoubleQuoteItalicTextElement <-
         ItalicTextWord
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
-        / AttributeSubstitution
+        / AttributeReference
         / SpecialCharacter
         / Symbol
         / InlineMacro
@@ -1941,7 +1948,7 @@ SingleQuoteItalicTextElement <-
     ItalicTextWord
     / Spaces
     / Newline !Newline // 2 newlines split the paragraph
-    / AttributeSubstitution
+    / AttributeReference
     / SpecialCharacter
     / Symbol
     / InlineMacro
@@ -2009,7 +2016,7 @@ DoubleQuoteMonospaceTextElement <-
         MonospaceTextWord
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
-        / AttributeSubstitution
+        / AttributeReference
         / SpecialCharacter
         / Symbol
         / InlineMacro
@@ -2068,7 +2075,7 @@ SingleQuoteMonospaceTextElement <-
     Word
     / Spaces 
     / Newline !Newline // 2 newlines split the paragraph
-    / AttributeSubstitution
+    / AttributeReference
     / SpecialCharacter
     / Symbol
     / InlineMacro
@@ -2138,7 +2145,7 @@ DoubleQuoteMarkedTextElement <- // may start and end with spaces
         MarkedTextWord
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
-        / AttributeSubstitution
+        / AttributeReference
         / SpecialCharacter
         / Symbol
         / InlineMacro
@@ -2195,7 +2202,7 @@ SingleQuoteMarkedTextElement <-
     MarkedTextWord
     / Spaces
     / Newline !Newline // 2 newlines split the paragraph
-    / AttributeSubstitution
+    / AttributeReference
     / SpecialCharacter
     / Symbol
     / InlineMacro
@@ -2318,7 +2325,7 @@ SingleQuotedStringElement <-
         QuotedStringWord
         / Space !SingleQuoteStringEnd
         / Newline !Newline // 2 newlines split the paragraph
-        / AttributeSubstitution
+        / AttributeReference
         / SpecialCharacter
         / InlineMacro
         / LineBreak !SingleQuoteStringEnd
@@ -2363,7 +2370,7 @@ DoubleQuotedStringElement <-
         / Space !DoubleQuoteStringEnd
         / Newline !Newline // 2 newlines split the paragraph
         / LineBreak !SingleQuoteStringEnd 
-        / AttributeSubstitution
+        / AttributeReference
         / SpecialCharacter
         / InlineMacro
         / QuotedTextInDoubleQuotedString
@@ -2423,30 +2430,30 @@ SectionTitle <- [^\r\n]+ { // can't have empty title, that may collide with exam
 // Substitutions
 // -------------------------------------------------------------------------------------
 
-// Substitution group for 'attributes' only
-AttributesGroup <- elements:(
-    Alphanums
-    / Space
-    / SpecialCharacter
-    / Quote
-    / InlinePassthrough
-    / AttributeSubstitution
-    / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-    / AnyChar)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-// Substitution group element attributes
-ElementAttributesGroup <- elements:(
-    InlineWord
-    / Space
-    / AttributeSubstitution
-    / Quote
-    / SpecialCharacter
-    / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-    / AnyChar)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
+Substitutions <- // TODO: rename to `NormalGroup`
+    elements:(
+        !EOF
+        element:(
+            InlineWord
+            / Space
+            / Newline
+            / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
+            / LineBreak 
+            / Punctuation
+            / Quote
+            / InlinePassthrough
+            / InlineMacro // must be before 'specialcharacter' (because of 'crossreference')
+            / Callout // must be placed before SpecialCharacter
+            / SpecialCharacter
+            / AttributeReference
+            / Replacement
+            / AnyChar) {
+                c.trackSpaceSuffix(element)
+                return element, nil
+            }
+        )+ EOF {
+            return types.NewInlineElements(elements)
+        }
 
 // Default substitutions for Section Titles
 HeaderGroup <- 
@@ -2465,7 +2472,7 @@ HeaderGroupElement <-
         / Quote
         / Link
         / InlineIcon
-        / AttributeSubstitution
+        / AttributeReference
         / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
         / Replacement
         / InlineAnchor // must be after LegacyElementID
@@ -2474,116 +2481,10 @@ HeaderGroupElement <-
             return element, nil
         }
 
-// Substitution group for 'macros' only
-MacrosGroup <- elements:(
-    InlineWord
-    / InlineMacro
-    / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-    / AnyChar)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-// TODO: do we really need a grammar rule? can't we just skip substitutions?
-// The 'none' substitution
-NoneGroup <- elements:(NoneGroupElement)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-NoneGroupElement <- 
-    !EOF
-    element:(
-        InlineWord
-        / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-        / AnyChar)+ EOF { 
-            return element, nil
-        }
-
-// Default substitutions for Paragrapghs
-// TODO: extract the substitutionContext once and check every rule choice here. Will also avoid setting "fake" context for BlockAttributes, SectionTitle, etc.
-NormalGroup <- 
-    elements:(NormalGroupElement)+ EOF { 
-        c.resetSpaceSuffixTracking()
-        return types.NewInlineElements(elements)
-    }
-
-NormalGroupElement <- 
-    !EOF
-    element:(
-        InlineWord
-        / Space
-        / Newline
-        / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-        / LineBreak 
-        / Punctuation
-        / Quote
-        / InlinePassthrough
-        / InlineMacro // must be before 'specialcharacter' (because of 'crossreference')
-        / SpecialCharacter
-        / AttributeSubstitution
-        / Symbol
-        / AnyChar) {
-            c.trackSpaceSuffix(element)
-            return element, nil
-        }
-PostReplacementsGroup <-  
-    elements:(PostReplacementsGroupElement)+ EOF {
-        c.resetSpaceSuffixTracking()
-        return types.NewInlineElements(elements)
-    }
-
-PostReplacementsGroupElement <- 
-    !EOF
-    element:(
-        InlineWord
-        / Space
-        / LineBreak
-        / Newline
-        / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-        / AnyChar) {
-            c.trackSpaceSuffix(element)
-            return element, nil
-        }
-
-// Substitution group for 'quotes' only
-QuotesGroup <- elements:(
-    InlineWord
-    / Quote
-    / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-    / AnyChar)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-// Substitution group for 'replacements' only
-ReplacementsGroup <- elements:(
-    InlineWord
-    / Replacement
-    / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-    / AnyChar)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-// Substitution group for 'specialcharacters' (or 'specialchars') only
-SpecialCharactersGroup <- elements:(
-    InlineWord
-    / SpecialCharacter
-    / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-    / AnyChar)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-VerbatimGroup <- elements:(
-    InlineWord
-    / Callout // must be placed before SpecialCharacter
-    / SpecialCharacter
-    / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-    / AnyChar)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-    
 InlineMacro <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Macros)
+        return c.isSubstitutionEnabled(Macros), nil
     }
     element:(
         InlineIcon
@@ -2603,7 +2504,7 @@ InlineMacro <-
 InlinePassthrough <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(InlinePassthroughs)
+        return c.isSubstitutionEnabled(InlinePassthroughs), nil
     }
     element:(
         TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
@@ -2614,7 +2515,7 @@ InlinePassthrough <-
 Quote <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Quotes)
+        return c.isSubstitutionEnabled(Quotes), nil
     }
     element:(
         QuotedText 
@@ -2625,7 +2526,7 @@ Quote <-
 Replacement <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Replacements)
+        return c.isSubstitutionEnabled(Replacements), nil
     }
     element:(
         Symbol
@@ -2636,7 +2537,7 @@ Replacement <-
 SpecialCharacter <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(SpecialCharacters)
+        return c.isSubstitutionEnabled(SpecialCharacters), nil
     }
     element:(
         // if we have a InternalCrossReference we just return a StringElement. 
@@ -2860,7 +2761,7 @@ Alphanums <- [\pL0-9]+ {
 Word <-
     // very straightforward content: alphanums followed by attached single quote delimiter and more characters 
     // (in this case, the quoted text delimiters are intepreted as regular characters)
-    // then followed by spaces but not the "+" signs because it needs a heading space to become a LineBreak element
+    // then followed by spaces but not the "+" signs because it needs a leading space to become a LineBreak element
     [\pL0-9]+ &([\r\n ,\]] / EOF) {
         return types.NewStringElement(string(c.text))
     } / [\pL0-9]+ ([=*_`] [\pL0-9]+)+ {  // allow `
@@ -2892,23 +2793,32 @@ Location <- scheme:(Scheme)? path:(Filename / ElementPlaceHolder)+ {
         return types.NewLocation(scheme, path.([]interface{}))
     }
 
-LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename / ElementPlaceHolder)+ {
+// LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename / ElementPlaceHolder)+ {
+//         return types.NewLocation(scheme, path.([]interface{}))
+//     }
+LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename)+ {
         return types.NewLocation(scheme, path.([]interface{}))
     }
 
-Filename <- elements:(
-    ([^\r\n[\]\uFFFD&<>{ ])+ { // not supported for now: EOL, space, "{", "[", "]"
-        return types.NewStringElement(string(c.text))
-    }
-    / AttributeSubstitution 
-    / SpecialCharacter
-    / "{" {
-        return types.NewStringElement(string(c.text))
-    })+ {
+Scheme <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
+
+Filename <- 
+    !"[" // quick escape
+    elements:(
+        // ([^\r\n[\]\uFFFD&<>{ ])+ { // not supported for now: EOL, space, "{", "[", "]"
+        //     return types.NewStringElement(string(c.text))
+        // }
+        ([^\r\n[\]\uFFFD{ ])+ { // not supported for now: EOL, space, "{", "[", "]"
+            return types.NewStringElement(string(c.text))
+        }
+        / "." &(!(EOF / Space))
+        / AttributeReference 
+        // / SpecialCharacter
+        / "{" {
+            return types.NewStringElement(string(c.text))
+        })+ {
         return types.NewInlineElements(elements.([]interface{}))
     }
-
-Scheme <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
 
 Id <- [^[\]<>,]+ { // previously: (Alphanums / (!Newline !Space !"[" !"]" !"<<" !">>" !","  .))+
         return string(c.text), nil

@@ -132,6 +132,9 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img *types.InlineImage) (
 }
 
 func (r *sgmlRenderer) getImageSrc(ctx *Context, location *types.Location) string {
+	if imagesdir, found, err := ctx.Attributes.GetAsString(types.AttrImagesDir); err == nil && found {
+		location.SetPathPrefix(imagesdir)
+	}
 	src := location.Stringify()
 
 	// if Data URI is enables, then include the content of the file in the `src` attribute of the `<img>` tag
