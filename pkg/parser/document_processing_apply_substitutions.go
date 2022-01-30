@@ -590,7 +590,7 @@ const (
 	// Callouts the "callouts" substitution
 	Callouts string = "callouts"
 	// InlinePassthroughs the "inline_passthrough" substitution
-	InlinePassthroughs string = "inline_passthrough" // nolint: gosec
+	InlinePassthroughs string = "inline_passthrough" // nolint:gosec
 	// Macros the "macros" substitution
 	Macros string = "macros"
 	// None the "none" substitution

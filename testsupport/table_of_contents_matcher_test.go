@@ -8,8 +8,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
+	. "github.com/onsi/gomega" // nolint:golintt
 )
 
 var _ = Describe("document fragments matcher", func() {

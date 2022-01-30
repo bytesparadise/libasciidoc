@@ -3,8 +3,8 @@ package html5_test
 import (
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
+	. "github.com/onsi/gomega" // nolint:golint
 )
 
 var _ = Describe("document toc", func() {
@@ -181,14 +181,74 @@ A preamble...
 				source := `= sect0
 :toc:
 
-level 1 sections not exists.`
+level 1 sections do not exist.`
 
 				expected := `<div class="paragraph">
-<p>level 1 sections not exists.</p>
+<p>level 1 sections do not exist.</p>
 </div>
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 
+			})
+
+			It("should render with custom title with passthrough macro", func() {
+				source := `= Title
+:toc:
+:toc-title: pass:[<h3>Table of Contents</h3>]
+
+== Section 1
+
+== Section 2
+`
+				expected := `<div id="toc" class="toc">
+<div id="toctitle"><h3>Table of Contents</h3></div>
+<ul class="sectlevel1">
+<li><a href="#_section_1">Section 1</a></li>
+<li><a href="#_section_2">Section 2</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_2">Section 2</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should render with custom title without passthrough macro", func() {
+				source := `= Title
+:toc:
+:toc-title: <h3>Table of Contents</h3>
+
+== Section 1
+
+== Section 2
+`
+				expected := `<div id="toc" class="toc">
+<div id="toctitle">&lt;h3&gt;Table of Contents&lt;/h3&gt;</div>
+<ul class="sectlevel1">
+<li><a href="#_section_1">Section 1</a></li>
+<li><a href="#_section_2">Section 2</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_2">Section 2</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 
@@ -366,10 +426,10 @@ A preamble...
 				source := `= sect0
 :toc: preamble
 
-level 1 sections not exists.`
+level 1 sections do not exist.`
 
 				expected := `<div class="paragraph">
-<p>level 1 sections not exists.</p>
+<p>level 1 sections do not exist.</p>
 </div>
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))

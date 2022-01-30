@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
@@ -14,6 +15,12 @@ func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc *types.T
 	if toc == nil || toc.Sections == nil {
 		return "", nil
 	}
+
+	title, err := r.renderTableOfContentsTitle(ctx)
+	if err != nil {
+		return "", errors.Wrap(err, "error while rendering table of contents")
+	}
+
 	log.Debug("rendering table of contents...")
 	renderedSections, err := r.renderTableOfContentsSections(ctx, toc.Sections)
 	if err != nil {
@@ -24,12 +31,35 @@ func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc *types.T
 		return "", nil
 	}
 	result := &strings.Builder{}
-	err = r.tocRoot.Execute(result, renderedSections)
+	err = r.tocRoot.Execute(result, struct {
+		Title    string
+		Sections string
+	}{
+		Title:    title,
+		Sections: renderedSections,
+	})
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering table of contents")
 	}
 	// log.Debugf("rendered ToC: %s", result.Bytes())
 	return result.String(), nil
+}
+
+func (r *sgmlRenderer) renderTableOfContentsTitle(ctx *renderer.Context) (string, error) {
+	title, found, err := ctx.Attributes.GetAsString(types.AttrTableOfContentsTitle)
+	if err != nil {
+		return "", errors.Wrap(err, "error while rendering table of contents")
+	}
+	if !found {
+		return "Table of Contents", nil // default value // TODO: use a constant?
+	}
+	// parse
+	value, err := parser.ParseAttributeValue(title)
+	if err != nil {
+		return "", err
+	}
+	return r.renderElements(ctx, value)
+
 }
 
 func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sections []*types.ToCSection) (string, error) {
@@ -61,7 +91,7 @@ func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sect
 		return "", errors.Wrap(err, "failed to render document ToC")
 	}
 	// log.Debugf("retrieved sections for ToC: %+v", sections)
-	return resultBuf.String(), nil //nolint: gosec
+	return resultBuf.String(), nil // nolint:gosec
 }
 
 func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *types.ToCSection) (string, error) {
@@ -90,7 +120,7 @@ func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render document ToC")
 	}
-	return resultBuf.String(), nil //nolint: gosec
+	return resultBuf.String(), nil // nolint:gosec
 }
 
 // newTableOfContents initializes a TableOfContents from the sections

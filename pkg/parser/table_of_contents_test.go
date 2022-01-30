@@ -6,8 +6,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
+	. "github.com/onsi/gomega" // nolint:golint
 )
 
 var _ = Describe("tables of contents", func() {
@@ -596,6 +596,134 @@ a preamble
 										Content: "a preamble",
 									},
 								},
+							},
+						},
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_1",
+						},
+						Title: section1Title,
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_2",
+						},
+						Title: section2Title,
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+					"_section_2": section2Title,
+				},
+				TableOfContents: &types.TableOfContents{
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
+							Title: "Section 1",
+						},
+						{
+							ID:    "_section_2",
+							Level: 1,
+							Title: "Section 2",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("should render with custom title without passthrough macro", func() {
+			source := `= Title
+:toc:
+:toc-title: <h3>Table of Contents</h3>
+
+== Section 1
+
+== Section 2
+`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Title: []interface{}{
+							&types.StringElement{
+								Content: "Title",
+							},
+						},
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name: types.AttrTableOfContents,
+							},
+							&types.AttributeDeclaration{
+								Name:  types.AttrTableOfContentsTitle,
+								Value: "<h3>Table of Contents</h3>",
+							},
+						},
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_1",
+						},
+						Title: section1Title,
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_2",
+						},
+						Title: section2Title,
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+					"_section_2": section2Title,
+				},
+				TableOfContents: &types.TableOfContents{
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
+							Title: "Section 1",
+						},
+						{
+							ID:    "_section_2",
+							Level: 1,
+							Title: "Section 2",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("should render with custom title with passthrough macro", func() {
+			source := `= Title
+:toc:
+:toc-title: pass:[<h3>Table of Contents</h3>]
+
+== Section 1
+
+== Section 2
+`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Title: []interface{}{
+							&types.StringElement{
+								Content: "Title",
+							},
+						},
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name: types.AttrTableOfContents,
+							},
+							&types.AttributeDeclaration{
+								Name:  types.AttrTableOfContentsTitle,
+								Value: "pass:[<h3>Table of Contents</h3>]",
 							},
 						},
 					},

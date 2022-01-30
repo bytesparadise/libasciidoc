@@ -10,9 +10,9 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	. "github.com/onsi/ginkgo" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
 	. "github.com/onsi/ginkgo/extensions/table"
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/gomega" // nolint:golintt
 	log "github.com/sirupsen/logrus"
 )
 

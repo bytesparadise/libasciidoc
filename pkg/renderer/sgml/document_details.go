@@ -49,7 +49,7 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (*string, er
 		if err != nil {
 			return nil, errors.Wrap(err, "error while rendering the document details")
 		}
-		documentDetails := string(documentDetailsBuff.String()) //nolint: gosec
+		documentDetails := string(documentDetailsBuff.String()) // nolint:gosec
 		return &documentDetails, nil
 	}
 	return nil, nil
@@ -100,6 +100,6 @@ func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (*str
 			break
 		}
 	}
-	result := string(authorsDetailsBuff.String()) //nolint: gosec
+	result := string(authorsDetailsBuff.String()) // nolint:gosec
 	return &result, nil
 }

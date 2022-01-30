@@ -2,7 +2,7 @@ package sgml
 
 import (
 	. "github.com/onsi/ginkgo/extensions/table"
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/gomega" // nolint:golint
 )
 
 var _ = DescribeTable("predefined attributes",

@@ -6,8 +6,8 @@ import (
 
 	main "github.com/bytesparadise/libasciidoc/cmd/libasciidoc"
 
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
+	. "github.com/onsi/gomega" // nolint:golintt
 )
 
 var _ = Describe("root cmd", func() {

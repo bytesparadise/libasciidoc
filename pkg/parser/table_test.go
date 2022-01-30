@@ -8,9 +8,9 @@ import (
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 	log "github.com/sirupsen/logrus"
 
-	. "github.com/onsi/ginkgo"                  //nolint golint
-	. "github.com/onsi/ginkgo/extensions/table" //nolint golint
-	. "github.com/onsi/gomega"                  //nolint golint
+	. "github.com/onsi/ginkgo"                  // nolint:golint
+	. "github.com/onsi/ginkgo/extensions/table" // nolint:golintt
+	. "github.com/onsi/gomega"                  // nolint:golintt
 )
 
 var _ = Describe("tables", func() {

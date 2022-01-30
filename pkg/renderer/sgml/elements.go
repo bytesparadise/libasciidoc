@@ -43,7 +43,7 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 	return buff.String(), nil
 }
 
-// nolint: gocyclo
+// nolint:gocyclo
 func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{}) (string, error) {
 	// log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
@@ -117,7 +117,7 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	}
 }
 
-// nolint: gocyclo
+// nolint:gocyclo
 func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) (string, error) {
 	// log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
