@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo" //nolint golint
@@ -12,33 +13,155 @@ import (
 
 var _ = Describe("links", func() {
 
+	Context("bare URLs", func() {
+
+		It("should parse standalone URL with scheme ", func() {
+			source := `<https://example.com>`
+			expected := `<div class="paragraph">
+<p><a href="https://example.com" class="bare">https://example.com</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("should parse URL with scheme in sentence", func() {
+			source := `a link to <https://example.com>.`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("should parse substituted URL with scheme", func() {
+			source := `:example: https://example.com
+
+a link to <{example}>.`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		Context("malformed", func() {
+
+			It("should not parse URL without scheme", func() {
+				source := `a link to <example.com>.`
+				expected := `<div class="paragraph">
+<p>a link to &lt;example.com&gt;.</p>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should parse with special character in URL", func() {
+				source := `a link to https://example.com>[].`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a link to ",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path: []interface{}{
+											&types.StringElement{
+												Content: "example.com",
+											},
+											&types.SpecialCharacter{
+												Name: ">",
+											},
+										},
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("should parse with opening angle bracket", func() {
+				source := `a link to <https://example.com[].`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a link to ",
+								},
+								&types.SpecialCharacter{
+									Name: "<",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
+	})
+
 	Context("external links", func() {
 
 		It("without text", func() {
 
-			source := "a link to https://foo.com[]."
+			source := "a link to https://example.com[]."
 			expected := `<div class="paragraph">
-<p>a link to <a href="https://foo.com" class="bare">https://foo.com</a>.</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with trailing dot punctutation", func() {
+			source := "a link to https://example.com."
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with trailing question mark punctutation", func() {
+			source := "a link to https://example.com?"
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a>?</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("with quoted text", func() {
-			source := "https://foo.com[_a_ *b* `c`]"
+			source := "https://example.com[_a_ *b* `c`]"
 			expected := `<div class="paragraph">
-<p><a href="https://foo.com"><em>a</em> <strong>b</strong> <code>c</code></a></p>
+<p><a href="https://example.com"><em>a</em> <strong>b</strong> <code>c</code></a></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("with unquoted text having comma", func() {
-			source := "https://foo.com[A, B, and C]"
+			source := "https://example.com[A, B, and C]"
 			// here, `B` and `and C` are considered as other positional args,
 			// not as part of the link text.
 			expected := `<div class="paragraph">
-<p><a href="https://foo.com">A</a></p>
+<p><a href="https://example.com">A</a></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -269,7 +392,7 @@ a link to {scheme}://{path} and https://foo.baz`
 		Context("with document attribute substitutions", func() {
 
 			It("with attribute in section 0 title", func() {
-				source := `= a title to {scheme}://{path} and https://foo.com
+				source := `= a title to {scheme}://{path} and https://example.com
 :scheme: https
 :path: example.com`
 				expected := `<!DOCTYPE html>
@@ -279,11 +402,11 @@ a link to {scheme}://{path} and https://foo.baz`
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="libasciidoc">
-<title>a title to https://example.com and https://foo.com</title>
+<title>a title to https://example.com and https://example.com</title>
 </head>
 <body class="article">
 <div id="header">
-<h1>a title to <a href="https://example.com" class="bare">https://example.com</a> and <a href="https://foo.com" class="bare">https://foo.com</a></h1>
+<h1>a title to <a href="https://example.com" class="bare">https://example.com</a> and <a href="https://example.com" class="bare">https://example.com</a></h1>
 </div>
 <div id="content">
 </div>
@@ -307,10 +430,10 @@ Last updated {{.LastUpdated}}
 :scheme: https
 :path: example.com
 
-== a title to {scheme}://{path} and https://foo.com
+== a title to {scheme}://{path} and https://example.com
 `
 				expected := `<div class="sect1">
-<h2 id="_a_title_to_httpsexample_com_and_httpsfoo_com">a title to <a href="https://example.com" class="bare">https://example.com</a> and <a href="https://foo.com" class="bare">https://foo.com</a></h2>
+<h2 id="_a_title_to_httpsexample_com_and_httpsexample_com">a title to <a href="https://example.com" class="bare">https://example.com</a> and <a href="https://example.com" class="bare">https://example.com</a></h2>
 <div class="sectionbody">
 </div>
 </div>

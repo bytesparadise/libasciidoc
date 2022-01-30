@@ -203,6 +203,48 @@ a link to <{example}>.`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("with trailing dot punctutation", func() {
+				source := "a link to https://example.com."
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+								&types.StringElement{Content: "."},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with trailing question mark punctutation", func() {
+				source := "a link to https://example.com?"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+								&types.StringElement{Content: "?"},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("with empty text", func() {
 				source := "a link to https://example.com[]"
 				expected := &types.Document{
