@@ -12,6 +12,175 @@ var _ = Describe("links", func() {
 
 	Context("in final documents", func() {
 
+		Context("bare URLs", func() {
+
+			It("should parse standalone URL with scheme ", func() {
+				source := `<https://example.com>`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("should parse URL with scheme in sentence", func() {
+				source := `a link to <https://example.com>.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a link to ",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("should parse substituted URL with scheme", func() {
+				source := `:example: https://example.com
+
+a link to <{example}>.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.AttributeDeclaration{
+							Name:  "example",
+							Value: "https://example.com",
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a link to ",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			Context("malformed", func() {
+
+				It("should not parse URL without scheme", func() {
+					source := `a link to <example.com>.`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a link to ",
+									},
+									&types.SpecialCharacter{
+										Name: "<",
+									},
+									&types.StringElement{
+										Content: "example.com",
+									},
+									&types.SpecialCharacter{
+										Name: ">",
+									},
+									&types.StringElement{
+										Content: ".",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("should parse with special character in URL", func() {
+					source := `a link to https://example.com>[].`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a link to ",
+									},
+									&types.InlineLink{
+										Location: &types.Location{
+											Scheme: "https://",
+											Path: []interface{}{
+												&types.StringElement{
+													Content: "example.com",
+												},
+												&types.SpecialCharacter{
+													Name: ">",
+												},
+											},
+										},
+									},
+									&types.StringElement{
+										Content: ".",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("should parse with opening angle bracket", func() {
+					source := `a link to <https://example.com[].`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a link to ",
+									},
+									&types.SpecialCharacter{
+										Name: "<",
+									},
+									&types.InlineLink{
+										Location: &types.Location{
+											Scheme: "https://",
+											Path:   "example.com",
+										},
+									},
+									&types.StringElement{
+										Content: ".",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
+		})
+
 		Context("external links", func() {
 
 			It("without text", func() {

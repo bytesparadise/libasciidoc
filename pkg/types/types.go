@@ -3480,6 +3480,23 @@ func (l *Location) SetPathPrefix(p interface{}) {
 	}
 }
 
+func (l *Location) TrimAngleBracketSuffix() (bool, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("trimming angle bracket suffix in %s", spew.Sdump(l.Path))
+	}
+	if p, ok := l.Path.([]interface{}); ok {
+		if c, ok := p[len(p)-1].(*SpecialCharacter); ok && c.Name == ">" {
+			l.Path = Reduce(p[:len(p)-1]) // trim last element
+			if log.IsLevelEnabled(log.DebugLevel) {
+				log.Debugf("trimmed angle bracket suffix in location: %s", spew.Sdump(l))
+			}
+			return true, nil
+		}
+	}
+	log.Debug("no angle brack suffix to trim in location")
+	return false, nil
+}
+
 // Stringify returns a string representation of the location
 // or empty string if the location is nil
 func (l *Location) Stringify() string {

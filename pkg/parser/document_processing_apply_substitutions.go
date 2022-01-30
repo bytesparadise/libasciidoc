@@ -334,6 +334,8 @@ func serialize(content []interface{}) ([]byte, *placeholders) {
 			result.WriteString(p.String())
 		case *types.StringElement:
 			result.WriteString(element.Content)
+		case *types.SpecialCharacter:
+			result.WriteString(element.Name) // reserialize, so we can detect bare URLs (eg: `a link to <{base_url}>`)
 		default:
 			// replace with placeholder
 			p := placeholders.add(element)
