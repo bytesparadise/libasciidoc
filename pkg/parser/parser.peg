@@ -989,7 +989,7 @@ DocumentHeader <-
     BlankLine* // ignored in the returned element
     title:DocumentTitle
     info:DocumentInformation?
-    extraAttrs:(AttributeDeclaration / AttributeReset)* // we need to collect extra attrs to process substitution on the title
+    extraAttrs:(AttributeDeclaration / AttributeReset / SingleLineComment / CommentBlock)* // we need to collect extra attrs to process substitution on the title
     {
         return types.NewDocumentHeader(title.([]interface{}), info, extraAttrs.([]interface{}))
     }

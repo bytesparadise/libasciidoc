@@ -52,12 +52,6 @@ elements:
 		}
 		// also, process the content of the element to retain
 		switch element := element.(type) {
-		case *types.Paragraph:
-			elmts, err := doFilterOut(element.Elements, matchers...)
-			if err != nil {
-				return nil, err
-			}
-			element.Elements = elmts
 		case *types.DelimitedBlock:
 			elmts, err := doFilterOut(element.Elements, singleLineCommentMatcher, commentBlockMatcher, blanklineMatcher) // keep blanklines are not retained in delimited blocks
 			if err != nil {
@@ -74,7 +68,7 @@ elements:
 					return nil, err
 				}
 			}
-		case types.ListElement:
+		case types.WithElements:
 			elmts, err := doFilterOut(element.GetElements(), matchers...)
 			if err != nil {
 				return nil, err

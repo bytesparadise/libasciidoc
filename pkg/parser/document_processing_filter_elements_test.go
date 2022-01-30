@@ -63,64 +63,7 @@ var _ = Describe("element filters", func() {
 		Expect(doFilterOut(actual, allMatchers...)).To(Equal(expected))
 	})
 
-	// It("should remove document attribute declaration", func() {
-	// 	actual := []interface{}{
-	// 		&types.AttributeDeclaration{},
-	// 		&types.Paragraph{
-	// 			Elements: []interface{}{
-	// 				&types.StringElement{},
-	// 			},
-	// 		},
-	// 	}
-	// 	expected := []interface{}{
-	// 		&types.Paragraph{
-	// 			Elements: []interface{}{
-	// 				&types.StringElement{},
-	// 			},
-	// 		},
-	// 	}
-	// 	Expect(filterComments(actual, allMatchers...)).To(Equal(expected))
-	// })
-
-	// It("should remove document attribute substitution", func() {
-	// 	actual := []interface{}{
-	// 		&types.AttributeSubstitution{},
-	// 		&types.Paragraph{
-	// 			Elements: []interface{}{
-	// 				&types.StringElement{},
-	// 			},
-	// 		},
-	// 	}
-	// 	expected := []interface{}{
-	// 		&types.Paragraph{
-	// 			Elements: []interface{}{
-	// 				&types.StringElement{},
-	// 			},
-	// 		},
-	// 	}
-	// 	Expect(filterComments(actual, allMatchers...)).To(Equal(expected))
-	// })
-
-	// It("should remove document attribute reset", func() {
-	// 	actual := []interface{}{
-	// 		&types.AttributeReset{},
-	// 		&types.Paragraph{
-	// 			Elements: []interface{}{
-	// 				&types.StringElement{},
-	// 			},
-	// 		},
-	// 	}
-	// 	expected := []interface{}{
-	// 		&types.Paragraph{
-	// 			Elements: []interface{}{
-	// 				&types.StringElement{},
-	// 			},
-	// 		},
-	// 	}
-	// 	Expect(filterComments(actual, allMatchers...)).To(Equal(expected))
-	// })
-
-	It("should remove comment block", func() {
+	It("should remove comment block at root", func() {
 		actual := []interface{}{
 			&types.DelimitedBlock{
 				Kind: types.Comment,
@@ -135,6 +78,62 @@ var _ = Describe("element filters", func() {
 			&types.Paragraph{
 				Elements: []interface{}{
 					&types.StringElement{},
+				},
+			},
+		}
+		Expect(doFilterOut(actual, allMatchers...)).To(Equal(expected))
+	})
+
+	It("should remove comment blocks in document header", func() {
+		actual := []interface{}{
+			&types.DocumentHeader{
+				Elements: []interface{}{
+					&types.DelimitedBlock{
+						Kind: types.Comment,
+					},
+					&types.AttributeDeclaration{
+						Name:  "cookie",
+						Value: "yummy",
+					},
+					&types.DelimitedBlock{
+						Kind: types.Comment,
+					},
+				},
+			},
+		}
+		expected := []interface{}{
+			&types.DocumentHeader{
+				Elements: []interface{}{
+					&types.AttributeDeclaration{
+						Name:  "cookie",
+						Value: "yummy",
+					},
+				},
+			},
+		}
+		Expect(doFilterOut(actual, allMatchers...)).To(Equal(expected))
+	})
+
+	It("should remove single line comments in document header", func() {
+		actual := []interface{}{
+			&types.DocumentHeader{
+				Elements: []interface{}{
+					&types.SingleLineComment{},
+					&types.AttributeDeclaration{
+						Name:  "cookie",
+						Value: "yummy",
+					},
+					&types.SingleLineComment{},
+				},
+			},
+		}
+		expected := []interface{}{
+			&types.DocumentHeader{
+				Elements: []interface{}{
+					&types.AttributeDeclaration{
+						Name:  "cookie",
+						Value: "yummy",
+					},
 				},
 			},
 		}

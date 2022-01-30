@@ -286,7 +286,16 @@ func (h *DocumentHeader) SetTitle(title []interface{}) error {
 	return nil
 }
 
-var _ WithAttributes = &DocumentHeader{}
+var _ WithElements = &DocumentHeader{}
+
+func (h *DocumentHeader) GetElements() []interface{} {
+	return h.Elements
+}
+
+func (h *DocumentHeader) SetElements(elements []interface{}) error {
+	h.Elements = elements
+	return nil
+}
 
 func (h *DocumentHeader) GetAttributes() Attributes {
 	return h.Attributes
