@@ -266,9 +266,6 @@ and <more text> on the +
 <1> a callout
 `
 				expected := &types.Document{
-					//Attributes: types.Attributes{
-					//	"github-url": "https://github.com",
-					//},
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "github-url",
@@ -336,9 +333,6 @@ and <more text> on the +
 <1> a callout
 `
 				expected := &types.Document{
-					//Attributes: types.Attributes{
-					//	"github-url": "https://github.com",
-					//},
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "github-url",
@@ -449,9 +443,6 @@ and <more text> on the +
 <1> a callout
 `
 				expected := &types.Document{
-					//Attributes: types.Attributes{
-					//	"github-url": "https://github.com",
-					//},
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "github-url",
@@ -521,9 +512,6 @@ and <more text> on the +
 <1> a callout
 `
 				expected := &types.Document{
-					//Attributes: types.Attributes{
-					//	"github-url": "https://github.com",
-					//},
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "github-url",
@@ -595,9 +583,6 @@ and <more text> on the +
 <1> a callout
 `
 				expected := &types.Document{
-					//Attributes: types.Attributes{
-					//	"github-url": "https://github.com",
-					//},
 					Elements: []interface{}{
 						&types.AttributeDeclaration{
 							Name:  "github-url",
