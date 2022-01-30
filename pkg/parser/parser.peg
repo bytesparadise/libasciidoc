@@ -1153,10 +1153,10 @@ InlineElement <-
         / Spaces 
         / LineBreak
         / !EOL (
-            SpecialCharacter
-            / Quote
+            Quote
             / AttributeReference 
             / InlineMacro
+            / SpecialCharacter // must be after InlineMacro (because of BareURL)
             / Symbol
             / ElementPlaceHolder // TODO: needed?
             // if anything above did not match...
@@ -1272,7 +1272,18 @@ PassthroughMacroCharacter <- [^\]] {
 // -------------------------------------------------------------------------------------
 // Links
 // -------------------------------------------------------------------------------------
-Link <- RelativeLink / ExternalLink
+Link <- BareURL / RelativeLink / ExternalLink
+
+BareURL <- 
+    "<" 
+    url:(LocationWithScheme) // scheme is required for this syntax
+    closingBracket:(">")? // TODO: never used?
+    &{
+        return url.(*types.Location).TrimAngleBracketSuffix()
+    }
+    { 
+        return types.NewInlineLink(url.(*types.Location), nil)
+    }
 
 // url preceeding with `link:` MUST be followed by square brackets
 RelativeLink <- "link:" url:(Location) attributes:(InlineAttributes) {
@@ -1769,9 +1780,9 @@ DoubleQuoteBoldTextElement <-
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
-        / SpecialCharacter
-        / Symbol
         / InlineMacro
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / Symbol
         / QuotedString
         / QuotedTextInDoubleQuoteBoldText
         / ElementPlaceHolder
@@ -1825,9 +1836,9 @@ SingleQuoteBoldTextElement <-
     / Spaces
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
-    / SpecialCharacter
-    / Symbol
     / InlineMacro
+    / SpecialCharacter // must be after InlineMacro (because of BareURL)
+    / Symbol
     / QuotedString
     / QuotedTextInSingleQuoteBoldText
     / ElementPlaceHolder
@@ -1894,9 +1905,9 @@ DoubleQuoteItalicTextElement <-
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
-        / SpecialCharacter
-        / Symbol
         / InlineMacro
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / Symbol
         / QuotedString
         / QuotedTextInDoubleQuoteItalicText
         / ElementPlaceHolder
@@ -1949,9 +1960,9 @@ SingleQuoteItalicTextElement <-
     / Spaces
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
+    / InlineMacro // must be after InlineMacro (because of BareURL)
     / SpecialCharacter
     / Symbol
-    / InlineMacro
     / QuotedString
     / QuotedTextInSingleQuoteItalicText
     / ElementPlaceHolder
@@ -2017,9 +2028,9 @@ DoubleQuoteMonospaceTextElement <-
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
-        / SpecialCharacter
-        / Symbol
         / InlineMacro
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / Symbol
         / QuotedString
         / RawApostrophe // must be before SingleQuoteMonospaceText
         / QuotedTextInDoubleQuoteMonospaceText
@@ -2076,9 +2087,9 @@ SingleQuoteMonospaceTextElement <-
     / Spaces 
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
+    / InlineMacro // must be after InlineMacro (because of BareURL)
     / SpecialCharacter
     / Symbol
-    / InlineMacro
     / QuotedString
     / QuotedTextInSingleQuoteMonospaceText
     / RawApostrophe
@@ -2146,9 +2157,9 @@ DoubleQuoteMarkedTextElement <- // may start and end with spaces
         / Spaces // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
-        / SpecialCharacter
-        / Symbol
         / InlineMacro
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / Symbol
         / QuotedString
         / QuotedTextInDoubleMarkedBoldText
         / ElementPlaceHolder
@@ -2203,9 +2214,9 @@ SingleQuoteMarkedTextElement <-
     / Spaces
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
-    / SpecialCharacter
-    / Symbol
     / InlineMacro
+    / SpecialCharacter // must be after InlineMacro (because of BareURL)
+    / Symbol
     / QuotedString
     / QuotedTextInSingleQuoteMarkedText
     / ElementPlaceHolder
@@ -2326,8 +2337,8 @@ SingleQuotedStringElement <-
         / Space !SingleQuoteStringEnd
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
-        / SpecialCharacter
         / InlineMacro
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / LineBreak !SingleQuoteStringEnd
         / Symbol
         / QuotedTextInSingleQuotedString
@@ -2371,8 +2382,8 @@ DoubleQuotedStringElement <-
         / Newline !Newline // 2 newlines split the paragraph
         / LineBreak !SingleQuoteStringEnd 
         / AttributeReference
-        / SpecialCharacter
         / InlineMacro
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / QuotedTextInDoubleQuotedString
         / SingleQuotedString
         / DoubleQuotedStringFallbackCharacter) {
@@ -2442,9 +2453,9 @@ Substitutions <- // TODO: rename to `NormalGroup`
             / Punctuation
             / Quote
             / InlinePassthrough
-            / InlineMacro // must be before 'specialcharacter' (because of 'crossreference')
+            / InlineMacro // must be before SpecialCharacter (because of CrossReference)
             / Callout // must be placed before SpecialCharacter
-            / SpecialCharacter
+            / SpecialCharacter // must be after InlineMacro (because of BareURL)
             / AttributeReference
             / Replacement
             / AnyChar) {
@@ -2468,9 +2479,9 @@ HeaderGroupElement <-
         / (Space+ id:(LegacyElementID) Space* &EOF { return id, nil}) // (legacy) element ID
         / Space
         / InlinePassthrough
-        / SpecialCharacter
         / Quote
         / Link
+        / SpecialCharacter // must be after Link (because of BareURL)
         / InlineIcon
         / AttributeReference
         / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
@@ -2775,7 +2786,14 @@ InlineWord <-
     }
 
 
-Punctuation <- ("." / "," / ";" / "!" / "?") &(Space / EOL) {
+Punctuation <- char:(PunctuationCharacter) &(Space / EOL) {
+    return char, nil
+}
+
+// PunctuationCharacter <- ("." / "," / ";" / "!" / "?") {
+//     return string(c.text), nil
+// }
+PunctuationCharacter <- [.,;?!] {
     return string(c.text), nil
 }
 
@@ -2793,9 +2811,6 @@ Location <- scheme:(Scheme)? path:(Filename / ElementPlaceHolder)+ {
         return types.NewLocation(scheme, path.([]interface{}))
     }
 
-// LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename / ElementPlaceHolder)+ {
-//         return types.NewLocation(scheme, path.([]interface{}))
-//     }
 LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename)+ {
         return types.NewLocation(scheme, path.([]interface{}))
     }
@@ -2805,15 +2820,12 @@ Scheme <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
 Filename <- 
     !"[" // quick escape
     elements:(
-        // ([^\r\n[\]\uFFFD&<>{ ])+ { // not supported for now: EOL, space, "{", "[", "]"
-        //     return types.NewStringElement(string(c.text))
-        // }
-        ([^\r\n[\]\uFFFD{ ])+ { // not supported for now: EOL, space, "{", "[", "]"
+        ([^\r\n[\]\uFFFD{.,;?!<> ])+ { // not supported for now: EOL, space, "{", "[", "]". Also, punctuation chars and `<` and `>` special chars are treated separately below (but `&` is allowed)
             return types.NewStringElement(string(c.text))
         }
-        / "." &(!(EOF / Space))
+        / PunctuationCharacter &(!(EOF / Space))
         / AttributeReference 
-        // / SpecialCharacter
+        / SpecialCharacter
         / "{" {
             return types.NewStringElement(string(c.text))
         })+ {

@@ -121,9 +121,9 @@ func (c *current) disableFrontMatterRule() {
 
 func (c *current) isDocumentHeaderAllowed() bool {
 	allowed, found := c.globalStore[documentHeaderKey].(bool)
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("checking if DocumentHeader is allowed: %t", found && allowed && !c.isWithinDelimitedBlock())
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("checking if DocumentHeader is allowed: %t", found && allowed && !c.isWithinDelimitedBlock())
+	// }
 	return found && allowed && !c.isWithinDelimitedBlock()
 }
 
@@ -138,9 +138,9 @@ func (c *current) disableDocumentHeaderRule(element interface{}) {
 		// do not disable yet
 		return
 	default:
-		if log.IsLevelEnabled(log.DebugLevel) {
-			log.Debugf("disabling DocumentHeader after parsing element of type '%T'", element)
-		}
+		// if log.IsLevelEnabled(log.DebugLevel) {
+		// 	log.Debugf("disabling DocumentHeader after parsing element of type '%T'", element)
+		// }
 		c.globalStore[documentHeaderKey] = false
 
 	}

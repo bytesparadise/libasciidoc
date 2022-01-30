@@ -189,9 +189,9 @@ func (c *current) unsetWithinDelimitedBlock() {
 // in which case some grammar rules need to be disabled
 func (c *current) isWithinDelimitedBlock() bool {
 	w, found := c.globalStore[withinDelimitedBlockKey].(bool)
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("checking if within delimited block: %t/%t", found, w)
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("checking if within delimited block: %t/%t", found, w)
+	// }
 	return found && w
 }
 
