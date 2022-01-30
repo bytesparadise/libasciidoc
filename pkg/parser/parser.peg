@@ -2432,10 +2432,10 @@ Section <-
     }
 
 SectionTitle <- [^\r\n]+ { // can't have empty title, that may collide with example block delimiter (`====`)
-    return []interface{}{
-        types.RawLine(c.text),
-    }, nil 
-}
+        return []interface{}{
+            types.RawLine(c.text),
+        }, nil 
+    }
 
 // -------------------------------------------------------------------------------------
 // Substitutions

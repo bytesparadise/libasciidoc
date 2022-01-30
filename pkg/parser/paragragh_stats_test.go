@@ -10,8 +10,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
+	. "github.com/onsi/gomega" // nolint:golint
 )
 
 var _ = Describe("paragraphs", func() {
@@ -42,7 +42,7 @@ The results of these simulations are used to ensure the safety of buildings befo
 							},
 							Location: &types.Location{
 								Scheme: "https://",
-								Path: "github.com/firemodels/fds/releases/tag/FDS6.7.4/",
+								Path:   "github.com/firemodels/fds/releases/tag/FDS6.7.4/",
 							},
 						},
 						&types.StringElement{

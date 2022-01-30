@@ -4,8 +4,8 @@ import (
 	"reflect"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/html5"
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
+	. "github.com/onsi/gomega" // nolint:golintt
 )
 
 var _ = Describe("fields", func() {

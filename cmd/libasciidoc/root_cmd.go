@@ -52,7 +52,7 @@ func NewRootCmd() *cobra.Command {
 			for _, sourcePath := range args {
 				out, close := getOut(cmd, sourcePath, outputName)
 				if out != nil {
-					defer close() //nolint errcheck
+					defer close() // nolint errcheck
 					// log.Debugf("Starting to process file %v", path)
 					config := configuration.NewConfiguration(
 						configuration.WithFilename(sourcePath),

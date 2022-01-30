@@ -7,7 +7,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	. "github.com/onsi/ginkgo/extensions/table"
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/gomega" // nolint:golint
 )
 
 var _ = DescribeTable("'FileLocation' pattern",

@@ -1,8 +1,8 @@
 package main_test
 
 import (
-	. "github.com/onsi/ginkgo" //nolint golint
-	. "github.com/onsi/gomega" //nolint golint
+	. "github.com/onsi/ginkgo" // nolint:golint
+	. "github.com/onsi/gomega" // nolint:golintt
 
 	"testing"
 

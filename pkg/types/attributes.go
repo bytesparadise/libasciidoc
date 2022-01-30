@@ -34,6 +34,8 @@ const (
 	AttrTableOfContents = "toc"
 	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC
 	AttrTableOfContentsLevels = "toclevels"
+	// AttrTableOfContentsTitle the document attribute which specifies the title of the table of contents
+	AttrTableOfContentsTitle = "toc-title"
 	// AttrNoHeader attribute to disable the rendering of document footer
 	AttrNoHeader = "noheader"
 	// AttrNoFooter attribute to disable the rendering of document footer
