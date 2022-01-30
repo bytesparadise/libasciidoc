@@ -257,9 +257,6 @@ ____
 				It("should apply the default substitution", func() {
 					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -360,9 +357,6 @@ ____
 				It("should apply the 'normal' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "normal")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -464,9 +458,6 @@ ____
 				It("should apply the 'quotes' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -522,9 +513,6 @@ ____
 				It("should apply the 'macros' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "macros")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -578,9 +566,6 @@ ____
 				It("should apply the 'attributes' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "attributes")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -625,9 +610,6 @@ ____
 				It("should apply the 'attributes,macros' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -690,9 +672,6 @@ ____
 				It("should apply the 'specialchars' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "specialchars")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -761,9 +740,6 @@ ____
 				It("should apply the 'replacements' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "replacements")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -808,9 +784,6 @@ ____
 				It("should apply the 'post_replacements' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "post_replacements")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -861,9 +834,6 @@ ____
 				It("should apply the 'quotes,macros' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -928,9 +898,6 @@ ____
 				It("should apply the 'macros,quotes' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
@@ -995,9 +962,6 @@ ____
 				It("should apply the 'none' substitution", func() {
 					s := strings.ReplaceAll(source, "$SUBS", "none")
 					expected := &types.Document{
-						//Attributes: types.Attributes{
-						//	"github-url": "https://github.com",
-						//},
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
 								Name:  "github-url",
