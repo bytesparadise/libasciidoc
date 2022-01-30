@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("tables of contents", func() {
 
-	Context("in final documents", func() {
+	Context("in document fragments", func() {
 
 		It("with default level", func() {
 			/*
@@ -385,6 +385,255 @@ var _ = Describe("tables of contents", func() {
 			_, toc, err := parser.Aggregate(ctx, c)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(toc).To(MatchTableOfContents(expectedToC))
+		})
+
+	})
+
+	Context("in final documents", func() {
+
+		// same titles for all tests in this context
+		section1Title := []interface{}{
+			&types.StringElement{
+				Content: "Section 1",
+			},
+		}
+		section2Title := []interface{}{
+			&types.StringElement{
+				Content: "Section 2",
+			},
+		}
+
+		It("without comments in document header", func() {
+			source := `= Title
+:toc: preamble
+
+a preamble 
+
+== Section 1
+
+== Section 2`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Title: []interface{}{
+							&types.StringElement{
+								Content: "Title",
+							},
+						},
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  types.AttrTableOfContents,
+								Value: "preamble",
+							},
+						},
+					},
+					&types.Preamble{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a preamble",
+									},
+								},
+							},
+						},
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_1",
+						},
+						Title: section1Title,
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_2",
+						},
+						Title: section2Title,
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+					"_section_2": section2Title,
+				},
+				TableOfContents: &types.TableOfContents{
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
+							Title: "Section 1",
+						},
+						{
+							ID:    "_section_2",
+							Level: 1,
+							Title: "Section 2",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with single line comments in document header", func() {
+			source := `= Title
+// a comment
+// another comment
+:toc: preamble
+// and once more
+
+a preamble 
+
+== Section 1
+
+== Section 2`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Title: []interface{}{
+							&types.StringElement{
+								Content: "Title",
+							},
+						},
+						Elements: []interface{}{
+							// single comments are filtered out
+							&types.AttributeDeclaration{
+								Name:  types.AttrTableOfContents,
+								Value: "preamble",
+							},
+							// single comment is filtered out
+						},
+					},
+					&types.Preamble{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a preamble",
+									},
+								},
+							},
+						},
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_1",
+						},
+						Title: section1Title,
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_2",
+						},
+						Title: section2Title,
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+					"_section_2": section2Title,
+				},
+				TableOfContents: &types.TableOfContents{
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
+							Title: "Section 1",
+						},
+						{
+							ID:    "_section_2",
+							Level: 1,
+							Title: "Section 2",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with comment blocks in document header", func() {
+			source := `= Title
+////
+a 
+comment 
+block
+////
+:toc: preamble
+////
+another 
+comment 
+block
+////
+
+a preamble 
+
+== Section 1
+
+== Section 2`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Title: []interface{}{
+							&types.StringElement{
+								Content: "Title",
+							},
+						},
+						Elements: []interface{}{
+							// comment block is filtered out
+							&types.AttributeDeclaration{
+								Name:  types.AttrTableOfContents,
+								Value: "preamble",
+							},
+							// comment block is filtered out
+						},
+					},
+					&types.Preamble{
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "a preamble",
+									},
+								},
+							},
+						},
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_1",
+						},
+						Title: section1Title,
+					},
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_section_2",
+						},
+						Title: section2Title,
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+					"_section_2": section2Title,
+				},
+				TableOfContents: &types.TableOfContents{
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
+							Title: "Section 1",
+						},
+						{
+							ID:    "_section_2",
+							Level: 1,
+							Title: "Section 2",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 	})
 })

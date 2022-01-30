@@ -196,6 +196,7 @@ level 1 sections not exists.`
 
 			It("should include with default level", func() {
 				source := `= A title
+// a single line comment
 :toc: preamble
 
 A preamble...
@@ -271,6 +272,9 @@ A preamble...
 
 			It("should include with custom level", func() {
 				source := `= A title
+////
+a comment block
+////
 :toc: preamble
 :toclevels: 4
 

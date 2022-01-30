@@ -14,19 +14,20 @@ var _ = Describe("apply substitutions", func() {
 
 	var c chan types.DocumentFragment
 	done := make(<-chan interface{})
-	ctx := parser.NewParseContext(configuration.NewConfiguration(
-		configuration.WithAttributes(map[string]interface{}{
-			"role1":   "role_1",
-			"role2":   "my_role_2",
-			"title":   "Title",
-			"option1": "option_1",
-			"option2": "option_2",
-			"cookie":  "yummy",
-		}),
-	))
+	var ctx *parser.ParseContext
 
 	BeforeEach(func() {
 		c = make(chan types.DocumentFragment, 1)
+		ctx = parser.NewParseContext(configuration.NewConfiguration(
+			configuration.WithAttributes(map[string]interface{}{
+				"role1":   "role_1",
+				"role2":   "my_role_2",
+				"title":   "Title",
+				"option1": "option_1",
+				"option2": "option_2",
+				"cookie":  "yummy",
+			}),
+		))
 	})
 
 	AfterEach(func() {

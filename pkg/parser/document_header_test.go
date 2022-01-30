@@ -353,7 +353,8 @@ John  Foo Doe  <johndoe@example.com>; Jane the_Doe <jane@example.com>`
 						expected := &types.Document{
 							Elements: []interface{}{
 								&types.DocumentHeader{
-									Title: Title,
+									Title:    Title,
+									Elements: nil, // single comment is filtered out
 								},
 							},
 						}
