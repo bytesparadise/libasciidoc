@@ -5,6 +5,8 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	_ "github.com/bytesparadise/libasciidoc/testsupport"
 )
 
 func TestRenderer(t *testing.T) {

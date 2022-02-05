@@ -101,18 +101,21 @@ func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render ToC entry children")
 	}
-
+	var number string
+	if ctx.SectionNumbering != nil {
+		number = ctx.SectionNumbering[entry.ID]
+	}
 	err = r.tocEntry.Execute(resultBuf, struct {
 		Context  *renderer.Context
-		Level    int
+		Number   string
 		ID       string
 		Title    string
 		Content  string
 		Children []*types.ToCSection
 	}{
 		Context:  ctx,
-		Level:    entry.Level,
-		ID:       string(entry.ID),
+		Number:   number,
+		ID:       entry.ID,
 		Title:    entry.Title,
 		Content:  content,
 		Children: entry.Children,

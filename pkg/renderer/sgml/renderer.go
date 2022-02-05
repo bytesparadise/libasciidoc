@@ -263,13 +263,15 @@ func (r *sgmlRenderer) splitAndRender(ctx *renderer.Context, doc *types.Document
 func (r *sgmlRenderer) splitAndRenderForArticle(ctx *renderer.Context, doc *types.Document) (string, string, error) {
 	log.Debugf("rendering article (within HTML/Body: %t)", ctx.Config.WrapInHTMLBodyElement)
 	// if ctx.Config.WrapInHTMLBodyElement {
-	header, elements, _ := doc.Header()
-	r.processHeaderElements(ctx, header)
+	header, err := r.processHeader(ctx, doc)
+	if err != nil {
+		return "", "", err
+	}
 	renderedHeader, err := r.renderDocumentHeader(ctx, header)
 	if err != nil {
 		return "", "", err
 	}
-	renderedContent, err := r.renderDocumentElements(ctx, elements, doc.TableOfContents, doc.Footnotes)
+	renderedContent, err := r.renderDocumentBody(ctx, doc.BodyElements(), doc.TableOfContents, doc.Footnotes)
 	if err != nil {
 		return "", "", err
 	}
@@ -280,15 +282,18 @@ func (r *sgmlRenderer) splitAndRenderForArticle(ctx *renderer.Context, doc *type
 // and the other elements (table of contents, with preamble, content) on the other side
 func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *types.Document) (string, string, error) {
 	log.Debugf("rendering manpage (within HTML/Body: %t)", ctx.Config.WrapInHTMLBodyElement)
-	header, elements, _ := doc.Header()
-	r.processHeaderElements(ctx, header)
+	header, err := r.processHeader(ctx, doc)
+	if err != nil {
+		return "", "", err
+	}
+	elements := doc.BodyElements()
 	nameSection := elements[0].(*types.Section) // TODO: enforce
 	if ctx.Config.WrapInHTMLBodyElement {
 		renderedHeader, err := r.renderManpageHeader(ctx, header, nameSection)
 		if err != nil {
 			return "", "", err
 		}
-		renderedContent, err := r.renderDocumentElements(ctx, elements[1:], doc.TableOfContents, doc.Footnotes)
+		renderedContent, err := r.renderDocumentBody(ctx, elements[1:], doc.TableOfContents, doc.Footnotes)
 		if err != nil {
 			return "", "", err
 		}
@@ -299,7 +304,7 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *type
 	if err != nil {
 		return "", "", err
 	}
-	renderedContent, err := r.renderDocumentElements(ctx, elements[1:], doc.TableOfContents, doc.Footnotes)
+	renderedContent, err := r.renderDocumentBody(ctx, elements[1:], doc.TableOfContents, doc.Footnotes)
 	if err != nil {
 		return "", "", err
 	}
@@ -309,9 +314,10 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *type
 	return "", result.String(), nil
 }
 
-func (r *sgmlRenderer) processHeaderElements(ctx *renderer.Context, header *types.DocumentHeader) {
+func (r *sgmlRenderer) processHeader(ctx *renderer.Context, doc *types.Document) (*types.DocumentHeader, error) {
+	header := doc.Header()
 	if header == nil {
-		return
+		return nil, nil
 	}
 	// also process header elements in search for Attribute declarations/reset to retain in the context
 	for _, e := range header.Elements {
@@ -322,17 +328,29 @@ func (r *sgmlRenderer) processHeaderElements(ctx *renderer.Context, header *type
 			delete(ctx.Attributes, e.Name)
 		}
 	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("document header attributes: %s", spew.Sdump(ctx.Attributes))
+	}
+	if ctx.Attributes.Has(types.AttrSectionNumbering) || ctx.Attributes.Has(types.AttrNumbered) {
+		var err error
+		if ctx.SectionNumbering, err = renderer.NewSectionNumbers(doc); err != nil {
+			return nil, err
+		}
+	} else {
+		log.Debug("section numbering is not enabled")
+	}
+	return header, nil
 }
 
 func (r *sgmlRenderer) renderDocumentRoles(ctx *renderer.Context, doc *types.Document) (string, error) {
-	if header, _, found := doc.Header(); found {
+	if header := doc.Header(); header != nil {
 		return r.renderElementRoles(ctx, header.Attributes)
 	}
 	return "", nil
 }
 
 func (r *sgmlRenderer) renderDocumentID(doc *types.Document) string {
-	if header, _, found := doc.Header(); found {
+	if header := doc.Header(); header != nil {
 		// if header.Attributes.Has(types.AttrCustomID) {
 		// We only want to emit a document body ID if one was explicitly set
 		return r.renderElementID(header.Attributes)
@@ -342,8 +360,8 @@ func (r *sgmlRenderer) renderDocumentID(doc *types.Document) string {
 }
 
 func (r *sgmlRenderer) renderAuthors(_ *renderer.Context, doc *types.Document) string { // TODO: pass header instead of doc
-	if h, _, found := doc.Header(); found {
-		if a := h.Authors(); a != nil {
+	if header := doc.Header(); header != nil {
+		if a := header.Authors(); a != nil {
 			authorStrs := make([]string, len(a))
 			for i, author := range a {
 				authorStrs[i] = author.FullName()
@@ -359,7 +377,7 @@ func (r *sgmlRenderer) renderAuthors(_ *renderer.Context, doc *types.Document) s
 const DefaultTitle = "Untitled"
 
 func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc *types.Document) (string, bool, error) {
-	if header, _, found := doc.Header(); found {
+	if header := doc.Header(); header != nil {
 		// TODO: This feels wrong.  The title should not need markup.
 		title, err := r.renderPlainText(ctx, header.Title)
 		if err != nil {
@@ -440,9 +458,9 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header *types.
 	return output.String(), nil
 }
 
-// renderDocumentElements renders all document elements, including the footnotes,
+// renderDocumentBody renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
-func (r *sgmlRenderer) renderDocumentElements(ctx *renderer.Context, source []interface{}, toc *types.TableOfContents, footnotes []*types.Footnote) (string, error) {
+func (r *sgmlRenderer) renderDocumentBody(ctx *renderer.Context, source []interface{}, toc *types.TableOfContents, footnotes []*types.Footnote) (string, error) {
 	var elements []interface{}
 	if placement, found := ctx.Attributes[types.AttrTableOfContents]; found && toc != nil {
 		switch placement {

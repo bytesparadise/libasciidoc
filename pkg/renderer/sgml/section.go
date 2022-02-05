@@ -5,7 +5,9 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s *types.Section) (string, error) {
@@ -56,15 +58,26 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s *types.Sectio
 		return "", errors.Wrap(err, "error while rendering sectionTitle content")
 	}
 	renderedContentStr := strings.TrimSpace(renderedContent)
-	err = r.sectionHeader.Execute(result, struct {
+	var number string
+	if ctx.SectionNumbering != nil {
+		id, err := s.GetID()
+		if err != nil {
+			return "", errors.Wrap(err, "error while rendering sectionTitle content")
+		}
+		log.Debugf("number for section '%s': '%s'", id, number)
+		number = ctx.SectionNumbering[id]
+	}
+	err = r.sectionTitle.Execute(result, struct {
 		Level        int
 		LevelPlusOne int
 		ID           string
+		Number       string
 		Content      string
 	}{
 		Level:        s.Level,
 		LevelPlusOne: s.Level + 1, // Level 1 is <h2>.
 		ID:           r.renderElementID(s.Attributes),
+		Number:       number,
 		Content:      renderedContentStr,
 	})
 	if err != nil {

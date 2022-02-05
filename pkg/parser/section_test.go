@@ -459,7 +459,7 @@ and a paragraph`
 				Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 			})
 
-			It("section levels 1, 2, 3, 2", func() {
+			It("section levels 0, 1, 2, 1", func() {
 				source := `= a header
 
 == Section A
@@ -976,6 +976,7 @@ a short preamble
 		})
 
 		Context("invalid sections", func() {
+
 			It("header invalid - missing space", func() {
 				source := "=a header"
 				expected := []types.DocumentFragment{
@@ -1509,7 +1510,7 @@ a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("section levels 1, 2, 3, 3", func() {
+			It("section levels 0, 1, 2, 2", func() {
 				source := `= a header
 
 == Section A
@@ -1588,7 +1589,7 @@ a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("section levels 1, 3, 4, 4", func() {
+			It("section levels 0, 2, 3, 3", func() {
 				source := `= a header
 
 === Section A
@@ -1605,14 +1606,14 @@ a paragraph`
 				sectionAaTitle := []interface{}{
 					&types.StringElement{Content: "Section A.a"},
 				}
-				sectionBTitle := []interface{}{
+				sectionAbTitle := []interface{}{
 					&types.StringElement{Content: "Section A.b"},
 				}
 				expected := &types.Document{
 					ElementReferences: types.ElementReferences{
 						"_section_a":   sectionATitle,
 						"_section_a_a": sectionAaTitle,
-						"_section_a_b": sectionBTitle,
+						"_section_a_b": sectionAbTitle,
 					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
@@ -1650,14 +1651,93 @@ a paragraph`
 									Attributes: types.Attributes{
 										types.AttrID: "_section_a_b",
 									},
-									Level: 3,
-									Title: sectionBTitle,
+									Level: 3, // level is adjusted
+									Title: sectionAbTitle,
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
 												&types.StringElement{Content: "a paragraph"},
 											},
 										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("section levels 0, 2, 2, 2", func() {
+				source := `= a header
+
+=== Section A
+a paragraph
+
+=== Section B
+a paragraph
+
+=== Section C
+a paragraph`
+				sectionATitle := []interface{}{
+					&types.StringElement{Content: "Section A"},
+				}
+				sectionBTitle := []interface{}{
+					&types.StringElement{Content: "Section B"},
+				}
+				sectionCTitle := []interface{}{
+					&types.StringElement{Content: "Section C"},
+				}
+				expected := &types.Document{
+					ElementReferences: types.ElementReferences{
+						"_section_a": sectionATitle,
+						"_section_b": sectionBTitle,
+						"_section_c": sectionCTitle,
+					},
+					Elements: []interface{}{
+						&types.DocumentHeader{
+							Title: []interface{}{
+								&types.StringElement{Content: "a header"},
+							},
+						},
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID: "_section_a",
+							},
+							Level: 2,
+							Title: sectionATitle,
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{Content: "a paragraph"},
+									},
+								},
+							},
+						},
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID: "_section_b",
+							},
+							Level: 2,
+							Title: sectionBTitle,
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{Content: "a paragraph"},
+									},
+								},
+							},
+						},
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID: "_section_c",
+							},
+							Level: 2,
+							Title: sectionCTitle,
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{Content: "a paragraph"},
 									},
 								},
 							},
