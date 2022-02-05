@@ -997,13 +997,13 @@ var _ = Describe("quoted strings", func() {
 				&types.Section{
 					Level: 1,
 					Attributes: types.Attributes{
-						types.AttrID: "_a_episode",
+						types.AttrID: "_a_curly_episode",
 					},
 					Title: title,
 				},
 			},
 			ElementReferences: types.ElementReferences{
-				"_a_episode": title,
+				"_a_curly_episode": title,
 			},
 		}
 		Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1096,13 +1096,13 @@ var _ = Describe("quoted strings", func() {
 				&types.Section{
 					Level: 1,
 					Attributes: types.Attributes{
-						types.AttrID: "_a_episode",
+						types.AttrID: "_a_curly_episode",
 					},
 					Title: title,
 				},
 			},
 			ElementReferences: types.ElementReferences{
-				"_a_episode": title,
+				"_a_curly_episode": title,
 			},
 		}
 		Expect(ParseDocument(source)).To(MatchDocument(expected))
