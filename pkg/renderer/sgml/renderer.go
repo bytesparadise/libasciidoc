@@ -331,7 +331,7 @@ func (r *sgmlRenderer) processHeader(ctx *renderer.Context, doc *types.Document)
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("document header attributes: %s", spew.Sdump(ctx.Attributes))
 	}
-	if ctx.Attributes.Has(types.AttrSectionNumbering) {
+	if ctx.Attributes.Has(types.AttrSectionNumbering) || ctx.Attributes.Has(types.AttrNumbered) {
 		var err error
 		if ctx.SectionNumbering, err = renderer.NewSectionNumbers(doc); err != nil {
 			return nil, err

@@ -88,10 +88,86 @@ A preamble...
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("should include with section numbering", func() {
+			It("should include section numbering via 'sectnums' attribute", func() {
 				source := `= A title
 :toc:
 :sectnums:
+
+A preamble...
+
+== Section A
+
+=== Section A.a
+
+=== Section A.b
+
+==== Section that shall not be in ToC
+
+== Section B
+
+=== Section B.a
+
+== Section C`
+
+				expected := `<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_section_a">1. Section A</a>
+<ul class="sectlevel2">
+<li><a href="#_section_a_a">1.1. Section A.a</a></li>
+<li><a href="#_section_a_b">1.2. Section A.b</a></li>
+</ul>
+</li>
+<li><a href="#_section_b">2. Section B</a>
+<ul class="sectlevel2">
+<li><a href="#_section_b_a">2.1. Section B.a</a></li>
+</ul>
+</li>
+<li><a href="#_section_c">3. Section C</a></li>
+</ul>
+</div>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A preamble&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_a">1. Section A</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_section_a_a">1.1. Section A.a</h3>
+</div>
+<div class="sect2">
+<h3 id="_section_a_b">1.2. Section A.b</h3>
+<div class="sect3">
+<h4 id="_section_that_shall_not_be_in_toc">1.2.1. Section that shall not be in ToC</h4>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_b">2. Section B</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_section_b_a">2.1. Section B.a</h3>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_c">3. Section C</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("should include section numbering via 'numbered' attribute", func() {
+				source := `= A title
+:toc:
+:numbered:
 
 A preamble...
 

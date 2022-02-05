@@ -30,7 +30,9 @@ const (
 	AttrIDSeparator = "idseparator"
 	// DefaultIDSeparator the default ID Separator
 	DefaultIDSeparator = "_"
-	// AttrSectionNumbers the `sectnums` attribute to trigger section numbering at renderding time
+	// AttrNumbered the `numbered` attribute to trigger section numbering at renderding time
+	AttrNumbered = "numbered"
+	// AttrSectionNumbers the `sectnums` attribute to trigger section numbering at renderding time (an alias for `numbered`)
 	AttrSectionNumbering = "sectnums"
 	// AttrTableOfContents the `toc` attribute at document level
 	AttrTableOfContents = "toc"
