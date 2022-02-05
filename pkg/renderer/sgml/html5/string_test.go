@@ -98,7 +98,7 @@ var _ = Describe("strings", func() {
 	It("title with explicit apostrophe", func() {
 		source := "== It`'s A Wonderful Life"
 		expected := "<div class=\"sect1\">\n" +
-			"<h2 id=\"_it_s_a_wonderful_life\">It&#8217;s A Wonderful Life</h2>\n" +
+			"<h2 id=\"_its_a_wonderful_life\">It&#8217;s A Wonderful Life</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
 			"</div>\n" +
 			"</div>\n"
@@ -108,7 +108,7 @@ var _ = Describe("strings", func() {
 	It("title with explicit apostrophe (unicode)", func() {
 		source := ":unicode:\n\n== It`'s A Wonderful Life"
 		expected := "<div class=\"sect1\">\n" +
-			"<h2 id=\"_it_s_a_wonderful_life\">It\u2019s A Wonderful Life</h2>\n" +
+			"<h2 id=\"_its_a_wonderful_life\">It\u2019s A Wonderful Life</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
 			"</div>\n" +
 			"</div>\n"
@@ -118,7 +118,7 @@ var _ = Describe("strings", func() {
 	It("title with implicit apostrophe", func() {
 		source := "== It's A Wonderful Life"
 		expected := "<div class=\"sect1\">\n" +
-			"<h2 id=\"_it_s_a_wonderful_life\">It&#8217;s A Wonderful Life</h2>\n" +
+			"<h2 id=\"_its_a_wonderful_life\">It&#8217;s A Wonderful Life</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
 			"</div>\n" +
 			"</div>\n"
@@ -128,7 +128,7 @@ var _ = Describe("strings", func() {
 	It("title with implicit apostrophe (unicode)", func() {
 		source := ":unicode:\n\n== It's A Wonderful Life"
 		expected := "<div class=\"sect1\">\n" +
-			"<h2 id=\"_it_s_a_wonderful_life\">It\u2019s A Wonderful Life</h2>\n" +
+			"<h2 id=\"_its_a_wonderful_life\">It\u2019s A Wonderful Life</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
 			"</div>\n" +
 			"</div>\n"

@@ -8,47 +8,68 @@ import (
 )
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
-func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string, error) {
+func ReplaceNonAlphanumerics(elements []interface{}, prefix, separator string) (string, error) {
+	replacement, err := replaceNonAlphanumericsOnElements(elements, separator)
+	if err != nil {
+		return "", err
+	}
+	// avoid double prefix
+	if strings.HasPrefix(replacement, prefix) {
+		return replacement, nil
+	}
+	return prefix + replacement, nil
+}
+
+func replaceNonAlphanumericsOnElements(elements []interface{}, separator string) (string, error) {
 	buf := &strings.Builder{}
 	for _, element := range elements {
 		switch element := element.(type) {
-		case *QuotedText:
-			r, err := ReplaceNonAlphanumerics(element.Elements, replacement)
+		case *QuotedString:
+			r, err := replaceNonAlphanumericsOnElements(element.Elements, separator)
 			if err != nil {
 				return "", err
 			}
 			if buf.Len() > 0 {
-				buf.WriteString(replacement)
+				buf.WriteString(separator)
+			}
+			buf.WriteString(r)
+		case *QuotedText:
+			r, err := replaceNonAlphanumericsOnElements(element.Elements, separator)
+			if err != nil {
+				return "", err
+			}
+			if buf.Len() > 0 {
+				buf.WriteString(separator)
 			}
 			buf.WriteString(r)
 		case *StringElement:
-			r, err := replaceNonAlphanumerics(element.Content, replacement)
+			r, err := replaceNonAlphanumerics(element.Content, separator)
 			if err != nil {
 				return "", err
 			}
 			if buf.Len() > 0 {
-				buf.WriteString(replacement)
+				buf.WriteString(separator)
 			}
 			buf.WriteString(r)
 		case *InlineLink:
 			if element.Location != nil {
-				r, err := replaceNonAlphanumerics(element.Location.Stringify(), replacement)
+				r, err := replaceNonAlphanumerics(element.Location.Stringify(), separator)
 				if err != nil {
 					return "", err
 				}
 				if buf.Len() > 0 {
-					buf.WriteString(replacement)
+					buf.WriteString(separator)
 				}
 				buf.WriteString(r)
 			}
 		case *Icon:
 			s := element.Attributes.GetAsStringWithDefault(AttrImageAlt, element.Class)
-			r, err := replaceNonAlphanumerics(s, replacement)
+			r, err := replaceNonAlphanumerics(s, separator)
 			if err != nil {
 				return "", err
 			}
 			if buf.Len() > 0 {
-				buf.WriteString(replacement)
+				buf.WriteString(separator)
 			}
 			buf.WriteString(r)
 		default:
@@ -62,27 +83,27 @@ func ReplaceNonAlphanumerics(elements []interface{}, replacement string) (string
 
 func replaceNonAlphanumerics(content, replacement string) (string, error) {
 	buf := &strings.Builder{}
-	lastCharIsSpace := false
+	lastCharIsSeparator := false
 
 	// Drop the :// from links.
 	content = strings.ReplaceAll(content, "://", "")
 
 	for _, r := range strings.TrimLeft(content, " ") { // ignore header spaces
-		if unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r) {
+		switch {
+		case unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r):
 			_, err := buf.WriteString(strings.ToLower(string(r)))
 			if err != nil {
 				return "", errors.Wrapf(err, "error while normalizing String Element")
 			}
-			lastCharIsSpace = false
-		} else if !lastCharIsSpace && (unicode.Is(unicode.Space, r) || unicode.Is(unicode.Punct, r)) {
+			lastCharIsSeparator = false
+		case !lastCharIsSeparator && (string(r) == " " || string(r) == "-" || string(r) == "."):
 			_, err := buf.WriteString(replacement)
 			if err != nil {
 				return "", errors.Wrapf(err, "error while normalizing String Element")
 			}
-			lastCharIsSpace = true
+			lastCharIsSeparator = true
 		}
 	}
 	result := strings.TrimSuffix(buf.String(), replacement)
-	// log.Debugf("normalized '%s' to '%s'", content, result)
 	return result, nil
 }

@@ -2405,13 +2405,12 @@ func (s *Section) resolveID(attrs Attributes) (string, error) {
 		return id, nil
 	}
 	log.Debugf("resolving section id")
+	prefix := attrs.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
 	separator := attrs.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
-	replacement, err := ReplaceNonAlphanumerics(s.Title, separator)
+	id, err := ReplaceNonAlphanumerics(s.Title, prefix, separator)
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to generate default ID on Section element")
 	}
-	idPrefix := attrs.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
-	id := idPrefix + replacement
 	s.Attributes[AttrID] = id
 	log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
 	return id, nil

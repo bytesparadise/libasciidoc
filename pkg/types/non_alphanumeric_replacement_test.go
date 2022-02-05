@@ -3,65 +3,90 @@ package types_test
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	. "github.com/onsi/ginkgo" // nolint:golint
-	. "github.com/onsi/gomega" // nolint:golintt
+	. "github.com/onsi/ginkgo/extensions/table" // nolint:golint
+	. "github.com/onsi/gomega"                  // nolint:golint
 )
 
-var _ = Describe("normalizing string", func() {
+var _ = DescribeTable("replace non-alphanumeric chars",
 
-	It("hello", func() {
-		source := []interface{}{
-			&types.StringElement{Content: "hello"},
-		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("hello"))
-	})
+	func(source []interface{}, valueWithDefaultSettings, valueWithCustomSettings string) {
+		Expect(types.ReplaceNonAlphanumerics(source, "_", "_")).To(Equal(valueWithDefaultSettings))
+		Expect(types.ReplaceNonAlphanumerics(source, "id_", "-")).To(Equal(valueWithCustomSettings))
+	},
 
-	It("héllo with an accent", func() {
-		source := []interface{}{
-			&types.StringElement{Content: "  héllo 1.2   and 3 Spaces"},
-		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("héllo_1_2_and_3_spaces"))
-	})
+	Entry("hello",
+		[]interface{}{
+			&types.StringElement{
+				Content: "hello",
+			},
+		},
+		"_hello",
+		"id_hello",
+	),
 
-	It("a an accent and a swedish character", func() {
-		source := []interface{}{
-			&types.StringElement{Content: `A à ⌘`},
-		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("a_à"))
-	})
+	Entry("héllo with an accent",
+		[]interface{}{
+			&types.StringElement{
+				Content: "  héllo 1.2   and 3 Spaces",
+			},
+		},
+		"_héllo_1_2_and_3_spaces",
+		"id_héllo-1-2-and-3-spaces",
+	),
 
-	It("AŁA", func() {
-		source := []interface{}{
-			&types.StringElement{Content: `AŁA 0.1 ?`},
-		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("ała_0_1"))
-	})
+	Entry("a an accent and a swedish character",
+		[]interface{}{
+			&types.StringElement{
+				Content: `A à ⌘`,
+			},
+		},
+		"_a_à",
+		"id_a-à",
+	),
 
-	It("it's  2 spaces, here !", func() {
-		source := []interface{}{
-			&types.StringElement{Content: `it's  2 spaces, here !`},
-		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("it_s_2_spaces_here"))
-	})
+	Entry("AŁA",
+		[]interface{}{
+			&types.StringElement{
+				Content: `AŁA 0.1 ?`,
+			},
+		},
+		"_ała_0_1",
+		"id_ała-0-1",
+	),
 
-	It("content with <strong> markup", func() {
-		// == a section title, with *bold content*
-		source := []interface{}{
-			&types.StringElement{Content: "a section title, with"},
+	Entry("it's  2 spaces, here !",
+		[]interface{}{
+			&types.StringElement{
+				Content: `it's  2 spaces, here !`,
+			},
+		},
+		"_its_2_spaces_here",
+		"id_its-2-spaces-here",
+	),
+
+	Entry("content with <strong> markup",
+		[]interface{}{
+			&types.StringElement{
+				Content: "a section title, with",
+			},
 			&types.QuotedText{
 				Kind: types.SingleQuoteBold,
 				Elements: []interface{}{
-					&types.StringElement{Content: "bold content"},
+					&types.StringElement{
+						Content: "bold content",
+					},
 				},
 			},
-		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("a_section_title_with_bold_content"))
-	})
+		},
+		"_a_section_title_with_bold_content",
+		"id_a-section-title-with-bold-content",
+	),
 
-	It("content with link", func() {
-		// == a section title, with *bold content*
-		source := []interface{}{
-			&types.StringElement{Content: "link to "},
+	Entry("content with link",
+		[]interface{}{
+			&types.StringElement{
+				Content: "link to ",
+			},
 			&types.InlineLink{
 				Attributes: types.Attributes{},
 				Location: &types.Location{
@@ -69,7 +94,50 @@ var _ = Describe("normalizing string", func() {
 					Path:   "foo.bar",
 				},
 			},
-		}
-		Expect(types.ReplaceNonAlphanumerics(source, "_")).To(Equal("link_to_httpsfoo_bar")) // asciidoctor will return `_link_to_httpsfoo_bar`
-	})
-})
+		},
+		"_link_to_httpsfoo_bar",
+		"id_link-to-httpsfoo-bar",
+	),
+
+	Entry("content with dots and special characters",
+		[]interface{}{
+			&types.StringElement{
+				Content: "...and we're back!",
+			},
+		},
+		"_and_were_back",
+		"id_-and-were-back",
+	),
+
+	Entry("content with dots",
+		[]interface{}{
+			&types.StringElement{
+				Content: "Section A.a",
+			},
+		},
+		"_section_a_a",
+		"id_section-a-a",
+	),
+
+	Entry("content with quoted string",
+		// Block Quotes and "`Smart`" Ones
+		[]interface{}{
+			&types.StringElement{
+				Content: "Block Quotes and ",
+			},
+			&types.QuotedString{
+				Kind: types.DoubleQuote,
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "Smart",
+					},
+				},
+			},
+			&types.StringElement{
+				Content: "Ones",
+			},
+		},
+		"_block_quotes_and_smart_ones",
+		"id_block-quotes-and-smart-ones",
+	),
+)

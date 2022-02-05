@@ -118,7 +118,7 @@ var _ = Describe("quoted strings", func() {
 		It("curly in title", func() {
 			source := "== a '`curly`' episode"
 			expected := `<div class="sect1">
-<h2 id="_a_episode">a &#8216;curly&#8217; episode</h2>
+<h2 id="_a_curly_episode">a &#8216;curly&#8217; episode</h2>
 <div class="sectionbody">
 </div>
 </div>
@@ -287,7 +287,7 @@ var _ = Describe("quoted strings", func() {
 		It("double curly in title", func() {
 			source := "== a \"`curly`\" episode"
 			expected := `<div class="sect1">
-<h2 id="_a_episode">a &#8220;curly&#8221; episode</h2>
+<h2 id="_a_curly_episode">a &#8220;curly&#8221; episode</h2>
 <div class="sectionbody">
 </div>
 </div>
