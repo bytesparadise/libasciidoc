@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega" // nolint:golint
 )
 
-var _ = Describe("include preamble and table of contents when aggregating fragments", func() {
+var _ = Describe("aggregate fragments", func() {
 
 	// reusable elements
 	doctitle := []interface{}{
@@ -339,5 +339,4 @@ var _ = Describe("include preamble and table of contents when aggregating fragme
 		Expect(err).NotTo(HaveOccurred())
 		Expect(doc).To(MatchDocument(expected))
 	})
-
 })

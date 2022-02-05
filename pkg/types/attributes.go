@@ -30,6 +30,8 @@ const (
 	AttrIDSeparator = "idseparator"
 	// DefaultIDSeparator the default ID Separator
 	DefaultIDSeparator = "_"
+	// AttrSectionNumbers the `sectnums` attribute to trigger section numbering at renderding time
+	AttrSectionNumbering = "sectnums"
 	// AttrTableOfContents the `toc` attribute at document level
 	AttrTableOfContents = "toc"
 	// AttrTableOfContentsLevels the document attribute which specifies the number of levels to display in the ToC

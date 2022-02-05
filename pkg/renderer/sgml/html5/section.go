@@ -7,6 +7,6 @@ const (
 {{ end }}{{ .Content }}{{ if eq .Level 1 }}</div>
 {{ end }}</div>
 `
-	sectionHeaderTmpl = `<h{{ .LevelPlusOne }} id="{{ .ID }}">{{ .Content }}</h{{ .LevelPlusOne }}>
+	sectionHeaderTmpl = `<h{{ .LevelPlusOne }} id="{{ .ID }}">{{ if .Number }}{{ .Number }}. {{ end }}{{ .Content }}</h{{ .LevelPlusOne }}>
 `
 )

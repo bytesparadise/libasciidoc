@@ -17,21 +17,20 @@ type Context struct {
 	WithinList           int
 	counters             map[string]int
 	Attributes           types.Attributes
-	Footnotes            []*types.Footnote
 	ElementReferences    types.ElementReferences
 	HasHeader            bool
+	SectionNumbering     SectionNumbers
 }
 
 // NewContext returns a new rendering context for the given document.
 func NewContext(doc *types.Document, config *configuration.Configuration) *Context {
-	header, _, hasHeader := doc.Header()
+	header := doc.Header()
 	ctx := &Context{
 		Config:             config,
 		counters:           make(map[string]int),
 		Attributes:         config.Attributes,
 		ElementReferences:  doc.ElementReferences,
-		Footnotes:          doc.Footnotes,
-		HasHeader:          hasHeader,
+		HasHeader:          header != nil,
 		EncodeSpecialChars: true,
 	}
 	// TODO: add other attributes from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#builtin-attributes-i18n
@@ -40,7 +39,7 @@ func NewContext(doc *types.Document, config *configuration.Configuration) *Conte
 	ctx.Attributes[types.AttrTableCaption] = "Table"
 	ctx.Attributes[types.AttrVersionLabel] = "version"
 	// also, expand authors and revision
-	if hasHeader {
+	if header != nil {
 		if authors := header.Authors(); authors != nil {
 			ctx.Attributes.AddAll(authors.Expand())
 		}

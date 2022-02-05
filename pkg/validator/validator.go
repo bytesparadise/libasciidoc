@@ -42,13 +42,13 @@ const (
 func validateManpage(doc *types.Document) []Problem {
 	problems := []Problem{}
 	// checks the presence of a header
-	_, elements, found := doc.Header()
-	if !found {
+	if doc.Header() == nil {
 		problems = append(problems, Problem{
 			Severity: Error,
 			Message:  "manpage document is missing a header",
 		})
 	}
+	elements := doc.BodyElements()
 	if nameSection, ok := assertThatElement(elements[0]).isSection(withLevel(1), withTitle("name")); !ok {
 		problems = append(problems, Problem{
 			Severity: Error,

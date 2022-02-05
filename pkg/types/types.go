@@ -110,23 +110,36 @@ type Document struct {
 
 // Header returns the header, i.e., the section with level 0 if it found as the first element of the document
 // For manpage documents, this also includes the first section (`Name` along with its first paragraph)
-func (d *Document) Header() (*DocumentHeader, []interface{}, bool) { // TODO: remove `bool` return value? (consistency with other funcs)
+func (d *Document) Header() *DocumentHeader {
 	if len(d.Elements) == 0 {
 		log.Debug("no header for empty doc")
-		return nil, nil, false
+		return nil
 	}
-	elements := make([]interface{}, 0, len(d.Elements))
-	for i, e := range d.Elements {
+	for _, e := range d.Elements {
 		if h, ok := e.(*DocumentHeader); ok {
-			elements = append(elements, d.Elements[i+1:]...)
-			return h, elements, true
+			return h
 		}
-		elements = append(elements, e)
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("no header in document: %T", d.Elements[0])
 	}
-	return nil, elements, false
+	return nil
+}
+
+// BodyElements returns the elements to render in the body
+func (d *Document) BodyElements() []interface{} {
+	if len(d.Elements) == 0 {
+		return nil
+	}
+	elements := make([]interface{}, 0, len(d.Elements))
+	for i, e := range d.Elements {
+		if _, ok := e.(*DocumentHeader); ok {
+			elements = append(elements, d.Elements[i+1:]...)
+			return elements
+		}
+		elements = append(elements, e)
+	}
+	return elements
 }
 
 var _ WithElementAddition = &Document{}
@@ -2311,6 +2324,11 @@ func NewSection(level int, title []interface{}) (*Section, error) {
 		Level: level,
 		Title: title,
 	}, nil
+}
+
+func (s *Section) GetID() (string, error) {
+	id, _, err := s.Attributes.GetAsString(AttrID)
+	return id, err
 }
 
 var _ WithTitle = &Section{}

@@ -143,7 +143,7 @@ a paragraph`
 				}))
 			})
 
-			It("section levels 1, 2, 3 and 2", func() {
+			It("section levels 0, 1, 2 and 1", func() {
 				source := `= a document title
 
 == Section A
