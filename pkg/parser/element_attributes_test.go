@@ -318,13 +318,15 @@ a paragraph`
 			})
 
 			It("blank line after role attribute", func() {
-				// blanklines after attributes are not supported in Libasciidoc
 				source := `[.a_role]
 
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrRoles: types.Roles{"a_role"},
+							},
 							Elements: []interface{}{
 								&types.StringElement{
 									Content: "a paragraph",
@@ -337,7 +339,6 @@ a paragraph`
 			})
 
 			It("blank lines after id, role and title attributes", func() {
-				// blanklines after attributes are not supported in Libasciidoc
 				source := `[.a_role]
 [[ID]]
 .title
@@ -347,12 +348,20 @@ a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrRoles: types.Roles{"a_role"},
+								types.AttrID:    "ID",
+								types.AttrTitle: "title",
+							},
 							Elements: []interface{}{
 								&types.StringElement{
 									Content: "a paragraph",
 								},
 							},
 						},
+					},
+					ElementReferences: types.ElementReferences{
+						"ID": "title",
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))

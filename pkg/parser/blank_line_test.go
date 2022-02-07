@@ -123,18 +123,10 @@ second paragraph
 
 		It("blank line with attributes", func() {
 			source := `.ignored
- 
+
 `
 			expected := []types.DocumentFragment{
-				{
-					Position: types.Position{
-						Start: 0,
-						End:   11,
-					},
-					Elements: []interface{}{
-						&types.BlankLine{},
-					},
-				},
+				// standalone attribute is ignored
 			}
 			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
 		})

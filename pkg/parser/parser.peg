@@ -252,13 +252,14 @@ DocumentFragment <-
         / FrontMatter
         / Paragraph // must be the last one... 
     )? // allow attribute on empty/no element
-    &{
-        if attributes != nil && element == nil {
-            // do not return an error, but do not accept such a kind of content (standalone attributes)
-            return false, fmt.Errorf("standalone attribute")
-        }
-        return true, nil
-    }
+    // &{
+    //     fmt.Printf("checking attributes and element: %v + %v", attributes, element)
+    //     if attributes != nil && element == nil {
+    //         // do not return an error, but do not accept such a kind of content (standalone attributes)
+    //         return false, nil
+    //     }
+    //     return true, nil
+    // }
     {
         c.disableFrontMatterRule() // not allowed as soon as a single element is found
         c.disableDocumentHeaderRule(element) // not allowed anymore, based on element that was found
@@ -385,15 +386,15 @@ AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {
 BlockAttributes <-
     attributes:(
         // shorthand syntax for anchors. Eg: `[[an_id]]`
-        (anchor:(LegacyElementID) Space* EOL {
+        (anchor:(LegacyElementID) Space* EOL BlankLine* {
             return anchor, nil
         })
         // shorthand syntax for titles. Eg: `.a title`
-        / (title:(ShortHandTitle) Space* EOL {
+        / (title:(ShortHandTitle) Space* EOL BlankLine*{
             return title, nil
         })
         // default syntax
-        / (attributes:(LongHandAttributes) Space* EOL {
+        / (attributes:(LongHandAttributes) Space* EOL BlankLine*{
             return attributes, nil
         })
     )+ {
