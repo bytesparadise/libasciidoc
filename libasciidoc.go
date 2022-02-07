@@ -57,8 +57,10 @@ func Convert(r io.Reader, output io.Writer, config *configuration.Configuration)
 	switch config.BackEnd {
 	case "html", "html5", "":
 		render = html5.Render
+		config.Attributes.Set("basebackend-html", true)
 	case "xhtml", "xhtml5":
 		render = xhtml5.Render
+		config.Attributes.Set("basebackend-html", true)
 	default:
 		return types.Metadata{}, fmt.Errorf("backend '%s' not supported", config.BackEnd)
 	}
