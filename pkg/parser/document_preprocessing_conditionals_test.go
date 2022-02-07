@@ -132,8 +132,14 @@ ifdef::cookie[* conditional content]
 * more content`
 					Expect(PreparseDocument(source)).To(Equal(expected))
 				})
-			})
 
+				It("with backend attribute", func() {
+					source := `ifdef::basebackend-html[* to pass through +++<b>HTML</b>+++ directly, surround the text with triple plus]`
+					expected := `* to pass through +++<b>HTML</b>+++ directly, surround the text with triple plus`
+					Expect(PreparseDocument(source)).To(Equal(expected))
+				})
+
+			})
 		})
 
 		Context("ifndef", func() {
