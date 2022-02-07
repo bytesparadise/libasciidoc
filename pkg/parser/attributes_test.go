@@ -16,7 +16,7 @@ import (
 var _ = Describe("attributes", func() {
 
 	// We test inline image attributes first.
-	Context("inline", func() {
+	Context("at inline level", func() {
 
 		It("block image with empty alt", func() {
 			source := `image::foo.png[]`
@@ -313,6 +313,67 @@ var _ = Describe("attributes", func() {
 							},
 							Location: &types.Location{
 								Path: "foo.png",
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+		})
+	})
+
+	Context("at block level", func() {
+
+		It("section with id attached", func() {
+			source := `[id='custom']
+[role="cookie"]
+== Section A
+`
+			expected := []types.DocumentFragment{
+				{
+					Position: types.Position{
+						Start: 0,
+						End:   43,
+					},
+					Elements: []interface{}{
+						&types.Section{
+							Level: 1,
+							Attributes: types.Attributes{
+								types.AttrID:    "custom",
+								types.AttrRoles: types.Roles{"cookie"},
+							},
+							Title: []interface{}{
+								types.RawLine("Section A"),
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+		})
+
+		It("section with attributes detached", func() {
+			source := `[id='custom']
+		
+[role="cookie"]
+
+== Section A
+`
+			expected := []types.DocumentFragment{
+				{
+					Position: types.Position{
+						Start: 0,
+						End:   47,
+					},
+					Elements: []interface{}{
+						&types.Section{
+							Level: 1,
+							Attributes: types.Attributes{
+								types.AttrID:    "custom",
+								types.AttrRoles: types.Roles{"cookie"},
+							},
+							Title: []interface{}{
+								types.RawLine("Section A"),
 							},
 						},
 					},

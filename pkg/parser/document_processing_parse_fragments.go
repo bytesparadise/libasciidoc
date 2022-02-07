@@ -98,6 +98,10 @@ func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) ([]
 	log.Debugf("elements: '%s'", spew.Sdump(elements))
 	switch e := elements.(type) {
 	case []interface{}:
+		// case where last element is `nil` because the parser found a standlone attribute
+		if len(e) > 0 && e[len(e)-1] == nil {
+			return e[:len(e)-1], nil
+		}
 		return placeholders.restore(e)
 	default:
 		return nil, errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", e)

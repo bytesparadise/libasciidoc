@@ -151,7 +151,6 @@ pasta`
 			})
 
 			It("with multiple attributes and blanklines in-between", func() {
-				// attributes with blanklines in-between are dropped :/
 				source := `[%hardbreaks.role1.role2]
 
 [#anchor]
@@ -162,28 +161,15 @@ pasta`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   27,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 27,
-							End:   38,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 38,
 							End:   50,
 						},
 						Elements: []interface{}{
 							&types.Paragraph{
+								Attributes: types.Attributes{
+									types.AttrRoles:   types.Roles{"role1", "role2"},
+									types.AttrOptions: types.Options{"hardbreaks"},
+									types.AttrID:      "anchor",
+								},
 								Elements: []interface{}{
 									types.RawLine("cookie\n"),
 									types.RawLine("pasta"),
@@ -551,7 +537,6 @@ pasta`
 			})
 
 			It("with multiple attributes and blanklines in-between", func() {
-				// attributes are not to paragraph because of blanklines
 				source := `[%hardbreaks.role1.role2]
 
 [#anchor]
@@ -561,6 +546,11 @@ pasta`
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrRoles:   types.Roles{"role1", "role2"},
+								types.AttrOptions: types.Options{"hardbreaks"},
+								types.AttrID:      "anchor",
+							},
 							Elements: []interface{}{
 								&types.StringElement{
 									Content: "cookie\npasta",

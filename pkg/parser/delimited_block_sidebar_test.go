@@ -3,7 +3,6 @@ package parser_test
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
-	log "github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo" // nolint:golint
 	. "github.com/onsi/gomega" // nolint:golintt
@@ -48,12 +47,9 @@ some *verse* content
 		})
 
 		It("with single line starting with a dot", func() {
-			// do not show parse errors in the logs for this test
-			_, reset := ConfigureLogger(log.FatalLevel)
-			defer reset()
 			source := `
 ****
-.foo
+.standalone
 ****`
 			expected := &types.Document{
 				Elements: []interface{}{
@@ -151,17 +147,40 @@ bar
 		})
 
 		It("with single line starting with a dot", func() {
-			// do not show parse errors in the logs for this test
-			_, reset := ConfigureLogger(log.FatalLevel)
-			defer reset()
 			source := `
 ****
-.foo
+.standalone
 ****`
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.DelimitedBlock{
 						Kind: types.Sidebar,
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with last line starting with a dot", func() {
+			source := `
+****
+some content
+
+.standalone
+****`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DelimitedBlock{
+						Kind: types.Sidebar,
+						Elements: []interface{}{
+							&types.Paragraph{
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "some content",
+									},
+								},
+							},
+						},
 					},
 				},
 			}
