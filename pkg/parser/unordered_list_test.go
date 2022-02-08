@@ -408,9 +408,9 @@ var _ = Describe("unordered lists", func() {
 
 			It("with 2 items with empty line in-between", func() {
 				// fist line after list element is swallowed
-				source := "* a first item\n" +
-					"\n" +
-					"* a second item with *bold content*"
+				source := `* a first item
+					
+				* a second item with *bold content*`
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.List{
@@ -1451,5 +1451,266 @@ another delimited block
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
+		It("with implicit continuation for literal paragraph without attributes", func() {
+			source := `* first level
+
+ with more literal text
+
+** second level
+`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "first level"},
+										},
+									},
+									&types.Paragraph{
+										Attributes: types.Attributes{
+											types.AttrStyle:            types.Literal,
+											types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+										},
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: " with more literal text",
+											},
+										},
+									},
+									&types.List{
+										Kind: types.UnorderedListKind,
+										Elements: []types.ListElement{
+											&types.UnorderedListElement{
+												BulletStyle: types.TwoAsterisks,
+												CheckStyle:  types.NoCheck,
+												Elements: []interface{}{
+													&types.Paragraph{
+														Elements: []interface{}{
+															&types.StringElement{Content: "second level"},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+		It("with implicit continuation for literal paragraph with attributes", func() {
+			source := `* first level
+
+[role="a_role"]
+ with more literal text
+
+** second level
+`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "first level"},
+										},
+									},
+									&types.Paragraph{
+										Attributes: types.Attributes{
+											types.AttrStyle:            types.Literal,
+											types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+											types.AttrRoles:            types.Roles{"a_role"},
+										},
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: " with more literal text",
+											},
+										},
+									},
+									&types.List{
+										Kind: types.UnorderedListKind,
+										Elements: []types.ListElement{
+											&types.UnorderedListElement{
+												BulletStyle: types.TwoAsterisks,
+												CheckStyle:  types.NoCheck,
+												Elements: []interface{}{
+													&types.Paragraph{
+														Elements: []interface{}{
+															&types.StringElement{Content: "second level"},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("demo case 1", func() {
+			source := `[[nested]]
+* first level
+written on two lines
+* first level
++
+....
+with this literal text
+....
+
+* first level
+
+ with more literal text
+
+** second level
+*** third level
+- fourth level
+* back to +
+first level`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Attributes: types.Attributes{
+							types.AttrID: "nested",
+						},
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "first level\nwritten on two lines"},
+										},
+									},
+								},
+							},
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "first level"},
+										},
+									},
+									&types.DelimitedBlock{
+										Kind: types.Literal,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "with this literal text",
+											},
+										},
+									},
+								},
+							},
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "first level"},
+										},
+									},
+									&types.Paragraph{
+										Attributes: types.Attributes{
+											types.AttrStyle:            types.Literal,
+											types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+										},
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: " with more literal text",
+											},
+										},
+									},
+									&types.List{
+										Kind: types.UnorderedListKind,
+										Elements: []types.ListElement{
+											&types.UnorderedListElement{
+												BulletStyle: types.TwoAsterisks,
+												CheckStyle:  types.NoCheck,
+												Elements: []interface{}{
+													&types.Paragraph{
+														Elements: []interface{}{
+															&types.StringElement{Content: "second level"},
+														},
+													},
+													&types.List{
+														Kind: types.UnorderedListKind,
+														Elements: []types.ListElement{
+															&types.UnorderedListElement{
+																BulletStyle: types.ThreeAsterisks,
+																CheckStyle:  types.NoCheck,
+																Elements: []interface{}{
+																	&types.Paragraph{
+																		Elements: []interface{}{
+																			&types.StringElement{Content: "third level"},
+																		},
+																	},
+																	&types.List{
+																		Kind: types.UnorderedListKind,
+																		Elements: []types.ListElement{
+																			&types.UnorderedListElement{
+																				BulletStyle: types.FourAsterisks, // adjusted
+																				CheckStyle:  types.NoCheck,
+																				Elements: []interface{}{
+																					&types.Paragraph{
+																						Elements: []interface{}{
+																							&types.StringElement{Content: "fourth level"},
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							&types.UnorderedListElement{
+								BulletStyle: types.OneAsterisk,
+								CheckStyle:  types.NoCheck,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{Content: "back to"},
+											&types.LineBreak{},
+											&types.StringElement{Content: "\nfirst level"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 	})
 })

@@ -89,8 +89,6 @@ Ifeval <- "ifeval::"
         return types.NewIfevalCondition(left, right, operand.(types.IfevalOperand))
     }
 
-
-
 IfevalExpressionMember <- 
     ("\"" s:(AttributeValueReference) "\"" { return s, nil })
     / ("'" s:(AttributeValueReference) "'" { return s, nil })
@@ -118,13 +116,10 @@ IfevalExpressionOperand <-
     / (">=" {
         return types.NewGreaterOrEqualOperand()
     })
-    
-
 
 IfevalExpressionValue <- 
     Number
     / InlineWord
-
 
 EndIf <- "endif::" name:(ConditionalVariableName)? "[" attr:(ConditionalInclusionAttribute)? "]" Space* EOF {
          return types.NewEndOfCondition() // name and attributes are parsed but ignored
@@ -1352,6 +1347,20 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
                 return append(attributes.([]interface{}), element), nil
             })
         / SingleLineComment
+        / ( BlankLine+
+            attributes:(BlockAttributes)* 
+            element:LiteralParagraph {
+                if e, ok := element.(types.WithAttributes); ok {
+                    for _, a := range attributes.([]interface{}) {
+                        if a, ok := a.(types.Attributes); ok {
+                            e.AddAttributes(a)
+                        }
+                    }
+                }
+                // implicit attachment to list element
+                // by wrapping into a ListElementContinuation
+                return types.NewListElementContinuation(0, element)
+            })
         / ( element:ListElementParagraphLine {
                 return element, nil
             }) // must follow directly a list element
