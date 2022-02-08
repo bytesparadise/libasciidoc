@@ -311,4 +311,77 @@ another delimited block
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("demo case 1", func() {
+		source := `[[nested]]
+* first level
+written on two lines
+* first level
++
+....
+with this literal text
+....
+
+* first level
+
+with more literal text
+
+** second level
+*** third level
+- fourth level
+* back to +
+first level`
+		expected := `<div id="nested" class="ulist">
+<ul>
+<li>
+<p>first level
+written on two lines</p>
+</li>
+<li>
+<p>first level</p>
+<div class="literalblock">
+<div class="content">
+<pre>with this literal text</pre>
+</div>
+</div>
+</li>
+<li>
+<p>first level</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>with more literal text</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>second level</p>
+<div class="ulist">
+<ul>
+<li>
+<p>third level</p>
+<div class="ulist">
+<ul>
+<li>
+<p>fourth level</p>
+<div class="ulist">
+<ul>
+<li>
+<p>back to<br>
+first level</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
 })
