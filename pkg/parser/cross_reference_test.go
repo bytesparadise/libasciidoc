@@ -364,11 +364,61 @@ some content`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("to term in labeled list", func() {
+				source := `[[a_term]]term::
+// a comment
+
+Here's a reference to the definition of <<a_term>>.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.List{
+							Kind: types.LabeledListKind,
+							Elements: []types.ListElement{
+								&types.LabeledListElement{
+									Style: types.DoubleColons,
+									Term: []interface{}{
+										&types.InlineLink{
+											Attributes: types.Attributes{
+												types.AttrID: "a_term",
+											},
+										},
+										&types.StringElement{
+											Content: "term",
+										},
+									},
+								},
+							},
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "Here’s a reference to the definition of ", // note that the quote is transformed
+								},
+								&types.InternalCrossReference{
+									ID: "a_term",
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"a_term": []interface{}{
+							&types.StringElement{ // the term content, excluding the inline anchor
+								Content: "term",
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 
 		Context("external references", func() {
 
-			It("external cross reference to other doc with plain text location and rich label", func() {
+			It("to other doc with plain text location and rich label", func() {
 				source := `some content linked to xref:another-doc.adoc[*another doc*]!`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -404,7 +454,7 @@ some content`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external cross reference to other doc with document attribute in location", func() {
+			It("to other doc with document attribute in location", func() {
 				source := `some content linked to xref:{foo}.adoc[another doc]!`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -431,7 +481,7 @@ some content`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("external cross reference to other doc with document attribute in location and label with special chars", func() {
+			It("to other doc with document attribute in location and label with special chars", func() {
 				source := `
 :foo: another-doc.adoc
 

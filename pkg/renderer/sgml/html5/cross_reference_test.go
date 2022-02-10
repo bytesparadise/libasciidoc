@@ -85,6 +85,23 @@ some content`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("to term in labeled list", func() {
+			source := `[[a_term]]term::
+// a comment
+
+Here's a reference to the definition of <<a_term>>.`
+			expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1"><a id="a_term"></a>term</dt>
+</dl>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s a reference to the definition of <a href="#a_term">term</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("invalid section reference", func() {
 
 			source := `[[thetitle]]

@@ -1546,6 +1546,14 @@ func (e *LabeledListElement) Reference(refs ElementReferences) {
 	if id != "" && title != nil {
 		refs[id] = title
 	}
+	// also, visit the term
+	if len(e.Term) > 0 {
+		if anchor, ok := e.Term[0].(*InlineLink); ok {
+			if id := anchor.Attributes.GetAsStringWithDefault(AttrID, ""); id != "" {
+				refs[id] = e.Term[1:]
+			}
+		}
+	}
 	// also, visit elements
 	for _, e := range e.Elements {
 		if e, ok := e.(Referencable); ok {
@@ -2853,6 +2861,15 @@ func NewInlineLink(url *Location, attributes interface{}) (*InlineLink, error) {
 	}, nil
 }
 
+// NewInlineAnchor initializes a new InlineLink map with a single entry for the ID using the given value
+func NewInlineAnchor(id string) (*InlineLink, error) {
+	return &InlineLink{
+		Attributes: Attributes{
+			AttrID: id,
+		},
+	}, nil
+}
+
 var _ WithAttributes = &InlineLink{}
 
 // GetAttributes returns this link's attributes
@@ -2877,15 +2894,6 @@ func (l *InlineLink) GetLocation() *Location {
 
 func (l *InlineLink) SetLocation(value *Location) {
 	l.Location = value
-}
-
-// NewInlineAnchor initializes a new InlineLink map with a single entry for the ID using the given value
-func NewInlineAnchor(id string) (*InlineLink, error) {
-	return &InlineLink{
-		Attributes: Attributes{
-			AttrID: id,
-		},
-	}, nil
 }
 
 // ------------------------------------------
