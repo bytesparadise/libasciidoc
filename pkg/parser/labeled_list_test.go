@@ -61,6 +61,7 @@ Hard drive:: Permanent storage for operating system and/or user files.`
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 
 		})
+
 		It("with a term and description on 2 lines", func() {
 			source := `Item1::
 Item 1 description
@@ -1321,6 +1322,144 @@ on 2 lines, too`
 												Content: "paragraph 2\non 2 lines, too",
 											},
 										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with descritption as single line comment attached", func() {
+			source := `term::
+// a comment`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with descritption as single line comment and content afterwards", func() {
+			source := `term::
+// a comment
+a description`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term",
+									},
+								},
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "a description",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with descritption as single line comment after blanklines", func() {
+			source := `term::
+
+
+// a comment`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with descritption as comment block attached", func() {
+			source := `term::
+////
+a comment
+////`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with descritption as comment block after blanklines", func() {
+			source := `term::
+
+
+////
+a comment
+////`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term",
 									},
 								},
 							},

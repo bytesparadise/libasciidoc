@@ -1403,19 +1403,24 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
     }
 
 ListElementParagraphLine <- 
-    !BlankLine
-    !ListElementContinuationMarker
-    !OrderedListElementPrefix
-    !UnorderedListElementPrefix
-    !CalloutListElementPrefix
-    !(LabeledListElementTerm LabeledListElementSeparator)
-    !BlockDelimiter
-    content:([^\r\n]+ {
-        return strings.TrimSpace(string(c.text)), nil
-    })
-    EOL { // do not retain the EOL chars
-        return types.NewRawLine(content.(string))
+    SingleLineComment {
+        return nil, nil // taking a shortcut to ignore commented out content and avoid having empty paragraphs
     }
+    / (
+        !BlankLine
+        !ListElementContinuationMarker
+        !OrderedListElementPrefix
+        !UnorderedListElementPrefix
+        !CalloutListElementPrefix
+        !(LabeledListElementTerm LabeledListElementSeparator)
+        !BlockDelimiter
+        content:([^\r\n]+ {
+            return strings.TrimSpace(string(c.text)), nil
+        })
+        EOL { // do not retain the EOL chars
+            return types.NewRawLine(content.(string))
+        }
+    )
 
 ListElementContent <- 
     rawline:([^\r\n]+ {
