@@ -2122,6 +2122,8 @@ const (
 	Comment string = "comment"
 	// Quote a quote block
 	Quote string = "quote"
+	// MarkdownCode a code block in the Markdown style
+	MarkdownCode string = "markdown-code"
 	// MarkdownQuote a quote block in the Markdown style
 	MarkdownQuote string = "markdown-quote"
 	// Verse a verse block
@@ -2137,13 +2139,25 @@ const (
 )
 
 type BlockDelimiter struct { // TODO: use BlockDelimiterKind directly?
-	Kind    string
-	rawText string
+	Kind       string
+	Attributes Attributes
+	rawText    string
 }
 
 func NewBlockDelimiter(kind, rawText string) (*BlockDelimiter, error) {
 	return &BlockDelimiter{
 		Kind:    kind,
+		rawText: rawText,
+	}, nil
+}
+
+func NewMarkdownCodeBlockDelimiter(language, rawText string) (*BlockDelimiter, error) {
+	return &BlockDelimiter{
+		Kind: Fenced,
+		Attributes: Attributes{
+			AttrStyle:    Source,
+			AttrLanguage: language,
+		},
 		rawText: rawText,
 	}, nil
 }

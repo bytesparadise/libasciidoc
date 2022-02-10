@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("source blocks", func() {
 
-	Context("as delimited blocks", func() {
+	Context("as Asciidoc blocks", func() {
 
 		It("with source attribute only", func() {
 			source := `[source]
@@ -442,6 +442,26 @@ const Cookie = "cookie"
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
+		})
+	})
+
+	Context("as Markdown block", func() {
+
+		It("with html content", func() {
+			source := ".title\n" +
+				"```html\n" +
+				"<!DOCTYPE html>\n" +
+				"</html>\n" +
+				"```"
+			expected := `<div class="listingblock">
+<div class="title">title</div>
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 	})
 })

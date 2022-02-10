@@ -718,6 +718,7 @@ CrossReferenceLabel <- (
 DelimitedBlock <-
     CommentBlock
     / ExampleBlock
+    / MarkdownCodeBlock
     / FencedBlock
     / ListingBlock
     / LiteralBlock
@@ -731,6 +732,7 @@ BlockDelimiter <-
     delimiter:(
         CommentBlockDelimiter
         / ExampleBlockDelimiter
+        / MarkdownCodeDelimiter // TODO: could be merged with FencedBlockDelimiter since the `language` attribute is not relevant where `BlockDelimiter` rule is used
         / FencedBlockDelimiter
         / ListingBlockDelimiter
         / LiteralBlockDelimiter
@@ -751,6 +753,14 @@ ExampleBlockDelimiter <- "====" Space* EOL {
 
 FencedBlockDelimiter <- "```" Space* EOL {
     return types.NewBlockDelimiter(types.Fenced, string(c.text))
+}
+
+MarkdownCodeDelimiter <- "```" language:(Language) Space* EOL {
+    return types.NewMarkdownCodeBlockDelimiter(language.(string), string(c.text))
+}
+
+Language <- ([^\r\n ]+) {
+    return string(c.text), nil
 }
 
 ListingBlockDelimiter <- "----" Space* EOL {
@@ -882,6 +892,30 @@ LiteralBlockEndDelimiter <- LiteralBlockDelimiter / EOF
 
 LiteralBlockContent <- 
     (!LiteralBlockEndDelimiter
+    line:(DelimitedBlockRawLine) {
+        return line, nil
+    })*
+
+// -------------------
+// Markdown Code Block
+// -------------------
+MarkdownCodeBlock <-
+    delimiter:MarkdownCodeBlockStartDelimiter
+    content:(MarkdownCodeBlockContent)
+    MarkdownCodeBlockEndDelimiter? {
+        c.unsetWithinDelimitedBlock()
+        // Markdown code with fences is a "listing/source" block in Asciidoc
+        b, err := types.NewDelimitedBlock(types.Listing, content.([]interface{}))
+        b.AddAttributes(delimiter.(*types.BlockDelimiter).Attributes)
+        return b, err
+    }
+
+MarkdownCodeBlockStartDelimiter <- MarkdownCodeDelimiter
+
+MarkdownCodeBlockEndDelimiter <- FencedBlockEndDelimiter
+
+MarkdownCodeBlockContent <- 
+    (!MarkdownCodeBlockEndDelimiter
     line:(DelimitedBlockRawLine) {
         return line, nil
     })*
