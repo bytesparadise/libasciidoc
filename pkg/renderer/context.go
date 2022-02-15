@@ -8,10 +8,7 @@ import (
 // Context is a custom implementation of the standard golang context.Context interface,
 // which carries the types.Document which is being processed
 type Context struct {
-	Config *configuration.Configuration // TODO: use composition (remove the `Config` field)
-	// TableOfContents exists even if the document did not specify the `:toc:` attribute.
-	// It will take into account the configured `:toclevels:` attribute value.
-	TableOfContents      types.TableOfContents
+	Config               *configuration.Configuration // TODO: use composition (remove the `Config` field)
 	WithinDelimitedBlock bool
 	EncodeSpecialChars   bool
 	WithinList           int

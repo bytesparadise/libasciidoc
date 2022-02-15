@@ -5,6 +5,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []interface{}, options ...lineRendererOption) (string, error) {
@@ -31,9 +32,9 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 			buf.WriteString(renderedElement)
 		}
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// log.Debugf("rendered inline elements: '%s'", buf.String())
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("rendered inline elements: '%s'", buf.String())
+	}
 	return buf.String(), nil
 }
 

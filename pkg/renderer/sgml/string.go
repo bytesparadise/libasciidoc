@@ -13,37 +13,26 @@ import (
 var quotes = map[types.QuotedStringKind]struct {
 	Open  string
 	Close string
-	Plain string
 }{
 	types.SingleQuote: {
 		Open:  "\u2018",
 		Close: "\u2019",
-		Plain: "'",
 	},
 	types.DoubleQuote: {
 		Open:  "\u201c",
 		Close: "\u201d",
-		Plain: `"`,
 	},
-}
-
-func (r *sgmlRenderer) renderQuotedStringPlain(ctx *renderer.Context, s *types.QuotedString) (string, error) {
-	buf := &strings.Builder{}
-	b, err := r.renderPlainText(ctx, s.Elements)
-	if err != nil {
-		return "", err
-	}
-	buf.WriteString(quotes[s.Kind].Plain)
-	buf.WriteString(b)
-	buf.WriteString(quotes[s.Kind].Plain)
-	return buf.String(), nil
 }
 
 func (r *sgmlRenderer) renderQuotedString(ctx *renderer.Context, s *types.QuotedString) (string, error) {
 	elements := append([]interface{}{
-		&types.StringElement{Content: quotes[s.Kind].Open},
+		&types.StringElement{
+			Content: quotes[s.Kind].Open,
+		},
 	}, s.Elements...)
-	elements = append(elements, &types.StringElement{Content: quotes[s.Kind].Close})
+	elements = append(elements, &types.StringElement{
+		Content: quotes[s.Kind].Close,
+	})
 	return r.renderInlineElements(ctx, elements)
 }
 

@@ -151,40 +151,35 @@ var _ = Describe("tables of contents", func() {
 			close(c)
 
 			expectedToC := &types.TableOfContents{
+				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
 						ID:    "_section_a",
 						Level: 1,
-						Title: "Section A",
 						Children: []*types.ToCSection{
 							{
 								ID:    "_section_a_a",
 								Level: 2,
-								Title: "Section A.a",
 							},
 							{
 								ID:    "_section_a_b",
 								Level: 2,
-								Title: "Section A.b",
 							},
 						},
 					},
 					{
 						ID:    "_section_b",
 						Level: 1,
-						Title: "Section B",
 						Children: []*types.ToCSection{
 							{
 								ID:    "_section_b_a",
 								Level: 2,
-								Title: "Section B.a",
 							},
 						},
 					},
 					{
 						ID:    "_section_c",
 						Level: 1,
-						Title: "Section C",
 					},
 				},
 			}
@@ -337,26 +332,23 @@ var _ = Describe("tables of contents", func() {
 			close(c)
 
 			expectedToC := &types.TableOfContents{
+				MaxDepth: 3,
 				Sections: []*types.ToCSection{
 					{
 						ID:    "_section_a",
 						Level: 1,
-						Title: "Section A",
 						Children: []*types.ToCSection{
 							{
 								ID:    "_section_a_a",
 								Level: 2,
-								Title: "Section A.a",
 							},
 							{
 								ID:    "_section_a_b",
 								Level: 2,
-								Title: "Section A.b",
 								Children: []*types.ToCSection{
 									{
 										ID:    "_section_that_shall_be_in_ToC",
 										Level: 3,
-										Title: "Section that shall be in ToC",
 									},
 								},
 							},
@@ -365,19 +357,16 @@ var _ = Describe("tables of contents", func() {
 					{
 						ID:    "_section_b",
 						Level: 1,
-						Title: "Section B",
 						Children: []*types.ToCSection{
 							{
 								ID:    "_section_b_a",
 								Level: 2,
-								Title: "Section B.a",
 							},
 						},
 					},
 					{
 						ID:    "_section_c",
 						Level: 1,
-						Title: "Section C",
 					},
 				},
 			}
@@ -458,16 +447,15 @@ a preamble
 					"_section_2": section2Title,
 				},
 				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
 							ID:    "_section_1",
 							Level: 1,
-							Title: "Section 1",
 						},
 						{
 							ID:    "_section_2",
 							Level: 1,
-							Title: "Section 2",
 						},
 					},
 				},
@@ -535,16 +523,15 @@ a preamble
 					"_section_2": section2Title,
 				},
 				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
 							ID:    "_section_1",
 							Level: 1,
-							Title: "Section 1",
 						},
 						{
 							ID:    "_section_2",
 							Level: 1,
-							Title: "Section 2",
 						},
 					},
 				},
@@ -619,16 +606,15 @@ a preamble
 					"_section_2": section2Title,
 				},
 				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
 							ID:    "_section_1",
 							Level: 1,
-							Title: "Section 1",
 						},
 						{
 							ID:    "_section_2",
 							Level: 1,
-							Title: "Section 2",
 						},
 					},
 				},
@@ -683,16 +669,15 @@ a preamble
 					"_section_2": section2Title,
 				},
 				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
 							ID:    "_section_1",
 							Level: 1,
-							Title: "Section 1",
 						},
 						{
 							ID:    "_section_2",
 							Level: 1,
-							Title: "Section 2",
 						},
 					},
 				},
@@ -747,16 +732,15 @@ a preamble
 					"_section_2": section2Title,
 				},
 				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
 							ID:    "_section_1",
 							Level: 1,
-							Title: "Section 1",
 						},
 						{
 							ID:    "_section_2",
 							Level: 1,
-							Title: "Section 2",
 						},
 					},
 				},

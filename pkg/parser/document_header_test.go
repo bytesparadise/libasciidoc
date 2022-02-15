@@ -1103,7 +1103,9 @@ a paragraph`
 							},
 						},
 					},
-					TableOfContents: &types.TableOfContents{},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1133,7 +1135,9 @@ a paragraph`
 							},
 						},
 					},
-					TableOfContents: &types.TableOfContents{},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1169,7 +1173,9 @@ a paragraph`
 							},
 						},
 					},
-					TableOfContents: &types.TableOfContents{},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1199,7 +1205,9 @@ a paragraph`
 							Value: "Xavier",
 						},
 					},
-					TableOfContents: &types.TableOfContents{},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})

@@ -16,13 +16,14 @@ var _ = Describe("document metadata", func() {
 	lastUpdated := time.Now()
 	expected := types.Metadata{
 		LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-		TableOfContents: types.TableOfContents{
+		Title:       "Title",
+		TableOfContents: &types.TableOfContents{
+			MaxDepth: 2,
 			Sections: []*types.ToCSection{
 				{
-					ID:       "_section_1",
-					Level:    1,
-					Title:    "Section 1",
-					Children: []*types.ToCSection{},
+					ID:    "_section_1",
+					Level: 1,
+					Title: "Section 1",
 				},
 			},
 		},
@@ -30,7 +31,10 @@ var _ = Describe("document metadata", func() {
 
 	It("should match", func() {
 		// given
-		actual := `== Section 1`
+		actual := `= Title
+:toc:
+		
+== Section 1`
 		// when
 		result, err := testsupport.DocumentMetadata(actual, lastUpdated)
 		// then

@@ -157,20 +157,20 @@ func (d *Document) AddElement(element interface{}) error {
 type Metadata struct {
 	Title           string
 	LastUpdated     string
-	TableOfContents TableOfContents
+	TableOfContents *TableOfContents
 	Authors         []*DocumentAuthor
 	Revision        DocumentRevision
 }
 
 func NewTableOfContents(maxDepth int) *TableOfContents {
 	return &TableOfContents{
-		maxDepth: maxDepth,
+		MaxDepth: maxDepth,
 	}
 }
 
 // TableOfContents the table of contents
 type TableOfContents struct {
-	maxDepth int
+	MaxDepth int
 	Sections []*ToCSection
 }
 
@@ -184,15 +184,14 @@ type ToCSection struct {
 
 // Add adds a ToCSection associated with the given Section
 func (t *TableOfContents) Add(s *Section) {
-	if s.Level > t.maxDepth {
-		log.Debugf("skipping section with level %d (> %d)", s.Level, t.maxDepth)
+	if s.Level > t.MaxDepth {
+		log.Debugf("skipping section with level %d (> %d)", s.Level, t.MaxDepth)
 		// skip for elements with a too low level in the hierarchy
 		return
 	}
 	ts := &ToCSection{
 		ID:    s.GetAttributes().GetAsStringWithDefault(AttrID, ""),
 		Level: s.Level,
-		Title: stringify(s.Title),
 	}
 	// lookup the last child at the given section's level
 	if len(t.Sections) == 0 {
