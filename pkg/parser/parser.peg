@@ -247,14 +247,6 @@ DocumentFragment <-
         / FrontMatter
         / Paragraph // must be the last one... 
     )? // allow attribute on empty/no element
-    // &{
-    //     fmt.Printf("checking attributes and element: %v + %v", attributes, element)
-    //     if attributes != nil && element == nil {
-    //         // do not return an error, but do not accept such a kind of content (standalone attributes)
-    //         return false, nil
-    //     }
-    //     return true, nil
-    // }
     {
         c.disableFrontMatterRule() // not allowed as soon as a single element is found
         c.disableDocumentHeaderRule(element) // not allowed anymore, based on element that was found
@@ -413,7 +405,7 @@ InlineAttributes <-
 
 // shorthand syntax for anchors. Eg: `[[An ID]]`
 LegacyElementID <-
-   "[[" 
+    "[[" 
     id:(
         elements:(
             ([^=\r\n\uFFFD{\]]+ { // spaces, commas and dots are allowed in this syntax
@@ -438,7 +430,6 @@ ShortHandTitle <- `.` title:(
         ([^\r\n\uFFFD{]+ {
             return string(c.text), nil
         })
-        // / ElementPlaceHolder
         / AttributeValueReference
         / ("{" { 
             return string(c.text), nil
@@ -452,8 +443,7 @@ ShortHandTitle <- `.` title:(
 // LongHandAttributes. Eg: `[positional1,positional2,...,named1,named2,...]
 // positional attributes are optional, and `positional1` can be combined with options and roles ("extras")
 LongHandAttributes <-
-    "[" !"[" // prevent processing nested attributes at this point (parser will need to move forward by 1 char first)
-    //!Space // no space allowed on the first character
+    !`\` "[" !"[" // prevent processing nested attributes at this point (parser will need to move forward by 1 char first)
     firstPositionalAttributes:(FirstPositionalAttributes)?
     otherAttributes:(PositionalAttribute / NamedAttribute)*
     "]" {
@@ -655,7 +645,15 @@ AttributeReference <-
         return element, nil
     }
 
-AttributeValueReference <- 
+AttributeValueReference <-  
+    // escaped
+    `\` "{" name:AttributeName "}" { 
+        log.Debug("matching escaped attribute reference")
+        // return types.NewStringElement("{"+name.(string)+"}")
+        return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
+    }
+    /
+    // unescaped
     "{" name:AttributeName "}" { 
         return types.NewAttributeSubstitution(name.(string), string(c.text))
     }
@@ -1182,7 +1180,7 @@ InlineElement <-
         InlineWord // more permissive than the 'Word' rule
         / Spaces 
         / LineBreak
-        / !EOL (
+        / !EOL ( // TODO: why !EOL here?
             Quote
             / AttributeReference 
             / InlineMacro
@@ -1198,9 +1196,17 @@ InlineElement <-
 // -------------------------------------------------------------------------------------
 // InlineAnchor 
 // -------------------------------------------------------------------------------------
-InlineAnchor <- "[[" id:(Id) "]]" { // no EOL here since there can be multiple InlineElementID on the same line
-    return types.NewInlineAnchor(id.(string))
-}
+InlineAnchor <- 
+    // escaped
+    `\` "[[" id:(Id) "]]" {
+        //return types.NewStringElement("[[" + id.(string) + "]]")
+        return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
+    }
+    // unescaped
+    /
+    "[[" id:(Id) "]]" { // no EOL here since there can be multiple InlineElementID on the same line
+        return types.NewInlineAnchor(id.(string))
+    }
 
 // -------------------------------------------------------------------------------------
 // Index Terms
@@ -1304,7 +1310,7 @@ PassthroughMacroCharacter <- [^\]] {
 // -------------------------------------------------------------------------------------
 Link <- BareURL / RelativeLink / ExternalLink
 
-BareURL <- 
+BareURL <-
     "<" 
     url:(LocationWithScheme) // scheme is required for this syntax
     closingBracket:(">")? // TODO: never used?
@@ -1316,11 +1322,25 @@ BareURL <-
     }
 
 // url preceeding with `link:` MUST be followed by square brackets
-RelativeLink <- "link:" url:(Location) attributes:(InlineAttributes) {
+RelativeLink <- 
+    // escaped
+    `\` "link:" url:(Location) attributes:(InlineAttributes) {
+        return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
+    }
+    /
+    // unescaped
+    "link:" url:(Location) attributes:(InlineAttributes) {
         return types.NewInlineLink(url.(*types.Location), attributes.(types.Attributes))
     }
 
-ExternalLink <- url:(LocationWithScheme) attributes:(InlineAttributes)? {
+ExternalLink <- 
+    // escaped
+    `\` url:(LocationWithScheme) attributes:(InlineAttributes)? {
+        return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
+    }
+    /
+    // unescaped
+    url:(LocationWithScheme) attributes:(InlineAttributes)? {
         return types.NewInlineLink(url.(*types.Location), attributes)
     }
 
@@ -1745,13 +1765,23 @@ LiteralParagraphRawLine <-
 // Quoted Texts (bold, italic, monospace, marked, superscript and subscript)
 // -----------------------------------------------------------------------------------------------------------------------
 QuotedText <- 
-    (
-        attributes:(LongHandAttributes)? // TODO: do not check for attributes on quoted text if we're already parsing an attribute value?
-        text:(UnconstrainedQuotedText / ConstrainedQuotedText) {
-            return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-    ) 
-    / EscapedQuotedText
+    // TODO: do not check for attributes twice here?  
+    // TODO: also, do not check for attributes on quoted text if we're already parsing an attribute value?
+    // escaped with optional attributes
+    attributes:(LongHandAttributes { 
+        return types.NewStringElement(string(c.text))
+    })?
+    text:EscapedQuotedText {
+        log.Debugf("matched escaped quoted text")
+        return append([]interface{}{attributes}, text.([]interface{})...), nil
+    }
+    / 
+    // unescaped 
+    attributes:(LongHandAttributes)? 
+    text:(UnconstrainedQuotedText / ConstrainedQuotedText) {
+        return text.(*types.QuotedText).WithAttributes(attributes)
+    }
+    
 
 ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "#" !"#" / "`" !"`"
 
@@ -1777,8 +1807,8 @@ EscapedQuotedText <- // TODO: use something like `&('\')` to quickly escape?
         EscapedBoldText 
         / EscapedItalicText
         / EscapedMarkedText
-        / EscapedMonospaceText 
-        / EscapedSubscriptText 
+        / EscapedMonospaceText
+        / EscapedSubscriptText
         / EscapedSuperscriptText
     ) {
         return element, nil
@@ -1865,7 +1895,7 @@ SingleQuoteBoldTextStartDelimiter <- "*"
 SingleQuoteBoldTextEndDelimiter <- "*" 
 
 SingleQuoteBoldText <- 
-    SingleQuoteBoldTextStartDelimiter
+   SingleQuoteBoldTextStartDelimiter
     elements:(SingleQuoteBoldTextElements) 
     SingleQuoteBoldTextEndDelimiter {
         return types.NewQuotedText(types.SingleQuoteBold, elements.([]interface{}))
@@ -1894,6 +1924,19 @@ SingleQuoteBoldTextElement <-
     / SingleQuoteBoldTextFallbackCharacter
 
 QuotedTextInSingleQuoteBoldText <- 
+    // escaped content
+    &(`\`)
+    element:(
+        EscapedItalicText
+        / EscapedMarkedText
+        / EscapedMonospaceText
+        / EscapedSubscriptText
+        / EscapedSuperscriptText
+    ) {
+        return element, nil
+    }
+    /
+    // unescaped content
     attributes:(LongHandAttributes)? 
     text:(
         DoubleQuoteBoldText
@@ -1904,6 +1947,7 @@ QuotedTextInSingleQuoteBoldText <-
         / SuperscriptText) {
             return text.(*types.QuotedText).WithAttributes(attributes)
         }
+
 SingleQuoteBoldTextFallbackCharacter <-
     [^\r\n *] // anything except EOL, space and bold delimiter (fallback in case nothing else matched)
     / "*" Alphanums {  // or a bold delimiter when immediately followed by an alphanum (ie, in the middle of some text)
@@ -1911,12 +1955,17 @@ SingleQuoteBoldTextFallbackCharacter <-
     }
 
 EscapedBoldText <- 
-    backslashes:(TwoOrMoreBackslashes) "**" elements:(DoubleQuoteBoldTextElements) "**" { // double punctuation must be evaluated first
+    // double escape: \\**not bold**
+    backslashes:(TwoOrMoreBackslashes) "**" elements:(DoubleQuoteBoldTextElements) "**" { 
         return types.NewEscapedQuotedText(backslashes.(string), "**", elements.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "**" elements:(SingleQuoteBoldTextElements) "*" { // unbalanced `**` vs `*` punctuation
+    } 
+    // unbalanced double escape: \\**not bold*
+    / backslashes:(OneOrMoreBackslashes) "**" elements:(SingleQuoteBoldTextElements) "*" { 
         result := append([]interface{}{"*"}, elements.([]interface{}))
         return types.NewEscapedQuotedText(backslashes.(string), "*", result)
-    } / backslashes:(OneOrMoreBackslashes) "*" elements:(SingleQuoteBoldTextElements) "*" { // simple punctuation must be evaluated last
+    } 
+    // single escape: \*not bold*
+    / backslashes:(OneOrMoreBackslashes) "*" elements:(SingleQuoteBoldTextElements) "*" { 
         return types.NewEscapedQuotedText(backslashes.(string), "*", elements.([]interface{}))
     }
 
@@ -1965,6 +2014,19 @@ DoubleQuoteItalicTextElement <-
         }
 
 QuotedTextInDoubleQuoteItalicText <- 
+    // escaped content
+    &(`\`)
+    element:(
+        EscapedBoldText 
+        / EscapedMarkedText
+        / EscapedMonospaceText
+        / EscapedSubscriptText
+        / EscapedSuperscriptText
+    ) {
+        return element, nil
+    }
+    /
+    // unescaped content
     attributes:(LongHandAttributes)? 
     text:(SingleQuoteItalicText
         / BoldText
@@ -2018,6 +2080,19 @@ SingleQuoteItalicTextElement <-
     / SingleQuoteItalicTextFallbackCharacter
 
 QuotedTextInSingleQuoteItalicText <-
+    // escaped content
+    &(`\`)
+    element:(
+        EscapedBoldText 
+        / EscapedMarkedText
+        / EscapedMonospaceText
+        / EscapedSubscriptText
+        / EscapedSuperscriptText
+    ) {
+        return element, nil
+    }
+    /
+    // unescaped content
     attributes:(LongHandAttributes)? 
     text:(BoldText
         / DoubleQuoteItalicText
@@ -2035,12 +2110,17 @@ SingleQuoteItalicTextFallbackCharacter <-
     }
 
 EscapedItalicText <- 
-    backslashes:(TwoOrMoreBackslashes) "__" elements:(DoubleQuoteItalicTextElements) "__" { // double punctuation must be evaluated first
+    // double escape: \\__not italic__
+    backslashes:(TwoOrMoreBackslashes) "__" elements:(DoubleQuoteItalicTextElements) "__" {
         return types.NewEscapedQuotedText(backslashes.(string), "__", elements.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "__" elements:(SingleQuoteItalicTextElements) "_" { // unbalanced `__` vs `_` punctuation
+    } 
+    // unbalanced double escape: \\__not italic_
+    / backslashes:(OneOrMoreBackslashes) "__" elements:(SingleQuoteItalicTextElements) "_" { // unbalanced `__` vs `_` punctuation
         result := append([]interface{}{"_"}, elements.([]interface{}))
         return types.NewEscapedQuotedText(backslashes.(string), "_", result)
-    } / backslashes:(OneOrMoreBackslashes) "_" elements:(SingleQuoteItalicTextElements) "_" { // simple punctuation must be evaluated last
+    } 
+    // single escape: \_not italic_
+    / backslashes:(OneOrMoreBackslashes) "_" elements:(SingleQuoteItalicTextElements) "_" { // simple punctuation must be evaluated last
         return types.NewEscapedQuotedText(backslashes.(string), "_", elements.([]interface{}))
     } 
 
@@ -2089,6 +2169,19 @@ DoubleQuoteMonospaceTextElement <-
         }
 
 QuotedTextInDoubleQuoteMonospaceText <-
+    // escaped content
+    &(`\`)
+    element:(
+        EscapedBoldText 
+        / EscapedItalicText
+        / EscapedMarkedText
+        / EscapedSubscriptText
+        / EscapedSuperscriptText
+    ) {
+        return element, nil
+    }
+    /
+    // unescaped content
     attributes:(LongHandAttributes)? 
     text:(
         SingleQuoteMonospaceText
@@ -2146,6 +2239,19 @@ SingleQuoteMonospaceTextElement <-
     / SingleQuoteMonospaceTextFallbackCharacter
 
 QuotedTextInSingleQuoteMonospaceText <-
+    // escaped content
+    &(`\`)
+    element:(
+        EscapedBoldText 
+        / EscapedItalicText
+        / EscapedMarkedText
+        / EscapedSubscriptText
+        / EscapedSuperscriptText
+    ) {
+        return element, nil
+    }
+    /
+    // unescaped content
     attributes:(LongHandAttributes)? 
     text:(
         DoubleQuoteMonospaceText
@@ -2164,12 +2270,17 @@ SingleQuoteMonospaceTextFallbackCharacter <-
     }
 
 EscapedMonospaceText <- 
-    backslashes:(TwoOrMoreBackslashes) "``" elements:(DoubleQuoteMonospaceTextElements) "``" { // double punctuation must be evaluated first
+    // double escape: \\``not monospace``
+    backslashes:(TwoOrMoreBackslashes) "``" elements:(DoubleQuoteMonospaceTextElements) "``" {
         return types.NewEscapedQuotedText(backslashes.(string), "``", elements.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "``" elements:(SingleQuoteMonospaceTextElements) "`" { // unbalanced "``" vs "`" punctuation
+    } 
+    // unbalanced double escape: \\``not monospace``
+    / backslashes:(OneOrMoreBackslashes) "``" elements:(SingleQuoteMonospaceTextElements) "`" {
         result := append([]interface{}{"`"}, elements.([]interface{}))
         return types.NewEscapedQuotedText(backslashes.(string), "`", result)
-    } / backslashes:(OneOrMoreBackslashes) "`" elements:(SingleQuoteMonospaceTextElements) "`" { // simple punctuation must be evaluated last
+    } 
+    // single escape: \`not monospace`
+    / backslashes:(OneOrMoreBackslashes) "`" elements:(SingleQuoteMonospaceTextElements) "`" {
         return types.NewEscapedQuotedText(backslashes.(string), "`", elements.([]interface{}))
     }
 
@@ -2218,6 +2329,19 @@ DoubleQuoteMarkedTextElement <- // may start and end with spaces
     }
 
 QuotedTextInDoubleMarkedBoldText <-
+    // escaped content
+    &(`\`)
+    element:(
+        EscapedBoldText 
+        / EscapedItalicText
+        / EscapedMonospaceText
+        / EscapedSubscriptText
+        / EscapedSuperscriptText
+    ) {
+        return element, nil
+    }
+    /
+    // unescaped content
     attributes:(LongHandAttributes)? 
     text:(
         SingleQuoteMarkedText
@@ -2272,6 +2396,19 @@ SingleQuoteMarkedTextElement <-
     / SingleQuoteMarkedTextFallbackCharacter
 
 QuotedTextInSingleQuoteMarkedText <-
+    // escaped content
+    &(`\`)
+    element:(
+        EscapedBoldText 
+        / EscapedItalicText
+        / EscapedMonospaceText
+        / EscapedSubscriptText
+        / EscapedSuperscriptText
+    ) {
+        return element, nil
+    }
+    /
+    // unescaped content
     attributes:(LongHandAttributes)? 
     text:(
         DoubleQuoteMarkedText
@@ -2290,12 +2427,17 @@ SingleQuoteMarkedTextFallbackCharacter <-
     }
 
 EscapedMarkedText <-
-    backslashes:(TwoOrMoreBackslashes) "##" elements:(DoubleQuoteMarkedTextElements) "##" { // double punctuation must be evaluated first
+    // double escape: \\##not marked##
+    backslashes:(TwoOrMoreBackslashes) "##" elements:(DoubleQuoteMarkedTextElements) "##" {
         return types.NewEscapedQuotedText(backslashes.(string), "##", elements.([]interface{}))
-    } / backslashes:(OneOrMoreBackslashes) "##" elements:(SingleQuoteMarkedTextElements) "#" { // unbalanced `##` vs `#` punctuation
+    } 
+    // unbalanced double escape: \\##not marked#
+    / backslashes:(OneOrMoreBackslashes) "##" elements:(SingleQuoteMarkedTextElements) "#" {
         result := append([]interface{}{"#"}, elements.([]interface{}))
         return types.NewEscapedQuotedText(backslashes.(string), "#", result)
-    } / backslashes:(OneOrMoreBackslashes) "#" elements:(SingleQuoteMarkedTextElements) "#" { // simple punctuation must be evaluated last
+    } 
+    // single escape: \#not marked#
+    / backslashes:(OneOrMoreBackslashes) "#" elements:(SingleQuoteMarkedTextElements) "#" {
         return types.NewEscapedQuotedText(backslashes.(string), "#", elements.([]interface{}))
     }
 
@@ -2317,7 +2459,8 @@ NonSubscriptText <- [^\r\n ~]+ { // anything except spaces, EOL or '~'
         return c.text, nil
     }
 
-EscapedSubscriptText <- 
+EscapedSubscriptText <-
+    // single escape: \~not subscript~
     backslashes:(OneOrMoreBackslashes) 
     SubscriptTextDelimiter 
     element:(SubscriptTextElement)
@@ -2344,6 +2487,7 @@ NonSuperscriptText <- [^\r\n ^]+ { // anything except spaces, EOL or '^'
     }
 
 EscapedSuperscriptText <- 
+    // single escape: \^not superscript^
     backslashes:(OneOrMoreBackslashes) 
     SuperscriptTextDelimiter 
     element:(SuperscriptTextElement) 
@@ -2627,7 +2771,15 @@ SingleLineCommentContent <- [^\r\n]* {
 // -------------------------------------------------------------------------------------
 // Symbols
 // -------------------------------------------------------------------------------------
-Symbol <- Apostrophe / Copyright / Trademark / Registered / Ellipsis / ImpliedApostrophe
+Symbol <- 
+    // escaped
+    `\` (Apostrophe / Copyright / Trademark / Registered / Ellipsis) {
+        return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
+    }
+    // unescaped
+    / Apostrophe / Copyright / Trademark / Registered / Ellipsis 
+    // 
+    / TypographicQuote
 
 Apostrophe <- "`'" {
         return types.NewStringElement("\u2019")
@@ -2652,11 +2804,18 @@ Ellipsis <- "..." {
     }
 
 // The implied apostrophe is used in interior words, and intended to help
-// cases like "mother's day".  asciidoctor requires that it be followed by
+// cases like "mother's day".  Asciidoctor requires that it be followed by
 // a letter (not a digit) but it can have a digit just before it.
-
-ImpliedApostrophe <- Alphanum "'" &[\pL] {
-        return types.NewStringElement(string(c.text[:1])+"\u2019")
+TypographicQuote <- 
+    // escaped
+    Alphanum `\'` &[\pL] {
+        log.Debug("matched escaped apostrophe")
+        return types.NewStringElement(strings.TrimSuffix(string(c.text), `\'`)+`'`) // retain the apostrophe, but discard the `\` escape char
+    }
+    /
+    // unescaped
+    Alphanum `'` &[\pL] {
+        return types.NewStringElement(strings.TrimSuffix(string(c.text), `'`)+"\u2019") // convert quote 
     }
 
 // -------------------------------------------------------------------------------------

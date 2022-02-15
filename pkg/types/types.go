@@ -2718,26 +2718,23 @@ func (t *QuotedText) WithAttributes(attributes interface{}) (*QuotedText, error)
 // -------------------------------------------------------
 
 // NewEscapedQuotedText returns a new []interface{} where the nested elements are preserved (ie, substituted as expected)
-func NewEscapedQuotedText(backslashes string, punctuation string, content interface{}) ([]interface{}, error) {
+func NewEscapedQuotedText(backslashes string, marker string, content interface{}) ([]interface{}, error) {
 	// log.Debugf("new escaped quoted text: %s %s %v", backslashes, punctuation, content)
 	backslashesStr := Apply(backslashes,
 		func(s string) string {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
-			if len(s) > len(punctuation) {
-				return s[len(punctuation):]
+			if len(s) > len(marker) {
+				return s[len(marker):]
 			}
 			return ""
 		})
 	return []interface{}{
 		&StringElement{
-			Content: backslashesStr,
-		},
-		&StringElement{
-			Content: punctuation,
+			Content: backslashesStr + marker,
 		},
 		content,
 		&StringElement{
-			Content: punctuation,
+			Content: marker,
 		},
 	}, nil
 }
