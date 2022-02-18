@@ -7,6 +7,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
@@ -119,7 +120,7 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 
 // nolint:gocyclo
 func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) (string, error) {
-	// log.Debugf("rendering plain string for element of type %T", element)
+	log.Debugf("rendering plain string for element of type %T", element)
 	switch element := element.(type) {
 	case []interface{}:
 		return r.renderInlineElements(ctx, element, withRenderer(r.renderPlainText))
@@ -139,7 +140,7 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 	case *types.StringElement:
 		return element.Content, nil
 	case *types.QuotedString:
-		return r.renderQuotedStringPlain(ctx, element)
+		return r.renderQuotedString(ctx, element)
 	// case *types.Paragraph:
 	// 	return r.renderParagraph(ctx, element, withRenderer(r.renderPlainText))
 	case *types.FootnoteReference:

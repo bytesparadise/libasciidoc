@@ -123,23 +123,24 @@ a paragraph`
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					TableOfContents: types.TableOfContents{
-						Sections: []*types.ToCSection{
-							{
-								ID:    "_section_a",
-								Level: 1,
-								Title: "Section A",
-								Children: []*types.ToCSection{
-									{
-										ID:       "_section_a_a_a",
-										Level:    3,
-										Title:    "Section A.a.a",
-										Children: []*types.ToCSection{},
-									},
-								},
-							},
-						},
-					},
+					// see https://github.com/bytesparadise/libasciidoc/issues/939
+					// TableOfContents: types.TableOfContents{
+					// 	Sections: []*types.ToCSection{
+					// 		{
+					// 			ID:    "_section_a",
+					// 			Level: 1,
+					// 			Title: "Section A",
+					// 			Children: []*types.ToCSection{
+					// 				{
+					// 					ID:       "_section_a_a_a",
+					// 					Level:    3,
+					// 					Title:    "Section A.a.a",
+					// 					Children: []*types.ToCSection{},
+					// 				},
+					// 			},
+					// 		},
+					// 	},
+					// },
 				}))
 			})
 
@@ -186,29 +187,30 @@ a paragraph with _italic content_`
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					TableOfContents: types.TableOfContents{
-						Sections: []*types.ToCSection{
-							{
-								ID:    "_section_a",
-								Level: 1,
-								Title: "Section A",
-								Children: []*types.ToCSection{
-									{
-										ID:       "_section_a_a",
-										Level:    2,
-										Title:    "Section A.a",
-										Children: []*types.ToCSection{},
-									},
-								},
-							},
-							{
-								ID:       "_section_b",
-								Level:    1,
-								Title:    "Section B",
-								Children: []*types.ToCSection{},
-							},
-						},
-					},
+					// see https://github.com/bytesparadise/libasciidoc/issues/939
+					// TableOfContents: types.TableOfContents{
+					// 	Sections: []*types.ToCSection{
+					// 		{
+					// 			ID:    "_section_a",
+					// 			Level: 1,
+					// 			Title: "Section A",
+					// 			Children: []*types.ToCSection{
+					// 				{
+					// 					ID:       "_section_a_a",
+					// 					Level:    2,
+					// 					Title:    "Section A.a",
+					// 					Children: []*types.ToCSection{},
+					// 				},
+					// 			},
+					// 		},
+					// 		{
+					// 			ID:       "_section_b",
+					// 			Level:    1,
+					// 			Title:    "Section B",
+					// 			Children: []*types.ToCSection{},
+					// 		},
+					// 	},
+					// },
 				}))
 			})
 
@@ -230,16 +232,17 @@ a paragraph with _italic content_`
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					TableOfContents: types.TableOfContents{
-						Sections: []*types.ToCSection{
-							{
-								ID:       "_grandchild_title",
-								Level:    1,
-								Title:    "grandchild title",
-								Children: []*types.ToCSection{},
-							},
-						},
-					},
+					// see https://github.com/bytesparadise/libasciidoc/issues/939
+					// TableOfContents: types.TableOfContents{
+					// 	Sections: []*types.ToCSection{
+					// 		{
+					// 			ID:       "_grandchild_title",
+					// 			Level:    1,
+					// 			Title:    "grandchild title",
+					// 			Children: []*types.ToCSection{},
+					// 		},
+					// 	},
+					// },
 				}))
 			})
 		})

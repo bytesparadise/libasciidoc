@@ -134,28 +134,25 @@ Preamble comes here
 					"_section_c":   titleSectionC,
 				},
 				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
 							ID:    "_section_a",
 							Level: 1,
-							Title: "Section A",
 							Children: []*types.ToCSection{
 								{
 									ID:    "_section_a_a",
 									Level: 2,
-									Title: "Section A.a",
 								},
 							},
 						},
 						{
 							ID:    "_section_b",
 							Level: 1,
-							Title: "Section B",
 						},
 						{
 							ID:    "_section_c",
 							Level: 1,
-							Title: "Section C",
 						},
 					},
 				},

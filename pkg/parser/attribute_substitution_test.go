@@ -124,7 +124,9 @@ This journey continues`
 						},
 					},
 				},
-				TableOfContents: &types.TableOfContents{}, // TODO: should we include a ToC when it's empty?
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})

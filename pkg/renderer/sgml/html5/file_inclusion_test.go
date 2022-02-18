@@ -35,16 +35,6 @@ var _ = Describe("file inclusions", func() {
 		Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 			Title:       "",
 			LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-			TableOfContents: types.TableOfContents{
-				Sections: []*types.ToCSection{
-					{
-						ID:       "_grandchild_title",
-						Level:    1,
-						Title:    "grandchild title",
-						Children: []*types.ToCSection{},
-					},
-				},
-			},
 		}))
 		// verify no error/warning in logs
 		Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))

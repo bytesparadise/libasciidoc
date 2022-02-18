@@ -349,6 +349,7 @@ var _ = Describe("quoted strings", func() {
 
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
+
 	It("image in double curly", func() {
 		source := "\"`a image:foo.png[]`\""
 		expected := `<div class="paragraph">
@@ -357,10 +358,30 @@ var _ = Describe("quoted strings", func() {
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
+
 	It("icon in double curly", func() {
 		source := ":icons: font\n\n\"`a icon:note[]`\""
 		expected := `<div class="paragraph">
 <p>&#8220;a <span class="icon"><i class="fa fa-note"></i></span>&#8221;</p>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("smart quotes in section title and table of contents", func() {
+		source := "= title\n" +
+			":toc:\n\n" +
+			"== \"`smart`\" quotes"
+		expected := `<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_smart_quotes">&#8220;smart&#8221; quotes</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_smart_quotes">&#8220;smart&#8221; quotes</h2>
+<div class="sectionbody">
+</div>
 </div>
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))

@@ -65,11 +65,11 @@ var _ = Describe("aggregate fragments", func() {
 				"_section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
 						ID:    "_section_1",
 						Level: 1,
-						Title: "section 1",
 					},
 				},
 			},
@@ -126,11 +126,11 @@ var _ = Describe("aggregate fragments", func() {
 				"_section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
 						ID:    "_section_1",
 						Level: 1,
-						Title: "section 1",
 					},
 				},
 			},
@@ -173,7 +173,9 @@ var _ = Describe("aggregate fragments", func() {
 				},
 				paragraph, // not wrapped in a preamble since there is nothing afterwards
 			},
-			TableOfContents: &types.TableOfContents{},
+			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
+			},
 		}
 		doc, _, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
@@ -215,11 +217,11 @@ var _ = Describe("aggregate fragments", func() {
 				"_section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
 						ID:    "_section_1",
 						Level: 1,
-						Title: "section 1",
 					},
 				},
 			},
@@ -278,11 +280,11 @@ var _ = Describe("aggregate fragments", func() {
 				"_section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
 						ID:    "_section_1",
 						Level: 1,
-						Title: "section 1",
 					},
 				},
 			},
@@ -333,7 +335,9 @@ var _ = Describe("aggregate fragments", func() {
 				},
 				paragraph,
 			},
-			TableOfContents: &types.TableOfContents{},
+			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
+			},
 		}
 		doc, _, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())

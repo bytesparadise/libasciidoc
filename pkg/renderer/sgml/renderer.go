@@ -186,11 +186,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 		renderedTitle = DefaultTitle
 	}
 	// needs to be set before rendering the content elements
-	ctx.TableOfContents, err = r.newTableOfContents(ctx, doc) // TODO: needed??
-	if err != nil {
-		return metadata, errors.Wrapf(err, "unable to render full document")
-	}
-	metadata.TableOfContents = ctx.TableOfContents
+	metadata.TableOfContents = doc.TableOfContents
 	renderedHeader, renderedContent, err := r.splitAndRender(ctx, doc)
 	if err != nil {
 		return metadata, errors.Wrapf(err, "unable to render full document")
@@ -202,13 +198,12 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 	if ctx.Config.WrapInHTMLBodyElement {
 		log.Debugf("Rendering full document...")
 		err = r.article.Execute(output, struct {
-			Doctype     string
-			Generator   string
-			Description string
-			Title       string
-			Authors     string
-			Header      string
-			// Role                  string
+			Doctype               string
+			Generator             string
+			Description           string
+			Title                 string
+			Authors               string
+			Header                string
 			ID                    string
 			Roles                 string
 			Content               string
