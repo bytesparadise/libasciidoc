@@ -83,15 +83,11 @@ func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sect
 	}
 
 	err := r.tocSection.Execute(resultBuf, struct {
-		// Context  *renderer.Context
 		Level   int
 		Content string
-		// Sections []*types.ToCSection
 	}{
-		// Context:  ctx,
 		Level:   sections[0].Level,
 		Content: contents.String(),
-		// Sections: sections,
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render document ToC")
@@ -120,19 +116,15 @@ func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *
 		return "", errors.Wrap(err, "unable to render ToC entry title (missing element reference")
 	}
 	err = r.tocEntry.Execute(resultBuf, struct {
-		// Context  *renderer.Context
 		Number  string
 		ID      string
 		Title   string
 		Content string
-		// Children []*types.ToCSection
 	}{
-		// Context:  ctx,
 		Number:  number,
 		ID:      entry.ID,
 		Title:   entry.Title,
 		Content: content,
-		// Children: entry.Children,
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render document ToC")
