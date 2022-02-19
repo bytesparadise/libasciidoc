@@ -488,9 +488,13 @@ Here's a reference to the definition of <<a_term>>.`
 some content linked to xref:{foo}[another_doc()]!`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "foo",
-							Value: "another-doc.adoc",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "foo",
+									Value: "another-doc.adoc",
+								},
+							},
 						},
 						&types.Paragraph{
 							Elements: []interface{}{

@@ -64,9 +64,13 @@ var _ = Describe("links", func() {
 a link to <{example}>.`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "example",
-							Value: "https://example.com",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "example",
+									Value: "https://example.com",
+								},
+							},
 						},
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -775,13 +779,17 @@ a link to {url}`
 
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "url",
-								Value: "https://example.com",
-							},
-							&types.AttributeDeclaration{
-								Name:  "url",
-								Value: "https://foo2.bar",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "url",
+										Value: "https://example.com",
+									},
+									&types.AttributeDeclaration{
+										Name:  "url",
+										Value: "https://foo2.bar",
+									},
+								},
 							},
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -809,13 +817,17 @@ a link to {scheme}://{path} and https://foo.com`
 
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "scheme",
-								Value: "https",
-							},
-							&types.AttributeDeclaration{
-								Name:  "path",
-								Value: "example.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "scheme",
+										Value: "https",
+									},
+									&types.AttributeDeclaration{
+										Name:  "path",
+										Value: "example.com",
+									},
+								},
 							},
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -848,13 +860,17 @@ a link to *{scheme}://{path}[] and https://foo.com[]*`
 
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "scheme",
-								Value: "https",
-							},
-							&types.AttributeDeclaration{
-								Name:  "path",
-								Value: "example.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "scheme",
+										Value: "https",
+									},
+									&types.AttributeDeclaration{
+										Name:  "path",
+										Value: "example.com",
+									},
+								},
 							},
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -898,16 +914,20 @@ a link to {scheme}://{path} and https://foo.com`
 
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "scheme",
-								Value: "https",
-							},
-							&types.AttributeDeclaration{
-								Name:  "path",
-								Value: "example.com",
-							},
-							&types.AttributeReset{
-								Name: "path",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "scheme",
+										Value: "https",
+									},
+									&types.AttributeDeclaration{
+										Name:  "path",
+										Value: "example.com",
+									},
+									&types.AttributeReset{
+										Name: "path",
+									},
+								},
 							},
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -1001,13 +1021,17 @@ a link to {scheme}://{path} and https://foo.com`
 							"_a_title_to_httpsexample_com_and_httpsfoo_com": title,
 						},
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "scheme",
-								Value: "https",
-							},
-							&types.AttributeDeclaration{
-								Name:  "path",
-								Value: "example.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "scheme",
+										Value: "https",
+									},
+									&types.AttributeDeclaration{
+										Name:  "path",
+										Value: "example.com",
+									},
+								},
 							},
 							&types.Section{
 								Level: 1,
@@ -1270,16 +1294,20 @@ a link to {scheme}:{path}[] and https://foo.com`
 
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "scheme",
-							Value: "link",
-						},
-						&types.AttributeDeclaration{
-							Name:  "path",
-							Value: "example.com",
-						},
-						&types.AttributeReset{
-							Name: "path",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "scheme",
+									Value: "link",
+								},
+								&types.AttributeDeclaration{
+									Name:  "path",
+									Value: "example.com",
+								},
+								&types.AttributeReset{
+									Name: "path",
+								},
+							},
 						},
 						&types.Paragraph{
 							Elements: []interface{}{

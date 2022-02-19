@@ -34,9 +34,13 @@ var _ = Describe("line breaks", func() {
 Copyright (C) 2021 {author}. +`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "author",
-						Value: "Xavier",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "author",
+								Value: "Xavier",
+							},
+						},
 					},
 					&types.Paragraph{
 						Elements: []interface{}{

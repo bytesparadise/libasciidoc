@@ -232,9 +232,9 @@ DocumentFragment <-
         ImageBlock // must appear before ShortcutParagraph
         / UserMacroBlock // must appear before ShortcutParagraph
         / ShortcutParagraph
+        / DocumentHeader // must appear before Section and AttributeDeclaration
         / AttributeDeclaration
         / AttributeReset
-        / DocumentHeader // must appear before Section
         / BlankLine // must appear after DocumentHeader // TODO: refactor `isDocumentHeaderAllowed` so this rule can be moved at first position
         / Section 
         / DelimitedBlock
@@ -249,7 +249,7 @@ DocumentFragment <-
     )? // allow attribute on empty/no element
     {
         c.disableFrontMatterRule() // not allowed as soon as a single element is found
-        c.disableDocumentHeaderRule(element) // not allowed anymore, based on element that was found
+        c.disableDocumentHeaderRule() // not allowed anymore, based on element that was found
     
         if element, ok := element.(types.WithAttributes); ok && attributes != nil {
             element.AddAttributes(attributes.(types.Attributes))
@@ -1014,26 +1014,47 @@ DocumentHeader <-
     &{
         return c.isDocumentHeaderAllowed(), nil
     }
-    BlankLine* // ignored in the returned element
-    title:DocumentTitle
-    info:DocumentInformation?
-    extraAttrs:(AttributeDeclaration / AttributeReset / SingleLineComment / CommentBlock)* // we need to collect extra attrs to process substitution on the title
+    extraAttrs:(DocumentHeaderAttributes)
+    info:(DocumentInformation)?
+    moreExtraAttrs:(DocumentHeaderAttributes)
+    &{
+        // at least one of title/info/extraArgs must be present
+        // log.Debugf("checking document header data: title=%s / info=%s / extraAttrs=%s", title, info, extraAttrs)
+        return info != nil ||
+            len(extraAttrs.([]interface{})) > 0 ||
+            len(moreExtraAttrs.([]interface{})) > 0, nil
+    }
     {
-        return types.NewDocumentHeader(title.([]interface{}), info, extraAttrs.([]interface{}))
+        attrs := []interface{}{}
+        if a, ok := extraAttrs.([]interface{}); ok {
+            attrs = append(attrs, a...)
+        }
+        if a, ok := moreExtraAttrs.([]interface{}); ok {
+            attrs = append(attrs, a...)
+        }
+        return types.NewDocumentHeader(info, attrs)
     }
 
+DocumentHeaderAttributes <- (AttributeDeclaration / AttributeReset / SingleLineComment / CommentBlock / BlankLine)* 
+
+DocumentInformation <-
+    title:(DocumentTitle)
+    (SingleLineComment / CommentBlock)* // ignored in the returned element
+    authorsAndRevision:(DocumentAuthorsAndRevision)? 
+    {
+        return types.NewDocumentInformation(title.([]interface{}), authorsAndRevision)
+    }
+        
 DocumentTitle <- 
     "=" Spaces title:(SectionTitle) EOL {
         return title, nil
     }
-       
-DocumentInformation <-
-    !BlankLine
-    (SingleLineComment / CommentBlock)* // ignored in the returned element
-    authors:(DocumentAuthors) 
+
+DocumentAuthorsAndRevision <- 
+    authors:(DocumentAuthors)
     (SingleLineComment / CommentBlock)* // ignored in the returned element
     revision:(DocumentRevision)? {
-        return types.NewDocumentInformation(authors.(types.DocumentAuthors), revision)
+        return types.NewDocumentAuthorsAndRevision(authors.(types.DocumentAuthors), revision)
     }
 
 DocumentAuthors <- Space* authors:(DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm) EOL {

@@ -18,9 +18,13 @@ var _ = Describe("escapes with backslashes", func() {
 In /items/\{id}, the id attribute is not replaced.`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "id",
-						Value: "cookie",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "id",
+								Value: "cookie",
+							},
+						},
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -40,9 +44,13 @@ In /items/\{id}, the id attribute is not replaced.`
 In /items/{id}, the id attribute is replaced.`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "id",
-						Value: "cookie",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "id",
+								Value: "cookie",
+							},
+						},
 					},
 					&types.Paragraph{
 						Elements: []interface{}{

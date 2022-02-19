@@ -68,21 +68,15 @@ and a paragraph`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   11,
+							End:   12,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
+								Elements: []interface{}{
+									&types.BlankLine{}, // will be filtered out
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 11,
-							End:   12,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -117,21 +111,15 @@ and a paragraph`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   17,
+							End:   18,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 17,
-							End:   18,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -183,22 +171,18 @@ and a paragraph`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   16,
-						},
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  types.AttrIDSeparator,
-								Value: "-",
-							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 16,
 							End:   21,
 						},
 						Elements: []interface{}{
-							&types.BlankLine{},
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  types.AttrIDSeparator,
+										Value: "-",
+									},
+									&types.BlankLine{},
+								},
+							},
 						},
 					},
 					{
@@ -253,21 +237,15 @@ and a paragraph`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   11,
+							End:   12,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 11,
-							End:   12,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -300,21 +278,15 @@ and a paragraph`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   11,
+							End:   12,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: doctitle,
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 11,
-							End:   12,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -474,23 +446,17 @@ a paragraph`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   11,
+							End:   12,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: []interface{}{
 									types.RawLine("a header"),
 								},
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 11,
-							End:   12,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -644,7 +610,7 @@ a paragraph`
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   29,
+							End:   30,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
@@ -652,16 +618,10 @@ a paragraph`
 								Attributes: types.Attributes{
 									types.AttrID: "custom_header",
 								},
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 29,
-							End:   30,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -775,23 +735,17 @@ a short preamble
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   10,
+							End:   13,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: []interface{}{
 									types.RawLine("a title"),
 								},
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 10,
-							End:   13,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -845,7 +799,7 @@ a short preamble
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   16,
+							End:   19,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
@@ -856,17 +810,9 @@ a short preamble
 									&types.AttributeDeclaration{
 										Name: "toc",
 									},
+									&types.BlankLine{},
 								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 16,
-							End:   19,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -915,23 +861,17 @@ a short preamble
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   11,
+							End:   13,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: []interface{}{
 									types.RawLine("a title"),
 								},
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 11,
-							End:   13,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -1032,21 +972,15 @@ a short preamble
 					{
 						Position: types.Position{
 							Start: 0,
-							End:   11,
+							End:   12,
 						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Title: title,
+								Elements: []interface{}{
+									&types.BlankLine{},
+								},
 							},
-						},
-					},
-					{
-						Position: types.Position{
-							Start: 11,
-							End:   12,
-						},
-						Elements: []interface{}{
-							&types.BlankLine{},
 						},
 					},
 					{
@@ -2095,10 +2029,12 @@ a paragraph`
 							Title: []interface{}{
 								&types.StringElement{Content: "a header"},
 							},
-						},
-						&types.AttributeDeclaration{ // separated from header by blankline
-							Name:  "idprefix",
-							Value: "custom1a_",
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "idprefix",
+									Value: "custom1a_",
+								},
+							},
 						},
 						&types.Section{
 							Attributes: types.Attributes{

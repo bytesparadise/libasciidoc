@@ -409,9 +409,13 @@ var _ = Describe("tables", func() {
 |===`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "cols",
-						Value: "2*^.^d,<e,.>s",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "cols",
+								Value: "2*^.^d,<e,.>s",
+							},
+						},
 					},
 					&types.Table{
 						Attributes: types.Attributes{

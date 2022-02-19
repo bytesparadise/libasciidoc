@@ -131,21 +131,6 @@ func (c *current) isDocumentHeaderAllowed() bool {
 	return found && allowed && !c.isWithinDelimitedBlock()
 }
 
-func (c *current) disableDocumentHeaderRule(element interface{}) {
-	// if already disabled, then skip
-	if enabled, found := c.globalStore[documentHeaderKey].(bool); found && !enabled {
-		return
-	}
-	// disable based on type of element
-	switch element.(type) {
-	case *types.AttributeDeclaration, *types.AttributeReset, *types.BlankLine:
-		// do not disable yet
-		return
-	default:
-		// if log.IsLevelEnabled(log.DebugLevel) {
-		// 	log.Debugf("disabling DocumentHeader after parsing element of type '%T'", element)
-		// }
-		c.globalStore[documentHeaderKey] = false
-
-	}
+func (c *current) disableDocumentHeaderRule() {
+	c.globalStore[documentHeaderKey] = false
 }

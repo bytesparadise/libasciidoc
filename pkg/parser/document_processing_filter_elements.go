@@ -77,6 +77,12 @@ elements:
 				return nil, err
 			}
 		}
+		if e, ok := element.(types.Filterable); ok {
+			if e.IsEmpty() {
+				// skip element
+				continue
+			}
+		}
 		result = append(result, element)
 	}
 	if len(result) == 0 {
