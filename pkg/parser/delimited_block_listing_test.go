@@ -427,9 +427,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "") // remove the 'subs' attribute
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -466,9 +470,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "verbatim")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -508,9 +516,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "normal")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -589,9 +601,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -624,9 +640,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -657,9 +677,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "attributes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -681,9 +705,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -723,9 +751,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "specialchars")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -771,9 +803,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "replacements")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -795,9 +831,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "post_replacements")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -823,9 +863,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -867,9 +911,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -911,9 +959,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "none")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -935,9 +987,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "quotes+") // same as `quotes,"default"`
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -988,9 +1044,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "-callouts")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -1036,9 +1096,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "+quotes") // default + quotes
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -1089,9 +1153,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "-quotes") // default - quotes
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Listing,
@@ -1133,9 +1201,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "unknown")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: string("https://github.com"),
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: string("https://github.com"),
+									},
+								},
 							},
 						},
 					}
@@ -1182,9 +1254,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1240,9 +1316,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1292,9 +1372,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "+quotes") // ie, default + quotes
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1362,9 +1446,13 @@ and <more text> on the +
 					s := strings.ReplaceAll(source, "$SUBS", "macros,+quotes,-quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{

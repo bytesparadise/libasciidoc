@@ -402,6 +402,34 @@ level 1 sections do not exist.`
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
+
+			It("should render when doc has no title", func() {
+				source := `:toc:
+
+== Section 1
+
+== Section 2`
+				expected := `<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_section_1">Section 1</a></li>
+<li><a href="#_section_2">Section 2</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_2">Section 2</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+
+			})
 		})
 
 		Context("within preamble", func() {

@@ -184,9 +184,9 @@ var _ = Describe("tables of contents", func() {
 				},
 			}
 			ctx := parser.NewParseContext(configuration.NewConfiguration())
-			_, toc, err := parser.Aggregate(ctx, c)
+			doc, err := parser.Aggregate(ctx, c)
 			Expect(err).ToNot(HaveOccurred())
-			Expect(toc).To(MatchTableOfContents(expectedToC))
+			Expect(doc.TableOfContents).To(MatchTableOfContents(expectedToC))
 		})
 
 		It("with custom level", func() {
@@ -371,9 +371,9 @@ var _ = Describe("tables of contents", func() {
 				},
 			}
 			ctx := parser.NewParseContext(configuration.NewConfiguration())
-			_, toc, err := parser.Aggregate(ctx, c)
+			doc, err := parser.Aggregate(ctx, c)
 			Expect(err).ToNot(HaveOccurred())
-			Expect(toc).To(MatchTableOfContents(expectedToC))
+			Expect(doc.TableOfContents).To(MatchTableOfContents(expectedToC))
 		})
 
 	})

@@ -1057,16 +1057,20 @@ v1.0:`
 :_author: Xavier`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name: "a",
-						},
-						&types.AttributeDeclaration{
-							Name:  "author",
-							Value: "Xavier",
-						},
-						&types.AttributeDeclaration{
-							Name:  "_author",
-							Value: "Xavier",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: "a",
+								},
+								&types.AttributeDeclaration{
+									Name:  "author",
+									Value: "Xavier",
+								},
+								&types.AttributeDeclaration{
+									Name:  "_author",
+									Value: "Xavier",
+								},
+							},
 						},
 					},
 				}
@@ -1081,19 +1085,23 @@ v1.0:`
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name: "toc",
-						},
-						&types.AttributeDeclaration{
-							Name:  "date",
-							Value: "2017-01-01",
-						},
-						&types.AttributeDeclaration{
-							Name:  "author",
-							Value: "Xavier",
-						},
-						&types.AttributeDeclaration{
-							Name: "hardbreaks",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: "toc",
+								},
+								&types.AttributeDeclaration{
+									Name:  "date",
+									Value: "2017-01-01",
+								},
+								&types.AttributeDeclaration{
+									Name:  "author",
+									Value: "Xavier",
+								},
+								&types.AttributeDeclaration{
+									Name: "hardbreaks",
+								},
+							},
 						},
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -1118,16 +1126,20 @@ a paragraph`
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name: "toc",
-						},
-						&types.AttributeDeclaration{
-							Name:  "date",
-							Value: "2017-01-01",
-						},
-						&types.AttributeDeclaration{
-							Name:  "author",
-							Value: "Xavier",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: "toc",
+								},
+								&types.AttributeDeclaration{
+									Name:  "date",
+									Value: "2017-01-01",
+								},
+								&types.AttributeDeclaration{
+									Name:  "author",
+									Value: "Xavier",
+								},
+							},
 						},
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -1153,19 +1165,23 @@ a paragraph`
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name: "toc",
-						},
-						&types.AttributeDeclaration{
-							Name:  "date",
-							Value: "2017-01-01",
-						},
-						&types.AttributeDeclaration{
-							Name:  "author",
-							Value: "Xavier",
-						},
-						&types.AttributeDeclaration{
-							Name: "hardbreaks",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: "toc",
+								},
+								&types.AttributeDeclaration{
+									Name:  "date",
+									Value: "2017-01-01",
+								},
+								&types.AttributeDeclaration{
+									Name:  "author",
+									Value: "Xavier",
+								},
+								&types.AttributeDeclaration{
+									Name: "hardbreaks",
+								},
+							},
 						},
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -1221,9 +1237,13 @@ multiple \
 lines.`
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "description",
-								Value: "a long description on multiple lines.",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "description",
+										Value: "a long description on multiple lines.",
+									},
+								},
 							},
 						},
 					}
@@ -1239,16 +1259,20 @@ lines.
 :author: Xavier`
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: "hardbreaks",
-							},
-							&types.AttributeDeclaration{
-								Name:  "description",
-								Value: "a long description on multiple lines.",
-							},
-							&types.AttributeDeclaration{
-								Name:  "author",
-								Value: "Xavier",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name: "hardbreaks",
+									},
+									&types.AttributeDeclaration{
+										Name:  "description",
+										Value: "a long description on multiple lines.",
+									},
+									&types.AttributeDeclaration{
+										Name:  "author",
+										Value: "Xavier",
+									},
+								},
 							},
 						},
 					}
@@ -1264,16 +1288,20 @@ lines.
 :author: Xavier`
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: "hardbreaks",
-							},
-							&types.AttributeDeclaration{
-								Name:  "description",
-								Value: "a long description on multiple lines.",
-							},
-							&types.AttributeDeclaration{
-								Name:  "author",
-								Value: "Xavier",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name: "hardbreaks",
+									},
+									&types.AttributeDeclaration{
+										Name:  "description",
+										Value: "a long description on multiple lines.",
+									},
+									&types.AttributeDeclaration{
+										Name:  "author",
+										Value: "Xavier",
+									},
+								},
 							},
 						},
 					}

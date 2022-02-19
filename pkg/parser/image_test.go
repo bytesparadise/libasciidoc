@@ -32,9 +32,13 @@ var _ = Describe("block images", func() {
 image::images/cookie.png[{alt}]`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "alt",
-						Value: "the cookie.png image",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "alt",
+								Value: "the cookie.png image",
+							},
+						},
 					},
 					&types.ImageBlock{
 						Attributes: types.Attributes{
@@ -56,9 +60,13 @@ image::images/cookie.png[{alt}]`
 image::cookie.png[]`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "imagesdir",
-						Value: "./path/to/images",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "imagesdir",
+								Value: "./path/to/images",
+							},
+						},
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
@@ -77,9 +85,13 @@ image::cookie.png[]`
 image::{dir}/cookie.png[]`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "dir",
-						Value: "./path/to/images",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "dir",
+								Value: "./path/to/images",
+							},
+						},
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
@@ -98,9 +110,13 @@ image::{dir}/cookie.png[]`
 image::cookie.png[]`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "imagesdir",
-						Value: "./path/to/images",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "imagesdir",
+								Value: "./path/to/images",
+							},
+						},
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
@@ -119,9 +135,13 @@ image::cookie.png[]`
 image::{imagesdir}/cookie.png[]`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "imagesdir",
-						Value: "./path/to/images",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "imagesdir",
+								Value: "./path/to/images",
+							},
+						},
 					},
 					&types.ImageBlock{
 						Location: &types.Location{
@@ -279,9 +299,13 @@ var _ = Describe("inline images", func() {
 an image:{dir}/cookie.png[].`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "dir",
-						Value: "./path/to/images",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "dir",
+								Value: "./path/to/images",
+							},
+						},
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -310,9 +334,13 @@ an image:{dir}/cookie.png[].`
 an image:cookie.png[].`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "imagesdir",
-						Value: "./path/to/images",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "imagesdir",
+								Value: "./path/to/images",
+							},
+						},
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -341,9 +369,13 @@ an image:cookie.png[].`
 an image:{imagesdir}/cookie.png[].`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.AttributeDeclaration{
-						Name:  "imagesdir",
-						Value: "./path/to/images",
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "imagesdir",
+								Value: "./path/to/images",
+							},
+						},
 					},
 					&types.Paragraph{
 						Elements: []interface{}{

@@ -12,25 +12,23 @@ import (
 // into a `Preamble`
 // Also, takes care of inserting the Table of Contents
 // returns the whole document at once (or an error)
-func Aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) (*types.Document, *types.TableOfContents, error) {
-	doc, toc, err := aggregate(ctx, fragmentStream)
+func Aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) (*types.Document, error) {
+	doc, err := aggregate(ctx, fragmentStream)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	insertPreamble(doc)
-	insertTableOfContents(ctx, doc, toc)
-	return doc, toc, nil
+	return doc, nil
 }
 
-func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) (*types.Document, *types.TableOfContents, error) {
+func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) (*types.Document, error) {
 	attrs := ctx.attributes
 	refs := types.ElementReferences{}
-	root := &types.Document{}
+	doc := &types.Document{}
 
 	lvls := &levels{
-		root,
+		doc,
 	}
-	var toc *types.TableOfContents
 	for f := range fragmentStream {
 		if f.Error != nil {
 			log.WithField("start_offset", f.Position.Start).WithField("end_offset", f.Position.End).Error(f.Error)
@@ -41,16 +39,17 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 			case *types.AttributeDeclaration:
 				attrs.set(e.Name, e.Value)
 				if e.Name == types.AttrTableOfContents {
-					toc = types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
+					// TODO: update `toc.MaxDepth` when `AttrTableOfContentsLevels` is declared afterwards
+					doc.TableOfContents = types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
 				}
 				// yet, retain the element, in case we need it during rendering (eg: `figure-caption`, etc.)
 				if err := lvls.appendElement(e); err != nil {
-					return nil, nil, err
+					return nil, err
 				}
 			case *types.FrontMatter:
 				attrs.setAll(e.Attributes)
 				if err := lvls.appendElement(e); err != nil {
-					return nil, nil, err
+					return nil, err
 				}
 			case *types.DocumentHeader:
 				// TODO: is it needed in this pipeline stage?
@@ -63,33 +62,33 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 					}
 				}
 				if attrs.has(types.AttrTableOfContents) {
-					toc = types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
+					doc.TableOfContents = types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
 				}
 				if err := lvls.appendElement(e); err != nil {
-					return nil, nil, err
+					return nil, err
 				}
 				// do not add header to ToC
 			case *types.AttributeReset:
 				attrs.unset(e.Name)
 				// yet, retain the element, in case we need it during rendering (eg: `figure-caption`, etc.)
 				if err := lvls.appendElement(e); err != nil {
-					return nil, nil, err
+					return nil, err
 				}
 			case *types.BlankLine, *types.SingleLineComment:
 				// ignore
 			case *types.Section:
 				if err := e.ResolveID(attrs.allAttributes(), refs); err != nil {
-					return nil, nil, err
+					return nil, err
 				}
 				if err := lvls.appendSection(e); err != nil {
-					return nil, nil, err
+					return nil, err
 				}
-				if toc != nil {
-					toc.Add(e)
+				if doc.TableOfContents != nil {
+					doc.TableOfContents.Add(e)
 				}
 			default:
 				if err := lvls.appendElement(e); err != nil {
-					return nil, nil, err
+					return nil, err
 				}
 			}
 			// also, check if the element has refs
@@ -101,9 +100,9 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 
 	log.WithField("pipeline_task", "aggregate").Debug("done")
 	if len(refs) > 0 {
-		root.ElementReferences = refs
+		doc.ElementReferences = refs
 	}
-	return root, toc, nil
+	return doc, nil
 }
 
 type levels []types.WithElementAddition
@@ -186,14 +185,4 @@ func newPreamble(doc *types.Document) *types.Preamble {
 		}
 	}
 	return nil
-}
-
-func insertTableOfContents(ctx *ParseContext, doc *types.Document, toc *types.TableOfContents) {
-	if toc == nil {
-		log.Debug("no table of contents to insert")
-		return
-	}
-	if ctx.attributes.has(types.AttrTableOfContents) {
-		doc.TableOfContents = toc
-	}
 }

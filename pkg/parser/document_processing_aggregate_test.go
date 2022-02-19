@@ -74,7 +74,7 @@ var _ = Describe("aggregate fragments", func() {
 				},
 			},
 		}
-		doc, _, err := parser.Aggregate(ctx, c)
+		doc, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(doc).To(MatchDocument(expected))
 	})
@@ -135,7 +135,7 @@ var _ = Describe("aggregate fragments", func() {
 				},
 			},
 		}
-		doc, _, err := parser.Aggregate(ctx, c)
+		doc, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(doc).To(MatchDocument(expected))
 	})
@@ -177,7 +177,7 @@ var _ = Describe("aggregate fragments", func() {
 				MaxDepth: 2,
 			},
 		}
-		doc, _, err := parser.Aggregate(ctx, c)
+		doc, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(doc).To(MatchDocument(expected))
 	})
@@ -226,7 +226,7 @@ var _ = Describe("aggregate fragments", func() {
 				},
 			},
 		}
-		doc, _, err := parser.Aggregate(ctx, c)
+		doc, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(doc).To(MatchDocument(expected))
 	})
@@ -289,7 +289,7 @@ var _ = Describe("aggregate fragments", func() {
 				},
 			},
 		}
-		doc, _, err := parser.Aggregate(ctx, c)
+		doc, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(doc).To(MatchDocument(expected))
 	})
@@ -339,7 +339,7 @@ var _ = Describe("aggregate fragments", func() {
 				MaxDepth: 2,
 			},
 		}
-		doc, _, err := parser.Aggregate(ctx, c)
+		doc, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(doc).To(MatchDocument(expected))
 	})

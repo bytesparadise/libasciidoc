@@ -460,6 +460,7 @@ func (r *sgmlRenderer) renderDocumentBody(ctx *renderer.Context, source []interf
 	if placement, found := ctx.Attributes[types.AttrTableOfContents]; found && toc != nil {
 		switch placement {
 		case "preamble":
+			log.Debug("inserting ToC in preamble")
 			// look-up the preamble in the source elements
 			if p := lookupPreamble(source); p != nil {
 				// insert ToC at the end of the preamble
@@ -469,6 +470,7 @@ func (r *sgmlRenderer) renderDocumentBody(ctx *renderer.Context, source []interf
 				elements = source
 			}
 		case "", nil:
+			log.Debug("inserting ToC as first element")
 			elements = make([]interface{}, len(source)+1)
 			elements[0] = toc
 			copy(elements[1:], source)
@@ -476,6 +478,7 @@ func (r *sgmlRenderer) renderDocumentBody(ctx *renderer.Context, source []interf
 			return "", fmt.Errorf("unsupported table of contents placement: '%s'", placement)
 		}
 	} else {
+		log.Debug("not inserting ToC")
 		elements = source
 	}
 

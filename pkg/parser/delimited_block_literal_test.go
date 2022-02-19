@@ -267,9 +267,13 @@ and <more text> on the +
 `
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "github-url",
-							Value: "https://github.com",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "github-url",
+									Value: "https://github.com",
+								},
+							},
 						},
 						&types.DelimitedBlock{
 							Kind: types.Literal,
@@ -334,9 +338,13 @@ and <more text> on the +
 `
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "github-url",
-							Value: "https://github.com",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "github-url",
+									Value: "https://github.com",
+								},
+							},
 						},
 						&types.DelimitedBlock{
 							Kind: types.Literal,
@@ -444,9 +452,13 @@ and <more text> on the +
 `
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "github-url",
-							Value: "https://github.com",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "github-url",
+									Value: "https://github.com",
+								},
+							},
 						},
 						&types.DelimitedBlock{
 							Kind: types.Literal,
@@ -513,9 +525,13 @@ and <more text> on the +
 `
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "github-url",
-							Value: "https://github.com",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "github-url",
+									Value: "https://github.com",
+								},
+							},
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
@@ -584,9 +600,13 @@ and <more text> on the +
 `
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.AttributeDeclaration{
-							Name:  "github-url",
-							Value: "https://github.com",
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "github-url",
+									Value: "https://github.com",
+								},
+							},
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{

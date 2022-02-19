@@ -50,6 +50,10 @@ type WithElements interface {
 	SetElements([]interface{}) error
 }
 
+type Filterable interface {
+	IsEmpty() bool
+}
+
 type WithTitle interface {
 	WithAttributes
 	GetTitle() []interface{}
@@ -163,6 +167,7 @@ type Metadata struct {
 }
 
 func NewTableOfContents(maxDepth int) *TableOfContents {
+	log.Debugf("new TableOfContents with depth=%d", maxDepth)
 	return &TableOfContents{
 		MaxDepth: maxDepth,
 	}
@@ -236,12 +241,11 @@ type DocumentHeader struct {
 	Elements   []interface{}
 }
 
-func NewDocumentHeader(title []interface{}, info interface{}, extraAttrs []interface{}) (*DocumentHeader, error) {
-	header := &DocumentHeader{
-		Title: title,
-	}
+func NewDocumentHeader(info interface{}, extraAttrs []interface{}) (*DocumentHeader, error) {
+	header := &DocumentHeader{}
 	elements := make([]interface{}, 0, 2+len(extraAttrs)) // estimated max capacity
 	if info, ok := info.(*DocumentInformation); ok {
+		header.Title = info.Title
 		if len(info.Authors) > 0 {
 			// header.Authors = info.Authors
 			elements = append(elements, &AttributeDeclaration{
@@ -261,6 +265,9 @@ func NewDocumentHeader(title []interface{}, info interface{}, extraAttrs []inter
 	elements = append(elements, extraAttrs...)
 	if len(elements) > 0 {
 		header.Elements = elements
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new doc header: %s", spew.Sdump(header))
 	}
 	return header, nil
 }
@@ -285,6 +292,14 @@ func (h *DocumentHeader) Revision() *DocumentRevision {
 		}
 	}
 	return nil
+}
+
+var _ Filterable = &DocumentHeader{}
+
+func (h *DocumentHeader) IsEmpty() bool {
+	return len(h.Title) == 0 &&
+		len(h.Attributes) == 0 &&
+		len(h.Elements) == 0
 }
 
 var _ WithTitle = &DocumentHeader{}
@@ -328,23 +343,37 @@ func (h *DocumentHeader) SetAttributes(attributes Attributes) {
 }
 
 type DocumentInformation struct {
+	Title []interface{}
+	DocumentAuthorsAndRevision
+}
+
+func NewDocumentInformation(title []interface{}, ar interface{}) (*DocumentInformation, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debug("new document info")
+		log.Debugf("authors and revision: %s", spew.Sdump(ar))
+	}
+	info := &DocumentInformation{
+		Title: title,
+	}
+	if ar, ok := ar.(*DocumentAuthorsAndRevision); ok {
+		info.DocumentAuthorsAndRevision = *ar
+	}
+	return info, nil
+}
+
+type DocumentAuthorsAndRevision struct {
 	Authors  DocumentAuthors
 	Revision *DocumentRevision
 }
 
-func NewDocumentInformation(authors DocumentAuthors, revision interface{}) (*DocumentInformation, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("new document info")
-		log.Debugf("authors: %s", spew.Sdump(authors))
-		log.Debugf("revision: %s", spew.Sdump(revision))
-	}
-	info := &DocumentInformation{
+func NewDocumentAuthorsAndRevision(authors DocumentAuthors, revision interface{}) (*DocumentAuthorsAndRevision, error) {
+	ar := &DocumentAuthorsAndRevision{
 		Authors: authors,
 	}
-	if revision, ok := revision.(*DocumentRevision); ok {
-		info.Revision = revision
+	if r, ok := revision.(*DocumentRevision); ok {
+		ar.Revision = r
 	}
-	return info, nil
+	return ar, nil
 }
 
 // ------------------------------------------

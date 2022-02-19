@@ -97,6 +97,7 @@ Garrett D'Amore
 										Revdate:   "July 4, 2020",
 									},
 								},
+								&types.BlankLine{}, // will be filtered out
 							},
 						},
 					},

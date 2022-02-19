@@ -258,9 +258,13 @@ ____
 					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -358,9 +362,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "normal")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -459,9 +467,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -514,9 +526,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -567,9 +583,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "attributes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -611,9 +631,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -673,9 +697,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "specialchars")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -741,9 +769,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "replacements")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -785,9 +817,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "post_replacements")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -835,9 +871,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -899,9 +939,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,
@@ -963,9 +1007,13 @@ ____
 					s := strings.ReplaceAll(source, "$SUBS", "none")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "github-url",
-								Value: "https://github.com",
+							&types.DocumentHeader{
+								Elements: []interface{}{
+									&types.AttributeDeclaration{
+										Name:  "github-url",
+										Value: "https://github.com",
+									},
+								},
 							},
 							&types.DelimitedBlock{
 								Kind: types.Verse,

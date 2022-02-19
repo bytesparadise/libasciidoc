@@ -89,6 +89,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 // fragment, making it potentially big, but at the same time we ensure that the context
 // of the inclusion (for example, within a delimited block) is not lost.
 func includeFile(ctx *ParseContext, incl *types.FileInclusion) (string, error) {
+	ctx.Opts = append(ctx.Opts, GlobalStore(documentHeaderKey, false))
 	if l, ok := incl.GetLocation().Path.([]interface{}); ok {
 		l, _, err := replaceAttributeRefsInSlice(ctx, l)
 		if err != nil {
