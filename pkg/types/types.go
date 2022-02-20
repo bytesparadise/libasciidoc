@@ -184,6 +184,7 @@ type ToCSection struct {
 	ID       string
 	Level    int
 	Title    string // the title as it was rendered in HTML
+	Number   string // the number assigned during rendering, if the `sectnums` attribute was set
 	Children []*ToCSection
 }
 

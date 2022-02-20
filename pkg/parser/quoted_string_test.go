@@ -1005,6 +1005,15 @@ var _ = Describe("quoted strings", func() {
 			ElementReferences: types.ElementReferences{
 				"_a_curly_episode": title,
 			},
+			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
+				Sections: []*types.ToCSection{
+					{
+						ID:    "_a_curly_episode",
+						Level: 1,
+					},
+				},
+			},
 		}
 		Expect(ParseDocument(source)).To(MatchDocument(expected))
 	})
@@ -1103,6 +1112,15 @@ var _ = Describe("quoted strings", func() {
 			},
 			ElementReferences: types.ElementReferences{
 				"_a_curly_episode": title,
+			},
+			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
+				Sections: []*types.ToCSection{
+					{
+						ID:    "_a_curly_episode",
+						Level: 1,
+					},
+				},
 			},
 		}
 		Expect(ParseDocument(source)).To(MatchDocument(expected))

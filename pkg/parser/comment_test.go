@@ -176,9 +176,6 @@ a second paragraph`
 				},
 			}
 			expected := &types.Document{
-				ElementReferences: types.ElementReferences{
-					"_section_1": section1Title,
-				},
 				Elements: []interface{}{
 					&types.Section{
 						Attributes: types.Attributes{
@@ -201,6 +198,18 @@ a second paragraph`
 									},
 								},
 							},
+						},
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
 						},
 					},
 				},
@@ -232,9 +241,6 @@ a second paragraph`
 				},
 			}
 			expected := &types.Document{
-				ElementReferences: types.ElementReferences{
-					"_section_1": section1Title,
-				},
 				Elements: []interface{}{
 					&types.DocumentHeader{
 						Title: headerTitle,
@@ -260,6 +266,18 @@ a second paragraph`
 									},
 								},
 							},
+						},
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
 						},
 					},
 				},

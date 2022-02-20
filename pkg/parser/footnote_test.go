@@ -205,35 +205,6 @@ a paragraph with another footnote.footnote:[baz]`
 				},
 			}
 			expected := &types.Document{
-				ElementReferences: types.ElementReferences{
-					"_section_1": section1Title,
-				},
-				Footnotes: []*types.Footnote{
-					{
-						ID: 1,
-						Elements: []interface{}{
-							&types.StringElement{
-								Content: "foo",
-							},
-						},
-					},
-					{
-						ID: 2,
-						Elements: []interface{}{
-							&types.StringElement{
-								Content: "bar",
-							},
-						},
-					},
-					{
-						ID: 3,
-						Elements: []interface{}{
-							&types.StringElement{
-								Content: "baz",
-							},
-						},
-					},
-				},
 				Elements: []interface{}{
 					&types.DocumentHeader{
 						Title: []interface{}{
@@ -273,6 +244,44 @@ a paragraph with another footnote.footnote:[baz]`
 									},
 								},
 							},
+						},
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_section_1": section1Title,
+				},
+				Footnotes: []*types.Footnote{
+					{
+						ID: 1,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "foo",
+							},
+						},
+					},
+					{
+						ID: 2,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "bar",
+							},
+						},
+					},
+					{
+						ID: 3,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "baz",
+							},
+						},
+					},
+				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_section_1",
+							Level: 1,
 						},
 					},
 				},

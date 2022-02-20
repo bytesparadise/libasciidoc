@@ -207,6 +207,15 @@ var _ = Describe("icons", func() {
 					ElementReferences: types.ElementReferences{
 						"_a_note_from_me": title,
 					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_a_note_from_me",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})

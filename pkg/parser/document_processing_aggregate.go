@@ -25,6 +25,8 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 	attrs := ctx.attributes
 	refs := types.ElementReferences{}
 	doc := &types.Document{}
+	// TODO: update `toc.MaxDepth` when `AttrTableOfContentsLevels` is declared afterwards
+	toc := types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
 
 	lvls := &levels{
 		doc,
@@ -38,9 +40,11 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 			switch e := element.(type) {
 			case *types.AttributeDeclaration:
 				attrs.set(e.Name, e.Value)
-				if e.Name == types.AttrTableOfContents {
-					// TODO: update `toc.MaxDepth` when `AttrTableOfContentsLevels` is declared afterwards
-					doc.TableOfContents = types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
+				if e.Name == types.AttrTableOfContentsLevels {
+					// TODO: raise a warning if value is invalid
+					maxDepth := attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2)
+					log.Debugf("setting ToC.MaxDepth to %d", maxDepth)
+					toc.MaxDepth = maxDepth
 				}
 				// yet, retain the element, in case we need it during rendering (eg: `figure-caption`, etc.)
 				if err := lvls.appendElement(e); err != nil {
@@ -57,12 +61,15 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 					switch attr := elmt.(type) {
 					case *types.AttributeDeclaration:
 						ctx.attributes.set(attr.Name, attr.Value)
+						if attr.Name == types.AttrTableOfContentsLevels {
+							// TODO: raise a warning if value is invalid
+							maxDepth := attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2)
+							log.Debugf("setting ToC.MaxDepth to %d", maxDepth)
+							toc.MaxDepth = maxDepth
+						}
 					case *types.AttributeReset:
 						ctx.attributes.unset(attr.Name)
 					}
-				}
-				if attrs.has(types.AttrTableOfContents) {
-					doc.TableOfContents = types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
 				}
 				if err := lvls.appendElement(e); err != nil {
 					return nil, err
@@ -83,8 +90,8 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 				if err := lvls.appendSection(e); err != nil {
 					return nil, err
 				}
-				if doc.TableOfContents != nil {
-					doc.TableOfContents.Add(e)
+				if toc != nil {
+					toc.Add(e)
 				}
 			default:
 				if err := lvls.appendElement(e); err != nil {
@@ -98,10 +105,13 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 		}
 	}
 
-	log.WithField("pipeline_task", "aggregate").Debug("done")
 	if len(refs) > 0 {
 		doc.ElementReferences = refs
 	}
+	if len(toc.Sections) > 0 {
+		doc.TableOfContents = toc
+	}
+	log.WithField("pipeline_task", "aggregate").Debug("done")
 	return doc, nil
 }
 

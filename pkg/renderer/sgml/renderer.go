@@ -185,7 +185,30 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 	if !exists {
 		renderedTitle = DefaultTitle
 	}
+	// process attribute declaration in the header
+	if header := doc.Header(); header != nil {
+		for _, e := range header.Elements {
+			switch e := e.(type) {
+			case *types.AttributeDeclaration:
+				ctx.Attributes[e.Name] = e.Value
+			case *types.AttributeReset:
+				delete(ctx.Attributes, e.Name)
+			}
+		}
+	}
+	if ctx.Attributes.Has(types.AttrSectionNumbering) || ctx.Attributes.Has(types.AttrNumbered) {
+		var err error
+		if ctx.SectionNumbering, err = renderer.NewSectionNumbers(doc); err != nil {
+			return metadata, errors.Wrapf(err, "unable to render full document")
+		}
+	} else {
+		log.Debug("section numbering is not enabled")
+	}
+
 	// needs to be set before rendering the content elements
+	if err := r.prerenderTableOfContents(ctx, doc.TableOfContents); err != nil {
+		return metadata, errors.Wrapf(err, "unable to render full document")
+	}
 	metadata.TableOfContents = doc.TableOfContents
 	renderedHeader, renderedContent, err := r.splitAndRender(ctx, doc)
 	if err != nil {
@@ -257,12 +280,8 @@ func (r *sgmlRenderer) splitAndRender(ctx *renderer.Context, doc *types.Document
 // and all other elements (table of contents, with preamble, content) on the other side
 func (r *sgmlRenderer) splitAndRenderForArticle(ctx *renderer.Context, doc *types.Document) (string, string, error) {
 	log.Debugf("rendering article (within HTML/Body: %t)", ctx.Config.WrapInHTMLBodyElement)
-	// if ctx.Config.WrapInHTMLBodyElement {
-	header, err := r.processHeader(ctx, doc)
-	if err != nil {
-		return "", "", err
-	}
-	renderedHeader, err := r.renderDocumentHeader(ctx, header)
+
+	renderedHeader, err := r.renderDocumentHeader(ctx, doc.Header())
 	if err != nil {
 		return "", "", err
 	}
@@ -277,14 +296,10 @@ func (r *sgmlRenderer) splitAndRenderForArticle(ctx *renderer.Context, doc *type
 // and the other elements (table of contents, with preamble, content) on the other side
 func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *types.Document) (string, string, error) {
 	log.Debugf("rendering manpage (within HTML/Body: %t)", ctx.Config.WrapInHTMLBodyElement)
-	header, err := r.processHeader(ctx, doc)
-	if err != nil {
-		return "", "", err
-	}
 	elements := doc.BodyElements()
 	nameSection := elements[0].(*types.Section) // TODO: enforce
 	if ctx.Config.WrapInHTMLBodyElement {
-		renderedHeader, err := r.renderManpageHeader(ctx, header, nameSection)
+		renderedHeader, err := r.renderManpageHeader(ctx, doc.Header(), nameSection)
 		if err != nil {
 			return "", "", err
 		}
@@ -307,34 +322,6 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *type
 	result.WriteString(renderedHeader)
 	result.WriteString(renderedContent)
 	return "", result.String(), nil
-}
-
-func (r *sgmlRenderer) processHeader(ctx *renderer.Context, doc *types.Document) (*types.DocumentHeader, error) {
-	header := doc.Header()
-	if header == nil {
-		return nil, nil
-	}
-	// also process header elements in search for Attribute declarations/reset to retain in the context
-	for _, e := range header.Elements {
-		switch e := e.(type) {
-		case *types.AttributeDeclaration:
-			ctx.Attributes[e.Name] = e.Value
-		case *types.AttributeReset:
-			delete(ctx.Attributes, e.Name)
-		}
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("document header attributes: %s", spew.Sdump(ctx.Attributes))
-	}
-	if ctx.Attributes.Has(types.AttrSectionNumbering) || ctx.Attributes.Has(types.AttrNumbered) {
-		var err error
-		if ctx.SectionNumbering, err = renderer.NewSectionNumbers(doc); err != nil {
-			return nil, err
-		}
-	} else {
-		log.Debug("section numbering is not enabled")
-	}
-	return header, nil
 }
 
 func (r *sgmlRenderer) renderDocumentRoles(ctx *renderer.Context, doc *types.Document) (string, error) {

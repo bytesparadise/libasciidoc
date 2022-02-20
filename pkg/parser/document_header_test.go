@@ -1111,9 +1111,6 @@ a paragraph`
 							},
 						},
 					},
-					TableOfContents: &types.TableOfContents{
-						MaxDepth: 2,
-					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1146,9 +1143,6 @@ a paragraph`
 								&types.StringElement{Content: "a paragraph"},
 							},
 						},
-					},
-					TableOfContents: &types.TableOfContents{
-						MaxDepth: 2,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1189,9 +1183,6 @@ a paragraph`
 							},
 						},
 					},
-					TableOfContents: &types.TableOfContents{
-						MaxDepth: 2,
-					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1220,9 +1211,6 @@ a paragraph`
 							Name:  "author",
 							Value: "Xavier",
 						},
-					},
-					TableOfContents: &types.TableOfContents{
-						MaxDepth: 2,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
