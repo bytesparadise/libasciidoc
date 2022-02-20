@@ -173,9 +173,6 @@ var _ = Describe("aggregate fragments", func() {
 				},
 				paragraph, // not wrapped in a preamble since there is nothing afterwards
 			},
-			TableOfContents: &types.TableOfContents{
-				MaxDepth: 2,
-			},
 		}
 		doc, err := parser.Aggregate(ctx, c)
 		Expect(err).NotTo(HaveOccurred())
@@ -334,9 +331,6 @@ var _ = Describe("aggregate fragments", func() {
 					},
 				},
 				paragraph,
-			},
-			TableOfContents: &types.TableOfContents{
-				MaxDepth: 2,
 			},
 		}
 		doc, err := parser.Aggregate(ctx, c)

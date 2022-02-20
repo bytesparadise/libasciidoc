@@ -241,6 +241,19 @@ eve - analyzes an image to determine if it's a picture of a life form
 					"_name":     nameSectionTitle,
 					"_synopsis": synopisSectionTitle,
 				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_name",
+							Level: 1,
+						},
+						{
+							ID:    "_synopsis",
+							Level: 1,
+						},
+					},
+				},
 			}
 			Expect(ParseDocument(source,
 				configuration.WithAttributes(map[string]interface{}{

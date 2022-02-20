@@ -6,10 +6,54 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
+
+func (r *sgmlRenderer) prerenderTableOfContents(ctx *renderer.Context, toc *types.TableOfContents) error {
+	if toc == nil || toc.Sections == nil {
+		return nil
+	}
+
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("pre-rendering ToC: %s", spew.Sdump(toc))
+	// }
+	if err := r.prerenderTableOfContentsSections(ctx, toc.Sections); err != nil {
+		return errors.Wrap(err, "error while rendering table of contents")
+	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("pre-rendered ToC: %s", spew.Sdump(toc))
+	// }
+	return nil
+}
+
+func (r *sgmlRenderer) prerenderTableOfContentsSections(ctx *renderer.Context, sections []*types.ToCSection) error {
+	for _, entry := range sections {
+		if err := r.prerenderTableOfContentsEntry(ctx, entry); err != nil {
+			return errors.Wrap(err, "unable to render ToC section")
+		}
+	}
+	// log.Debugf("retrieved sections for ToC: %+v", sections)
+	return nil // nolint:gosec
+}
+
+func (r *sgmlRenderer) prerenderTableOfContentsEntry(ctx *renderer.Context, entry *types.ToCSection) error {
+	if err := r.prerenderTableOfContentsSections(ctx, entry.Children); err != nil {
+		return errors.Wrap(err, "unable to render ToC entry children")
+	}
+	if ctx.SectionNumbering != nil {
+		entry.Number = ctx.SectionNumbering[entry.ID]
+	}
+	s, found := ctx.ElementReferences[entry.ID]
+	if !found {
+		return errors.New("unable to render ToC entry title (missing element reference")
+	}
+	title, err := r.renderPlainText(ctx, s)
+	if err != nil {
+		return errors.Wrap(err, "unable to render ToC entry title (missing element reference")
+	}
+	entry.Title = title
+	return nil
+}
 
 func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc *types.TableOfContents) (string, error) {
 	if toc == nil || toc.Sections == nil {
@@ -21,9 +65,9 @@ func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc *types.T
 		return "", errors.Wrap(err, "error while rendering table of contents")
 	}
 
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("rendering ToC %s", spew.Sdump(toc))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("rendering ToC %s", spew.Sdump(toc))
+	// }
 	renderedSections, err := r.renderTableOfContentsSections(ctx, toc.Sections)
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering table of contents")
@@ -68,9 +112,9 @@ func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sect
 	if len(sections) == 0 {
 		return "", nil
 	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("rendering sections (in toc): '%s'", spew.Sdump(sections))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("rendering sections (in toc): '%s'", spew.Sdump(sections))
+	// }
 
 	resultBuf := &strings.Builder{}
 	contents := &strings.Builder{}
@@ -97,31 +141,18 @@ func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sect
 }
 
 func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *types.ToCSection) (string, error) {
-	resultBuf := &strings.Builder{}
-
 	content, err := r.renderTableOfContentsSections(ctx, entry.Children)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render ToC entry children")
 	}
-	var number string
-	if ctx.SectionNumbering != nil {
-		number = ctx.SectionNumbering[entry.ID]
-	}
-	s, found := ctx.ElementReferences[entry.ID]
-	if !found {
-		return "", errors.New("unable to render ToC entry title (missing element reference")
-	}
-	entry.Title, err = r.renderPlainText(ctx, s)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render ToC entry title (missing element reference")
-	}
+	resultBuf := &strings.Builder{}
 	err = r.tocEntry.Execute(resultBuf, struct {
 		Number  string
 		ID      string
 		Title   string
 		Content string
 	}{
-		Number:  number,
+		Number:  entry.Number,
 		ID:      entry.ID,
 		Title:   entry.Title,
 		Content: content,

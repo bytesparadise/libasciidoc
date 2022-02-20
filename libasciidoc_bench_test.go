@@ -129,6 +129,15 @@ Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit `,
 				},
 			},
 		},
+		TableOfContents: &types.TableOfContents{
+			MaxDepth: 2,
+			Sections: []*types.ToCSection{
+				{
+					ID:    "_lorem_ipsum",
+					Level: 1,
+				},
+			},
+		},
 		ElementReferences: types.ElementReferences{
 			"_lorem_ipsum": title,
 		},

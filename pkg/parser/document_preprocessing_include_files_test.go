@@ -823,6 +823,15 @@ package includes
 				ElementReferences: types.ElementReferences{
 					"_chapter_a": title,
 				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_chapter_a",
+							Level: 1,
+						},
+					},
+				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 			// verify no error/warning in logs
@@ -937,6 +946,15 @@ include::{includedir}/include.foo[]`
 				ElementReferences: types.ElementReferences{
 					"_grandchild_title": title,
 				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_grandchild_title",
+							Level: 1,
+						},
+					},
+				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
@@ -976,6 +994,15 @@ include::{includedir}/include.foo[]`
 				},
 				ElementReferences: types.ElementReferences{
 					"_grandchild_title": title,
+				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_grandchild_title",
+							Level: 2,
+						},
+					},
 				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1128,6 +1155,15 @@ include::{includedir}/include.foo[]`
 					"_child_section_2":  childSection2Title,
 					"_grandchild_title": grandchildTitle,
 				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_parent_title",
+							Level: 1,
+						},
+					},
+				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
@@ -1247,6 +1283,15 @@ include::{includedir}/include.foo[]`
 					"_child_section_1":  childSection1Title,
 					"_child_section_2":  childSection2Title,
 					"_grandchild_title": grandchildTitle,
+				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_parent_title",
+							Level: 1,
+						},
+					},
 				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1721,6 +1766,15 @@ ____`
 						ElementReferences: types.ElementReferences{
 							"_section_1": title,
 						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_section_1",
+									Level: 1,
+								},
+							},
+						},
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
@@ -1750,6 +1804,15 @@ ____`
 					},
 					ElementReferences: types.ElementReferences{
 						"_section_1": title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1787,6 +1850,15 @@ ____`
 					},
 					ElementReferences: types.ElementReferences{
 						"_section_1": title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1867,6 +1939,15 @@ ____`
 					ElementReferences: types.ElementReferences{
 						"_section_1": title,
 					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1909,6 +1990,15 @@ ____`
 						ElementReferences: types.ElementReferences{
 							"_section_1": title,
 						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_section_1",
+									Level: 1,
+								},
+							},
+						},
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
@@ -1941,6 +2031,15 @@ ____`
 						},
 						ElementReferences: types.ElementReferences{
 							"_section_1": title,
+						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_section_1",
+									Level: 1,
+								},
+							},
 						},
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -1982,6 +2081,15 @@ ____`
 						ElementReferences: types.ElementReferences{
 							"_section_1": title,
 						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_section_1",
+									Level: 1,
+								},
+							},
+						},
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
@@ -2006,6 +2114,15 @@ ____`
 						ElementReferences: types.ElementReferences{
 							"_section_1": title,
 						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_section_1",
+									Level: 1,
+								},
+							},
+						},
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
@@ -2029,6 +2146,15 @@ ____`
 						},
 						ElementReferences: types.ElementReferences{
 							"_section_1": title,
+						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_section_1",
+									Level: 1,
+								},
+							},
 						},
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -2062,6 +2188,15 @@ ____`
 						},
 						ElementReferences: types.ElementReferences{
 							"_section_1": title,
+						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_section_1",
+									Level: 1,
+								},
+							},
 						},
 					}
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -2186,6 +2321,15 @@ include::{includedir}/grandchild-include.adoc[]`
 					},
 					ElementReferences: types.ElementReferences{
 						"_grandchild_title": title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_grandchild_title",
+								Level: 1,
+							},
+						},
 					},
 				}
 				// Expect(ParseDocument(source, WithFilename("foo.adoc"))).To(MatchDocument(expected))

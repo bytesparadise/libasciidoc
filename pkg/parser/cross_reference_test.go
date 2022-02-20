@@ -53,6 +53,15 @@ with some content linked to <<thetitle>>!`
 							},
 						},
 					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "thetitle",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -96,6 +105,15 @@ with some content linked to <<thetitle,a label to the title>>!`
 					},
 					ElementReferences: types.ElementReferences{
 						"thetitle": title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "thetitle",
+								Level: 1,
+							},
+						},
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -151,6 +169,15 @@ some content`
 					},
 					ElementReferences: types.ElementReferences{
 						"section": title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "section",
+								Level: 1,
+							},
+						},
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))

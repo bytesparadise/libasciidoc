@@ -54,7 +54,7 @@ var _ = Describe("documents", func() {
 				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 			})
 
-			It("section levels 0 and 1", func() {
+			It("sections with level 0 and 1", func() {
 				source := `= a document title
 
 == Section A
@@ -92,7 +92,7 @@ a paragraph with *bold content*`
 				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 			})
 
-			It("section levels 0, 1 and 3", func() {
+			It("sections with level 0, 1 and 3", func() {
 				source := `= a document title
 
 == Section A
@@ -102,7 +102,6 @@ a paragraph with *bold content*
 ==== Section A.a.a
 
 a paragraph`
-				expectedTitle := "a document title"
 				expectedContent := `<div class="sect1">
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
@@ -119,32 +118,23 @@ a paragraph`
 </div>
 `
 				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					// see https://github.com/bytesparadise/libasciidoc/issues/939
-					// TableOfContents: types.TableOfContents{
-					// 	Sections: []*types.ToCSection{
-					// 		{
-					// 			ID:    "_section_a",
-					// 			Level: 1,
-					// 			Title: "Section A",
-					// 			Children: []*types.ToCSection{
-					// 				{
-					// 					ID:       "_section_a_a_a",
-					// 					Level:    3,
-					// 					Title:    "Section A.a.a",
-					// 					Children: []*types.ToCSection{},
-					// 				},
-					// 			},
-					// 		},
-					// 	},
-					// },
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 1,
+								Title: "Section A",
+							},
+						},
+					},
 				}))
 			})
 
-			It("section levels 0, 1, 2 and 1", func() {
+			It("sections with level 0, 1, 2 and 1", func() {
 				source := `= a document title
 
 == Section A
@@ -187,30 +177,28 @@ a paragraph with _italic content_`
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "a document title",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					// see https://github.com/bytesparadise/libasciidoc/issues/939
-					// TableOfContents: types.TableOfContents{
-					// 	Sections: []*types.ToCSection{
-					// 		{
-					// 			ID:    "_section_a",
-					// 			Level: 1,
-					// 			Title: "Section A",
-					// 			Children: []*types.ToCSection{
-					// 				{
-					// 					ID:       "_section_a_a",
-					// 					Level:    2,
-					// 					Title:    "Section A.a",
-					// 					Children: []*types.ToCSection{},
-					// 				},
-					// 			},
-					// 		},
-					// 		{
-					// 			ID:       "_section_b",
-					// 			Level:    1,
-					// 			Title:    "Section B",
-					// 			Children: []*types.ToCSection{},
-					// 		},
-					// 	},
-					// },
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 1,
+								Title: "Section A",
+								Children: []*types.ToCSection{
+									{
+										ID:    "_section_a_a",
+										Level: 2,
+										Title: "Section A.a",
+									},
+								},
+							},
+							{
+								ID:    "_section_b",
+								Level: 1,
+								Title: "Section B",
+							},
+						},
+					},
 				}))
 			})
 
@@ -232,17 +220,16 @@ a paragraph with _italic content_`
 				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 					Title:       "",
 					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					// see https://github.com/bytesparadise/libasciidoc/issues/939
-					// TableOfContents: types.TableOfContents{
-					// 	Sections: []*types.ToCSection{
-					// 		{
-					// 			ID:       "_grandchild_title",
-					// 			Level:    1,
-					// 			Title:    "grandchild title",
-					// 			Children: []*types.ToCSection{},
-					// 		},
-					// 	},
-					// },
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_grandchild_title",
+								Level: 1,
+								Title: "grandchild title",
+							},
+						},
+					},
 				}))
 			})
 		})

@@ -80,15 +80,6 @@ func (a *contextAttributes) clone() *contextAttributes {
 	}
 }
 
-func (a *contextAttributes) has(k string) bool {
-	_, found := a.immutableAttributes[k]
-	if found {
-		return true
-	}
-	_, found = a.attributes[k]
-	return found
-}
-
 func (a *contextAttributes) allAttributes() map[string]interface{} {
 	result := make(map[string]interface{}, len(a.attributes)+len(a.immutableAttributes))
 	for k, v := range a.attributes {

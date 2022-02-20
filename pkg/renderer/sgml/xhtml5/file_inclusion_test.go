@@ -34,17 +34,16 @@ var _ = Describe("file inclusions", func() {
 		Expect(RenderXHTML(source, configuration.WithLastUpdated(lastUpdated))).To(Equal(expected))
 		Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
 			LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-			// See https://github.com/bytesparadise/libasciidoc/issues/939
-			// TableOfContents: &types.TableOfContents{
-			// 	Sections: []*types.ToCSection{
-			// 		{
-			// 			ID:       "_grandchild_title",
-			// 			Level:    1,
-			// 			Title:    "grandchild title",
-			// 			Children: []*types.ToCSection{},
-			// 		},
-			// 	},
-			// },
+			TableOfContents: &types.TableOfContents{
+				MaxDepth: 2,
+				Sections: []*types.ToCSection{
+					{
+						ID:    "_grandchild_title",
+						Level: 1,
+						Title: "grandchild title",
+					},
+				},
+			},
 		}))
 		// verify no error/warning in logs
 		Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))

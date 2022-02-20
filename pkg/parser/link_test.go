@@ -1017,9 +1017,6 @@ a link to {scheme}://{path} and https://foo.com`
 						},
 					}
 					expected := &types.Document{
-						ElementReferences: types.ElementReferences{
-							"_a_title_to_httpsexample_com_and_httpsfoo_com": title,
-						},
 						Elements: []interface{}{
 							&types.DocumentHeader{
 								Elements: []interface{}{
@@ -1039,6 +1036,18 @@ a link to {scheme}://{path} and https://foo.com`
 									types.AttrID: "_a_title_to_httpsexample_com_and_httpsfoo_com",
 								},
 								Title: title,
+							},
+						},
+						ElementReferences: types.ElementReferences{
+							"_a_title_to_httpsexample_com_and_httpsfoo_com": title,
+						},
+						TableOfContents: &types.TableOfContents{
+							MaxDepth: 2,
+							Sections: []*types.ToCSection{
+								{
+									ID:    "_a_title_to_httpsexample_com_and_httpsfoo_com",
+									Level: 1,
+								},
 							},
 						},
 					}

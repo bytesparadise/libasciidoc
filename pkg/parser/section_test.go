@@ -1077,9 +1077,6 @@ and a paragraph`
 					},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_link_to_httpsfoo_bar": section1aTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1087,6 +1084,18 @@ and a paragraph`
 							},
 							Level: 1,
 							Title: section1aTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_link_to_httpsfoo_bar": section1aTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_link_to_httpsfoo_bar",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1104,9 +1113,6 @@ a paragraph with *bold content*`
 					&types.StringElement{Content: "section 1"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_1": section1Title,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1134,6 +1140,18 @@ a paragraph with *bold content*`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_1": section1Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1147,9 +1165,6 @@ a paragraph with *bold content*`
 				}
 
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_a_second_header": otherDoctitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1164,6 +1179,18 @@ a paragraph with *bold content*`
 							Title: otherDoctitle,
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_a_second_header": otherDoctitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_a_second_header",
+								Level: 0,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1174,9 +1201,6 @@ a paragraph with *bold content*`
 					&types.StringElement{Content: "section 1"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_1": section1Title,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1184,6 +1208,18 @@ a paragraph with *bold content*`
 							},
 							Level: 1,
 							Title: section1Title,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_section_1": section1Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1201,9 +1237,6 @@ a paragraph with *bold content*`
 					},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_2_spaces_and_bold_content": sectionTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1211,6 +1244,18 @@ a paragraph with *bold content*`
 							},
 							Level: 1,
 							Title: sectionTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_2_spaces_and_bold_content": sectionTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_2_spaces_and_bold_content",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1225,9 +1270,6 @@ a paragraph with *bold content*`
 					&types.StringElement{Content: "section 1"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_1": section1Title,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1242,6 +1284,18 @@ a paragraph with *bold content*`
 							Title: section1Title,
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_1": section1Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1254,9 +1308,6 @@ a paragraph with *bold content*`
 					&types.StringElement{Content: "section 2"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_2": section2Title,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1271,6 +1322,18 @@ a paragraph with *bold content*`
 							Title: section2Title,
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_2": section2Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_2",
+								Level: 2,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1282,9 +1345,6 @@ and a paragraph`
 					&types.StringElement{Content: "a title"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_a_title": section1Title,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1298,6 +1358,18 @@ and a paragraph`
 										&types.StringElement{Content: "and a paragraph"},
 									},
 								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_a_title": section1Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_a_title",
+								Level: 1,
 							},
 						},
 					},
@@ -1313,9 +1385,6 @@ and a paragraph`
 					&types.StringElement{Content: "a title"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_a_title": section1Title,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1332,6 +1401,18 @@ and a paragraph`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_a_title": section1Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_a_title",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1342,9 +1423,6 @@ and a paragraph`
 					&types.StringElement{Content: "a title"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_a_title": section1Title,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1358,6 +1436,18 @@ and a paragraph`
 										&types.StringElement{Content: "and a paragraph"},
 									},
 								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_a_title": section1Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_a_title",
+								Level: 1,
 							},
 						},
 					},
@@ -1386,11 +1476,6 @@ a paragraph`
 					&types.StringElement{Content: "Section B"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_a":   sectionATitle,
-						"_section_a_a": sectionAaTitle,
-						"_section_b":   sectionBTitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1440,6 +1525,30 @@ a paragraph`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_a":   sectionATitle,
+						"_section_a_a": sectionAaTitle,
+						"_section_b":   sectionBTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 1,
+								Children: []*types.ToCSection{
+									{
+										ID:    "_section_a_a",
+										Level: 2,
+									},
+								},
+							},
+							{
+								ID:    "_section_b",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1465,11 +1574,6 @@ a paragraph`
 					&types.StringElement{Content: "Section A.b"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_a":   sectionATitle,
-						"_section_a_a": sectionAaTitle,
-						"_section_a_b": sectionBTitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1519,6 +1623,30 @@ a paragraph`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_a":   sectionATitle,
+						"_section_a_a": sectionAaTitle,
+						"_section_a_b": sectionBTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 1,
+								Children: []*types.ToCSection{
+									{
+										ID:    "_section_a_a",
+										Level: 2,
+									},
+									{
+										ID:    "_section_a_b",
+										Level: 2,
+									},
+								},
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1544,11 +1672,6 @@ a paragraph`
 					&types.StringElement{Content: "Section A.b"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_a":   sectionATitle,
-						"_section_a_a": sectionAaTitle,
-						"_section_a_b": sectionAbTitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1598,6 +1721,20 @@ a paragraph`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_a":   sectionATitle,
+						"_section_a_a": sectionAaTitle,
+						"_section_a_b": sectionAbTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 2,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1623,11 +1760,6 @@ a paragraph`
 					&types.StringElement{Content: "Section C"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_a": sectionATitle,
-						"_section_b": sectionBTitle,
-						"_section_c": sectionCTitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1677,6 +1809,28 @@ a paragraph`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_a": sectionATitle,
+						"_section_b": sectionBTitle,
+						"_section_c": sectionCTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_a",
+								Level: 2,
+							},
+							{
+								ID:    "_section_b",
+								Level: 2,
+							},
+							{
+								ID:    "_section_c",
+								Level: 2,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1688,9 +1842,6 @@ a paragraph`
 					&types.StringElement{Content: "a header"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"custom_header": sectionTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1699,6 +1850,18 @@ a paragraph`
 							},
 							Level: 1,
 							Title: sectionTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"custom_header": sectionTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "custom_header",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1711,9 +1874,6 @@ a paragraph`
 					&types.StringElement{Content: "a header"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"custom_header": sectionTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1722,6 +1882,18 @@ a paragraph`
 							},
 							Level: 1,
 							Title: sectionTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"custom_header": sectionTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "custom_header",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1739,9 +1911,6 @@ a paragraph`
 					},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_a_header": sectionTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1749,6 +1918,18 @@ a paragraph`
 							},
 							Level: 1,
 							Title: sectionTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_a_header": sectionTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_a_header",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1766,9 +1947,6 @@ a paragraph`
 					},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"custom_header": sectionTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1777,6 +1955,18 @@ a paragraph`
 							},
 							Level: 1,
 							Title: sectionTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"custom_header": sectionTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "custom_header",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1794,9 +1984,6 @@ a paragraph`
 					},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"custom_header": sectionTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1805,6 +1992,18 @@ a paragraph`
 							},
 							Level: 1,
 							Title: sectionTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"custom_header": sectionTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "custom_header",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1832,10 +2031,6 @@ a paragraph`
 					&types.StringElement{Content: "Section B"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"foo": fooTitle,
-						"bar": barTitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1870,6 +2065,23 @@ a paragraph`
 							},
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"foo": fooTitle,
+						"bar": barTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "foo",
+								Level: 1,
+							},
+							{
+								ID:    "bar",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1886,10 +2098,6 @@ a paragraph`
 				}
 
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_1":   section1aTitle,
-						"_section_1_2": section1bTitle,
-					},
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
@@ -1906,6 +2114,23 @@ a paragraph`
 							Title: section1bTitle,
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"_section_1":   section1aTitle,
+						"_section_1_2": section1bTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+							{
+								ID:    "_section_1_2",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -1919,9 +2144,6 @@ a paragraph`
 					&types.StringElement{Content: "section 1"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"custom_section_1": section1Title,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1940,6 +2162,18 @@ a paragraph`
 							},
 							Level: 1,
 							Title: section1Title,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"custom_section_1": section1Title,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "custom_section_1",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -1962,10 +2196,6 @@ a paragraph`
 					&types.StringElement{Content: "section 1b"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"custom1a_section_1a": section1aTitle,
-						"custom1b_section_1b": section1bTitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -1997,6 +2227,23 @@ a paragraph`
 							},
 							Level: 1,
 							Title: section1bTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"custom1a_section_1a": section1aTitle,
+						"custom1b_section_1b": section1bTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "custom1a_section_1a",
+								Level: 1,
+							},
+							{
+								ID:    "custom1b_section_1b",
+								Level: 1,
+							},
 						},
 					},
 				}
@@ -2020,10 +2267,6 @@ a paragraph`
 					&types.StringElement{Content: "section 1b"},
 				}
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"custom1a_section_1a": section1aTitle,
-						"custom1b_section_1b": section1bTitle,
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -2057,6 +2300,23 @@ a paragraph`
 							Title: section1bTitle,
 						},
 					},
+					ElementReferences: types.ElementReferences{
+						"custom1a_section_1a": section1aTitle,
+						"custom1b_section_1b": section1bTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "custom1a_section_1a",
+								Level: 1,
+							},
+							{
+								ID:    "custom1b_section_1b",
+								Level: 1,
+							},
+						},
+					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
@@ -2068,11 +2328,6 @@ a short preamble
 
 == Section 1`
 				expected := &types.Document{
-					ElementReferences: types.ElementReferences{
-						"_section_1": []interface{}{
-							&types.StringElement{Content: "Section 1"},
-						},
-					},
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
@@ -2095,6 +2350,20 @@ a short preamble
 							Level: 1,
 							Title: []interface{}{
 								&types.StringElement{Content: "Section 1"},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_section_1": []interface{}{
+							&types.StringElement{Content: "Section 1"},
+						},
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
 							},
 						},
 					},

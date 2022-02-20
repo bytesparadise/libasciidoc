@@ -132,9 +132,6 @@ This journey continues`
 						},
 					},
 				},
-				TableOfContents: &types.TableOfContents{
-					MaxDepth: 2,
-				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
