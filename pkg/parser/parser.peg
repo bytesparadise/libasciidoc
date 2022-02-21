@@ -820,7 +820,6 @@ CommentBlock <-
     CommentBlockStartDelimiter
     content:(CommentBlockContent)
     CommentBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
         return types.NewDelimitedBlock(types.Comment, content.([]interface{}))
     }
 
@@ -844,7 +843,6 @@ ExampleBlock <-
     }
     content:(ExampleBlockContent)
     end:(ExampleBlockEndDelimiter)? {
-        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Example, content.([]interface{}))
     }
 
@@ -873,7 +871,6 @@ FencedBlock <-
     }
     content:(FencedBlockContent)
     end:(FencedBlockEndDelimiter)? {
-        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Fenced, content.([]interface{}))
     }
 
@@ -902,7 +899,6 @@ ListingBlock <-
     }
     content:(ListingBlockContent)
     end:(ListingBlockEndDelimiter)? {
-        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Listing, content.([]interface{}))
     }
 
@@ -931,7 +927,6 @@ LiteralBlock <-
     }
     content:(LiteralBlockContent)
     end:(LiteralBlockEndDelimiter)? {
-        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Literal, content.([]interface{}))
     }
 
@@ -957,7 +952,6 @@ MarkdownCodeBlock <-
     delimiter:MarkdownCodeBlockStartDelimiter
     content:(MarkdownCodeBlockContent)
     MarkdownCodeBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
         // Markdown code with fences is a "listing/source" block in Asciidoc
         b, err := types.NewDelimitedBlock(types.Listing, content.([]interface{}))
         b.AddAttributes(delimiter.(*types.BlockDelimiter).Attributes)
@@ -1010,7 +1004,6 @@ PassthroughBlock <-
     }
     content:(PassthroughBlockContent)
     end:(PassthroughBlockEndDelimiter)? {
-        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}))
     }
 
@@ -1039,7 +1032,6 @@ QuoteBlock <-
     }
     content:(QuoteBlockContent)
     end:(QuoteBlockEndDelimiter)? {
-        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Quote, content.([]interface{}))
     }
 
@@ -1068,7 +1060,6 @@ SidebarBlock <-
     }
     content:(SidebarBlockContent)
     end:(SidebarBlockEndDelimiter)? {
-        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}))
     }
 
