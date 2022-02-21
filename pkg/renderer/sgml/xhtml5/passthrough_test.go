@@ -11,12 +11,11 @@ var _ = Describe("passthroughs", func() {
 
 	Context("tripleplus passthrough", func() {
 
-		It("an empty standalone tripleplus passthrough", func() {
+		It("tripleplus unterminated passthrough", func() {
 			// here it differs from Asciidoctor which returns no content but reports an error ("unterminated pass block")
-			source := `++++++`
-			expected := `<div class="paragraph">
-<p></p>
-</div>
+			source := `++++++
+content`
+			expected := `content
 `
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})

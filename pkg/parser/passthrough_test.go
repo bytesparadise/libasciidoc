@@ -35,15 +35,16 @@ var _ = Describe("passthroughs", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("tripleplus empty passthrough ", func() {
-				source := `++++++`
+			It("tripleplus unterminated passthrough", func() {
+				source := `++++++
+content`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.Paragraph{
+						&types.DelimitedBlock{
+							Kind: types.Passthrough,
 							Elements: []interface{}{
-								&types.InlinePassthrough{
-									Kind:     types.TriplePlusPassthrough,
-									Elements: []interface{}{},
+								&types.StringElement{
+									Content: "content",
 								},
 							},
 						},

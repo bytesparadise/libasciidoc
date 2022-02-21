@@ -161,7 +161,14 @@ func applySubstitutionsOnBlockWithElements(ctx *ParseContext, b types.WithElemen
 			},
 		})
 	}
-	log.Debugf("applying substitutions on block of type '%T'", b)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("applying substitutions on\n'%s'", spew.Sdump(b))
+	}
+	defer func() {
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debugf("applied substitutions:\n'%s'", spew.Sdump(b))
+		}
+	}()
 	subs, err := newSubstitutions(b)
 	if err != nil {
 		return err

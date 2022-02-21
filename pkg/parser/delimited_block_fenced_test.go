@@ -169,7 +169,7 @@ var _ = Describe("fenced blocks", func() {
 		It("with unrendered list", func() {
 			source := "```\n" +
 				"* some \n" +
-				"* listing \n" +
+				"* fenced \n" +
 				"* content \n```"
 			expected := &types.Document{
 				Elements: []interface{}{
@@ -177,13 +177,56 @@ var _ = Describe("fenced blocks", func() {
 						Kind: types.Fenced,
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "* some\n* listing\n* content", // suffix spaces are trimmed
+								Content: "* some\n* fenced\n* content", // suffix spaces are trimmed
 							},
 						},
 					},
 				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		Context("with variable delimiter length", func() {
+
+			It("with 5 chars only", func() {
+				source := "`````\n" +
+					"some *fenced* content\n" +
+					"`````"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Fenced,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some *fenced* content",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with 5 chars with nested with 4 chars", func() {
+				source := "`````\n" +
+					"````\n" +
+					"some *fenced* content\n" +
+					"````\n" +
+					"`````"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Fenced,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "````\nsome *fenced* content\n````",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 	})
 })

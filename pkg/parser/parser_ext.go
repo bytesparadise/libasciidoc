@@ -185,6 +185,19 @@ func (c *current) unsetWithinDelimitedBlock() {
 	delete(c.globalStore, withinDelimitedBlockKey)
 }
 
+const blockDelimiterLengthKey = "block_delimiter_length"
+
+// state info to indicate the length of the current block delimiter
+func (c *current) setBlockDelimiterLength(length int) (bool, error) {
+	c.globalStore[blockDelimiterLengthKey] = length
+	return true, nil
+}
+
+// check if the length of the current block delimiters match
+func (c *current) matchBlockDelimiterLength(length int) (bool, error) {
+	return c.globalStore[blockDelimiterLengthKey] == length, nil
+}
+
 // state info to determine if parsing is happening within a delimited block (any kind),
 // in which case some grammar rules need to be disabled
 func (c *current) isWithinDelimitedBlock() bool {
@@ -196,23 +209,31 @@ func (c *current) isWithinDelimitedBlock() bool {
 }
 
 type blockDelimiterTracker struct {
-	stack []types.BlockDelimiterKind
+	stack []blockDelimiter
+}
+
+type blockDelimiter struct {
+	kind   types.BlockDelimiterKind
+	length int
 }
 
 func newBlockDelimiterTracker() *blockDelimiterTracker {
 	return &blockDelimiterTracker{
-		stack: []types.BlockDelimiterKind{},
+		stack: []blockDelimiter{},
 	}
 }
 
-func (t *blockDelimiterTracker) push(k types.BlockDelimiterKind) {
+func (t *blockDelimiterTracker) push(kind types.BlockDelimiterKind, length int) {
 	switch {
-	case len(t.stack) > 0 && t.stack[len(t.stack)-1] == k:
+	case len(t.stack) > 0 && t.stack[len(t.stack)-1].kind == kind && t.stack[len(t.stack)-1].length == length:
 		// trim
 		t.stack = t.stack[:len(t.stack)-1]
 	default:
 		// append
-		t.stack = append(t.stack, k)
+		t.stack = append(t.stack, blockDelimiter{
+			kind:   kind,
+			length: length,
+		})
 	}
 }
 

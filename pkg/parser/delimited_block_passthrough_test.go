@@ -156,6 +156,49 @@ pass:[foo]
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			Context("with variable delimiter length", func() {
+
+				It("with 5 chars", func() {
+					source := `+++++
+some *passthrough* content
++++++`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Passthrough,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "some *passthrough* content",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with 5 chars with nested with 4 chars", func() {
+					source := `+++++
+++++
+some *passthrough* content
+++++
++++++`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Passthrough,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "++++\nsome *passthrough* content\n++++",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
 		})
 
 		Context("paragraph with attribute", func() {

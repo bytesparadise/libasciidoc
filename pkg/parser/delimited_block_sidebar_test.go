@@ -186,5 +186,83 @@ some content
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
+
+		Context("with variable delimiter length", func() {
+
+			It("with 5 chars", func() {
+				source := `*****
+some *sidebar* content
+*****`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Sidebar,
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "some ",
+										},
+										&types.QuotedText{
+											Kind: types.SingleQuoteBold,
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "sidebar",
+												},
+											},
+										},
+										&types.StringElement{
+											Content: " content",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with 5 chars with nested with 4 chars", func() {
+				source := `*****
+****
+some *sidebar* content
+****
+*****`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Sidebar,
+							Elements: []interface{}{
+								&types.DelimitedBlock{
+									Kind: types.Sidebar,
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "some ",
+												},
+												&types.QuotedText{
+													Kind: types.SingleQuoteBold,
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "sidebar",
+														},
+													},
+												},
+												&types.StringElement{
+													Content: " content",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
 	})
 })
