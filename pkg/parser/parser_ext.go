@@ -176,13 +176,14 @@ func withinDelimitedBlock(v bool) Option {
 	return GlobalStore(withinDelimitedBlockKey, v)
 }
 
-// state info to indicate that parsing is happening within a delimited block of the given kind,
-// in which case some grammar rules may need to be disabled
-func (c *current) unsetWithinDelimitedBlock() {
+// state info to determine if parsing is happening within a delimited block (any kind),
+// in which case some grammar rules need to be disabled
+func (c *current) isWithinDelimitedBlock() bool {
+	w, found := c.globalStore[withinDelimitedBlockKey].(bool)
 	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("unsetting scope within block of kind '%s'", kind)
+	// 	log.Debugf("checking if within delimited block: %t/%t", found, w)
 	// }
-	delete(c.globalStore, withinDelimitedBlockKey)
+	return found && w
 }
 
 const blockDelimiterLengthKey = "block_delimiter_length"
@@ -196,16 +197,6 @@ func (c *current) setBlockDelimiterLength(length int) (bool, error) {
 // check if the length of the current block delimiters match
 func (c *current) matchBlockDelimiterLength(length int) (bool, error) {
 	return c.globalStore[blockDelimiterLengthKey] == length, nil
-}
-
-// state info to determine if parsing is happening within a delimited block (any kind),
-// in which case some grammar rules need to be disabled
-func (c *current) isWithinDelimitedBlock() bool {
-	w, found := c.globalStore[withinDelimitedBlockKey].(bool)
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("checking if within delimited block: %t/%t", found, w)
-	// }
-	return found && w
 }
 
 type blockDelimiterTracker struct {
