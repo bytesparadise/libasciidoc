@@ -62,7 +62,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 				}
 				b.WriteString(f)
 			case *types.BlockDelimiter:
-				t.push(types.BlockDelimiterKind(e.Kind))
+				t.push(types.BlockDelimiterKind(e.Kind), e.Length)
 				ctx.Opts = append(ctx.Opts, withinDelimitedBlock(t.withinDelimitedBlock()))
 				t, _ := e.RawText()
 				b.WriteString(t)

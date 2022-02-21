@@ -183,6 +183,58 @@ a note
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			Context("with variable delimiter length", func() {
+
+				It("with 5 chars", func() {
+					source := `[source]
+-----
+some *source* content
+-----`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Listing,
+								Attributes: types.Attributes{
+									types.AttrStyle: types.Source,
+								},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "some *source* content",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with 5 chars with nested with 4 chars", func() {
+					source := `[source]
+-----
+[source]
+----
+some *source* content
+----
+-----`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Listing,
+								Attributes: types.Attributes{
+									types.AttrStyle: types.Source,
+								},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "[source]\n----\nsome *source* content\n----",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
 		})
 
 		Context("as Markdown block", func() {

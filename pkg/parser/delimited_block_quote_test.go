@@ -378,6 +378,96 @@ foo
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			Context("with variable delimiter length", func() {
+
+				It("with 5 chars", func() {
+					source := `[quote]
+_____
+some *quote* content
+_____`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Quote,
+								Attributes: types.Attributes{
+									types.AttrStyle: types.Quote,
+								},
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "some ",
+											},
+											&types.QuotedText{
+												Kind: types.SingleQuoteBold,
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "quote",
+													},
+												},
+											},
+											&types.StringElement{
+												Content: " content",
+											},
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with 5 chars with nested with 4 chars", func() {
+					source := `[quote]
+_____
+[quote]
+____
+some *quote* content
+____
+_____`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Quote,
+								Attributes: types.Attributes{
+									types.AttrStyle: types.Quote,
+								},
+								Elements: []interface{}{
+									&types.DelimitedBlock{
+										Kind: types.Quote,
+										Attributes: types.Attributes{
+											types.AttrStyle: types.Quote,
+										},
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "some ",
+													},
+													&types.QuotedText{
+														Kind: types.SingleQuoteBold,
+														Elements: []interface{}{
+															&types.StringElement{
+																Content: "quote",
+															},
+														},
+													},
+													&types.StringElement{
+														Content: " content",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
 		})
 	})
 })

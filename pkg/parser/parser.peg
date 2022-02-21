@@ -741,45 +741,69 @@ BlockDelimiter <-
         }
 
 
-CommentBlockDelimiter <- "////" Space* EOL {
-    return types.NewBlockDelimiter(types.Comment, string(c.text))
-}
+CommentBlockDelimiter <- 
+    delimiter:("////" "/"* { // sequence of 4 "/" chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Comment, len(delimiter.(string)), string(c.text))
+    }
 
-ExampleBlockDelimiter <- "====" Space* EOL {
-    return types.NewBlockDelimiter(types.Example, string(c.text))
-}
+ExampleBlockDelimiter <- 
+    delimiter:("====" "="* { // sequence of 4 "=" chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Example, len(delimiter.(string)), string(c.text))
+    }
 
-FencedBlockDelimiter <- "```" Space* EOL {
-    return types.NewBlockDelimiter(types.Fenced, string(c.text))
-}
+FencedBlockDelimiter <- 
+    delimiter:("```" "`"* { // sequence of 3 "`" chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Fenced, len(delimiter.(string)), string(c.text))
+    }
 
 MarkdownCodeDelimiter <- "```" language:(Language) Space* EOL {
     return types.NewMarkdownCodeBlockDelimiter(language.(string), string(c.text))
 }
 
-Language <- ([^\r\n ]+) {
+Language <- ([^\r\n` ]+) { // exclude ` to avoid matching fenced blocks with more than 3 "`" delimter chars
     return string(c.text), nil
 }
 
-ListingBlockDelimiter <- "----" Space* EOL {
-    return types.NewBlockDelimiter(types.Listing, string(c.text))
-}
+ListingBlockDelimiter <- 
+    delimiter:("----" "-"* { // sequence of 4 "-" chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Listing, len(delimiter.(string)), string(c.text))
+    }
 
-LiteralBlockDelimiter <- "...." Space* EOL {
-    return types.NewBlockDelimiter(types.Literal, string(c.text))
-}
+LiteralBlockDelimiter <- 
+    delimiter:("...." "."* { // sequence of 4 "." chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Listing, len(delimiter.(string)), string(c.text))
+    }
 
-PassthroughBlockDelimiter <- "++++" Space* EOL {
-    return types.NewBlockDelimiter(types.Passthrough, string(c.text))
-}
+PassthroughBlockDelimiter <- 
+    delimiter:("++++" "+"* { // sequence of 4 "+" chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Passthrough, len(delimiter.(string)), string(c.text))
+    }
 
-QuoteBlockDelimiter <- "____" Space* EOL {
-    return types.NewBlockDelimiter(types.Quote, string(c.text))
-}
+QuoteBlockDelimiter <- 
+    delimiter:("____" "_"* { // sequence of 4 "_" chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Quote, len(delimiter.(string)), string(c.text))
+    }
 
-SidebarBlockDelimiter <- "****" Space* EOL {
-    return types.NewBlockDelimiter(types.Sidebar, string(c.text))
-}
+SidebarBlockDelimiter <- 
+    delimiter:("****" "*"* { // sequence of 4 "*" chars or more
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Sidebar, len(delimiter.(string)), string(c.text))
+    }
 
 DelimitedBlockRawLine <- 
     !EOF // in case the block is unclosed and at the end of the document
@@ -814,16 +838,24 @@ CommentBlockContent <-
 // Example Blocks
 // ----------------------
 ExampleBlock <-
-    ExampleBlockStartDelimiter
+    start:(ExampleBlockStartDelimiter)
+    &{
+        return c.setBlockDelimiterLength(start.(*types.BlockDelimiter).Length)
+    }
     content:(ExampleBlockContent)
-    ExampleBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
+    end:(ExampleBlockEndDelimiter)? {
+        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Example, content.([]interface{}))
     }
 
 ExampleBlockStartDelimiter <- ExampleBlockDelimiter
 
-ExampleBlockEndDelimiter <- ExampleBlockDelimiter / EOF
+ExampleBlockEndDelimiter <- 
+    end:ExampleBlockDelimiter 
+    &{
+        return c.matchBlockDelimiterLength(end.(*types.BlockDelimiter).Length)
+    }
+    / EOF
 
 ExampleBlockContent <- 
    (!ExampleBlockEndDelimiter
@@ -835,16 +867,24 @@ ExampleBlockContent <-
 // Fenced Blocks
 // ----------------------
 FencedBlock <-
-    FencedBlockStartDelimiter
+    start:(FencedBlockStartDelimiter)
+    &{
+        return c.setBlockDelimiterLength(start.(*types.BlockDelimiter).Length)
+    }
     content:(FencedBlockContent)
-    FencedBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
+    end:(FencedBlockEndDelimiter)? {
+        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Fenced, content.([]interface{}))
     }
 
-FencedBlockStartDelimiter <- FencedBlockDelimiter 
-    
-FencedBlockEndDelimiter <- FencedBlockDelimiter / EOF
+FencedBlockStartDelimiter <- FencedBlockDelimiter
+
+FencedBlockEndDelimiter <- 
+    end:FencedBlockDelimiter 
+    &{
+        return c.matchBlockDelimiterLength(end.(*types.BlockDelimiter).Length)
+    }
+    / EOF
 
 FencedBlockContent <- 
     (!FencedBlockEndDelimiter
@@ -856,16 +896,24 @@ FencedBlockContent <-
 // Listing Blocks
 // ----------------------
 ListingBlock <-
-    ListingBlockStartDelimiter
+    start:(ListingBlockStartDelimiter)
+    &{
+        return c.setBlockDelimiterLength(start.(*types.BlockDelimiter).Length)
+    }
     content:(ListingBlockContent)
-    ListingBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
+    end:(ListingBlockEndDelimiter)? {
+        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Listing, content.([]interface{}))
     }
 
-ListingBlockStartDelimiter <- ListingBlockDelimiter 
-    
-ListingBlockEndDelimiter <- ListingBlockDelimiter / EOF
+ListingBlockStartDelimiter <- ListingBlockDelimiter
+
+ListingBlockEndDelimiter <- 
+    end:ListingBlockDelimiter 
+    &{
+        return c.matchBlockDelimiterLength(end.(*types.BlockDelimiter).Length)
+    }
+    / EOF
 
 ListingBlockContent <- 
     (!ListingBlockEndDelimiter
@@ -877,16 +925,24 @@ ListingBlockContent <-
 // Literal Blocks
 // ----------------------
 LiteralBlock <-
-    LiteralBlockStartDelimiter
+    start:(LiteralBlockStartDelimiter)
+    &{
+        return c.setBlockDelimiterLength(start.(*types.BlockDelimiter).Length)
+    }
     content:(LiteralBlockContent)
-    LiteralBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
+    end:(LiteralBlockEndDelimiter)? {
+        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Literal, content.([]interface{}))
     }
 
 LiteralBlockStartDelimiter <- LiteralBlockDelimiter
 
-LiteralBlockEndDelimiter <- LiteralBlockDelimiter / EOF
+LiteralBlockEndDelimiter <- 
+    end:LiteralBlockDelimiter 
+    &{
+        return c.matchBlockDelimiterLength(end.(*types.BlockDelimiter).Length)
+    }
+    / EOF
 
 LiteralBlockContent <- 
     (!LiteralBlockEndDelimiter
@@ -910,7 +966,7 @@ MarkdownCodeBlock <-
 
 MarkdownCodeBlockStartDelimiter <- MarkdownCodeDelimiter
 
-MarkdownCodeBlockEndDelimiter <- FencedBlockEndDelimiter
+MarkdownCodeBlockEndDelimiter <- "```" Space* EOL 
 
 MarkdownCodeBlockContent <- 
     (!MarkdownCodeBlockEndDelimiter
@@ -948,16 +1004,24 @@ MarkdownQuoteAttribution <-
 // Passthrough Blocks
 // ----------------------
 PassthroughBlock <-
-    PassthroughBlockStartDelimiter
+    start:(PassthroughBlockStartDelimiter)
+    &{
+        return c.setBlockDelimiterLength(start.(*types.BlockDelimiter).Length)
+    }
     content:(PassthroughBlockContent)
-    PassthroughBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
+    end:(PassthroughBlockEndDelimiter)? {
+        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Passthrough, content.([]interface{}))
     }
 
 PassthroughBlockStartDelimiter <- PassthroughBlockDelimiter
 
-PassthroughBlockEndDelimiter <- PassthroughBlockDelimiter / EOF
+PassthroughBlockEndDelimiter <- 
+    end:PassthroughBlockDelimiter 
+    &{
+        return c.matchBlockDelimiterLength(end.(*types.BlockDelimiter).Length)
+    }
+    / EOF
 
 PassthroughBlockContent <- 
     (!PassthroughBlockEndDelimiter
@@ -969,16 +1033,24 @@ PassthroughBlockContent <-
 // Quote Blocks
 // ----------------------
 QuoteBlock <-
-    QuoteBlockStartDelimiter
+    start:(QuoteBlockStartDelimiter)
+    &{
+        return c.setBlockDelimiterLength(start.(*types.BlockDelimiter).Length)
+    }
     content:(QuoteBlockContent)
-    QuoteBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
+    end:(QuoteBlockEndDelimiter)? {
+        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Quote, content.([]interface{}))
     }
 
 QuoteBlockStartDelimiter <- QuoteBlockDelimiter
 
-QuoteBlockEndDelimiter <- QuoteBlockDelimiter / EOF
+QuoteBlockEndDelimiter <- 
+    end:QuoteBlockDelimiter 
+    &{
+        return c.matchBlockDelimiterLength(end.(*types.BlockDelimiter).Length)
+    }
+    / EOF
 
 QuoteBlockContent <- 
    (!QuoteBlockEndDelimiter
@@ -990,16 +1062,24 @@ QuoteBlockContent <-
 // Sidebar Blocks
 // ----------------------
 SidebarBlock <-
-    SidebarBlockStartDelimiter
+    start:(SidebarBlockStartDelimiter)
+    &{
+        return c.setBlockDelimiterLength(start.(*types.BlockDelimiter).Length)
+    }
     content:(SidebarBlockContent)
-    SidebarBlockEndDelimiter? {
-        c.unsetWithinDelimitedBlock()
+    end:(SidebarBlockEndDelimiter)? {
+        c.unsetWithinDelimitedBlock() // TODO: needed?
         return types.NewDelimitedBlock(types.Sidebar, content.([]interface{}))
     }
 
-SidebarBlockStartDelimiter <- SidebarBlockDelimiter 
+SidebarBlockStartDelimiter <- SidebarBlockDelimiter
 
-SidebarBlockEndDelimiter <- SidebarBlockDelimiter / EOF 
+SidebarBlockEndDelimiter <- 
+    end:SidebarBlockDelimiter 
+    &{
+        return c.matchBlockDelimiterLength(end.(*types.BlockDelimiter).Length)
+    }
+    / EOF
 
 SidebarBlockContent <- 
    (!SidebarBlockEndDelimiter

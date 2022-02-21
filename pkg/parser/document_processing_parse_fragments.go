@@ -62,7 +62,7 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 				case *types.DelimitedBlock:
 					switch e.Kind {
 					case types.Example, types.Quote, types.Sidebar:
-						if e.Elements, err = parseDelimitedBlockElements(ctx, e); err != nil {
+						if err := reparseDelimitedBlockElements(ctx, e); err != nil {
 							// log the error, but keep the delimited block empty so we can carry on with the whole processing
 							log.WithError(err).Error("unable to parse content of delimited block")
 							e.Elements = nil
@@ -86,25 +86,45 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 	return resultStream
 }
 
-func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) ([]interface{}, error) {
-	log.Debugf("parsing content of delimited block of kind '%s'", b.Kind)
+func reparseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) error {
+	if err := parseDelimitedBlockElements(ctx, b); err != nil {
+		return err
+	}
+	log.Debugf("reparsing content of delimited block of kind '%s'", b.Kind)
+	for _, e := range b.Elements { // TODO: change the grammar rules of these delimited blocks to avoid 2nd parsing
+		switch e := e.(type) {
+		case *types.DelimitedBlock:
+			switch e.Kind {
+			case types.Example, types.Quote, types.Sidebar:
+				if err := reparseDelimitedBlockElements(ctx, e); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) error {
+	log.Debugf("parsing elements of delimited block of kind '%s'", b.Kind)
 	// TODO: use real Substitution?
 	content, placeholders := serialize(b.Elements)
 	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
-	elements, err := Parse("", content, opts...)
+	elmts, err := Parse("", content, opts...)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to parse content") // ignore error (malformed content)
+		return errors.Wrap(err, "unable to parse content") // ignore error (malformed content)
 	}
-	log.Debugf("elements: '%s'", spew.Sdump(elements))
-	switch e := elements.(type) {
+	switch e := elmts.(type) {
 	case []interface{}:
 		// case where last element is `nil` because the parser found a standlone attribute
 		if len(e) > 0 && e[len(e)-1] == nil {
-			return e[:len(e)-1], nil
+			b.Elements = e[:len(e)-1]
+			return nil
 		}
-		return placeholders.restore(e)
+		b.Elements, err = placeholders.restore(e)
+		return err
 	default:
-		return nil, errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", e)
+		return errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", e)
 	}
 }
 

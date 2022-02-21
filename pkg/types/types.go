@@ -2177,20 +2177,23 @@ const (
 
 type BlockDelimiter struct { // TODO: use BlockDelimiterKind directly?
 	Kind       string
+	Length     int
 	Attributes Attributes
 	rawText    string
 }
 
-func NewBlockDelimiter(kind, rawText string) (*BlockDelimiter, error) {
+func NewBlockDelimiter(kind string, length int, rawText string) (*BlockDelimiter, error) {
 	return &BlockDelimiter{
 		Kind:    kind,
+		Length:  length,
 		rawText: rawText,
 	}, nil
 }
 
 func NewMarkdownCodeBlockDelimiter(language, rawText string) (*BlockDelimiter, error) {
 	return &BlockDelimiter{
-		Kind: Fenced,
+		Kind:   Fenced,
+		Length: 3,
 		Attributes: Attributes{
 			AttrStyle:    Source,
 			AttrLanguage: language,

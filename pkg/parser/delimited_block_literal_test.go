@@ -175,6 +175,49 @@ a normal paragraph.`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			Context("with variable delimiter length", func() {
+
+				It("with 5 chars", func() {
+					source := `.....
+some *literal* content
+.....`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Literal,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "some *literal* content",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with 5 chars with nested with 4 chars", func() {
+					source := `.....
+....
+some *literal* content
+....
+.....`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Literal,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "....\nsome *literal* content\n....",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
 		})
 
 		Context("with attribute", func() {

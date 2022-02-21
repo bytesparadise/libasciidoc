@@ -1215,6 +1215,49 @@ and <more text> on the +
 					Expect(logs).To(ContainJSONLogWithOffset(log.ErrorLevel, 33, 182, "unsupported substitution: 'unknown'"))
 				})
 			})
+
+			Context("with variable delimiter length", func() {
+
+				It("with 5 chars", func() {
+					source := `-----
+some *listing* content
+-----`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Listing,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "some *listing* content",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with 5 chars with nested with 4 chars", func() {
+					source := `-----
+----
+some *listing* content
+----
+-----`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Listing,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "----\nsome *listing* content\n----",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
 		})
 
 		Context("as paragraph blocks", func() {

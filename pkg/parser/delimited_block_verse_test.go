@@ -1052,6 +1052,98 @@ ____
 				})
 			})
 
+			Context("with variable delimiter length", func() {
+
+				It("with 5 chars", func() {
+					source := `[verse]
+_____
+some *verse* content
+_____`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Verse,
+								Attributes: types.Attributes{
+									types.AttrStyle: types.Verse,
+								},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "some ",
+									},
+									&types.QuotedText{
+										Kind: types.SingleQuoteBold,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "verse",
+											},
+										},
+									},
+									&types.StringElement{
+										Content: " content",
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+
+				It("with 5 chars with nested with 4 chars", func() {
+					// this is an edge case: the inner delimiters are treated as 3 nested italic quoted texts (single+double+single)
+					source := `[verse]
+_____
+[verse]
+____
+some *verse* content
+____
+_____`
+					expected := &types.Document{
+						Elements: []interface{}{
+							&types.DelimitedBlock{
+								Kind: types.Verse,
+								Attributes: types.Attributes{
+									types.AttrStyle: types.Verse,
+								},
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "[verse]\n",
+									},
+									&types.QuotedText{
+										Kind: types.SingleQuoteItalic,
+										Elements: []interface{}{
+											&types.QuotedText{
+												Kind: types.DoubleQuoteItalic,
+												Elements: []interface{}{
+													&types.QuotedText{
+														Kind: types.SingleQuoteItalic,
+														Elements: []interface{}{
+															&types.StringElement{
+																Content: "\nsome ",
+															},
+															&types.QuotedText{
+																Kind: types.SingleQuoteBold,
+																Elements: []interface{}{
+																	&types.StringElement{
+																		Content: "verse",
+																	},
+																},
+															},
+															&types.StringElement{
+																Content: " content\n",
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					}
+					Expect(ParseDocument(source)).To(MatchDocument(expected))
+				})
+			})
 		})
 	})
 
