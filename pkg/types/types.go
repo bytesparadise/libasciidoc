@@ -113,10 +113,9 @@ func (d *Document) Header() *DocumentHeader {
 		log.Debug("no header for empty doc")
 		return nil
 	}
-	for _, e := range d.Elements {
-		if h, ok := e.(*DocumentHeader); ok {
-			return h
-		}
+	// expect header (if it exists) to be in first position of the doc
+	if h, ok := d.Elements[0].(*DocumentHeader); ok {
+		return h
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("no header in document: %T", d.Elements[0])
