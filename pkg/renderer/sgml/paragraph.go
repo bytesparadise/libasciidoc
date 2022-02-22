@@ -187,7 +187,7 @@ func withRenderer(f renderFunc) lineRendererOption {
 }
 
 func (r *sgmlRenderer) renderParagraphElements(ctx *renderer.Context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
-	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) || ctx.Attributes.HasOption(types.DocumentAttrHardBreaks)
+	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) || ctx.Attributes.HasOption(types.AttrHardBreaks)
 	lr := r.newLineRenderer(append(opts, withHardBreaks(hardbreaks))...)
 	buf := &strings.Builder{}
 	for _, e := range p.Elements {

@@ -163,6 +163,8 @@ const (
 	AttrExperimental = "experimental"
 	// AttrButtonLabel the label of a button
 	AttrButtonLabel = "label"
+	// AttrHardBreaks the attribute to set on a paragraph to render with hard breaks on each line
+	AttrHardBreaks = "hardbreaks"
 )
 
 // Attribute is a key/value pair wrapper
