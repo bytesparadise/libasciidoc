@@ -26,6 +26,7 @@ type Templates struct {
 	IconFont                  string
 	IconImage                 string
 	IconText                  string
+	InlineButton              string
 	InlineIcon                string
 	InlineImage               string
 	InternalCrossReference    string

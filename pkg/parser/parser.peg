@@ -362,10 +362,10 @@ AttributeDeclarationValueElement <-
     }
 
 AttributeReset <- ":!" name:(AttributeName) ":" Space* EOL {
-    return types.NewAttributeReset(name.(string), string(c.text))
-} / ":" name:(AttributeName) "!:" Space* EOL {
-    return types.NewAttributeReset(name.(string), string(c.text))
-}
+        return types.NewAttributeReset(name.(string), string(c.text))
+    } / ":" name:(AttributeName) "!:" Space* EOL {
+        return types.NewAttributeReset(name.(string), string(c.text))
+    }
 
 // -------------------------------------------------------------------------------------
 // Block and Inline Attributes
@@ -1286,7 +1286,7 @@ InlineElement <-
 }
 
 // -------------------------------------------------------------------------------------
-// InlineAnchor 
+// Inline Anchor 
 // -------------------------------------------------------------------------------------
 InlineAnchor <- 
     // escaped
@@ -1298,6 +1298,17 @@ InlineAnchor <-
     /
     "[[" id:(Id) "]]" { // no EOL here since there can be multiple InlineElementID on the same line
         return types.NewInlineAnchor(id.(string))
+    }
+
+// -------------------------------------------------------------------------------------
+// Inline Button
+// -------------------------------------------------------------------------------------
+InlineButton <- 
+    &{
+        return c.isExperimentalEnabled(), nil
+    }
+    "btn:" attributes:(InlineAttributes) {
+        return types.NewInlineButton(attributes.(types.Attributes))
     }
 
 // -------------------------------------------------------------------------------------
@@ -2793,6 +2804,7 @@ InlineMacro <-
         / InlineAnchor
         / ConcealedIndexTerm
         / IndexTerm
+        / InlineButton
         / InlineUserMacro) {
             return element, nil
         }

@@ -54,9 +54,15 @@ func applySubstitutionsOnElement(ctx *ParseContext, element interface{}, opts ..
 		return nil
 	case *types.AttributeDeclaration:
 		ctx.attributes.set(b.Name, b.Value)
+		if b.Name == types.AttrExperimental {
+			ctx.Opts = append(ctx.Opts, enableExperimentalMacros(true))
+		}
 		return nil
 	case *types.AttributeReset:
 		ctx.attributes.unset(b.Name)
+		if b.Name == types.AttrExperimental {
+			ctx.Opts = append(ctx.Opts, enableExperimentalMacros(false))
+		}
 		return nil
 	case *types.DocumentHeader:
 		return applySubstitutionsOnDocumentHeader(ctx, b, opts...)
@@ -394,6 +400,23 @@ func (p *placeholders) restore(elements []interface{}) ([]interface{}, error) {
 	// 	log.Debugf("restored elements:\n%v", spew.Sdump(elements))
 	// }
 	return elements, nil
+}
+
+// ----------------------------------------------
+// Support for experimental macros at parse time
+// ----------------------------------------------
+const experimentalMacrosKey string = "experimental_macros"
+
+// sets the `experimental_macros` flag to `true` or `false` in the global store, so it can be checked by the `isExperimentalEnabled` method
+func enableExperimentalMacros(enabled bool) Option {
+	return GlobalStore(experimentalMacrosKey, enabled)
+}
+
+// checks if the `experimental` doc attribute was set (no value is expected, but we set a flag to handle the case where the attribute was reset)
+func (c *current) isExperimentalEnabled() bool {
+	enabled, found := c.globalStore[experimentalMacrosKey].(bool)
+	log.Debugf("experimental enabled: %t", (found && enabled))
+	return found && enabled
 }
 
 // ----------------------------------------------

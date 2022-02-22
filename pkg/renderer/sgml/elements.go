@@ -72,6 +72,8 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderInlinePassthrough(ctx, e)
 	case *types.ImageBlock:
 		return r.renderImageBlock(ctx, e)
+	case *types.InlineButton:
+		return r.renderInlineButton(e)
 	case *types.InlineImage:
 		return r.renderInlineImage(ctx, e)
 	case *types.Icon:
