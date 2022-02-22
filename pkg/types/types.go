@@ -39,11 +39,6 @@ type WithElementAddition interface {
 	AddElement(interface{}) error
 }
 
-type WithConditionalElementAddition interface { // TODO: still needed?
-	WithElementAddition
-	CanAddElement(interface{}) bool
-}
-
 type WithElements interface {
 	WithAttributes
 	GetElements() []interface{}
@@ -63,7 +58,6 @@ type WithTitle interface {
 type WithLocation interface {
 	WithAttributes
 	GetLocation() *Location
-	SetLocation(*Location) // TODO: unused?
 }
 
 type Referencable interface {
@@ -106,7 +100,7 @@ func NewErrorFragment(p Position, err error) DocumentFragment {
 
 // Document the top-level structure for a document
 type Document struct {
-	Elements          []interface{} // TODO: rename to `Blocks`?
+	Elements          []interface{}
 	ElementReferences ElementReferences
 	Footnotes         []*Footnote
 	TableOfContents   *TableOfContents
@@ -767,8 +761,6 @@ type List struct {
 	Elements   []ListElement
 }
 
-var _ WithConditionalElementAddition = &List{}
-
 var _ WithElements = &List{}
 
 func (l *List) GetAttributes() Attributes {
@@ -1153,8 +1145,8 @@ const (
 // OrderedListElement the structure for the ordered list items
 type OrderedListElement struct {
 	Attributes Attributes
-	Style      string        // TODO: rename to `OrderedListElementNumberingStyle`? TODO: define as an attribute instead?
-	Elements   []interface{} // TODO: rename to `Blocks`?
+	Style      string // TODO: rename to `OrderedListElementNumberingStyle`? TODO: define as an attribute instead?
+	Elements   []interface{}
 }
 
 // making sure that the `ListElement` interface is implemented by `OrderedListElement`
@@ -1287,7 +1279,7 @@ type UnorderedListElement struct {
 	BulletStyle UnorderedListElementBulletStyle
 	CheckStyle  UnorderedListElementCheckStyle
 	Attributes  Attributes
-	Elements    []interface{} // TODO: rename to `Blocks`?
+	Elements    []interface{}
 }
 
 var _ ListElement = &UnorderedListElement{}
@@ -1541,7 +1533,7 @@ type LabeledListElement struct {
 	Term       []interface{}
 	Attributes Attributes
 	Style      LabeledListElementStyle
-	Elements   []interface{} // TODO: rename to `Blocks`?
+	Elements   []interface{}
 }
 
 // NewLabeledListElement initializes a new LabeledListElement
@@ -1687,13 +1679,6 @@ type Paragraph struct {
 	Attributes Attributes
 	Elements   []interface{}
 }
-
-// AttrHardBreaks the attribute to set on a paragraph to render with hard breaks on each line
-// TODO: remove?
-const AttrHardBreaks = "hardbreaks"
-
-// DocumentAttrHardBreaks the attribute to set at the document level to render with hard breaks on each line of all paragraphs
-const DocumentAttrHardBreaks = "hardbreaks"
 
 // NewParagraph initializes a new `Paragraph`
 func NewParagraph(elements ...interface{}) (*Paragraph, error) {
@@ -1895,10 +1880,6 @@ func (x *ExternalCrossReference) GetLocation() *Location {
 	return x.Location
 }
 
-func (x *ExternalCrossReference) SetLocation(l *Location) {
-	x.Location = l
-}
-
 // GetAttributes returns the attributes of this paragraph so that substitutions can be applied onto them
 func (x *ExternalCrossReference) GetAttributes() Attributes {
 	return x.Attributes
@@ -1963,10 +1944,6 @@ func (i *ImageBlock) GetLocation() *Location {
 	return i.Location
 }
 
-func (i *ImageBlock) SetLocation(value *Location) {
-	i.Location = value
-}
-
 // InlineImage the structure for the inline image macros
 type InlineImage struct {
 	Location   *Location
@@ -2007,10 +1984,6 @@ var _ WithLocation = &InlineImage{}
 
 func (i *InlineImage) GetLocation() *Location {
 	return i.Location
-}
-
-func (i *InlineImage) SetLocation(value *Location) {
-	i.Location = value
 }
 
 // ------------------------------------------
@@ -2146,7 +2119,7 @@ func (s *sequence) nextVal() int {
 // Delimited blocks
 // ------------------------------------------
 
-type BlockDelimiterKind string // TODO: use it
+type BlockDelimiterKind string
 
 const (
 	// Fenced a fenced block
@@ -2653,7 +2626,6 @@ func NewLineBreak() (*LineBreak, error) {
 // ------------------------------------------
 
 // QuotedText the structure for quoted text
-// TODO implement RawText
 type QuotedText struct {
 	Kind       QuotedTextKind
 	Elements   []interface{}
@@ -2805,7 +2777,6 @@ const (
 )
 
 // QuotedString a quoted string
-// TODO implement RawText
 type QuotedString struct {
 	Kind     QuotedStringKind
 	Elements []interface{}
@@ -2938,10 +2909,6 @@ var _ WithLocation = &InlineLink{}
 
 func (l *InlineLink) GetLocation() *Location {
 	return l.Location
-}
-
-func (l *InlineLink) SetLocation(value *Location) {
-	l.Location = value
 }
 
 // ------------------------------------------
@@ -3262,10 +3229,6 @@ var _ WithLocation = &FileInclusion{}
 
 func (f *FileInclusion) GetLocation() *Location {
 	return f.Location
-}
-
-func (f *FileInclusion) SetLocation(value *Location) {
-	f.Location = value
 }
 
 // GetAttributes returns this elements's attributes
