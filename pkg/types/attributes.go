@@ -159,6 +159,10 @@ const (
 	AttrImagesDir = "imagesdir"
 	// AttrXRefLabel the label of a cross reference
 	AttrXRefLabel = "xrefLabel"
+	// AttrExperimental a flag to enable experiment macros (for UI)
+	AttrExperimental = "experimental"
+	// AttrButtonLabel the label of a button
+	AttrButtonLabel = "label"
 )
 
 // Attribute is a key/value pair wrapper

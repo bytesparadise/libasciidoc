@@ -22,7 +22,7 @@ type Stringer interface {
 	Stringify() string
 }
 
-// RawText interface for the elements that can provide the raw text representation of this element
+// RawText interface for the elements that can provide the rawText text representation of this element
 // as it was (supposedly) written in the source document
 type RawText interface {
 	RawText() (string, error)
@@ -640,7 +640,7 @@ func NewAttributeSubstitution(name, rawText string) (interface{}, error) {
 
 var _ RawText = &AttributeReference{}
 
-// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
 func (s *AttributeReference) RawText() (string, error) {
 	return s.rawText, nil
 }
@@ -2341,7 +2341,7 @@ const (
 // Sections
 // ------------------------------------------
 
-// RawSection the structure for a raw section, using during preparsing (needed to support level offsets)
+// RawSection the structure for a rawText section, using during preparsing (needed to support level offsets)
 type RawSection struct {
 	Level   int
 	RawText string
@@ -2544,24 +2544,24 @@ type UserMacro struct {
 }
 
 // NewUserMacroBlock returns an UserMacro
-func NewUserMacroBlock(name string, value string, attributes Attributes, raw string) (*UserMacro, error) {
+func NewUserMacroBlock(name string, value string, attributes Attributes, rawText string) (*UserMacro, error) {
 	return &UserMacro{
 		Name:       name,
 		Kind:       BlockMacro,
 		Value:      value,
 		Attributes: attributes,
-		RawText:    raw,
+		RawText:    rawText,
 	}, nil
 }
 
 // NewInlineUserMacro returns an UserMacro
-func NewInlineUserMacro(name, value string, attributes Attributes, raw string) (*UserMacro, error) {
+func NewInlineUserMacro(name, value string, attributes Attributes, rawText string) (*UserMacro, error) {
 	return &UserMacro{
 		Name:       name,
 		Kind:       InlineMacro,
 		Value:      value,
 		Attributes: attributes,
-		RawText:    raw,
+		RawText:    rawText,
 	}, nil
 }
 
@@ -2575,8 +2575,27 @@ type BlankLine struct {
 
 // NewBlankLine initializes a new `BlankLine`
 func NewBlankLine() (*BlankLine, error) {
-	// log.Debug("new BlankLine")
 	return &BlankLine{}, nil
+}
+
+// ------------------------------------------
+// Button
+// ------------------------------------------
+
+// InlineButton a button (requires `experimental` doc attribute to be set)
+type InlineButton struct {
+	Attributes Attributes
+}
+
+// NewInlineButton initializes a new `Button`
+func NewInlineButton(attrs Attributes) (*InlineButton, error) {
+	return &InlineButton{
+		Attributes: toAttributesWithMapping(
+			attrs, map[string]string{
+				AttrPositional1: AttrButtonLabel,
+			},
+		),
+	}, nil
 }
 
 // ------------------------------------------
@@ -2612,7 +2631,7 @@ func NewStringElement(content string) (*StringElement, error) {
 	}, nil
 }
 
-// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
 func (s StringElement) RawText() (string, error) {
 	return s.Content, nil
 }
@@ -2677,7 +2696,7 @@ func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (*QuotedText, e
 
 var _ RawText = &QuotedText{}
 
-// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
 func (t *QuotedText) RawText() (string, error) {
 	result := strings.Builder{}
 	result.WriteString(string(t.Kind)) // opening delimiter
@@ -2799,7 +2818,7 @@ func NewQuotedString(kind QuotedStringKind, elements []interface{}) (*QuotedStri
 
 var _ RawText = QuotedString{}
 
-// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
 func (s QuotedString) RawText() (string, error) {
 	result := strings.Builder{}
 	result.WriteString("`")            // opening delimiter
@@ -2846,7 +2865,7 @@ func NewInlinePassthrough(kind PassthroughKind, elements []interface{}) (*Inline
 
 var _ RawText = &InlinePassthrough{}
 
-// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
 func (p *InlinePassthrough) RawText() (string, error) {
 	result := strings.Builder{}
 	switch p.Kind {
@@ -3228,14 +3247,14 @@ type FileInclusion struct {
 }
 
 // NewFileInclusion initializes a new inline `FileInclusion`
-func NewFileInclusion(location *Location, attributes interface{}, rawtext string) (*FileInclusion, error) {
+func NewFileInclusion(location *Location, attributes interface{}, rawText string) (*FileInclusion, error) {
 	attrs := toAttributesWithMapping(attributes, map[string]string{
 		"tag": "tags", // convert `tag` to `tags`
 	})
 	return &FileInclusion{
 		Attributes: attrs,
 		Location:   location,
-		RawText:    rawtext,
+		RawText:    rawText,
 	}, nil
 }
 
@@ -3442,7 +3461,7 @@ type CurrentTagRange struct {
 // IncludedFileLine a line of a file that is being included
 // -------------------------------------------------------------------------------------
 
-// IncludedFileLine a line, containing raw text and inclusion tags
+// IncludedFileLine a line, containing rawText text and inclusion tags
 type IncludedFileLine []interface{}
 
 // NewIncludedFileLine returns a new IncludedFileLine
@@ -3637,7 +3656,7 @@ func NewSpecialCharacter(name string) (*SpecialCharacter, error) {
 
 var _ RawText = SpecialCharacter{}
 
-// RawText returns the raw text representation of this element as it was (supposedly) written in the source document
+// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
 func (c SpecialCharacter) RawText() (string, error) {
 	return c.Name, nil
 }
