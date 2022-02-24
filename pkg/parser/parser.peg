@@ -1312,6 +1312,17 @@ InlineButton <-
     }
 
 // -------------------------------------------------------------------------------------
+// Inline Menu
+// -------------------------------------------------------------------------------------
+InlineMenu <- 
+    &{
+        return c.isExperimentalEnabled(), nil
+    }
+    "menu:" id:(Id) attributes:(InlineAttributes) {
+        return types.NewInlineMenu(id.(string), attributes.(types.Attributes))
+    }
+
+// -------------------------------------------------------------------------------------
 // Index Terms
 // -------------------------------------------------------------------------------------
 IndexTerm <- "((" term:(IndexTermContent) "))" {
@@ -2805,6 +2816,7 @@ InlineMacro <-
         / ConcealedIndexTerm
         / IndexTerm
         / InlineButton
+        / InlineMenu
         / InlineUserMacro) {
             return element, nil
         }
