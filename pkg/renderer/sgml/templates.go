@@ -29,6 +29,7 @@ type Templates struct {
 	InlineButton              string
 	InlineIcon                string
 	InlineImage               string
+	InlineMenu                string
 	InternalCrossReference    string
 	InvalidFootnote           string
 	ItalicText                string

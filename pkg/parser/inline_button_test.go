@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega" // nolint:golintt
 )
 
-var _ = Describe("buttons", func() {
+var _ = Describe("inline buttons", func() {
 
 	Context("in final documents", func() {
 

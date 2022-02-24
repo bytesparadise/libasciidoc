@@ -36,6 +36,7 @@ type sgmlRenderer struct {
 	inlineButton              *textTemplate
 	inlineIcon                *textTemplate
 	inlineImage               *textTemplate
+	inlineMenu                *textTemplate
 	internalCrossReference    *textTemplate
 	invalidFootnote           *textTemplate
 	italicText                *textTemplate
@@ -119,6 +120,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.inlineButton, err = r.newTemplate("inline-button", tmpls.InlineButton, err)
 		r.inlineIcon, err = r.newTemplate("inline-icon", tmpls.InlineIcon, err)
 		r.inlineImage, err = r.newTemplate("inline-image", tmpls.InlineImage, err)
+		r.inlineMenu, err = r.newTemplate("inline-menu", tmpls.InlineMenu, err)
 		r.internalCrossReference, err = r.newTemplate("internal-xref", tmpls.InternalCrossReference, err)
 		r.invalidFootnote, err = r.newTemplate("invalid-footnote", tmpls.InvalidFootnote, err)
 		r.italicText, err = r.newTemplate("italic-text", tmpls.ItalicText, err)

@@ -34,17 +34,18 @@ type Renderer interface {
 func NewRenderer(t Templates) Renderer {
 	r := &sgmlRenderer{
 		templates: t,
-	}
-	// Establish some default function handlers.
-	r.functions = funcMap{
-		"escape":              EscapeString,
-		"trimRight":           trimRight,
-		"trimLeft":            trimLeft,
-		"trim":                trimBoth,
-		"specialCharacter":    specialCharacter,
-		"predefinedAttribute": predefinedAttribute,
-		"halign":              halign,
-		"valign":              valign,
+		// Establish some default function handlers.
+		functions: funcMap{
+			"escape":              EscapeString,
+			"trimRight":           trimRight,
+			"trimLeft":            trimLeft,
+			"trim":                trimBoth,
+			"specialCharacter":    specialCharacter,
+			"predefinedAttribute": predefinedAttribute,
+			"halign":              halign,
+			"valign":              valign,
+			"lastInStrings":       lastInStrings,
+		},
 	}
 	return r
 }
@@ -132,6 +133,10 @@ func valign(v types.VAlign) string {
 	default:
 		return string(v)
 	}
+}
+
+func lastInStrings(slice []string, index int) bool {
+	return index == len(slice)-1
 }
 
 func (r *sgmlRenderer) SetFunction(name string, fn interface{}) {

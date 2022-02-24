@@ -36,6 +36,7 @@ var templates = sgml.Templates{
 	InlineButton:              inlineButtonTmpl,
 	InlineIcon:                inlineIconTmpl,
 	InlineImage:               inlineImageTmpl,
+	InlineMenu:                inlineMenuTmpl,
 	InternalCrossReference:    internalCrossReferenceTmpl,
 	InvalidFootnote:           invalidFootnoteTmpl,
 	ItalicText:                italicTextTmpl,

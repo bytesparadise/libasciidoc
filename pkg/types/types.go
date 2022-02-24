@@ -1895,6 +1895,49 @@ func (x *ExternalCrossReference) SetAttributes(attributes Attributes) {
 }
 
 // ------------------------------------------
+// Inline Button
+// ------------------------------------------
+
+// InlineButton a button (requires `experimental` doc attribute to be set)
+type InlineButton struct {
+	Attributes Attributes
+}
+
+// NewInlineButton initializes a new `InlineButton`
+func NewInlineButton(attrs Attributes) (*InlineButton, error) {
+	return &InlineButton{
+		Attributes: toAttributesWithMapping(
+			attrs, map[string]string{
+				AttrPositional1: AttrButtonLabel,
+			},
+		),
+	}, nil
+}
+
+// ------------------------------------------
+// Inline Menu
+// ------------------------------------------
+
+// InlineMenu a menu with optional subpaths defined in its attributes (requires `experimental` doc attribute to be set)
+type InlineMenu struct {
+	Path []string
+}
+
+// NewInlineMenu initializes a new `InlineMenu`
+func NewInlineMenu(id string, attrs Attributes) (*InlineMenu, error) {
+	path := []string{id}
+	if s, ok := attrs[AttrPositional1].(string); ok {
+		subpaths := strings.Split(s, ">")
+		for _, s := range subpaths {
+			path = append(path, strings.TrimSpace(s))
+		}
+	}
+	return &InlineMenu{
+		Path: path,
+	}, nil
+}
+
+// ------------------------------------------
 // Images
 // ------------------------------------------
 
@@ -2548,26 +2591,6 @@ type BlankLine struct {
 // NewBlankLine initializes a new `BlankLine`
 func NewBlankLine() (*BlankLine, error) {
 	return &BlankLine{}, nil
-}
-
-// ------------------------------------------
-// Button
-// ------------------------------------------
-
-// InlineButton a button (requires `experimental` doc attribute to be set)
-type InlineButton struct {
-	Attributes Attributes
-}
-
-// NewInlineButton initializes a new `Button`
-func NewInlineButton(attrs Attributes) (*InlineButton, error) {
-	return &InlineButton{
-		Attributes: toAttributesWithMapping(
-			attrs, map[string]string{
-				AttrPositional1: AttrButtonLabel,
-			},
-		),
-	}, nil
 }
 
 // ------------------------------------------
