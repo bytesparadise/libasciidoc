@@ -40,7 +40,6 @@ func NewRenderer(t Templates) Renderer {
 			"trimRight":           trimRight,
 			"trimLeft":            trimLeft,
 			"trim":                trimBoth,
-			"specialCharacter":    specialCharacter,
 			"predefinedAttribute": predefinedAttribute,
 			"halign":              halign,
 			"valign":              valign,
@@ -60,16 +59,6 @@ func trimRight(s string) string {
 
 func trimBoth(s string) string {
 	return strings.Trim(s, " ")
-}
-
-var specialCharacters = map[string]string{
-	">": "&gt;",
-	"<": "&lt;",
-	"&": "&amp;",
-}
-
-func specialCharacter(c string) string {
-	return specialCharacters[c]
 }
 
 var predefinedAttributes = map[string]string{

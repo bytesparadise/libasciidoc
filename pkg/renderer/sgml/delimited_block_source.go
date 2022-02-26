@@ -93,10 +93,6 @@ func (r *sgmlRenderer) renderSourceBlockElements(ctx *renderer.Context, b *types
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("splitted lines:\n%s", spew.Sdump(lines))
 	}
-	ctx.EncodeSpecialChars = false
-	defer func() {
-		ctx.EncodeSpecialChars = true
-	}()
 	// using github.com/alecthomas/chroma to highlight the content
 	lexer := lexers.Get(language)
 	if lexer == nil {
@@ -168,7 +164,7 @@ func (r *sgmlRenderer) renderSourceLine(ctx *renderer.Context, line interface{})
 	for _, e := range elements {
 		switch e := e.(type) {
 		case *types.StringElement, *types.SpecialCharacter:
-			s, err := r.renderElement(ctx, e)
+			s, err := r.renderPlainText(ctx, e)
 			if err != nil {
 				return "", nil, err
 			}

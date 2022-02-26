@@ -103,7 +103,7 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	case *types.ThematicBreak:
 		return r.renderThematicBreak()
 	case *types.SpecialCharacter:
-		return r.renderSpecialCharacter(ctx, e)
+		return r.renderSpecialCharacter(e)
 	case *types.PredefinedAttribute:
 		return r.renderPredefinedAttribute(e)
 	case *types.AttributeDeclaration:
@@ -141,8 +141,10 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 		return element.Location.Stringify(), nil
 	case *types.BlankLine, types.ThematicBreak:
 		return "\n\n", nil
+	case *types.SpecialCharacter:
+		return element.Name, nil
 	case *types.StringElement:
-		return element.Content, nil
+		return r.renderStringElement(ctx, element)
 	case *types.QuotedString:
 		return r.renderQuotedString(ctx, element)
 	// case *types.Paragraph:

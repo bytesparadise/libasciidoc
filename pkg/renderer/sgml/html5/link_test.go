@@ -15,7 +15,7 @@ var _ = Describe("links", func() {
 
 	Context("bare URLs", func() {
 
-		It("should parse standalone URL with scheme ", func() {
+		It("standalone URL with scheme", func() {
 			source := `<https://example.com>`
 			expected := `<div class="paragraph">
 <p><a href="https://example.com" class="bare">https://example.com</a></p>
@@ -24,7 +24,7 @@ var _ = Describe("links", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("should parse URL with scheme in sentence", func() {
+		It("URL with scheme in sentence", func() {
 			source := `a link to <https://example.com>.`
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a>.</p>
@@ -33,12 +33,43 @@ var _ = Describe("links", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("should parse substituted URL with scheme", func() {
+		It("substituted URL with scheme", func() {
 			source := `:example: https://example.com
 
 a link to <{example}>.`
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare">https://example.com</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("substituted URL with scheme", func() {
+			source := `:example: https://example.com
+
+a link to <{example}>.`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("URL with query string", func() {
+			source := `a link to https://example.com?foo=bar&lang=en[].`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com?foo=bar&amp;lang=en" class="bare">https://example.com?foo=bar&amp;lang=en</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("substituted bare URL with query string", func() {
+			source := `:example: https://example.com?foo=bar&lang=en
+
+a link to <{example}>.`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com?foo=bar&amp;lang=en" class="bare">https://example.com?foo=bar&amp;lang=en</a>.</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -55,7 +86,7 @@ a link to <{example}>.`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("should parse with special character in URL", func() {
+			It("with special character in URL", func() {
 				source := `a link to https://example.com>[].`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -87,7 +118,7 @@ a link to <{example}>.`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("should parse with opening angle bracket", func() {
+			It("with opening angle bracket", func() {
 				source := `a link to <https://example.com[].`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -295,7 +326,7 @@ a link to {scheme}://{path} and https://foo.baz`
 			It("with special characters", func() {
 				source := `a link to https://example.com?a=1&b=2`
 				expected := `<div class="paragraph">
-<p>a link to <a href="https://example.com?a=1&b=2" class="bare">https://example.com?a=1&amp;b=2</a></p>
+<p>a link to <a href="https://example.com?a=1&amp;b=2" class="bare">https://example.com?a=1&amp;b=2</a></p>
 </div>
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
