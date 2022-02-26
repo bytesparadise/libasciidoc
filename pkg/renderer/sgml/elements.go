@@ -48,8 +48,6 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{}) (string, error) {
 	// log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
-	case []interface{}:
-		return r.renderElements(ctx, e)
 	case *types.TableOfContents:
 		return r.renderTableOfContents(ctx, e)
 	case *types.Section:
@@ -115,8 +113,6 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	case *types.FrontMatter:
 		ctx.Attributes.AddAll(e.Attributes)
 		return "", nil
-	case *types.AttributeReference:
-		return r.renderAttributeSubstitution(ctx, e)
 	default:
 		return "", errors.Errorf("unsupported type of element: %T", element)
 	}

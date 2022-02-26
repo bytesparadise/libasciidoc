@@ -94,9 +94,9 @@ some content`
 		})
 
 		It("paragraph with predefined attribute", func() {
-			source := "hello {plus} world"
+			source := "hello{nbsp}{plus}{nbsp}world"
 			expected := `<div class="paragraph">
-<p>hello &#43; world</p>
+<p>hello&#160;&#43;&#160;world</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))

@@ -51,7 +51,6 @@ type Templates struct {
 	Paragraph                 string
 	PassthroughBlock          string
 	Preamble                  string
-	PredefinedAttribute       string
 	QAndAList                 string
 	QAndAListItem             string
 	QuoteBlock                string
