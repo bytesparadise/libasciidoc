@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega" // nolint:golint
 )
 
-var _ = Describe("document toc", func() {
+var _ = Describe("table of contents", func() {
 
 	Context("in document with header", func() {
 
@@ -429,6 +429,25 @@ level 1 sections do not exist.`
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 
+			})
+
+			It("section title with special characters", func() { // TODO: move into `section_test.go`
+				source := `:toc:
+				
+== ...and we're back!`
+				expected := `<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_and_were_back">&#8230;&#8203;and we&#8217;re back!</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_and_were_back">&#8230;&#8203;and we&#8217;re back!</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 

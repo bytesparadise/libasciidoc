@@ -56,9 +56,7 @@ func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str *types.Str
 func asciiEntify(source string) string {
 	out := &strings.Builder{}
 	out.Grow(len(source))
-
 	for _, r := range source {
-
 		// This will certain characters that should be escaped alone.  Run them through
 		// escape first if that is a concern.
 		if r < 128 && (unicode.IsPrint(r) || unicode.IsSpace(r)) {
@@ -66,8 +64,7 @@ func asciiEntify(source string) string {
 			continue
 		}
 		// take care that the entity is unsigned (should always be)
-		fmt.Fprintf(out, "&#%d;", uint32(r))
+		fmt.Fprintf(out, "&#%d;", uint32(r)) // TODO: avoid `fmt.Fprintf`, use `fmt.Fprint` instead?
 	}
-
 	return out.String()
 }

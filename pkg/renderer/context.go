@@ -10,7 +10,6 @@ import (
 type Context struct {
 	Config               *configuration.Configuration // TODO: use composition (remove the `Config` field)
 	WithinDelimitedBlock bool
-	EncodeSpecialChars   bool
 	WithinList           int
 	counters             map[string]int
 	Attributes           types.Attributes
@@ -23,12 +22,11 @@ type Context struct {
 func NewContext(doc *types.Document, config *configuration.Configuration) *Context {
 	header := doc.Header()
 	ctx := &Context{
-		Config:             config,
-		counters:           make(map[string]int),
-		Attributes:         config.Attributes,
-		ElementReferences:  doc.ElementReferences,
-		HasHeader:          header != nil,
-		EncodeSpecialChars: true,
+		Config:            config,
+		counters:          make(map[string]int),
+		Attributes:        config.Attributes,
+		ElementReferences: doc.ElementReferences,
+		HasHeader:         header != nil,
 	}
 	// TODO: add other attributes from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#builtin-attributes-i18n
 	ctx.Attributes[types.AttrFigureCaption] = "Figure"

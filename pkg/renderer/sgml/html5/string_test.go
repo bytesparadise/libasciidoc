@@ -134,4 +134,13 @@ var _ = Describe("strings", func() {
 			"</div>\n"
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
+
+	It("paragraph with special characters", func() {
+		source := `...and we're back!`
+		expected := `<div class="paragraph">
+<p>&#8230;&#8203;and we&#8217;re back!</p>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
 })
