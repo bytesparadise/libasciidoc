@@ -2,8 +2,7 @@
 
 This document reports the known limitations and differences with Asciidoc/Asciidoctor.
 In any case, feel free to https://github.com/bytesparadise/libasciidoc/issues[open an issue]
-if you want to discuss an actual limitation of Libasciidoc or if you want to report a new one.
-We also accept pull requests.
+if you want to discuss an actual limitation of Libasciidoc or if you want to report a new one. We also accept pull requests.
 
 This list is not necessarily complete, but it should reflect the differences
 likely to impact real documents.
@@ -17,8 +16,8 @@ See https://github.com/bytesparadise/libasciidoc/issues/187[Issue #187] for more
 
 == Empty Document Body
 
-When the body of a document is empty, asciidoctor inserts a newline
-character.  This whitespace is not significant, and Libasciidoc does not emit one.
+When the body of a document is empty, asciidoctor inserts a newline character. 
+This whitespace is not significant, and Libasciidoc does not emit one.
 
 == Empty Quote Block Content
 
@@ -28,22 +27,8 @@ Libasciidoc does not emit one.
 
 == Passthroughs
 
-The inline passthrough macro will not render nothing at all instead of an empty paragraph
-when the macro is empty. I.e.:
 
-....
-pass:[]
-....
-
-will produce no HTML element at all, whereas Asciidoc/Asciidoctor will produce :
-
-....
-<div class="paragraph">
-<p></p>
-</div>
-....
-
-Also, the inline passthrough macro does not support line breaks within its content. I.e:
+The inline passthrough macro does not support line breaks within its content. I.e:
 
 ....
 +hello,
@@ -54,8 +39,8 @@ will produce:
 
 ....
 <div class="paragraph">
-<p>&#43;hello,
-world&#43;</p>
+<p>+hello,
+world+</p>
 </div>
 ....
 
@@ -70,9 +55,7 @@ world</p>
 
 == Constrained Monospace Text and Quoted Strings or Apostrophes
 
-Constrained or imbalanced monospace text may not act fully constrained, or may be confused in the presence of
-imbalanced quoted strings or apostrophes.  Typically such markup is erroneous, but the results from such errors may
-differ between implementations.
+Constrained or imbalanced monospace text may not act fully constrained, or may be confused in the presence of imbalanced quoted strings or apostrophes. Typically such markup is erroneous, but the results from such errors may differ between implementations.
 See https://github.com/bytesparadise/libasciidoc/issues/630[Issue #630].
 
 == Attribute Lists
@@ -95,9 +78,6 @@ See https://github.com/bytesparadise/libasciidoc/issues/692[Issue #692].
 
 Individual cell styles, including spans and repeats, are not supported.
 See https://github.com/bytesparadise/libasciidoc/issues/695[Issue #695].
-
-The style attribute for cell contents (specified in the cols attribute) is ignored (the "d" style for inline content is assumed).
-See https://github.com/bytesparadise/libasciidoc/issues/694[Issue #694].
 
 The parser will likely be confused by ragged tables, or tables that do not use one line per row.
 See https://github.com/bytesparadise/libasciidoc/issues/637[Issue #637].
@@ -122,46 +102,6 @@ Use per-image caption attributes for more control if needed.
 Video and audio elements are not supported.
 See https://github.com/bytesparadise/libasciidoc/issues/677[Issue #677].
 
-== File Inclusions
-
-File inclusions are performed before the full parsing takes place. During this phase, the parser looks for `include::` directives and replace them with the content of the file(s) to include. 
-If the file to include has an empty last line, it will be ignored, so it's always a good practice to include a blank line after the `include::` directive in the main document, to avoid side-effects during
-the "full" parsing.
-Also, the `lines` and `tags` attribute values must use semicolon (`;`) to join multiple ranges when they are not wrapped in quotes, and they can use both colon (`,`) and semicolon within quotes.
-
-For example:
-
-[source]
-====
-pass:[include::chapter-a.adoc[lines=1;3..4;6..10]]
-
-pass:[include::chapter-a.adoc[lines="1,3..4,6..10"]]
-
-pass:[include::chapter-a.adoc[lines="1;3..4;6..10"]]
-====
-
-== Substitutions
-
-In "normal" paragraphs, Asciidoctor processes the content with the following substitutions, in the following order:
-
-1. Special characters
-2. Quotes
-3. Attribute references
-4. Replacements
-5. Inline macros
-6. Post replacements
-
-However, splitting the "Quotes" and "Inline Macros" in two distinct steps causes troubles in LibAsciidoc, when an inline macro is wrapped in quoted text, or when an inline macro contains quoted attributes. 
-As a consequence, in "normal" paragraphs, LibAsciidoc processes the content with the following substitutions, in the following order:
-
-1. Special characters
-2. Attribute references
-3. Replacements
-4. Quotes and Inline macros
-5. Post replacements
-
-
-
 == Symbols and Characters
 
 Markup for the mdash and arrow symbols is not recognized.
@@ -171,16 +111,6 @@ Symbols for quotes (both single and double) will be inlined as numeric HTML enti
 
 Symbolic entity names (such as `&loz;` for &loz;) are not recognized -- leaving recognition and rendering dependent on the user-agent.
 See https://github.com/bytesparadise/libasciidoc/issues/680[Issue #680].
-
-== User Interface Macros
-
-The experimental macros for user interfaces (`kbd`, `menu`, and `btn`) are not supported.
-See https://github.com/bytesparadise/libasciidoc/issues/607[Issue #607].
-
-== Admonitions
-
-Use of unicode symbols or other replacement using the per-type caption attribute is not supported.
-See https://github.com/bytesparadise/libasciidoc/issues/679[Issue #679].
 
 == Favicon
 
@@ -195,10 +125,6 @@ is treated as an alias.  Chroma supports all the standard pygments styles, as we
 majority of the same source code languages. However some more esoteric languages might not be supported.
 See https://github.com/alecthomas/chroma#supported-languages[Chroma's documentation] for details.
 
-== Callouts
-
-Libasciidoc does not support font or image based callouts yet.
-
 == Math
 
 MathML and equations (`[stem]` blocks) are not supported yet.
@@ -210,8 +136,6 @@ Bibliographies using bibtex are not supported yet.
 See https://github.com/bytesparadise/libasciidoc/issues/609[Issue #609].
 
 == Links
-
-When using the `*` and `_` characters at the end of URLs of external links in a quoted text, the attributes markers need to be explicitly set. Eg: `+++a link to *https://foo.com/_[]*+++`.
 
 Using the caret short-hand to indicate link targets should use the blank window is not support.
 See https://github.com/bytesparadise/libasciidoc/issues/682[Issue #682].
