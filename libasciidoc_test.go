@@ -1,7 +1,6 @@
 package libasciidoc_test
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 	"time"
@@ -118,8 +117,6 @@ var _ = Describe("documents", func() {
 				filename := "test/compat/demo.adoc"
 				stat, err := os.Stat(filename)
 				Expect(err).NotTo(HaveOccurred())
-				expectedTmpl, err := ioutil.ReadFile("test/compat/demo-full.tmpl.html")
-				Expect(err).NotTo(HaveOccurred())
 
 				out := &strings.Builder{}
 				_, err = libasciidoc.ConvertFile(out,
@@ -129,7 +126,7 @@ var _ = Describe("documents", func() {
 						configuration.WithCSS("path/to/style.css"),
 						configuration.WithHeaderFooter(true)))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(out.String()).To(MatchHTMLTemplate(string(expectedTmpl),
+				Expect(out.String()).To(MatchHTMLTemplateFile(string("test/compat/demo-full.tmpl.html"),
 					struct {
 						LastUpdated string
 						Version     string

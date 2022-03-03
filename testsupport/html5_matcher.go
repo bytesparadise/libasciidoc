@@ -141,3 +141,56 @@ func (m *htmlTemplateMatcher) FailureMessage(_ interface{}) (message string) {
 func (m *htmlTemplateMatcher) NegatedFailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected HTML5 documents not to match:\n%s", m.diffs)
 }
+
+// ------------------------------------------------------
+// Match HTML from template file
+// ------------------------------------------------------
+
+// MatchHTMLTemplate a custom matcher to verify that a document renders as the given template
+// which will be processed with the given args
+func MatchHTMLTemplateFile(filename string, data interface{}) gomegatypes.GomegaMatcher {
+	return &htmlTemplateFileMatcher{
+		filename: filename,
+		data:     data,
+	}
+}
+
+type htmlTemplateFileMatcher struct {
+	filename string
+	data     interface{}
+	diffs    string
+}
+
+func (m *htmlTemplateFileMatcher) Match(actual interface{}) (success bool, err error) {
+	if _, ok := actual.(string); !ok {
+		return false, errors.Errorf("MatchHTMLTemplate matcher expects a string (actual: %T)", actual)
+	}
+
+	expected, err := ioutil.ReadFile(m.filename)
+	if err != nil {
+		return false, err
+	}
+	expected = bytes.ReplaceAll(expected, []byte{'\r'}, []byte{})
+	expectedTmpl, err := template.New("test").Parse(string(expected))
+	if err != nil {
+		return false, err
+	}
+	out := new(bytes.Buffer)
+	err = expectedTmpl.Execute(out, m.data)
+	if err != nil {
+		return false, err
+	}
+	if out.String() != actual {
+		m.diffs = cmp.Diff(actual.(string), out.String())
+		return false, nil
+	}
+	return true, nil
+}
+
+func (m *htmlTemplateFileMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected HTML5 documents to match:\n%s", m.diffs)
+}
+
+func (m *htmlTemplateFileMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected HTML5 documents not to match:\n%s", m.diffs)
+}
