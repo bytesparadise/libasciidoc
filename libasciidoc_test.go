@@ -34,265 +34,126 @@ var _ = Describe("documents", func() {
 
 	Context("article documents", func() {
 
-		Context("with body only", func() {
+		Context("with body output only", func() {
 
-			It("empty document", func() {
+			It("should render empty document", func() {
 				// main title alone is not rendered in the body
 				source := ""
-				expectedTitle := ""
-				expectedContent := ""
-				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
+				expected := ""
+				output, metadata, err := RenderHTMLWithMetadata(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(output).To(MatchHTML(expected))
+				Expect(metadata.Title).To(BeEmpty())
 			})
 
-			It("document with no section", func() {
-				// main title alone is not rendered in the body
-				source := "= a document title"
-				expectedTitle := "a document title"
-				expectedContent := ""
-				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
-			})
+			It("should render demo.adoc", func() {
+				// given
+				info, err := os.Stat("test/compat/demo.adoc")
+				Expect(err).NotTo(HaveOccurred())
 
-			It("sections with level 0 and 1", func() {
-				source := `= a document title
+				// when
+				output, metadata, err := RenderHTMLFromFile("test/compat/demo.adoc",
+					configuration.WithAttribute("libasciidoc-version", "0.7.0"),
+					configuration.WithCSS("path/to/style.css"))
 
-== Section A
-
-a paragraph with *bold content*`
-				expectedTitle := "a document title"
-				expectedContent := `<div class="sect1">
-<h2 id="_section_a">Section A</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>a paragraph with <strong>bold content</strong></p>
-</div>
-</div>
-</div>
-`
-				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
-			})
-
-			It("section level 1 with a paragraph", func() {
-				source := `== Section A
-
-a paragraph with *bold content*`
-				expectedTitle := ""
-				expectedContent := `<div class="sect1">
-<h2 id="_section_a">Section A</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>a paragraph with <strong>bold content</strong></p>
-</div>
-</div>
-</div>
-`
-				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
-			})
-
-			It("sections with level 0, 1 and 3", func() {
-				source := `= a document title
-
-== Section A
-
-a paragraph with *bold content*
-
-==== Section A.a.a
-
-a paragraph`
-				expectedContent := `<div class="sect1">
-<h2 id="_section_a">Section A</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>a paragraph with <strong>bold content</strong></p>
-</div>
-<div class="sect3">
-<h4 id="_section_a_a_a">Section A.a.a</h4>
-<div class="paragraph">
-<p>a paragraph</p>
-</div>
-</div>
-</div>
-</div>
-`
-				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
-					Title:       "a document title",
-					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+				// then
+				Expect(err).NotTo(HaveOccurred())
+				Expect(output).To(MatchHTMLFromFile("test/compat/demo.html"))
+				Expect(metadata).To(MatchMetadata(types.Metadata{
+					Title:       "Libasciidoc Demo",
+					LastUpdated: info.ModTime().Format(configuration.LastUpdatedFormat),
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_a",
-								Level: 1,
-								Title: "Section A",
-							},
-						},
-					},
-				}))
-			})
-
-			It("sections with level 0, 1, 2 and 1", func() {
-				source := `= a document title
-
-== Section A
-
-a paragraph with *bold content*
-
-=== Section A.a
-
-a paragraph
-
-== Section B
-
-a paragraph with _italic content_`
-				expectedTitle := "a document title"
-				expectedContent := `<div class="sect1">
-<h2 id="_section_a">Section A</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>a paragraph with <strong>bold content</strong></p>
-</div>
-<div class="sect2">
-<h3 id="_section_a_a">Section A.a</h3>
-<div class="paragraph">
-<p>a paragraph</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_section_b">Section B</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>a paragraph with <em>italic content</em></p>
-</div>
-</div>
-</div>
-`
-				Expect(RenderHTML(source)).To(Equal(expectedContent))
-				Expect(MetadataTitle(source)).To(Equal(expectedTitle))
-				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
-					Title:       "a document title",
-					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					TableOfContents: &types.TableOfContents{
-						MaxDepth: 2,
-						Sections: []*types.ToCSection{
-							{
-								ID:    "_section_a",
-								Level: 1,
-								Title: "Section A",
+								ID:     "first_steps_with_asciidoc",
+								Level:  1,
+								Title:  "First Steps with AsciiDoc",
+								Number: "1",
 								Children: []*types.ToCSection{
 									{
-										ID:    "_section_a_a",
-										Level: 2,
-										Title: "Section A.a",
+										ID:     "lists_upon_lists",
+										Level:  2,
+										Title:  "Lists Upon Lists",
+										Number: "1.1",
 									},
 								},
 							},
 							{
-								ID:    "_section_b",
-								Level: 1,
-								Title: "Section B",
+								ID:     "and_were_back",
+								Level:  1,
+								Title:  "&#8230;&#8203;and we&#8217;re back!",
+								Number: "2",
+								Children: []*types.ToCSection{
+									{
+										ID:     "block_quotes_and_smart_ones",
+										Level:  2,
+										Title:  "Block Quotes and &#8220;Smart&#8221; Ones",
+										Number: "2.1",
+									},
+								},
 							},
-						},
-					},
-				}))
-			})
-
-			It("should include adoc file without leveloffset from local file", func() {
-				source := "include::test/includes/grandchild-include.adoc[]"
-				expected := `<div class="sect1">
-<h2 id="_grandchild_title">grandchild title</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>first line of grandchild</p>
-</div>
-<div class="paragraph">
-<p>last line of grandchild</p>
-</div>
-</div>
-</div>
-`
-				Expect(RenderHTML(source)).To(Equal(expected))
-				Expect(DocumentMetadata(source, lastUpdated)).To(Equal(types.Metadata{
-					Title:       "",
-					LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
-					TableOfContents: &types.TableOfContents{
-						MaxDepth: 2,
-						Sections: []*types.ToCSection{
 							{
-								ID:    "_grandchild_title",
-								Level: 1,
-								Title: "grandchild title",
+								ID:     "literally",
+								Level:  1,
+								Title:  "Getting Literal",
+								Number: "3",
+							},
+							{
+								ID:    "wrapup",
+								Level: 1, Title: "Wrap-up",
+								Number: "4",
 							},
 						},
 					},
-				}))
+				},
+				))
 			})
 		})
 
-		Context("full", func() {
+		Context("with full output", func() {
 
-			It("using existing file", func() {
-				expectedContent := `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="libasciidoc">
-<link type="text/css" rel="stylesheet" href="path/to/style.css">
-<title>Chapter A</title>
-</head>
-<body class="article">
-<div id="header">
-<h1>Chapter A</h1>
-</div>
-<div id="content">
-<div class="paragraph">
-<p>content</p>
-</div>
-</div>
-<div id="footer">
-<div id="footer-text">
-Last updated {{.LastUpdated}}
-</div>
-</div>
-</body>
-</html>
-`
-				filename := "test/includes/chapter-a.adoc"
+			It("should render demo.adoc", func() {
+				filename := "test/compat/demo.adoc"
 				stat, err := os.Stat(filename)
 				Expect(err).NotTo(HaveOccurred())
+
 				out := &strings.Builder{}
 				_, err = libasciidoc.ConvertFile(out,
 					configuration.NewConfiguration(
 						configuration.WithFilename(filename),
+						configuration.WithAttribute("libasciidoc-version", "0.7.0"),
 						configuration.WithCSS("path/to/style.css"),
 						configuration.WithHeaderFooter(true)))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, stat.ModTime()))
+				Expect(out.String()).To(MatchHTMLTemplateFile(string("test/compat/demo-full.tmpl.html"),
+					struct {
+						LastUpdated string
+						Version     string
+						CSS         string
+					}{
+						LastUpdated: stat.ModTime().Format(configuration.LastUpdatedFormat),
+						Version:     "0.7.0",
+						CSS:         "path/to/style.css",
+					}))
 			})
 
-			It("should render with html5 backend without failure", func() {
+			It("not fail on article.adoc with html5 backend", func() {
 				out := &strings.Builder{}
 				_, err := libasciidoc.ConvertFile(out,
 					configuration.NewConfiguration(
-						configuration.WithFilename("test/article.adoc"),
+						configuration.WithFilename("test/compat/article.adoc"),
 						configuration.WithBackEnd("html5"),
 						configuration.WithCSS("path/to/style.css"),
 						configuration.WithHeaderFooter(true)))
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("should render with xhtml5 backend without failure", func() {
+			It("not fail on article.adoc with xhtml5 backend", func() {
 				out := &strings.Builder{}
 				_, err := libasciidoc.ConvertFile(out,
 					configuration.NewConfiguration(
-						configuration.WithFilename("test/article.adoc"),
+						configuration.WithFilename("test/compat/article.adoc"),
 						configuration.WithBackEnd("xhtml5"),
 						configuration.WithCSS("path/to/style.css"),
 						configuration.WithHeaderFooter(true)))
@@ -325,7 +186,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 Copyright (C) 2008 {author}. +
 Free use of this software is granted under the terms of the MIT License.`
 
-				expectedContent := `<h2 id="_name">Name</h2>
+				expected := `<h2 id="_name">Name</h2>
 <div class="sectionbody">
 <p>eve - analyzes an image to determine if it&#8217;s a picture of a life form</p>
 </div>
@@ -355,7 +216,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 						configuration.WithAttribute(types.AttrDocType, "manpage"),
 					))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(out.String()).To(MatchHTML(expectedContent))
+				Expect(out.String()).To(MatchHTML(expected))
 			})
 		})
 
@@ -381,7 +242,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 Copyright (C) 2008 {author}. +
 Free use of this software is granted under the terms of the MIT License.`
 
-				expectedContent := `<!DOCTYPE html>
+				expectedTmpl := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -422,7 +283,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -439,7 +300,12 @@ Last updated {{.LastUpdated}}
 						configuration.WithHeaderFooter(true),
 					))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				Expect(out.String()).To(MatchHTMLTemplate(expectedTmpl,
+					struct {
+						LastUpdated string
+					}{
+						LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+					}))
 			})
 
 			It("should render invalid manpage as article", func() {
@@ -462,7 +328,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 Copyright (C) 2008 {author}. +
 Free use of this software is granted under the terms of the MIT License.`
 
-				expectedContent := `<!DOCTYPE html>
+				expectedTmpl := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -511,7 +377,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br>
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -528,7 +394,12 @@ Last updated {{.LastUpdated}}
 						configuration.WithHeaderFooter(true),
 					))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				Expect(out.String()).To(MatchHTMLTemplate(expectedTmpl,
+					struct {
+						LastUpdated string
+					}{
+						LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+					}))
 				Expect(logs).To(ContainJSONLog(log.WarnLevel, "changing doctype to 'article' because problems were found in the document"))
 				Expect(logs).To(ContainJSONLog(log.ErrorLevel, "manpage document is missing the 'Name' section"))
 			})
@@ -537,7 +408,7 @@ Last updated {{.LastUpdated}}
 				source := `= Story
 
 Our story begins.`
-				expectedContent := `<!DOCTYPE html>
+				expectedTmpl := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -557,7 +428,7 @@ Our story begins.`
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -573,14 +444,19 @@ Last updated {{.LastUpdated}}
 						configuration.WithHeaderFooter(true),
 					))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				Expect(out.String()).To(MatchHTMLTemplate(expectedTmpl,
+					struct {
+						LastUpdated string
+					}{
+						LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+					}))
 			})
 
 			It("should render with xhtml5 backend", func() {
 				source := `= Story
 
 Our story begins.`
-				expectedContent := `<!DOCTYPE html>
+				expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -600,7 +476,7 @@ Our story begins.`
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -616,7 +492,12 @@ Last updated {{.LastUpdated}}
 						configuration.WithHeaderFooter(true),
 					))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(out.String()).To(MatchHTMLTemplate(expectedContent, lastUpdated))
+				Expect(out.String()).To(MatchHTMLTemplate(expectedTmpl,
+					struct {
+						LastUpdated string
+					}{
+						LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
+					}))
 			})
 
 			It("should fail given bogus backend", func() {

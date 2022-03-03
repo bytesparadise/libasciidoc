@@ -1,28 +1,46 @@
 package testsupport
 
 import (
-	"bytes"
-	"strings"
+	"fmt"
+	"reflect"
 
-	"github.com/bytesparadise/libasciidoc"
-	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/google/go-cmp/cmp"
+
+	"github.com/davecgh/go-spew/spew"
+	. "github.com/onsi/ginkgo" // nolint go-lint
+	gomegatypes "github.com/onsi/gomega/types"
+	"github.com/pkg/errors"
 )
 
-// MetadataTitle returns the title entry from the document metadata
-func MetadataTitle(actual string, options ...configuration.Setting) (string, error) {
-	config := configuration.NewConfiguration()
-	configuration.WithBackEnd("html5")(config)
-	for _, set := range options {
-		set(config)
+func MatchMetadata(expected types.Metadata) gomegatypes.GomegaMatcher {
+	return &metadataMatcher{
+		expected: expected,
 	}
-	contentReader := strings.NewReader(actual)
-	resultWriter := bytes.NewBuffer(nil)
-	metadata, err := libasciidoc.Convert(contentReader, resultWriter, config)
-	if err != nil {
-		return "", err
+}
+
+type metadataMatcher struct {
+	expected types.Metadata
+	diffs    string
+}
+
+func (m *metadataMatcher) Match(actual interface{}) (success bool, err error) {
+	if _, ok := actual.(types.Metadata); !ok {
+		return false, errors.Errorf("MatchMetadata matcher expects a 'types.Metadata' (actual: %T)", actual)
 	}
-	// if strings.Contains(m.expected, "{{.LastUpdated}}") {
-	// 	m.expected = strings.Replace(m.expected, "{{.LastUpdated}}", metadata.LastUpdated, 1)
-	// }
-	return metadata.Title, nil
+	if !reflect.DeepEqual(m.expected, actual) {
+		GinkgoT().Logf("actual HTML:\n'%s'", actual)
+		GinkgoT().Logf("expected HTML:\n'%s'", m.expected)
+		m.diffs = cmp.Diff(spew.Sdump(actual), spew.Sdump(m.expected))
+		return false, nil
+	}
+	return true, nil
+}
+
+func (m *metadataMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected document metadata to match:\n%s", m.diffs)
+}
+
+func (m *metadataMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected document metadata not to match:\n%s", m.diffs)
 }
