@@ -2239,10 +2239,10 @@ func NewDelimitedBlock(kind string, elements []interface{}) (*DelimitedBlock, er
 			}
 		}
 	}
-	return &DelimitedBlock{
+	 return &DelimitedBlock{
 		Kind:     kind,
 		Elements: elements,
-	}, nil
+	}, nil 
 }
 
 var _ WithElements = &DelimitedBlock{}
@@ -2398,6 +2398,19 @@ func NewSection(level int, title []interface{}) (*Section, error) {
 func (s *Section) GetID() (string, error) {
 	id, _, err := s.Attributes.GetAsString(AttrID)
 	return id, err
+}
+
+var _ WithElements = &Section{}
+
+// GetElements returns this Section's elements
+func (s *Section) GetElements() []interface{} {
+	return s.Elements
+}
+
+// SetElements sets this Sections's elements
+func (s *Section) SetElements(elements []interface{}) error {
+	s.Elements = elements
+	return nil
 }
 
 var _ WithTitle = &Section{}
