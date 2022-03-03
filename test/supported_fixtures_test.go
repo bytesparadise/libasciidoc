@@ -12,7 +12,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo" // nolint:golint
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega" // nolint:golintt
 	log "github.com/sirupsen/logrus"
@@ -36,11 +35,7 @@ func init() {
 
 }
 
-var _ = Describe("fixtures", func() {
-
-	// verifies that all files in the `supported` subfolder match their sibling golden file
-	DescribeTable("supported", compare, entries("compat/*.adoc")...)
-})
+var _ = DescribeTable("compat", compare, entries("compat/*.adoc")...)
 
 func compare(filename string) {
 	actual := &strings.Builder{}
@@ -69,7 +64,7 @@ func entries(pattern string) []TableEntry {
 	files, _ := filepath.Glob(pattern)
 	result := make([]TableEntry, 0, len(files))
 	for _, file := range files {
-		if file == "compat/include.adoc" {
+		if filepath.Base(file) == "include.adoc" {
 			// skip
 			continue
 		}
