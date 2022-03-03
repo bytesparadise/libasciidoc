@@ -143,7 +143,9 @@ Last updated {{ .LastUpdated }}
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expected))
+		Expect(RenderXHTML(source,
+			configuration.WithFilename("tmp/foo.adoc"),
+		)).To(MatchHTML(expected))
 	})
 
 	It("document with custom icon attributes", func() {
@@ -178,7 +180,7 @@ a note
 `
 		Expect(RenderXHTML(source,
 			configuration.WithAttributes(attrs),
-		)).To(Equal(expected))
+		)).To(MatchHTML(expected))
 	})
 
 	It("document without custom icon attributes", func() {

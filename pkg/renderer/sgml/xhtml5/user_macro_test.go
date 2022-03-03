@@ -57,7 +57,7 @@ var _ = Describe("user macros", func() {
 </div>`
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 		It("user macro block with attribute", func() {
@@ -70,7 +70,7 @@ var _ = Describe("user macros", func() {
 </div>`
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 		It("user macro block with value", func() {
@@ -83,7 +83,7 @@ var _ = Describe("user macros", func() {
 </div>`
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 		It("user macro block with value and attributes", func() {
@@ -96,7 +96,7 @@ var _ = Describe("user macros", func() {
 </div>`
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 		It("undefined inline macro", func() {
@@ -118,7 +118,7 @@ var _ = Describe("user macros", func() {
 `
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 		It("inline macro with attribute", func() {
@@ -130,7 +130,7 @@ var _ = Describe("user macros", func() {
 `
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 		It("inline macro with value", func() {
@@ -142,7 +142,7 @@ var _ = Describe("user macros", func() {
 `
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 		It("inline macro with value and attributes", func() {
@@ -154,7 +154,7 @@ var _ = Describe("user macros", func() {
 `
 			Expect(RenderXHTML(source,
 				configuration.WithMacroTemplate(helloMacroTmpl.Name(), helloMacroTmpl)),
-			).To(Equal(expected))
+			).To(MatchHTML(expected))
 		})
 
 	})

@@ -33,7 +33,7 @@ var _ = Describe("file inclusions", func() {
 `
 		output, metadata, err := RenderXHTMLWithMetadata(source, configuration.WithLastUpdated(lastUpdated))
 		Expect(err).NotTo(HaveOccurred())
-		Expect(output).To(Equal(expected))
+		Expect(output).To(MatchHTML(expected))
 		Expect(metadata).To(MatchMetadata(types.Metadata{
 			LastUpdated: lastUpdated.Format(configuration.LastUpdatedFormat),
 			TableOfContents: &types.TableOfContents{
@@ -67,7 +67,8 @@ var _ = Describe("file inclusions", func() {
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expected))
+		Expect(RenderXHTML(source, configuration.WithFilename("tmp/foo.adoc"))).
+			To(MatchHTML(expected))
 		// verify no error/warning in logs
 		Expect(logs).ToNot(ContainAnyMessageWithLevels(log.ErrorLevel, log.WarnLevel))
 	})

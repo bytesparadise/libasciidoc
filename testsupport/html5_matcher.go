@@ -75,10 +75,11 @@ func (m *htmlFileMatcher) Match(actual interface{}) (success bool, err error) {
 	if _, ok := actual.(string); !ok {
 		return false, errors.Errorf("MatchHTMLFromFile matcher expects a string (actual: %T)", actual)
 	}
+	expected = bytes.ReplaceAll(expected, []byte{'\r'}, []byte{})
 	if string(expected) != actual {
 		GinkgoT().Logf("actual HTML:\n'%s'", actual)
 		GinkgoT().Logf("expected HTML:\n'%s'", expected)
-		m.diffs = cmp.Diff(actual.(string), string(expected))
+		m.diffs = cmp.Diff(actual, expected)
 		return false, nil
 	}
 	return true, nil
