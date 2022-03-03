@@ -6,9 +6,9 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/google/go-cmp/cmp"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
-	"github.com/sergi/go-diff/diffmatchpatch"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -34,9 +34,7 @@ func (m *documentFragmentGroupsMatcher) Match(actual interface{}) (success bool,
 			log.Debugf("actual document fragments:\n%s", spew.Sdump(actual))
 			log.Debugf("expected document fragments:\n%s", spew.Sdump(m.expected))
 		}
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(spew.Sdump(actual), spew.Sdump(m.expected), true)
-		m.diffs = dmp.DiffPrettyText(diffs)
+		m.diffs = cmp.Diff(spew.Sdump(actual), spew.Sdump(m.expected))
 		return false, nil
 	}
 	return true, nil

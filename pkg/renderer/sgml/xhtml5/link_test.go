@@ -44,7 +44,7 @@ var _ = Describe("links", func() {
 		// 			expected := `<div class="paragraph">
 		// <p><a href="mailto:foo@example.com?subject=B&amp;body=and+C">A</a></p>
 		// </div>`
-		// 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		// 			output, _, err := RenderXHTML(source)).To(MatchHTML(expected))
 		// 		})
 
 		It("email link with quoted text having comma", func() {
@@ -115,7 +115,10 @@ a link to {scheme}://{path}`
 :scheme: https
 :path: foo.bar`
 				expected := `a title to https://foo.bar and https://foo.baz`
-				Expect(RenderXHTML5Title(source)).To(Equal(expected))
+				output, metadata, err := RenderXHTMLWithMetadata(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(output).To(BeEmpty())
+				Expect(metadata.Title).To(Equal(expected))
 			})
 
 			It("external link with document attribute in section 1 title", func() {

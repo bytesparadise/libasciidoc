@@ -7,22 +7,18 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/testsupport"
-	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/google/go-cmp/cmp"
 
 	. "github.com/onsi/ginkgo" // nolint:golint
 	. "github.com/onsi/gomega" // nolint:golintt
 )
 
-var _ = Describe("html5 template matcher", func() {
-
-	// given
-	now := time.Now()
-	tmpl := `<p>{{.LastUpdated}}</p>`
-	matcher := testsupport.MatchHTMLTemplate(tmpl, now)
+var _ = Describe("html5 matcher", func() {
 
 	It("should match", func() {
 		// given
-		actual := `<p>` + now.Format("2006-01-02 15:04:05 -0700") + `</p>`
+		actual := `<p>cheesecake</p>`
+		matcher := testsupport.MatchHTML(`<p>cheesecake</p>`) // same content
 		// when
 		result, err := matcher.Match(actual)
 		// then
@@ -33,19 +29,78 @@ var _ = Describe("html5 template matcher", func() {
 	It("should not match", func() {
 		// given
 		actual := `<p>cheesecake</p>`
+		expected := `<p>chocolate</p>`
+		matcher := testsupport.MatchHTML(expected) // not the same content
 		// when
 		result, err := matcher.Match(actual)
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
-		expected := strings.Replace(tmpl, "{{.LastUpdated}}", now.Format(configuration.LastUpdatedFormat), 1)
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(actual, expected, true)
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents to match:\n%s", dmp.DiffPrettyText(diffs))))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents not to match:\n%s", dmp.DiffPrettyText(diffs))))
+		diffs := cmp.Diff(actual, expected)
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents to match:\n%s", diffs)))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents not to match:\n%s", diffs)))
 	})
 
 	It("should return error when invalid type is input", func() {
+		// given
+		matcher := testsupport.MatchHTML(`<p>cheesecake</p>`)
+		// when
+		result, err := matcher.Match(1)
+		// then
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("MatchHTML matcher expects a string (actual: int)"))
+		Expect(result).To(BeFalse())
+	})
+
+})
+
+var _ = Describe("html5 template matcher", func() {
+
+	// given
+	now := time.Now()
+	tmpl := `<p>{{ .LastUpdated }}</p>`
+
+	It("should match", func() {
+		// given
+		matcher := testsupport.MatchHTMLTemplate(tmpl, struct {
+			LastUpdated string
+		}{
+			LastUpdated: now.Format(configuration.LastUpdatedFormat),
+		})
+		actual := `<p>` + now.Format(configuration.LastUpdatedFormat) + `</p>`
+		// when
+		result, err := matcher.Match(actual)
+		// then
+		Expect(err).ToNot(HaveOccurred())
+		Expect(result).To(BeTrue())
+	})
+
+	It("should not match", func() {
+		// given
+		actual := `<p>cheesecake</p>`
+		matcher := testsupport.MatchHTMLTemplate(tmpl, struct {
+			LastUpdated string
+		}{
+			LastUpdated: now.Format(configuration.LastUpdatedFormat),
+		})
+		// when
+		result, err := matcher.Match(actual)
+		// then
+		Expect(err).ToNot(HaveOccurred())
+		Expect(result).To(BeFalse())
+		expected := strings.Replace(tmpl, "{{ .LastUpdated }}", now.Format(configuration.LastUpdatedFormat), 1)
+		diffs := cmp.Diff(actual, expected)
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents to match:\n%s", diffs)))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents not to match:\n%s", diffs)))
+	})
+
+	It("should return error when invalid type is input", func() {
+		// given
+		matcher := testsupport.MatchHTMLTemplate(tmpl, struct {
+			LastUpdated string
+		}{
+			LastUpdated: now.Format(configuration.LastUpdatedFormat),
+		})
 		// when
 		result, err := matcher.Match(1)
 		// then

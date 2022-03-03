@@ -10,6 +10,8 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	. "github.com/bytesparadise/libasciidoc/testsupport"
+
 	. "github.com/onsi/ginkgo" // nolint:golint
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega" // nolint:golintt
@@ -37,26 +39,22 @@ func init() {
 var _ = Describe("fixtures", func() {
 
 	// verifies that all files in the `supported` subfolder match their sibling golden file
-	DescribeTable("supported", compare, entries("fixtures/supported/*.adoc")...)
+	DescribeTable("supported", compare, entries("compat/*.adoc")...)
 })
 
-func compare(file string) {
-	// set logger to a minimal verbose level, then restore at its initial level afterwards
-	// unless the logger was at `DEBUG` level, in which case, it should remain as-is
-	if log.GetLevel() != log.DebugLevel {
-		level := log.GetLevel()
-		log.SetLevel(log.WarnLevel)
-		defer func() {
-			log.SetLevel(level)
-		}()
-	}
+func compare(filename string) {
 	actual := &strings.Builder{}
 	_, err := libasciidoc.ConvertFile(actual, configuration.NewConfiguration(
-		configuration.WithFilename(file),
-		configuration.WithBackEnd("html5")))
+		configuration.WithFilename(filename),
+		configuration.WithBackEnd("html5"),
+		configuration.WithAttribute("libasciidoc-version", "0.7.0"),
+	))
 	Expect(err).NotTo(HaveOccurred())
-	expected, err := getGoldenFile(file)
+	// retrieve the reference document
+	path := strings.TrimSuffix(filename, ".adoc") + ".html"
+	content, err := ioutil.ReadFile(path)
 	Expect(err).NotTo(HaveOccurred())
+	expected := string(content)
 	// if tests are executed on windows platform and git 'autocrlf' is set to 'true',
 	// then we need to remove the `\r` characters that were added in the 'expected'
 	// source at the time of the checkout
@@ -64,26 +62,18 @@ func compare(file string) {
 		expected = strings.Replace(expected, "\r", "", -1)
 	}
 	// compare actual vs reference
-	Expect(actual.String()).To(Equal(expected))
+	Expect(actual.String()).To(MatchHTML(expected))
 }
-
-const adocExt = ".adoc"
 
 func entries(pattern string) []TableEntry {
 	files, _ := filepath.Glob(pattern)
-	result := make([]TableEntry, len(files))
-	for i, file := range files {
-		result[i] = Entry(file, file)
+	result := make([]TableEntry, 0, len(files))
+	for _, file := range files {
+		if file == "compat/include.adoc" {
+			// skip
+			continue
+		}
+		result = append(result, Entry(file, file))
 	}
 	return result
-}
-
-func getGoldenFile(sourcePath string) (string, error) {
-	// retrieve the reference document
-	goldPath := sourcePath[:len(sourcePath)-len(adocExt)] + ".html"
-	content, err := ioutil.ReadFile(goldPath)
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
 }

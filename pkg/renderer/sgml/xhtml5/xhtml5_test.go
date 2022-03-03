@@ -15,7 +15,7 @@ var _ = Describe("document header", func() {
 
 	It("header with quoted text", func() {
 		source := `= The _Document_ *Title*`
-		expected := `<!DOCTYPE html>
+		expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -33,7 +33,7 @@ var _ = Describe("document header", func() {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -42,14 +42,19 @@ Last updated {{.LastUpdated}}
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithHeaderFooter(true),
 			configuration.WithCSS("/path/to/style.css"),
-			configuration.WithLastUpdated(now))).
-			To(MatchHTMLTemplate(expected, now))
+			configuration.WithLastUpdated(now),
+		)).To(MatchHTMLTemplate(expectedTmpl,
+			struct {
+				LastUpdated string
+			}{
+				LastUpdated: now.Format(configuration.LastUpdatedFormat),
+			}))
 	})
 
 	It("header with role", func() {
 		source := `[.my_role]
 = My Title`
-		expected := `<!DOCTYPE html>
+		expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -67,7 +72,7 @@ Last updated {{.LastUpdated}}
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -76,14 +81,19 @@ Last updated {{.LastUpdated}}
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithHeaderFooter(true),
 			configuration.WithCSS("/path/to/style.css"),
-			configuration.WithLastUpdated(now))).
-			To(MatchHTMLTemplate(expected, now))
+			configuration.WithLastUpdated(now),
+		)).To(MatchHTMLTemplate(expectedTmpl,
+			struct {
+				LastUpdated string
+			}{
+				LastUpdated: now.Format(configuration.LastUpdatedFormat),
+			}))
 	})
 
 	It("header with multple roles and id", func() {
 		source := `[.role1#anchor.role2]
 = My Title`
-		expected := `<!DOCTYPE html>
+		expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -101,7 +111,7 @@ Last updated {{.LastUpdated}}
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -110,13 +120,18 @@ Last updated {{.LastUpdated}}
 		now := time.Now()
 		Expect(RenderXHTML(source, configuration.WithHeaderFooter(true),
 			configuration.WithCSS("/path/to/style.css"),
-			configuration.WithLastUpdated(now))).
-			To(MatchHTMLTemplate(expected, now))
+			configuration.WithLastUpdated(now),
+		)).To(MatchHTMLTemplate(expectedTmpl,
+			struct {
+				LastUpdated string
+			}{
+				LastUpdated: now.Format(configuration.LastUpdatedFormat),
+			}))
 	})
 
 	It("should include adoc file without leveloffset from relative file", func() {
 		source := "include::../../../../../test/includes/grandchild-include.adoc[]" // with filename `tmp/foo.adoc`, we are virtually in a subfolder
-		expectedContent := `<div class="sect1">
+		expected := `<div class="sect1">
 <h2 id="_grandchild_title">grandchild title</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -128,7 +143,7 @@ Last updated {{.LastUpdated}}
 </div>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expectedContent))
+		Expect(RenderXHTML(source, configuration.WithFilename("tmp/foo.adoc"))).To(Equal(expected))
 	})
 
 	It("document with custom icon attributes", func() {
@@ -161,7 +176,9 @@ a note
 </table>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithAttributes(attrs))).To(Equal(expected))
+		Expect(RenderXHTML(source,
+			configuration.WithAttributes(attrs),
+		)).To(Equal(expected))
 	})
 
 	It("document without custom icon attributes", func() {
@@ -191,7 +208,9 @@ a note
 </table>
 </div>
 `
-		Expect(RenderXHTML(source, configuration.WithAttributes(attrs))).To(Equal(expected))
+		Expect(RenderXHTML(source,
+			configuration.WithAttributes(attrs),
+		)).To(MatchHTML(expected))
 	})
 
 	It("render manpage document with header and footer", func() {
@@ -235,7 +254,7 @@ Image is not a picture of a life form.
 Copyright (C) 2008 {author}. +
 Free use of this software is granted under the terms of the MIT License.`
 
-		expected := `<!DOCTYPE html>
+		expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -320,7 +339,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0<br/>
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -333,8 +352,13 @@ Last updated {{.LastUpdated}}
 			}),
 			configuration.WithCSS("/path/to/style.css"),
 			configuration.WithLastUpdated(now),
-			configuration.WithHeaderFooter(true))).
-			To(MatchHTMLTemplate(expected, now))
+			configuration.WithHeaderFooter(true),
+		)).To(MatchHTMLTemplate(expectedTmpl,
+			struct {
+				LastUpdated string
+			}{
+				LastUpdated: now.Format(configuration.LastUpdatedFormat),
+			}))
 	})
 
 	It("render manpage document without header and footer", func() {
@@ -378,7 +402,7 @@ Image is not a picture of a life form.
 Copyright (C) 2008 {author}. +
 Free use of this software is granted under the terms of the MIT License.`
 
-		expected := `<h2 id="_name">Name</h2>
+		expectedTmpl := `<h2 id="_name">Name</h2>
 <div class="sectionbody">
 <p>eve - analyzes an image to determine if it&#8217;s a picture of a life form</p>
 </div>
@@ -451,7 +475,12 @@ Free use of this software is granted under the terms of the MIT License.</p>
 			}),
 			configuration.WithCSS("/path/to/style.css"),
 			configuration.WithLastUpdated(now),
-			configuration.WithHeaderFooter(false))).
-			To(MatchHTMLTemplate(expected, now))
+			configuration.WithHeaderFooter(false),
+		)).To(MatchHTMLTemplate(expectedTmpl,
+			struct {
+				LastUpdated string
+			}{
+				LastUpdated: now.Format(configuration.LastUpdatedFormat),
+			}))
 	})
 })

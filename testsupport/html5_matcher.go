@@ -1,13 +1,20 @@
 package testsupport
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
+	"text/template"
 
-	. "github.com/onsi/ginkgo" // nolint go-lint
+	"github.com/google/go-cmp/cmp"
+	. "github.com/onsi/ginkgo" // nolint: revive
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
-	"github.com/sergi/go-diff/diffmatchpatch"
 )
+
+// ------------------------------------------------------
+// Match HTML from string
+// ------------------------------------------------------
 
 // MatchHTML a custom matcher to verify that a document renders as the given template
 // which will be processed with the given args
@@ -29,9 +36,7 @@ func (m *htmlMatcher) Match(actual interface{}) (success bool, err error) {
 	if m.expected != actual {
 		GinkgoT().Logf("actual HTML:\n'%s'", actual)
 		GinkgoT().Logf("expected HTML:\n'%s'", m.expected)
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(actual.(string), m.expected, true)
-		m.diffs = dmp.DiffPrettyText(diffs)
+		m.diffs = cmp.Diff(actual.(string), m.expected)
 		return false, nil
 	}
 	return true, nil
@@ -42,5 +47,96 @@ func (m *htmlMatcher) FailureMessage(_ interface{}) (message string) {
 }
 
 func (m *htmlMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected HTML5 documents not to match:\n%s", m.diffs)
+}
+
+// ------------------------------------------------------
+// Match HTML from file
+// ------------------------------------------------------
+
+// MatchHTMLFromFile a custom matcher to verify that a document renders
+// as the content of the file with the given name
+func MatchHTMLFromFile(filname string) gomegatypes.GomegaMatcher {
+	return &htmlFileMatcher{
+		filename: filname,
+	}
+}
+
+type htmlFileMatcher struct {
+	filename string
+	diffs    string
+}
+
+func (m *htmlFileMatcher) Match(actual interface{}) (success bool, err error) {
+	expected, err := ioutil.ReadFile(m.filename)
+	if err != nil {
+		return false, err
+	}
+	if _, ok := actual.(string); !ok {
+		return false, errors.Errorf("MatchHTMLFromFile matcher expects a string (actual: %T)", actual)
+	}
+	if string(expected) != actual {
+		GinkgoT().Logf("actual HTML:\n'%s'", actual)
+		GinkgoT().Logf("expected HTML:\n'%s'", expected)
+		m.diffs = cmp.Diff(actual.(string), string(expected))
+		return false, nil
+	}
+	return true, nil
+}
+
+func (m *htmlFileMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected HTML5 documents to match:\n%s", m.diffs)
+}
+
+func (m *htmlFileMatcher) NegatedFailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected HTML5 documents not to match:\n%s", m.diffs)
+}
+
+// ------------------------------------------------------
+// Match HTML from template
+// ------------------------------------------------------
+
+// MatchHTMLTemplate a custom matcher to verify that a document renders as the given template
+// which will be processed with the given args
+func MatchHTMLTemplate(expectedTmpl string, data interface{}) gomegatypes.GomegaMatcher {
+	return &htmlTemplateMatcher{
+		expectedTmpl: expectedTmpl,
+		data:         data,
+	}
+}
+
+type htmlTemplateMatcher struct {
+	expected     string
+	expectedTmpl string
+	data         interface{}
+	diffs        string
+}
+
+func (m *htmlTemplateMatcher) Match(actual interface{}) (success bool, err error) {
+	if _, ok := actual.(string); !ok {
+		return false, errors.Errorf("MatchHTMLTemplate matcher expects a string (actual: %T)", actual)
+	}
+	expectedTmpl, err := template.New("test").Parse(string(m.expectedTmpl))
+	if err != nil {
+		return false, err
+	}
+	out := new(bytes.Buffer)
+	err = expectedTmpl.Execute(out, m.data)
+	if err != nil {
+		return false, err
+	}
+	m.expected = out.String()
+	if m.expected != actual {
+		m.diffs = cmp.Diff(actual.(string), m.expected)
+		return false, nil
+	}
+	return true, nil
+}
+
+func (m *htmlTemplateMatcher) FailureMessage(_ interface{}) (message string) {
+	return fmt.Sprintf("expected HTML5 documents to match:\n%s", m.diffs)
+}
+
+func (m *htmlTemplateMatcher) NegatedFailureMessage(_ interface{}) (message string) {
 	return fmt.Sprintf("expected HTML5 documents not to match:\n%s", m.diffs)
 }

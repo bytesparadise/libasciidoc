@@ -22,7 +22,7 @@ v1.0, March 22, 2020: Containment
 
 {author} wrote this doc on {revdate}.
 `
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -51,14 +51,22 @@ v1.0, March 22, 2020: Containment
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br/>
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
 </html>
 `
 			now := time.Now()
-			Expect(RenderXHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).To(MatchHTMLTemplate(expected, now))
+			Expect(RenderXHTML(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 
 		It("header with 2 authors and no revision", func() {
@@ -66,7 +74,7 @@ Last updated {{.LastUpdated}}
 John Foo Doe <johndoe@example.com>; Jane Doe <janedoe@example.com>`
 			// top-level section is not rendered per-say,
 			// but the section will be used to set the HTML page's <title> element
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -90,15 +98,22 @@ John Foo Doe <johndoe@example.com>; Jane Doe <janedoe@example.com>`
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
 </html>
 `
 			now := time.Now()
-			Expect(RenderXHTML(source, configuration.WithHeaderFooter(true), configuration.WithLastUpdated(now))).
-				To(MatchHTMLTemplate(expected, now))
+			Expect(RenderXHTML(source,
+				configuration.WithHeaderFooter(true),
+				configuration.WithLastUpdated(now),
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 	})
 
@@ -110,7 +125,7 @@ Last updated {{.LastUpdated}}
 			source := `= Document Title
 
 a paragraph`
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -130,7 +145,7 @@ a paragraph`
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -140,14 +155,19 @@ Last updated {{.LastUpdated}}
 				configuration.WithHeaderFooter(true),
 				configuration.WithLastUpdated(now),
 				configuration.WithAttributes(map[string]interface{}{}),
-			)).To(MatchHTMLTemplate(expected, now))
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 
 		It("with header and without footer", func() {
 			source := `= Document Title
 
 a paragraph`
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -174,7 +194,12 @@ a paragraph`
 				configuration.WithAttributes(map[string]interface{}{
 					types.AttrNoFooter: "",
 				}),
-			)).To(MatchHTMLTemplate(expected, now))
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 
 		It("with author and version label reset", func() {
@@ -184,7 +209,7 @@ Joe Blow <joe.blow@example.com>
 :version-label!:
 
 a paragraph`
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -218,7 +243,12 @@ a paragraph`
 				configuration.WithAttributes(map[string]interface{}{
 					types.AttrNoFooter: "",
 				}),
-			)).To(MatchHTMLTemplate(expected, now))
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 
 		It("with author and custom version label only", func() {
@@ -228,7 +258,7 @@ Joe Blow <joe.blow@example.com>
 :version-label: Edition
 
 a paragraph`
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -262,14 +292,19 @@ a paragraph`
 				configuration.WithAttributes(map[string]interface{}{
 					types.AttrNoFooter: "",
 				}),
-			)).To(MatchHTMLTemplate(expected, now))
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 
 		It("without header and with footer", func() {
 			source := `= Document Title
 
 a paragraph`
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -286,7 +321,7 @@ a paragraph`
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
@@ -298,14 +333,19 @@ Last updated {{.LastUpdated}}
 				configuration.WithAttributes(map[string]interface{}{
 					types.AttrNoHeader: "",
 				}),
-			)).To(MatchHTMLTemplate(expected, now))
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 
 		It("without header and without footer", func() {
 			source := `= Document Title
 
 a paragraph`
-			expected := `<!DOCTYPE html>
+			expectedTmpl := `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -330,7 +370,12 @@ a paragraph`
 					types.AttrNoHeader: "",
 					types.AttrNoFooter: "",
 				}),
-			)).To(MatchHTMLTemplate(expected, now))
+			)).To(MatchHTMLTemplate(expectedTmpl,
+				struct {
+					LastUpdated string
+				}{
+					LastUpdated: now.Format(configuration.LastUpdatedFormat),
+				}))
 		})
 	})
 })

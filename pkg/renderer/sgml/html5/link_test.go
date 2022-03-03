@@ -292,7 +292,9 @@ a link to {scheme}://{path}`
 :scheme: https
 :path: foo.bar`
 				expected := `a title to https://foo.bar and https://foo.baz`
-				Expect(MetadataTitle(source)).To(Equal(expected))
+				_, metadata, err := RenderHTMLWithMetadata(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(metadata.Title).To(Equal(expected))
 			})
 
 			It("with document attribute in section 1 title", func() {
@@ -426,7 +428,7 @@ a link to {scheme}://{path} and https://foo.baz`
 				source := `= a title to {scheme}://{path} and https://example.com
 :scheme: https
 :path: example.com`
-				expected := `<!DOCTYPE html>
+				expectedTmpl := `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -443,17 +445,22 @@ a link to {scheme}://{path} and https://foo.baz`
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated {{.LastUpdated}}
+Last updated {{ .LastUpdated }}
 </div>
 </div>
 </body>
 </html>
 `
-				lastUpdated := time.Now()
+				now := time.Now()
 				Expect(RenderHTML(source,
 					configuration.WithHeaderFooter(true),
-					configuration.WithLastUpdated(lastUpdated),
-				)).To(MatchHTMLTemplate(expected, lastUpdated))
+					configuration.WithLastUpdated(now),
+				)).To(MatchHTMLTemplate(expectedTmpl,
+					struct {
+						LastUpdated string
+					}{
+						LastUpdated: now.Format(configuration.LastUpdatedFormat),
+					}))
 			})
 
 			It("with attribute in section 1 title", func() {
