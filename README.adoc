@@ -57,11 +57,10 @@ To build libasciidoc and make it available on the command line, do this:
     $ git checkout github.com/bytesparadise/libasciidoc
     $ cd libasciidoc
     $ make install
+
+If `$GOPATH/bin` is already in `$PATH`, then you should be good. Otherwise, for Linux and macOS users, you can run the following command:
+ 
     $ sudo ln -s  ./bin/libasciidoc /usr/bin/libasciidoc
-
-Libasciidoc is a standard Go package, so if you want to use it as a library in your Go project & install it in your `$GOPATH` (assuming `$GOPATH/bin` is on your path), just use `go install`:
-
-    $ go get -u github.com/bytesparadise/libasciidoc
 
 == Usage
 
@@ -85,9 +84,9 @@ Libasciidoc provides 2 functions to convert an Asciidoc content into HTML:
 
 2. Converting a file (given its name) into an HTML document:
 
-   ConvertFile(output io.Writer, config *configuration.Configuration) (types.Metadata, error)
+    ConvertFile(output io.Writer, config *configuration.Configuration) (types.Metadata, error)
 
-where the returned `types.Metadata` object contains the document's title which is not part of the generated HTML `<body>` part, as well as the other attributes of the source document.
+where the returned `types.Metadata` object contains the document's title which is not part of the generated HTML `<body>` part, as well as the table of contents (even if not rendered) and other attributes of the document.
 
 All options/settings are passed via the `config` parameter.
 
