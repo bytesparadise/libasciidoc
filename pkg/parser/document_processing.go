@@ -38,8 +38,8 @@ func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Opt
 	if len(footnotes.Notes) > 0 {
 		doc.Footnotes = footnotes.Notes
 	}
-	if log.IsLevelEnabled(log.InfoLevel) {
-		log.Infof("parsed document:\n%s", spew.Sdump(doc))
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("parsed document:\n%s", spew.Sdump(doc))
 	}
 	return doc, nil
 }
