@@ -2400,6 +2400,19 @@ func (s *Section) GetID() (string, error) {
 	return id, err
 }
 
+var _ WithElements = &Section{}
+
+// GetElements returns this Section's elements
+func (s *Section) GetElements() []interface{} {
+	return s.Elements
+}
+
+// SetElements sets this Sections's elements
+func (s *Section) SetElements(elements []interface{}) error {
+	s.Elements = elements
+	return nil
+}
+
 var _ WithTitle = &Section{}
 
 // GetTitle returns this section's title
