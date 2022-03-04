@@ -2404,13 +2404,13 @@ var _ WithElements = &Section{}
 
 // GetElements returns this Section's elements
 func (s *Section) GetElements() []interface{} {
-  return s.Elements
+	return s.Elements
 }
 
 // SetElements sets this Sections's elements
 func (s *Section) SetElements(elements []interface{}) error {
-  s.Elements = elements
-  return nil
+	s.Elements = elements
+	return nil
 }
 
 var _ WithTitle = &Section{}
