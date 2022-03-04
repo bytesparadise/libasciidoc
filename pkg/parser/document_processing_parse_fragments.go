@@ -76,7 +76,7 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			}
 			select {
 			case <-done:
-				log.Info("exiting the document parsing routine")
+				log.Debug("exiting the document parsing routine")
 				break parsing // stops/exits the go routine
 			case resultStream <- f:
 			}
