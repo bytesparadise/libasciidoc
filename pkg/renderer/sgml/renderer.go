@@ -21,9 +21,6 @@ type Renderer interface {
 	// Render renders a document to the given output stream.
 	Render(ctx *renderer.Context, doc *types.Document, output io.Writer) (types.Metadata, error)
 
-	// SetFunction sets the named function.
-	SetFunction(name string, fn interface{})
-
 	// Templates returns the Templates used by this Renderer.
 	// It cannot be altered on a given Renderer, since the old
 	// templates may have already been parsed.
@@ -37,27 +34,12 @@ func NewRenderer(t Templates) Renderer {
 		// Establish some default function handlers.
 		functions: funcMap{
 			"escape":        EscapeString,
-			"trimRight":     trimRight,
-			"trimLeft":      trimLeft,
-			"trim":          trimBoth,
 			"halign":        halign,
 			"valign":        valign,
 			"lastInStrings": lastInStrings,
 		},
 	}
 	return r
-}
-
-func trimLeft(s string) string {
-	return strings.TrimLeft(s, " ")
-}
-
-func trimRight(s string) string {
-	return strings.TrimRight(s, " ")
-}
-
-func trimBoth(s string) string {
-	return strings.Trim(s, " ")
 }
 
 var predefinedAttributes = map[string]string{
@@ -125,10 +107,6 @@ func valign(v types.VAlign) string {
 
 func lastInStrings(slice []string, index int) bool {
 	return index == len(slice)-1
-}
-
-func (r *sgmlRenderer) SetFunction(name string, fn interface{}) {
-	r.functions[name] = fn
 }
 
 // Templates returns the Templates being used by this renderer.
