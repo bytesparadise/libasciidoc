@@ -1124,11 +1124,24 @@ The {plus} symbol is on a new line.
 																					Name: "plus",
 																				},
 																				&types.StringElement{
-																					Content: " symbol.\nWe can even force content to start on a separate line\u2026\u200b",
+																					Content: " symbol.\nWe can even force content to start on a separate line",
+																				},
+																				&types.Symbol{
+																					Name: "...",
+																				},
+																				&types.StringElement{
+																					Content: "", // 1 space trimmed by parser to permit LineBreak afterwards, so we're left with an empty StringElement here.
 																				},
 																				&types.LineBreak{},
 																				&types.StringElement{
-																					Content: "\nAmazing, isn\u2019t it?",
+																					Content: "\nAmazing, is",
+																				},
+																				&types.Symbol{
+																					Prefix: "n",
+																					Name:   "'",
+																				},
+																				&types.StringElement{
+																					Content: "t it?",
 																				},
 																			},
 																		},

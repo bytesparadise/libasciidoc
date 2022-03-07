@@ -102,6 +102,8 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderThematicBreak()
 	case *types.SpecialCharacter:
 		return r.renderSpecialCharacter(e)
+	case *types.Symbol:
+		return r.renderSymbol(e)
 	case *types.PredefinedAttribute:
 		return r.renderPredefinedAttribute(e)
 	case *types.AttributeDeclaration:
@@ -121,34 +123,36 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 // nolint:gocyclo
 func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) (string, error) {
 	log.Debugf("rendering plain string for element of type %T", element)
-	switch element := element.(type) {
+	switch e := element.(type) {
 	case []interface{}:
-		return r.renderInlineElements(ctx, element, withRenderer(r.renderPlainText))
+		return r.renderInlineElements(ctx, e, withRenderer(r.renderPlainText))
 	case *types.QuotedText:
-		return r.renderPlainText(ctx, element.Elements)
+		return r.renderPlainText(ctx, e.Elements)
 	case *types.Icon:
-		return element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
+		return e.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
 	case *types.InlineImage:
-		return element.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
+		return e.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
 	case *types.InlineLink:
-		if alt, ok := element.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
+		if alt, ok := e.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
 			return r.renderPlainText(ctx, alt)
 		}
-		return element.Location.Stringify(), nil
+		return e.Location.Stringify(), nil
 	case *types.BlankLine, types.ThematicBreak:
 		return "\n\n", nil
 	case *types.SpecialCharacter:
-		return element.Name, nil
+		return e.Name, nil
+	case *types.Symbol:
+		return r.renderSymbol(e)
 	case *types.StringElement:
-		return r.renderStringElement(ctx, element)
+		return r.renderStringElement(ctx, e)
 	case *types.QuotedString:
-		return r.renderQuotedString(ctx, element)
+		return r.renderQuotedString(ctx, e)
 	// case *types.Paragraph:
 	// 	return r.renderParagraph(ctx, element, withRenderer(r.renderPlainText))
 	case *types.FootnoteReference:
 		// footnotes are rendered in HTML so they can appear as such in the table of contents
-		return r.renderFootnoteReferencePlainText(element)
+		return r.renderFootnoteReferencePlainText(e)
 	default:
-		return "", errors.Errorf("unable to render plain string for element of type '%T'", element)
+		return "", errors.Errorf("unable to render plain string for element of type '%T'", e)
 	}
 }

@@ -36,7 +36,7 @@ func (m *htmlMatcher) Match(actual interface{}) (success bool, err error) {
 	if m.expected != actual {
 		GinkgoT().Logf("actual HTML:\n'%s'", actual)
 		GinkgoT().Logf("expected HTML:\n'%s'", m.expected)
-		m.diffs = cmp.Diff(actual.(string), m.expected)
+		m.diffs = cmp.Diff(m.expected, actual.(string))
 		return false, nil
 	}
 	return true, nil
@@ -79,7 +79,7 @@ func (m *htmlFileMatcher) Match(actual interface{}) (success bool, err error) {
 	if string(expected) != actual {
 		GinkgoT().Logf("actual HTML:\n'%s'", actual)
 		GinkgoT().Logf("expected HTML:\n'%s'", expected)
-		m.diffs = cmp.Diff(actual, expected)
+		m.diffs = cmp.Diff(expected, actual)
 		return false, nil
 	}
 	return true, nil
@@ -128,7 +128,7 @@ func (m *htmlTemplateMatcher) Match(actual interface{}) (success bool, err error
 	}
 	m.expected = out.String()
 	if m.expected != actual {
-		m.diffs = cmp.Diff(actual.(string), m.expected)
+		m.diffs = cmp.Diff(m.expected, actual.(string))
 		return false, nil
 	}
 	return true, nil
@@ -181,7 +181,7 @@ func (m *htmlTemplateFileMatcher) Match(actual interface{}) (success bool, err e
 		return false, err
 	}
 	if out.String() != actual {
-		m.diffs = cmp.Diff(actual.(string), out.String())
+		m.diffs = cmp.Diff(out.String(), actual.(string))
 		return false, nil
 	}
 	return true, nil

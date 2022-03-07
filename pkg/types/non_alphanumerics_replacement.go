@@ -21,64 +21,56 @@ func ReplaceNonAlphanumerics(elements []interface{}, prefix, separator string) (
 }
 
 func replaceNonAlphanumericsOnElements(elements []interface{}, separator string) (string, error) {
-	buf := &strings.Builder{}
+	result := &strings.Builder{}
 	for _, element := range elements {
-		switch element := element.(type) {
+		switch e := element.(type) {
 		case *QuotedString:
-			r, err := replaceNonAlphanumericsOnElements(element.Elements, separator)
+			r, err := replaceNonAlphanumericsOnElements(e.Elements, separator)
 			if err != nil {
 				return "", err
 			}
-			if buf.Len() > 0 {
-				buf.WriteString(separator)
-			}
-			buf.WriteString(r)
+			// buf.WriteString(separator)
+			result.WriteString(r)
+			result.WriteString(separator)
 		case *QuotedText:
-			r, err := replaceNonAlphanumericsOnElements(element.Elements, separator)
+			r, err := replaceNonAlphanumericsOnElements(e.Elements, separator)
 			if err != nil {
 				return "", err
 			}
-			if buf.Len() > 0 {
-				buf.WriteString(separator)
-			}
-			buf.WriteString(r)
+			result.WriteString(r)
+			result.WriteString(separator)
 		case *StringElement:
-			r, err := replaceNonAlphanumerics(element.Content, separator)
+			r, err := replaceNonAlphanumerics(e.Content, separator)
 			if err != nil {
 				return "", err
 			}
-			if buf.Len() > 0 {
-				buf.WriteString(separator)
+			result.WriteString(r)
+		case *Symbol:
+			if e.Prefix != "" {
+				result.WriteString(e.Prefix)
 			}
-			buf.WriteString(r)
 		case *InlineLink:
-			if element.Location != nil {
-				r, err := replaceNonAlphanumerics(element.Location.Stringify(), separator)
+			if e.Location != nil {
+				r, err := replaceNonAlphanumerics(e.Location.Stringify(), separator)
 				if err != nil {
 					return "", err
 				}
-				if buf.Len() > 0 {
-					buf.WriteString(separator)
-				}
-				buf.WriteString(r)
+				result.WriteString(r)
+				result.WriteString(separator)
 			}
 		case *Icon:
-			s := element.Attributes.GetAsStringWithDefault(AttrImageAlt, element.Class)
+			s := e.Attributes.GetAsStringWithDefault(AttrImageAlt, e.Class)
 			r, err := replaceNonAlphanumerics(s, separator)
 			if err != nil {
 				return "", err
 			}
-			if buf.Len() > 0 {
-				buf.WriteString(separator)
-			}
-			buf.WriteString(r)
+			result.WriteString(r)
+			result.WriteString(separator)
 		default:
 			// other types are ignored
 		}
 	}
-
-	// log.Debugf("normalized '%+v' to '%s'", elements, buf.String())
-	return buf.String(), nil
+	return strings.TrimSuffix(result.String(), separator), nil
 }
 
 func replaceNonAlphanumerics(content, replacement string) (string, error) {
@@ -104,6 +96,7 @@ func replaceNonAlphanumerics(content, replacement string) (string, error) {
 			lastCharIsSeparator = true
 		}
 	}
-	result := strings.TrimSuffix(buf.String(), replacement)
+	// result := strings.TrimSuffix(buf.String(), replacement)
+	result := buf.String()
 	return result, nil
 }
