@@ -36,7 +36,7 @@ var _ = Describe("html5 matcher", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
-		diffs := cmp.Diff(actual, expected)
+		diffs := cmp.Diff(expected, actual)
 		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents to match:\n%s", diffs)))
 		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents not to match:\n%s", diffs)))
 	})
@@ -89,7 +89,7 @@ var _ = Describe("html5 template matcher", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
 		expected := strings.Replace(tmpl, "{{ .LastUpdated }}", now.Format(configuration.LastUpdatedFormat), 1)
-		diffs := cmp.Diff(actual, expected)
+		diffs := cmp.Diff(expected, actual)
 		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents to match:\n%s", diffs)))
 		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected HTML5 documents not to match:\n%s", diffs)))
 	})

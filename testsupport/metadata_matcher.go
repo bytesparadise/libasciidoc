@@ -31,7 +31,7 @@ func (m *metadataMatcher) Match(actual interface{}) (success bool, err error) {
 	if !reflect.DeepEqual(m.expected, actual) {
 		GinkgoT().Logf("actual HTML:\n'%s'", actual)
 		GinkgoT().Logf("expected HTML:\n'%s'", m.expected)
-		m.diffs = cmp.Diff(spew.Sdump(actual), spew.Sdump(m.expected))
+		m.diffs = cmp.Diff(spew.Sdump(m.expected), spew.Sdump(actual))
 		return false, nil
 	}
 	return true, nil

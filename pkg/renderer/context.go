@@ -48,7 +48,7 @@ func NewContext(doc *types.Document, config *configuration.Configuration) *Conte
 }
 
 func (ctx *Context) UseUnicode() bool {
-	return ctx.Attributes.Has(types.AttrUnicode)
+	return ctx.Attributes.GetAsBoolWithDefault(types.AttrUnicode, true)
 }
 
 const tableCounter = "tableCounter"

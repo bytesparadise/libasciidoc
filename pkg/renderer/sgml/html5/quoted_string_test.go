@@ -29,7 +29,7 @@ var _ = Describe("quoted strings", func() {
 	It("simple single quoted unicode", func() {
 		source := ":unicode:\n\n'`curly was single`'"
 		expected := "<div class=\"paragraph\">\n" +
-			"<p>\u2018curly was single\u2019</p>\n" +
+			"<p>&#8216;curly was single&#8217;</p>\n" +
 			"</div>\n"
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})

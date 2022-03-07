@@ -45,7 +45,13 @@ Copyright (C) 2021 {author}. +`
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Copyright © 2021 Xavier.",
+								Content: "Copyright ",
+							},
+							&types.Symbol{
+								Name: "(C)",
+							},
+							&types.StringElement{
+								Content: " 2021 Xavier.",
 							},
 							&types.LineBreak{},
 						},

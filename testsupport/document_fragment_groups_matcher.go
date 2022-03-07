@@ -34,7 +34,7 @@ func (m *documentFragmentGroupsMatcher) Match(actual interface{}) (success bool,
 			log.Debugf("actual document fragments:\n%s", spew.Sdump(actual))
 			log.Debugf("expected document fragments:\n%s", spew.Sdump(m.expected))
 		}
-		m.diffs = cmp.Diff(spew.Sdump(actual), spew.Sdump(m.expected))
+		m.diffs = cmp.Diff(spew.Sdump(m.expected), spew.Sdump(actual))
 		return false, nil
 	}
 	return true, nil
