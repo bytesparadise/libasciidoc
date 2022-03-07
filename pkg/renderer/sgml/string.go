@@ -15,12 +15,12 @@ var quotes = map[types.QuotedStringKind]struct {
 	Close string
 }{
 	types.SingleQuote: {
-		Open:  "\u2018",
-		Close: "\u2019",
+		Open:  "&#8216;",
+		Close: "&#8217;",
 	},
 	types.DoubleQuote: {
-		Open:  "\u201c",
-		Close: "\u201d",
+		Open:  "&#8220;",
+		Close: "&#8221;",
 	},
 }
 

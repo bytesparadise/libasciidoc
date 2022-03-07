@@ -33,7 +33,7 @@ func (m *documentFragmentsMatcher) Match(actual interface{}) (success bool, err 
 			log.Debugf("actual raw document:\n%s", spew.Sdump(actual))
 			log.Debugf("expected raw document:\n%s", spew.Sdump(m.expected))
 		}
-		m.diffs = cmp.Diff(spew.Sdump(actual), spew.Sdump(m.expected))
+		m.diffs = cmp.Diff(spew.Sdump(m.expected), spew.Sdump(actual))
 		return false, nil
 	}
 	return true, nil

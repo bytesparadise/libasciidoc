@@ -51,7 +51,7 @@ var _ = Describe("metadata matcher", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
-		diffs := cmp.Diff(spew.Sdump(actual), spew.Sdump(expected))
+		diffs := cmp.Diff(spew.Sdump(expected), spew.Sdump(actual))
 		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document metadata to match:\n%s", diffs)))
 		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document metadata not to match:\n%s", diffs)))
 	})

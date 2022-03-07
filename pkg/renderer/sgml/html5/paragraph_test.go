@@ -3,6 +3,8 @@ package html5_test
 import (
 	"strings"
 
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo" // nolint:golint
@@ -206,6 +208,26 @@ image::cookie.jpg[cookie]
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with non-ASCII characters with unicode", func() {
+			source := `Привет!`
+			expected := `<div class="paragraph">
+<p>Привет!</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+
+		})
+		It("with non-ASCII characters without unicode", func() {
+			source := `Привет!`
+			// non-ascii characters are "html escaped"
+			expected := `<div class="paragraph">
+<p>&#1055;&#1088;&#1080;&#1074;&#1077;&#1090;!</p>
+</div>
+`
+			Expect(RenderHTML(source, configuration.WithAttribute(types.AttrUnicode, false))).To(MatchHTML(expected))
+
 		})
 
 		Context("with custom substitutions", func() {

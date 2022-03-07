@@ -28,7 +28,7 @@ func (m *inlineElementsMatcher) Match(actual interface{}) (success bool, err err
 		return false, errors.Errorf("MatchInlineElements matcher expects a []interface{} (actual: %T)", actual)
 	}
 	if !reflect.DeepEqual(m.expected, actual) {
-		m.diffs = cmp.Diff(spew.Sdump(actual), spew.Sdump(m.expected))
+		m.diffs = cmp.Diff(spew.Sdump(m.expected), spew.Sdump(actual))
 		return false, nil
 	}
 	return true, nil

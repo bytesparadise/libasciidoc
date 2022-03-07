@@ -535,7 +535,7 @@ The double brackets around it are preserved.`,
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("should escape apostrophe", func() {
+		It("should escape typographic quote", func() {
 			source := "Here\\`'"
 			expected := &types.Document{
 				Elements: []interface{}{
@@ -551,14 +551,17 @@ The double brackets around it are preserved.`,
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("should parse apostrophe", func() {
+		It("should parse typographic quote", func() {
 			source := "Here`'"
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Here\u2019",
+								Content: "Here",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -590,7 +593,10 @@ The double brackets around it are preserved.`,
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Copyright \u00a9",
+								Content: "Copyright ",
+							},
+							&types.Symbol{
+								Name: "(C)",
 							},
 						},
 					},
@@ -622,7 +628,10 @@ The double brackets around it are preserved.`,
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Trademark \u2122",
+								Content: "Trademark ",
+							},
+							&types.Symbol{
+								Name: "(TM)",
 							},
 						},
 					},
@@ -647,14 +656,17 @@ The double brackets around it are preserved.`,
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("should parse registered symbol", func() {
+		It("should parse the registered symbol", func() {
 			source := `Registered (R)`
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Registered \u00ae",
+								Content: "Registered ",
+							},
+							&types.Symbol{
+								Name: "(R)",
 							},
 						},
 					},
@@ -663,14 +675,14 @@ The double brackets around it are preserved.`,
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("should escape elipsis symbol", func() {
-			source := `Elipsis\...`
+		It("should escape the ellipsis symbol", func() {
+			source := `Ellipsis\...`
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Elipsis...",
+								Content: "Ellipsis...",
 							},
 						},
 					},
@@ -679,14 +691,17 @@ The double brackets around it are preserved.`,
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("should parse registered symbol", func() {
-			source := `Elipsis...`
+		It("should parse ellipsis symbol", func() {
+			source := `Ellipsis...`
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Elipsis\u2026\u200b",
+								Content: "Ellipsis",
+							},
+							&types.Symbol{
+								Name: "...",
 							},
 						},
 					},
@@ -718,7 +733,14 @@ The double brackets around it are preserved.`,
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Here\u2019s",
+								Content: "Her",
+							},
+							&types.Symbol{
+								Prefix: "e",
+								Name:   "'",
+							},
+							&types.StringElement{
+								Content: "s",
 							},
 						},
 					},
