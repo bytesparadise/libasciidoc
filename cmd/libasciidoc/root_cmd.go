@@ -5,11 +5,13 @@ import (
 	"io"
 	"os"
 	"strings"
+  "plugin"
 
 	"path/filepath"
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+  "github.com/bytesparadise/libasciidoc/pkg/types"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -23,6 +25,7 @@ func NewRootCmd() *cobra.Command {
 	var logLevel string
 	var css string
 	var backend string
+  var pluginPaths []string
 	var attributes []string
 
 	rootCmd := &cobra.Command{
@@ -49,6 +52,7 @@ func NewRootCmd() *cobra.Command {
 				return helpCommand.RunE(cmd, args)
 			}
 			attrs := parseAttributes(attributes)
+      plugins := loadPlugins(pluginPaths)
 			for _, sourcePath := range args {
 				out, close := getOut(cmd, sourcePath, outputName)
 				if out != nil {
@@ -60,6 +64,7 @@ func NewRootCmd() *cobra.Command {
 						configuration.WithCSS(css),
 						configuration.WithBackEnd(backend),
 						configuration.WithHeaderFooter(!noHeaderFooter))
+            configuration.WithPlugins(plugins)
 					_, err := libasciidoc.ConvertFile(out, config)
 					if err != nil {
 						return err
@@ -77,6 +82,7 @@ func NewRootCmd() *cobra.Command {
 	flags.StringVar(&css, "css", "", "the path to the CSS file to link to the document")
 	flags.StringArrayVarP(&attributes, "attribute", "a", []string{}, "a document attribute to set in the form of name, name!, or name=value pair")
 	flags.StringVarP(&backend, "backend", "b", "html5", "backend to format the file")
+	flags.StringArrayVarP(&pluginPaths, "plugins", "p", []string{}, "plugins to load")
 	return rootCmd
 }
 
@@ -129,4 +135,32 @@ func parseAttributes(attributes []string) map[string]interface{} {
 		}
 	}
 	return result
+}
+
+// opens the plugins returns their PreRender functions
+func loadPlugins(pluginPaths []string) []types.PreRenderFunc {
+  pluginFuncs := []types.PreRenderFunc{}
+  for _, path := range pluginPaths {
+    // make sure we can open it
+    p, err := plugin.Open(path)
+    if err != nil {
+      log.Error(err)
+      return nil
+    }
+    // make sure it has a symbol named PreRender
+    symbol, err := p.Lookup("PreRender")
+    if err != nil {
+      log.Error(err)
+      return nil
+    }
+    // make sure the function signature is what we expect
+    addFunc, ok := symbol.(*types.PreRenderFunc)
+    if !ok {
+      log.Error("Plugin has invalid function signature for PreRender")
+      return nil
+    }
+    // Lookup will give use a _pointer_ to the function
+    pluginFuncs = append(pluginFuncs, *addFunc)
+  }
+  return pluginFuncs
 }

@@ -98,6 +98,10 @@ func Convert(r io.Reader, output io.Writer, config *configuration.Configuration)
 			}
 		}
 	}
+  // run the PreRender plugins
+  for _, preRenderFunc := range config.Plugins {
+    doc, err = preRenderFunc(doc)
+  }
 	// render
 	ctx := renderer.NewContext(doc, config)
 	metadata, err := render(ctx, doc, output)
@@ -106,5 +110,4 @@ func Convert(r io.Reader, output io.Writer, config *configuration.Configuration)
 	}
 	// log.Debugf("Done processing document")
 	return metadata, nil
-
 }

@@ -1,0 +1,147 @@
+= Exercise 1
+
+In this exercise we will be:
+
+. Installing WSL2 with Ubuntu if you are using Windows
+. Installing PostgreSQL
+. Importing SQL
+. Performing a query
+
+== Installing WSL2 with Ubuntu (Windows only)
+
+The vast majority of production database systems are running Linux. To simulate
+that environment as best we can, we will be using the Windows Subsystem for
+Linux. To install WSL2 and the Ubuntu Linux distribution follow
+https://www.omgubuntu.co.uk/how-to-install-wsl2-on-windows-10[these directions].
+
+== Installing PostgreSQL
+
+Follow these directions to install PostgreSQL either within WSL2 on Windows or
+directly on MacOS:
+
+=== WSL2
+
+From the Ubuntu command prompt:
+
+[source, console]
+----
+ryan@R90VJ3MK:~$ sudo apt-get install postgresql postgresql-contrib
+<snip>
+ryan@R90VJ3MK:~$ sudo service postgresql start
+ * Starting PostgreSQL 10 database server
+----
+
+=== MacOS
+
+Macs run BSD which is close enough to Linux for our purposes.  Follow
+https://www.postgresql.org/download/macosx/[the directions from the PostgreSQL
+website] to install PostgreSQL natively on a Mac. You will need to be able to
+run the `psql` command line client from Terminal and connect to your running
+server.
+
+== Importing SQL
+
+Confirm that you can connect to your PostgreSQL server as the `postgres` user:
+
+[source, console]
+----
+ryan@R90VJ3MK:~$ sudo -u postgres psql
+psql (10.15 (Ubuntu 10.15-0ubuntu0.18.04.1))
+Type "help" for help.
+
+postgres=# \q
+----
+
+Download the pagila sample database:
+
+[source, console]
+----
+ryan@R90VJ3MK:~$ wget https://raw.githubusercontent.com/devrimgunduz/pagila/master/pagila-insert-data.sql
+Will not apply HSTS. The HSTS database must be a regular and non-world-writable file.
+ERROR: could not open HSTS store at '/home/ryan/.wget-hsts'. HSTS will be disabled.
+--2021-01-22 10:44:15--  https://raw.githubusercontent.com/devrimgunduz/pagila/master/pagila-insert-data.sql
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.0.133, 151.101.64.133, 151.101.128.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.0.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5388598 (5.1M) [text/plain]
+Saving to: ‘pagila-insert-data.sql’
+
+pagila-insert-data.sql      100%[==========================================>]   5.14M  14.8MB/s    in 0.3s
+
+2021-01-22 10:44:16 (14.8 MB/s) - ‘pagila-insert-data.sql’ saved [5388598/5388598]
+----
+
+Finally import the SQL dump with a shell redirect:
+
+[source, console]
+----
+ryan@R90VJ3MK:~$ sudo -u postgres psql < pagila-insert-data.sql
+<snip>
+----
+
+== Performing a query
+
+You should now be able to connect via psql and describe the tables with the
+`\dt` command:
+
+[source, console]
+----
+ryan@R90VJ3MK:~$ sudo -u postgres psql
+psql (10.15 (Ubuntu 10.15-0ubuntu0.18.04.1))
+Type "help" for help.
+
+postgres=# \dt
+              List of relations
+ Schema |       Name       | Type  |  Owner
+--------+------------------+-------+----------
+ public | actor            | table | postgres
+ public | address          | table | postgres
+ public | category         | table | postgres
+ public | city             | table | postgres
+ public | country          | table | postgres
+ public | customer         | table | postgres
+ public | film             | table | postgres
+ public | film_actor       | table | postgres
+ public | film_category    | table | postgres
+ public | inventory        | table | postgres
+ public | language         | table | postgres
+ public | payment          | table | postgres
+ public | payment_p2020_01 | table | postgres
+ public | payment_p2020_02 | table | postgres
+ public | payment_p2020_03 | table | postgres
+ public | payment_p2020_04 | table | postgres
+ public | payment_p2020_05 | table | postgres
+ public | payment_p2020_06 | table | postgres
+ public | rental           | table | postgres
+ public | staff            | table | postgres
+ public | store            | table | postgres
+(21 rows)
+----
+
+You can get more information about a table with the describe command, `\d`:
+
+[source, console]
+----
+postgres=# \d actor
+                                          Table "public.actor"
+   Column    |           Type           | Collation | Nullable |                 Default
+-------------+--------------------------+-----------+----------+-----------------------------------------
+ actor_id    | integer                  |           | not null | nextval('actor_actor_id_seq'::regclass)
+ first_name  | text                     |           | not null |
+ last_name   | text                     |           | not null |
+ last_update | timestamp with time zone |           | not null | now()
+Indexes:
+    "actor_pkey" PRIMARY KEY, btree (actor_id)
+    "idx_actor_last_name" btree (last_name)
+Referenced by:
+    TABLE "film_actor" CONSTRAINT "film_actor_actor_id_fkey" FOREIGN KEY (actor_id) REFERENCES actor(actor_id) ON UPDATE CASCADE ON DELETE RESTRICT
+----
+
+Construct a query that gives the actor_ids for all actors whose first name is
+BURT. Submit these three IDs in the textbox for this assignment.
+
+== Additional resources
+
+* https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database[
+  Getting started with databases on Windows Subsystem for Linux]
+* https://www.w3schools.com/sql/[w3schools SQL Tutorial]

@@ -29,6 +29,7 @@ type Configuration struct {
 	CSS                   string
 	BackEnd               string
 	Macros                map[string]MacroTemplate
+  Plugins               []types.PreRenderFunc
 }
 
 const (
@@ -102,4 +103,11 @@ func WithMacroTemplate(name string, t MacroTemplate) Setting {
 		log.Debugf("registering user macro '%s'", name)
 		config.Macros[name] = t
 	}
+}
+
+// WithPlugins function to set the `plugins` setting in the config  
+func WithPlugins(plugins []types.PreRenderFunc) Setting {
+  return func(config *Configuration) {
+    config.Plugins = plugins
+  }
 }
