@@ -442,12 +442,48 @@ const Cookie = "cookie"
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
+
+			It("with non-ascii content and syntax highlighting", func() {
+				// source content is `…`, not `...`
+				source := `:source-highlighter: chroma
+:unicode: false
+
+[source,c]
+----
+…
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-err">…</span></code></pre>
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
+
+			It("with symbol content and syntax highlighting", func() {
+				// source content is `…`, not `...`
+				source := `:source-highlighter: chroma
+:unicode: false
+
+[source,c]
+----
+Copyright (C)
+----`
+				expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-n">Copyright</span> <span class="tok-p">(</span><span class="tok-n">C</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
+			})
 		})
 	})
 
 	Context("as Markdown block", func() {
 
-		It("with html content", func() {
+		It("with HTML content", func() {
 			source := ".title\n" +
 				"```html\n" +
 				"<!DOCTYPE html>\n" +
@@ -458,6 +494,42 @@ const Cookie = "cookie"
 <div class="content">
 <pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
 &lt;/html&gt;</code></pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with non-ascii content and syntax highlighting", func() {
+			// source content is `…`, not `...`, but the `unicode:false` attribute should NOT affect the content of the listing/source block
+			source :=
+				":source-highlighter: chroma\n" +
+					":unicode: false\n" +
+					"\n" +
+					"```c\n" +
+					"…\n" +
+					"```\n"
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-err">…</span></code></pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with symbol content and syntax highlighting", func() {
+			// source content is `…`, not `...`, but the `unicode:false` attribute should NOT affect the content of the listing/source block
+			source :=
+				":source-highlighter: chroma\n" +
+					":unicode: false\n" +
+					"\n" +
+					"```c\n" +
+					"Copyright (C)\n" +
+					"```\n"
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-n">Copyright</span> <span class="tok-p">(</span><span class="tok-n">C</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
 `
