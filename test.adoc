@@ -1,8 +1,0 @@
-= Test
-
-== Section 1
-
-[plantuml, target=test, format=svg]
-....
-Testing
-....

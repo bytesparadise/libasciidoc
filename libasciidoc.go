@@ -17,6 +17,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/html5"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/pkg/validator"
+  "github.com/bytesparadise/libasciidoc/pkg/plugins"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
@@ -99,8 +100,9 @@ func Convert(r io.Reader, output io.Writer, config *configuration.Configuration)
 		}
 	}
   // run the PreRender plugins
-  for _, preRenderFunc := range config.Plugins {
-    doc, err = preRenderFunc(doc)
+  doc, err = plugins.RunPreRender(doc, config.Plugins)
+  if err != nil {
+    return types.Metadata{}, err
   }
 	// render
 	ctx := renderer.NewContext(doc, config)

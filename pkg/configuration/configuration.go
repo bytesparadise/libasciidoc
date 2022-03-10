@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/bytesparadise/libasciidoc/pkg/plugins"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -29,7 +30,7 @@ type Configuration struct {
 	CSS                   string
 	BackEnd               string
 	Macros                map[string]MacroTemplate
-  Plugins               []types.PreRenderFunc
+  Plugins               []plugins.Plugin
 }
 
 const (
@@ -106,8 +107,8 @@ func WithMacroTemplate(name string, t MacroTemplate) Setting {
 }
 
 // WithPlugins function to set the `plugins` setting in the config  
-func WithPlugins(plugins []types.PreRenderFunc) Setting {
+func WithPlugins(setPlugins []plugins.Plugin) Setting {
   return func(config *Configuration) {
-    config.Plugins = plugins
+    config.Plugins = setPlugins
   }
 }

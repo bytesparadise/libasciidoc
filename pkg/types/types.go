@@ -4027,8 +4027,3 @@ func (c *TableCell) SetElements(elements []interface{}) error {
 	c.Elements = elements
 	return nil
 }
-
-// ------------------------------------------
-// plugin types
-// ------------------------------------------
-type PreRenderFunc func (doc *Document) (*Document, error)
