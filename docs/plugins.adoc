@@ -1,0 +1,72 @@
+= Plugins
+
+This implements a rudimentary systems for building plugins for libasciidoc.
+Plugins inject themselves in the flow of the `Convert` function:
+
+[plantuml, target=plugin, format=svg]
+....
+@startuml
+ditaa
++------------+
+| PreProcess |
++------------+
+      |
+      V
++------------+
+|   Parse    |
++------------+
+      |
+      V
++------------+
+|  Validate  |
++------------+
+      |               +-----------+
+      +-------------->|           |
+                      | PreRender |
+      +---------------|  Plugins  |
+      |               |           |
+      V               +-----------+
++------------+
+|   Render   |
++------------+
+@enduml
+....
+
+== Using Plugins
+
+Plugins can be enabled via the commandline with the `-p` option:
+
+[source, console]
+----
+$ ./bin/libasciidoc -p ../libasciidoc-diagram/libasciidoc-diagram.so test.adoc
+----
+
+You can use the `-p` option multiple times to include multiple plugins.
+
+== Creating Plugins
+
+libasciidoc plugins are https://pkg.go.dev/plugin[golang plugins] with specific functions exported.
+Currently the only support function is `PreRender` which takes a `Document` and returns a `Document` and an `error`.
+Here is an example of a basic, passthough `PreRender` function in a plugin:
+
+[source, golang]
+----
+package main
+
+import (
+  "github.com/bytesparadise/libasciidoc/pkg/types"
+  "github.com/bytesparadise/libasciidoc/pkg/plugins"
+)
+
+var PreRender plugins.PreRenderFunc = func(doc *types.Document) (*types.Document, error) {
+  return doc, nil
+}
+----
+
+This will allow you to modify the `Document` before it is rendered in `libasciidoc.go`.
+For a more complete example of a plugin, see https://github.com/rxt1077/libasciidoc-diagram[libasciidoc-diagram].
+
+Plugins must be compiled with `go build -buildmode=plugin` and _must share the same version of all modules_.
+So for example, if `libasciidoc` uses a specific version of `spew`, the plugin must do the same.
+Unfortunately if a local version of `libasciidoc` is being being compiled, https://github.com/golang/go/issues/31354[the plugin must use that same tree for its modules].
+This can be accomplished by adding a replace line in `go.mod`, for example `replace github.com/bytesparadise/libasciidoc v0.6.0 => ../libasciidoc`.
