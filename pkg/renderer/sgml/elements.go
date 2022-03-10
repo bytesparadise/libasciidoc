@@ -144,7 +144,7 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 	case *types.Symbol:
 		return r.renderSymbol(e)
 	case *types.StringElement:
-		return r.renderStringElement(ctx, e)
+		return e.Content, nil
 	case *types.QuotedString:
 		return r.renderQuotedString(ctx, e)
 	// case *types.Paragraph:
