@@ -10,7 +10,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-  "github.com/bytesparadise/libasciidoc/pkg/plugins"
+	"github.com/bytesparadise/libasciidoc/pkg/plugins"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -24,7 +24,7 @@ func NewRootCmd() *cobra.Command {
 	var logLevel string
 	var css string
 	var backend string
-  var pluginPaths []string
+	var pluginPaths []string
 	var attributes []string
 
 	rootCmd := &cobra.Command{
@@ -51,7 +51,7 @@ func NewRootCmd() *cobra.Command {
 				return helpCommand.RunE(cmd, args)
 			}
 			attrs := parseAttributes(attributes)
-      plugins, err := plugins.LoadPlugins(pluginPaths)
+			plugins, err := plugins.LoadPlugins(pluginPaths)
 			if err != nil {
 				log.Error("Error loading plugins")
 				return err
@@ -67,7 +67,7 @@ func NewRootCmd() *cobra.Command {
 						configuration.WithCSS(css),
 						configuration.WithBackEnd(backend),
 						configuration.WithHeaderFooter(!noHeaderFooter),
-            configuration.WithPlugins(plugins))
+						configuration.WithPlugins(plugins))
 					_, err := libasciidoc.ConvertFile(out, config)
 					if err != nil {
 						return err
