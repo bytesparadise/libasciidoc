@@ -37,7 +37,12 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.StringElement{Content: "'` curly was single \u2019"},
+							&types.StringElement{
+								Content: "'` curly was single ",
+							},
+							&types.Symbol{
+								Name: "`'",
+							},
 						},
 					},
 				},
@@ -51,7 +56,12 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.StringElement{Content: "'`curly was single \u2019"},
+							&types.StringElement{
+								Content: "'`curly was single ",
+							},
+							&types.Symbol{
+								Name: "`'",
+							},
 						},
 					},
 				},
@@ -65,7 +75,12 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.StringElement{Content: "'` curly was single\u2019"},
+							&types.StringElement{
+								Content: "'` curly was single",
+							},
+							&types.Symbol{
+								Name: "`'",
+							},
 						},
 					},
 				},
@@ -86,7 +101,10 @@ var _ = Describe("quoted strings", func() {
 								Kind: types.SingleQuoteBold,
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "cookie\u2019",
+										Content: "cookie",
+									},
+									&types.Symbol{
+										Name: "`'",
 									},
 								},
 							},
@@ -110,7 +128,17 @@ var _ = Describe("quoted strings", func() {
 								Kind: types.SingleQuoteBold,
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "mother\u2019s brothers' sisters\u2019",
+										Content: "mothe",
+									},
+									&types.Symbol{
+										Prefix: "r",
+										Name:   "'",
+									},
+									&types.StringElement{
+										Content: "s brothers' sisters",
+									},
+									&types.Symbol{
+										Name: "`'",
 									},
 								},
 							},
@@ -134,7 +162,17 @@ var _ = Describe("quoted strings", func() {
 								Kind: types.DoubleQuoteBold,
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "mother\u2019s brothers' sisters\u2019",
+										Content: "mothe",
+									},
+									&types.Symbol{
+										Prefix: "r",
+										Name:   "'",
+									},
+									&types.StringElement{
+										Content: "s brothers' sisters",
+									},
+									&types.Symbol{
+										Name: "`'",
 									},
 								},
 							},

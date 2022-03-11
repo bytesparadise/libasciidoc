@@ -2898,26 +2898,28 @@ Symbol <-
     / TypographicQuote
 
 Apostrophe <- "`'" {
-        return types.NewStringElement("\u2019")
+        return types.NewSymbol("`'")
     }
 
 RawApostrophe <- "`'" // no conversion
 
 Copyright <- "(C)" {
-        return types.NewStringElement("\u00a9")
+        return types.NewSymbol("(C)")
     }
 
 Trademark <- "(TM)" {
-        return types.NewStringElement("\u2122")
+        return types.NewSymbol("(TM)")
     }
 
 Registered <- "(R)" {
-        return types.NewStringElement("\u00ae")
+        return types.NewSymbol("(R)")
     }
 
 Ellipsis <- "..." {
-        return types.NewStringElement("\u2026\u200b")
+        return types.NewSymbol("...")
     }
+
+
 
 // The implied apostrophe is used in interior words, and intended to help
 // cases like "mother's day".  Asciidoctor requires that it be followed by
@@ -2931,7 +2933,7 @@ TypographicQuote <-
     /
     // unescaped
     Alphanum `'` &[\pL] {
-        return types.NewStringElement(strings.TrimSuffix(string(c.text), `'`)+"\u2019") // convert quote 
+        return types.NewSymbolWithForeword("'", strings.TrimSuffix(string(c.text), `'`)) 
     }
 
 // -------------------------------------------------------------------------------------

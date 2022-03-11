@@ -387,7 +387,7 @@ I am a verse paragraph.`
 		// </div>
 		// </div>
 		// `
-		// 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
+		// 			output, _, err := RenderXHTML(source)).To(MatchHTML(expected))
 		// 		})
 	})
 

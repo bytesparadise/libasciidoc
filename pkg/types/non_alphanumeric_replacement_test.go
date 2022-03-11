@@ -65,9 +65,10 @@ var _ = DescribeTable("replace non-alphanumeric chars",
 	),
 
 	Entry("content with <strong> markup",
+		// a section title, with *bold content* and more!
 		[]interface{}{
 			&types.StringElement{
-				Content: "a section title, with",
+				Content: "a section title, with ",
 			},
 			&types.QuotedText{
 				Kind: types.SingleQuoteBold,
@@ -77,15 +78,19 @@ var _ = DescribeTable("replace non-alphanumeric chars",
 					},
 				},
 			},
+			&types.StringElement{
+				Content: " and more!",
+			},
 		},
-		"_a_section_title_with_bold_content",
-		"id_a-section-title-with-bold-content",
+		"_a_section_title_with_bold_content_and_more",
+		"id_a-section-title-with-bold-content-and-more",
 	),
 
 	Entry("content with link",
+		// a link to https://foo.bar and more
 		[]interface{}{
 			&types.StringElement{
-				Content: "link to ",
+				Content: "a link to ",
 			},
 			&types.InlineLink{
 				Attributes: types.Attributes{},
@@ -94,9 +99,12 @@ var _ = DescribeTable("replace non-alphanumeric chars",
 					Path:   "foo.bar",
 				},
 			},
+			&types.StringElement{
+				Content: " and more",
+			},
 		},
-		"_link_to_httpsfoo_bar",
-		"id_link-to-httpsfoo-bar",
+		"_a_link_to_httpsfoo_bar_and_more",
+		"id_a-link-to-httpsfoo-bar-and-more",
 	),
 
 	Entry("content with dots and special characters",
@@ -139,5 +147,22 @@ var _ = DescribeTable("replace non-alphanumeric chars",
 		},
 		"_block_quotes_and_smart_ones",
 		"id_block-quotes-and-smart-ones",
+	),
+	Entry("content with symbol",
+		// here's a cookie
+		[]interface{}{
+			&types.StringElement{
+				Content: "Her",
+			},
+			&types.Symbol{
+				Prefix: "e",
+				Name:   "'",
+			},
+			&types.StringElement{
+				Content: "s a cookie",
+			},
+		},
+		"_heres_a_cookie",
+		"id_heres-a-cookie",
 	),
 )

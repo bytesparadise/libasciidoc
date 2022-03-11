@@ -420,7 +420,14 @@ Here's a reference to the definition of <<a_term>>.`
 						&types.Paragraph{
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "Here’s a reference to the definition of ", // note that the quote is transformed
+									Content: "Her",
+								},
+								&types.Symbol{
+									Prefix: "e",
+									Name:   "'",
+								},
+								&types.StringElement{
+									Content: "s a reference to the definition of ",
 								},
 								&types.InternalCrossReference{
 									ID: "a_term",

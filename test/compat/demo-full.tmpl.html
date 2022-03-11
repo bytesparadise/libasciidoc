@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<meta name="description" content="A demo of Libasciidoc. This document exercises numerous features of AsciiDoc to test Libasciidoc compliance.">
+<meta name="author" content="Xavier Coulon">
+<link type="text/css" rel="stylesheet" href="{{ .CSS }}">
+<title>Libasciidoc Demo</title>
+</head>
+<body class="article">
+<div id="header">
+<h1>Libasciidoc Demo</h1>
+<div class="details">
+<span id="author" class="author">Xavier Coulon</span><br>
+<span id="email" class="email"><a href="mailto:author@example.com">author@example.com</a></span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is a demonstration of Libasciidoc {{ .Version }}.
+And this is the preamble of this document.</p>
+</div>
+<div id="purpose" class="sidebarblock">
+<div class="content">
+<div class="title">Purpose</div>
+<div class="paragraph">
+<p>This document exercises many of the features of AsciiDoc to test the Libasciidoc implementation.</p>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If you want the HTML to have the familiar AsciiDoc Python style, load the asciidoc.css stylesheet using the CLI option <code>-a stylesheet=asciidoc.css</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle"><h3>Contents</h3></div>
+<ul class="sectlevel1">
+<li><a href="#first_steps_with_asciidoc">1. First Steps with AsciiDoc</a>
+<ul class="sectlevel2">
+<li><a href="#lists_upon_lists">1.1. Lists Upon Lists</a></li>
+</ul>
+</li>
+<li><a href="#and_were_back">2. &#8230;&#8203;and we&#8217;re back!</a>
+<ul class="sectlevel2">
+<li><a href="#block_quotes_and_smart_ones">2.1. Block Quotes and &#8220;Smart&#8221; Ones</a></li>
+</ul>
+</li>
+<li><a href="#literally">3. Getting Literal</a></li>
+<li><a href="#wrapup">4. Wrap-up</a></li>
+</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="first_steps_with_asciidoc">1. First Steps with AsciiDoc</h2>
+<div class="sectionbody">
+<div class="ulist">
+<div class="title">Inline markup</div>
+<ul>
+<li>
+<p>underlines around a phrase place <em>emphasis</em></p>
+</li>
+<li>
+<p>astericks around a phrase make the text <strong>bold</strong></p>
+</li>
+<li>
+<p>double astericks around one or more <strong>l</strong>etters in a word make those letters bold</p>
+</li>
+<li>
+<p>double underscore around a <em>sub</em>string in a word emphasizes that substring</p>
+</li>
+<li>
+<p>use carrots around characters to make them <sup>super</sup>script</p>
+</li>
+<li>
+<p>use tildes around characters to make them <sub>sub</sub>script</p>
+</li>
+<li>
+<p>to pass through <b>HTML</b> directly, surround the text with triple plus</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>characters can be escaped using a \</p>
+<div class="ulist">
+<ul>
+<li>
+<p>for instance, you can escape a quote inside emphasized text like <em>Here's Johnny!</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>you can safely use reserved XML characters like &lt;, &gt; and &amp;, which are escaped when converting</p>
+</li>
+<li>
+<p>force a space between inline elements using the {sp} attribute</p>
+</li>
+<li>
+<p>hold text together with an intrinsic non-breaking&#160;space attribute, {nbsp}</p>
+</li>
+<li>
+<p>handle words with unicode characters like in the name Gregory Romé</p>
+</li>
+<li>
+<p>claim your copyright &#169;, registered trademark &#174; or trademark &#8482;</p>
+</li>
+<li>
+<p>select <span class="menuseq"><b class="menu">View</b>&#160;<b class="caret">&#8250;</b> <b class="submenu">Zoom</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Reset</b></span> to reset the zoom</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can write text <a href="http://example.com">with inline links</a>, optionally using
+an explicit <a href="http://example.com">link prefix</a>. In either case, the link can
+have a <a href="http://example.com?foo=bar&amp;lang=en">query string</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you want to break a line<br>
+just end it in a &#43; sign<br>
+and continue typing on the next line.</p>
+</div>
+<div class="sect2">
+<h3 id="lists_upon_lists">1.1. Lists Upon Lists</h3>
+<div class="ulist">
+<div class="title">Adjacent lists</div>
+<ul>
+<li>
+<p>this list</p>
+</li>
+<li>
+<p>should join</p>
+</li>
+<li>
+<p>to have</p>
+</li>
+<li>
+<p>four items</p>
+</li>
+</ul>
+</div>
+<div id="ordered" class="olist arabic">
+<div class="title">Ordered lists</div>
+<ol class="arabic">
+<li>
+<p>These items</p>
+</li>
+<li>
+<p>will be auto-numbered</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>and can be nested</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>A numbered list can nest</p>
+<div class="ulist">
+<ul>
+<li>
+<p>unordered</p>
+</li>
+<li>
+<p>list</p>
+</li>
+<li>
+<p>items</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<div class="title">Statement</div>
+<p>I swear I left it in <em>Guy's</em> car. Let's go look for it.</p>
+</div>
+<div id="defs" class="dlist">
+<dl>
+<dt class="hdlist1">term</dt>
+<dd>
+<p>definition
+line two</p>
+</dd>
+<dt class="hdlist1"><a id="another_term"></a>another term</dt>
+<dd>
+<p>another definition, which can be literal (indented) or regular paragraph</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This should be a standalone paragraph, not grabbed by the definition list.</p>
+</div>
+<div id="nested" class="ulist">
+<ul>
+<li>
+<p>first level
+written on two lines</p>
+</li>
+<li>
+<p>first level</p>
+<div class="literalblock">
+<div class="content">
+<pre>with this literal text</pre>
+</div>
+</div>
+</li>
+<li>
+<p>first level</p>
+<div class="literalblock">
+<div class="content">
+<pre>with more literal text</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>second level</p>
+<div class="ulist">
+<ul>
+<li>
+<p>third level</p>
+<div class="ulist">
+<ul>
+<li>
+<p>fourth level</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>back to<br>
+first level</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s make a horizontal rule&#8230;&#8203;</p>
+</div>
+<hr>
+<div class="paragraph">
+<p>then take a break.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="and_were_back">2. &#8230;&#8203;and we&#8217;re back!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Do you want to see a <span class="image"><img src="images/tiger.png" alt="Tiger" width="50"></span>?</p>
+</div>
+<div class="paragraph">
+<p>Do you feel safer with the tiger in a box?</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/tiger.png" alt="tiger">
+</div>
+<div class="title">Figure 1. Tiger in a box</div>
+</div>
+<div class="paragraph">
+<p>I come from an include file.</p>
+</div>
+<div class="listingblock">
+<div class="title">Libasciidoc usage example. The listing should contain 5 lines.</div>
+<div class="content">
+<pre class="highlight"><code class="language-go" data-lang="go">require 'libasciidoc'
+
+doc = Libasciidoc.load '*This* is http://asciidoc.org[AsciiDoc]!', header_footer: true
+
+puts doc.convert</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Output of Libasciidoc usage example</div>
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;meta name="generator" content="Libasciidoc 0.1.4"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;title&gt;Untitled&lt;/title&gt;
+&lt;link rel="stylesheet" href="./libasciidoc.css"&gt;
+&lt;/head&gt;
+&lt;body class="article"&gt;
+&lt;div id="header"&gt;
+&lt;/div&gt;
+&lt;div id="content"&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;&lt;strong&gt;This&lt;/strong&gt; is &lt;a href="http://asciidoc.org"&gt;AsciiDoc&lt;/a&gt;!&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="footer"&gt;
+&lt;div id="footer-text"&gt;
+Last updated 2014-01-28 20:11:37 MST
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="block_quotes_and_smart_ones">2.1. Block Quotes and &#8220;Smart&#8221; Ones</h3>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>AsciiDoc is <em>so</em> <strong>powerful</strong>!</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>This verse comes to mind.</p>
+</div>
+<div class="verseblock">
+<pre class="content">La la la</pre>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s another quote:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>When you have eliminated all which is impossible, then whatever remains,
+however improbable, must be the truth.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Sir Arthur Conan Doyle<br>
+<cite>The Adventures of Sherlock Holmes</cite>
+</div>
+</div>
+<div class="paragraph">
+<p>&#8220;Get moving!&#8221; he shouted.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="literally">3. Getting Literal</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>Want to get literal? Just prefix a line with a space (just 1 space will do).</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>I'll join that party, too.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We forgot to mention in <a href="#ordered">Ordered lists</a> that you can change the numbering style.</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>first item (yeah!)</p>
+</li>
+<li>
+<p>second item, looking <code>so mono</code></p>
+</li>
+<li>
+<p>third item, <code>mono</code> it is!</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="wrapup">4. Wrap-up</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+AsciiDoc is quite cool, you should try it!
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="title">Info</div>
+<div class="paragraph">
+<p>Go to this URL to learn more about it:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://asciidoc.org" class="bare">http://asciidoc.org</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Or you could return to the <a href="#first-steps-with-asciidoc">[first-steps-with-asciidoc]</a> or <a href="#purpose">Purpose</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s a reference to the definition of <a href="#another_term">another term</a>, in case you forgot it.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+One more thing. Happy documenting!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a id="google"></a>When all else fails, head over to <a href="http://google.com" class="bare">http://google.com</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{ .LastUpdated }}
+</div>
+</div>
+</body>
+</html>

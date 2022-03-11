@@ -1004,8 +1004,11 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 											Path:   "github.com",
 										},
 									},
+									&types.Symbol{
+										Name: "...",
+									},
 									&types.StringElement{
-										Content: "\u2026\u200b\n", // symbol for ellipsis, applied by the 'replacements' substitution
+										Content: "\n",
 									},
 								},
 							},
@@ -1092,8 +1095,11 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 											Path:   "github.com",
 										},
 									},
+									&types.Symbol{
+										Name: "...",
+									},
 									&types.StringElement{
-										Content: "\u2026\u200b\n", // symbol for ellipsis, applied by the 'replacements' substitution
+										Content: "\n",
 									},
 								},
 							},
@@ -1346,7 +1352,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 								Elements: []interface{}{
 									&types.StringElement{
 										Content: "links to {github-title}: https://github.com[{github-title}] and *<https://github.com[_{github-title}_]>*" +
-											"\nand another one using attribute substitution: {github-url}[{github-title}]\u2026\u200b\n",
+											"\nand another one using attribute substitution: {github-url}[{github-title}]",
+									},
+									&types.Symbol{
+										Name: "...",
+									},
+									&types.StringElement{
+										Content: "\n",
 									},
 								},
 							},

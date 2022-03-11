@@ -88,7 +88,7 @@ var _ = Describe("strings", func() {
 		// We will often want to use these symbols in headers.
 		source := ":unicode:\n\n== Registered(R)"
 		expected := "<div class=\"sect1\">\n" +
-			"<h2 id=\"_registered\">Registered\u00ae</h2>\n" +
+			"<h2 id=\"_registered\">Registered&#174;</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
 			"</div>\n" +
 			"</div>\n"
@@ -108,15 +108,15 @@ var _ = Describe("strings", func() {
 	It("title with explicit apostrophe (unicode)", func() {
 		source := ":unicode:\n\n== It`'s A Wonderful Life"
 		expected := "<div class=\"sect1\">\n" +
-			"<h2 id=\"_its_a_wonderful_life\">It\u2019s A Wonderful Life</h2>\n" +
+			"<h2 id=\"_its_a_wonderful_life\">It&#8217;s A Wonderful Life</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
 			"</div>\n" +
 			"</div>\n"
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("title with implicit apostrophe", func() {
-		source := "== It's A Wonderful Life"
+	It("title with implicit apostrophe with unicode explictely disabled", func() {
+		source := ":unicode: false\n\n== It's A Wonderful Life"
 		expected := "<div class=\"sect1\">\n" +
 			"<h2 id=\"_its_a_wonderful_life\">It&#8217;s A Wonderful Life</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
@@ -125,10 +125,10 @@ var _ = Describe("strings", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
-	It("title with implicit apostrophe (unicode)", func() {
-		source := ":unicode:\n\n== It's A Wonderful Life"
+	It("title with implicit apostrophe with unicode implicitly enabled", func() {
+		source := "== It's A Wonderful Life"
 		expected := "<div class=\"sect1\">\n" +
-			"<h2 id=\"_its_a_wonderful_life\">It\u2019s A Wonderful Life</h2>\n" +
+			"<h2 id=\"_its_a_wonderful_life\">It&#8217;s A Wonderful Life</h2>\n" +
 			"<div class=\"sectionbody\">\n" +
 			"</div>\n" +
 			"</div>\n"

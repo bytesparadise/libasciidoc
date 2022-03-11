@@ -3641,6 +3641,7 @@ func NewConcealedIndexTerm(term1, term2, term3 interface{}) (*ConcealedIndexTerm
 // ------------------------------------------------------------------------------------
 
 // SpecialCharacter a special character, which may get a special treatment later during rendering
+// Eg `<`, `>`, `&`
 type SpecialCharacter struct {
 	Name string
 }
@@ -3657,6 +3658,28 @@ var _ RawText = SpecialCharacter{}
 // RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
 func (c SpecialCharacter) RawText() (string, error) {
 	return c.Name, nil
+}
+
+// Symbol a sequence of characters, which may get a special treatment later during rendering
+// Eg: `(C)`, `(TM)`, `...`, etc.
+type Symbol struct {
+	Prefix string // optional
+	Name   string
+}
+
+// NewSymbol return a new Symbol
+func NewSymbol(name string) (*Symbol, error) {
+	return &Symbol{
+		Name: name,
+	}, nil
+}
+
+// NewSymbolWithForeword return a new Symbol prefixed with a foreword
+func NewSymbolWithForeword(name, foreword string) (*Symbol, error) {
+	return &Symbol{
+		Name:   name,
+		Prefix: foreword,
+	}, nil
 }
 
 // ------------------------------------------------------------------------------------

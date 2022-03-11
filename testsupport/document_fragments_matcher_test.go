@@ -5,11 +5,11 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/testsupport"
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo" // nolint:golint
 	. "github.com/onsi/gomega" // nolint:golintt
-	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 var _ = Describe("document fragments matcher", func() {
@@ -54,10 +54,9 @@ var _ = Describe("document fragments matcher", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(spew.Sdump(actual), spew.Sdump(expected), true)
-		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments to match:\n%s", dmp.DiffPrettyText(diffs))))
-		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments not to match:\n%s", dmp.DiffPrettyText(diffs))))
+		diffs := cmp.Diff(spew.Sdump(expected), spew.Sdump(actual))
+		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments to match:\n%s", diffs)))
+		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments not to match:\n%s", diffs)))
 	})
 
 	It("should return error when invalid type is input", func() {

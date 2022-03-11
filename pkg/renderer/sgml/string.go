@@ -7,7 +7,6 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/pkg/errors"
 )
 
 var quotes = map[types.QuotedStringKind]struct {
@@ -15,12 +14,12 @@ var quotes = map[types.QuotedStringKind]struct {
 	Close string
 }{
 	types.SingleQuote: {
-		Open:  "\u2018",
-		Close: "\u2019",
+		Open:  "&#8216;",
+		Close: "&#8217;",
 	},
 	types.DoubleQuote: {
-		Open:  "\u201c",
-		Close: "\u201d",
+		Open:  "&#8220;",
+		Close: "&#8221;",
 	},
 }
 
@@ -37,15 +36,9 @@ func (r *sgmlRenderer) renderQuotedString(ctx *renderer.Context, s *types.Quoted
 }
 
 func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str *types.StringElement) (string, error) {
-	buf := &strings.Builder{}
-	err := r.stringElement.Execute(buf, str.Content)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render string")
-	}
-
 	// NB: For all SGML flavors we are aware of, the numeric entities from
 	// Unicode are supported.  We generally avoid named entities.
-	result := buf.String()
+	result := str.Content
 	if !ctx.UseUnicode() {
 		// convert to entities
 		result = asciiEntify(result)

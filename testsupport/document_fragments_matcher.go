@@ -8,7 +8,6 @@ import (
 	"github.com/google/go-cmp/cmp"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
-	"github.com/sergi/go-diff/diffmatchpatch"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -34,9 +33,7 @@ func (m *documentFragmentsMatcher) Match(actual interface{}) (success bool, err 
 			log.Debugf("actual raw document:\n%s", spew.Sdump(actual))
 			log.Debugf("expected raw document:\n%s", spew.Sdump(m.expected))
 		}
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(spew.Sdump(actual), spew.Sdump(m.expected), true)
-		m.diffs = dmp.DiffPrettyText(diffs)
+		m.diffs = cmp.Diff(spew.Sdump(m.expected), spew.Sdump(actual))
 		return false, nil
 	}
 	return true, nil

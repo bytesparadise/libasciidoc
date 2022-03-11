@@ -5,9 +5,9 @@ import (
 	"reflect"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/google/go-cmp/cmp"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
-	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 // MatchInlineElements a custom matcher to verify that a document matches the given expectation
@@ -28,9 +28,7 @@ func (m *inlineElementsMatcher) Match(actual interface{}) (success bool, err err
 		return false, errors.Errorf("MatchInlineElements matcher expects a []interface{} (actual: %T)", actual)
 	}
 	if !reflect.DeepEqual(m.expected, actual) {
-		dmp := diffmatchpatch.New()
-		diffs := dmp.DiffMain(spew.Sdump(actual), spew.Sdump(m.expected), true)
-		m.diffs = dmp.DiffPrettyText(diffs)
+		m.diffs = cmp.Diff(spew.Sdump(m.expected), spew.Sdump(actual))
 		return false, nil
 	}
 	return true, nil

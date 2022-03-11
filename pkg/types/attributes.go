@@ -521,6 +521,20 @@ func (a Attributes) GetAsIntWithDefault(key string, defaultValue int) int {
 	return defaultValue
 }
 
+// GetAsBoolWithDefault gets the bool value for the given key ,
+// or default if none was found,
+func (a Attributes) GetAsBoolWithDefault(key string, defaultValue bool) bool {
+	switch v := a[key].(type) {
+	case bool:
+		return v
+	case string:
+		if result, err := strconv.ParseBool(v); err == nil {
+			return result
+		}
+	}
+	return defaultValue
+}
+
 func asString(v interface{}) (string, error) {
 	switch v := v.(type) {
 	case string:
