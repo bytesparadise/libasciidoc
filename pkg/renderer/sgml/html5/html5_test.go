@@ -42,7 +42,7 @@ Last updated {{ .LastUpdated }}
 		now := time.Now()
 		Expect(RenderHTML(source,
 			configuration.WithHeaderFooter(true),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 		)).To(MatchHTMLTemplate(expectedTmpl,
 			struct {
@@ -82,7 +82,7 @@ Last updated {{ .LastUpdated }}
 		now := time.Now()
 		Expect(RenderHTML(source,
 			configuration.WithHeaderFooter(true),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 		)).To(MatchHTMLTemplate(expectedTmpl,
 			struct {
@@ -121,7 +121,7 @@ Last updated {{ .LastUpdated }}
 `
 		now := time.Now()
 		Expect(RenderHTML(source, configuration.WithHeaderFooter(true),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 		)).To(MatchHTMLTemplate(expectedTmpl,
 			struct {
@@ -411,7 +411,7 @@ Last updated {{ .LastUpdated }}
 			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 			configuration.WithHeaderFooter(true),
 		)).To(MatchHTMLTemplate(expectedTmpl,
@@ -534,7 +534,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 			configuration.WithHeaderFooter(false),
 		)).To(MatchHTMLTemplate(expectedTmpl,
