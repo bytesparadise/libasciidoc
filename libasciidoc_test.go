@@ -54,7 +54,7 @@ var _ = Describe("documents", func() {
 				// when
 				output, metadata, err := RenderHTMLFromFile("test/compat/demo.adoc",
 					configuration.WithAttribute("libasciidoc-version", "0.7.0"),
-					configuration.WithCSS("path/to/style.css"))
+					configuration.WithCSS([]string{"path/to/style.css"}))
 
 				// then
 				Expect(err).NotTo(HaveOccurred())
@@ -123,7 +123,7 @@ var _ = Describe("documents", func() {
 					configuration.NewConfiguration(
 						configuration.WithFilename(filename),
 						configuration.WithAttribute("libasciidoc-version", "0.7.0"),
-						configuration.WithCSS("path/to/style.css"),
+						configuration.WithCSS([]string{"path/to/style.css"}),
 						configuration.WithHeaderFooter(true)))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(out.String()).To(MatchHTMLTemplateFile(string("test/compat/demo-full.tmpl.html"),
@@ -144,7 +144,7 @@ var _ = Describe("documents", func() {
 					configuration.NewConfiguration(
 						configuration.WithFilename("test/compat/article.adoc"),
 						configuration.WithBackEnd("html5"),
-						configuration.WithCSS("path/to/style.css"),
+						configuration.WithCSS([]string{"path/to/style.css"}),
 						configuration.WithHeaderFooter(true)))
 				Expect(err).NotTo(HaveOccurred())
 			})
@@ -155,7 +155,7 @@ var _ = Describe("documents", func() {
 					configuration.NewConfiguration(
 						configuration.WithFilename("test/compat/article.adoc"),
 						configuration.WithBackEnd("xhtml5"),
-						configuration.WithCSS("path/to/style.css"),
+						configuration.WithCSS([]string{"path/to/style.css"}),
 						configuration.WithHeaderFooter(true)))
 				Expect(err).NotTo(HaveOccurred())
 			})
@@ -296,7 +296,7 @@ Last updated {{ .LastUpdated }}
 					configuration.NewConfiguration(
 						configuration.WithAttribute(types.AttrDocType, "manpage"),
 						configuration.WithLastUpdated(lastUpdated),
-						configuration.WithCSS("path/to/style.css"),
+						configuration.WithCSS([]string{"path/to/style.css"}),
 						configuration.WithHeaderFooter(true),
 					))
 				Expect(err).NotTo(HaveOccurred())
@@ -390,7 +390,7 @@ Last updated {{ .LastUpdated }}
 					configuration.NewConfiguration(
 						configuration.WithAttribute(types.AttrDocType, "manpage"),
 						configuration.WithLastUpdated(lastUpdated),
-						configuration.WithCSS("path/to/style.css"),
+						configuration.WithCSS([]string{"path/to/style.css"}),
 						configuration.WithHeaderFooter(true),
 					))
 				Expect(err).NotTo(HaveOccurred())

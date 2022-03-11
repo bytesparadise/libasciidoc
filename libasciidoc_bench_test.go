@@ -21,7 +21,7 @@ func XBenchmarkRenderRealDocument(b *testing.B) {
 		_, err := libasciidoc.ConvertFile(out,
 			configuration.NewConfiguration(
 				configuration.WithFilename(filename),
-				configuration.WithCSS("path/to/style.css"),
+				configuration.WithCSS([]string{"path/to/style.css"}),
 				configuration.WithHeaderFooter(true)))
 		require.NoError(b, err)
 	}

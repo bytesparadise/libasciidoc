@@ -9,7 +9,7 @@ const (
 		"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n" +
 		"{{ if .Generator }}<meta name=\"generator\" content=\"{{ .Generator }}\"/>\n{{ end }}" +
 		"{{ if .Authors }}<meta name=\"author\" content=\"{{ .Authors }}\"/>\n{{ end }}" +
-		"{{ if .CSS}}<link type=\"text/css\" rel=\"stylesheet\" href=\"{{ .CSS }}\"/>\n{{ end }}" +
+		"{{ range $css := .CSS }}<link type=\"text/css\" rel=\"stylesheet\" href=\"{{ $css }}\"/>\n{{ end }}" +
 		"<title>{{ .Title }}</title>\n" +
 		"</head>\n" +
 		"<body" +
