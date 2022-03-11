@@ -2239,10 +2239,10 @@ func NewDelimitedBlock(kind string, elements []interface{}) (*DelimitedBlock, er
 			}
 		}
 	}
-	 return &DelimitedBlock{
+	return &DelimitedBlock{
 		Kind:     kind,
 		Elements: elements,
-	}, nil 
+	}, nil
 }
 
 var _ WithElements = &DelimitedBlock{}
