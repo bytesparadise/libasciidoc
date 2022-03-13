@@ -10,7 +10,7 @@ const (
 {{ if .Generator }}<meta name="generator" content="{{ .Generator }}">
 {{ end }}{{ if .Description }}<meta name="description" content="{{ .Description }}">
 {{ end }}{{ if .Authors }}<meta name="author" content="{{ .Authors }}">
-{{ end }}{{ if .CSS}}<link type="text/css" rel="stylesheet" href="{{ .CSS }}">
+{{ end }}{{ range $css := .CSS }}<link type="text/css" rel="stylesheet" href="{{ $css }}">
 {{ end }}<title>{{ .Title }}</title>
 </head>
 <body{{ if .ID }} id="{{ .ID }}"{{ end }} class="{{ .Doctype }}{{ if .Roles }} {{ .Roles }}{{ end }}">

@@ -203,7 +203,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 			Content               string
 			RevNumber             string
 			LastUpdated           string
-			CSS                   string
+			CSS                   []string
 			IncludeHTMLBodyHeader bool
 			IncludeHTMLBodyFooter bool
 		}{

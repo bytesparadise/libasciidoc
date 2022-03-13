@@ -13,6 +13,44 @@ import (
 
 var _ = Describe("document header", func() {
 
+	It("with multiple CSS files", func() {
+		source := ``
+		expectedTmpl := `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="libasciidoc">
+<link type="text/css" rel="stylesheet" href="/path/to/style1.css">
+<link type="text/css" rel="stylesheet" href="/path/to/style2.css">
+<link type="text/css" rel="stylesheet" href="/path/to/style3.css">
+<title>Untitled</title>
+</head>
+<body class="article">
+<div id="content">
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated {{ .LastUpdated }}
+</div>
+</div>
+</body>
+</html>
+`
+		now := time.Now()
+		Expect(RenderHTML(source,
+			configuration.WithHeaderFooter(true),
+			configuration.WithCSS([]string{"/path/to/style1.css", "/path/to/style2.css", "/path/to/style3.css"}),
+			configuration.WithLastUpdated(now),
+		)).To(MatchHTMLTemplate(expectedTmpl,
+			struct {
+				LastUpdated string
+			}{
+				LastUpdated: now.Format(configuration.LastUpdatedFormat),
+			}))
+	})
+
 	It("with quoted text", func() {
 		source := `= The _Document_ *Title*`
 		expectedTmpl := `<!DOCTYPE html>
@@ -42,7 +80,7 @@ Last updated {{ .LastUpdated }}
 		now := time.Now()
 		Expect(RenderHTML(source,
 			configuration.WithHeaderFooter(true),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 		)).To(MatchHTMLTemplate(expectedTmpl,
 			struct {
@@ -82,7 +120,7 @@ Last updated {{ .LastUpdated }}
 		now := time.Now()
 		Expect(RenderHTML(source,
 			configuration.WithHeaderFooter(true),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 		)).To(MatchHTMLTemplate(expectedTmpl,
 			struct {
@@ -121,7 +159,7 @@ Last updated {{ .LastUpdated }}
 `
 		now := time.Now()
 		Expect(RenderHTML(source, configuration.WithHeaderFooter(true),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 		)).To(MatchHTMLTemplate(expectedTmpl,
 			struct {
@@ -411,7 +449,7 @@ Last updated {{ .LastUpdated }}
 			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 			configuration.WithHeaderFooter(true),
 		)).To(MatchHTMLTemplate(expectedTmpl,
@@ -534,7 +572,7 @@ Free use of this software is granted under the terms of the MIT License.</p>
 			configuration.WithAttributes(map[string]interface{}{
 				types.AttrDocType: "manpage",
 			}),
-			configuration.WithCSS("/path/to/style.css"),
+			configuration.WithCSS([]string{"/path/to/style.css"}),
 			configuration.WithLastUpdated(now),
 			configuration.WithHeaderFooter(false),
 		)).To(MatchHTMLTemplate(expectedTmpl,

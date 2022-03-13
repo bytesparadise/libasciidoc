@@ -26,7 +26,7 @@ type Configuration struct {
 	LastUpdated time.Time
 	// WrapInHTMLBodyElement flag to include the content in an html>body element
 	WrapInHTMLBodyElement bool
-	CSS                   string
+	CSS                   []string
 	BackEnd               string
 	Macros                map[string]MacroTemplate
 }
@@ -75,9 +75,9 @@ func WithHeaderFooter(value bool) Setting {
 }
 
 // WithCSS function to set the `css` setting in the config
-func WithCSS(href string) Setting {
+func WithCSS(hrefs []string) Setting {
 	return func(config *Configuration) {
-		config.CSS = href
+		config.CSS = hrefs
 	}
 }
 
