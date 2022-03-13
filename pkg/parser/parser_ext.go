@@ -128,13 +128,6 @@ func (c *current) isPreceededBySpace() bool {
 	return ok && s
 }
 
-func (c *current) resetSpaceSuffixTracking() {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("resetting space suffix tracking")
-	}
-	delete(c.globalStore, spaceSuffixTrackingKey)
-}
-
 // verifies that the content does not end with a space
 func validateSingleQuoteElements(elements []interface{}) (bool, error) {
 	// if log.IsLevelEnabled(log.DebugLevel) {

@@ -415,7 +415,7 @@ func enableExperimentalMacros(enabled bool) Option {
 // checks if the `experimental` doc attribute was set (no value is expected, but we set a flag to handle the case where the attribute was reset)
 func (c *current) isExperimentalEnabled() bool {
 	enabled, found := c.globalStore[experimentalMacrosKey].(bool)
-	log.Debugf("experimental enabled: %t", (found && enabled))
+	// log.Debugf("experimental enabled: %t", (found && enabled))
 	return found && enabled
 }
 

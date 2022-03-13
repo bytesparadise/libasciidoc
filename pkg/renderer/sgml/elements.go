@@ -96,8 +96,6 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 		return r.renderIndexTerm(ctx, e)
 	case *types.ConcealedIndexTerm:
 		return r.renderConcealedIndexTerm(e)
-	case *types.QuotedString:
-		return r.renderQuotedString(ctx, e)
 	case *types.ThematicBreak:
 		return r.renderThematicBreak()
 	case *types.SpecialCharacter:
@@ -145,10 +143,6 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 		return r.renderSymbol(e)
 	case *types.StringElement:
 		return e.Content, nil
-	case *types.QuotedString:
-		return r.renderQuotedString(ctx, e)
-	// case *types.Paragraph:
-	// 	return r.renderParagraph(ctx, element, withRenderer(r.renderPlainText))
 	case *types.FootnoteReference:
 		// footnotes are rendered in HTML so they can appear as such in the table of contents
 		return r.renderFootnoteReferencePlainText(e)
