@@ -513,7 +513,8 @@ ShortHandAttributeValue <-
     / elements:(
         // unquoted shorthand value may include placeholders and substitutions but NOT comma, space, equal sign and dots
         // also, cannot be followed by an `=` sign
-        ([^,=.%# \r\n\uFFFD{\]]+ {
+        QuotationMark 
+        / ([^,=.%# \r\n\uFFFD{\]]+ {
             return types.NewStringElement(string(c.text))
         }) 
         // / ElementPlaceHolder
@@ -575,6 +576,7 @@ SingleQuotedAttributeValueContent <-
         Alphanums
         / Space
         / Quote
+        / QuotationMark
         / AttributeReference
         / (`\'` { 
             return types.NewStringElement(`'`) // escaped single quote
@@ -600,6 +602,7 @@ DoubleQuotedAttributeValueContent <-
         Alphanums
         / Space
         / Quote
+        / QuotationMark
         / AttributeReference 
         / (`\"` { 
             return types.NewStringElement(`"`) // escaped double quote
@@ -620,14 +623,18 @@ UnquotedAttributeValue <-
     // so we need to count the `[` and `]` to balance
     !Space // can't start with a space (eg: can't have `[ cookie ]`)
     elements:(
-        Quote // quotes can have their own attributes
+        Quote // quotes can have their own attributes // TODO: move down
         / ("[" UnquotedAttributeValue "]") // recursively within brackets (see comment above)
         // / ElementPlaceHolder
-        / ([^=,\uFFFD\]{ ]+ { // not within brackets and stop on space and `{`
+        / ([^=,\uFFFD\]{'"` ]+ { // not within brackets and stop on space and quotation marks (`"')
             return string(c.text), nil
         }) 
         / Space
         / AttributeReference
+        / QuotationMark
+        / ("'" / "`" / "\"") { // standalone characters not used in quotation marks
+            return string(c.text), nil
+        }
         / "{"
     )+ {
         return types.Reduce(elements, strings.TrimSpace), nil
@@ -1329,7 +1336,7 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
     }
 
-IndexTermContent <- elements:(Word / QuotedString / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
+IndexTermContent <- elements:(Word / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
     return string(c.text), nil
 })+ {
     return types.NewInlineElements(elements.([]interface{}))
@@ -1976,7 +1983,6 @@ DoubleQuoteBoldTextElement <-
         / InlineMacro
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
-        / QuotedString
         / QuotedTextInDoubleQuoteBoldText
         / ElementPlaceHolder
         / DoubleQuoteBoldTextFallbackCharacter) {
@@ -2032,7 +2038,6 @@ SingleQuoteBoldTextElement <-
     / InlineMacro
     / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / Symbol
-    / QuotedString
     / QuotedTextInSingleQuoteBoldText
     / ElementPlaceHolder
     / SingleQuoteBoldTextFallbackCharacter
@@ -2120,7 +2125,6 @@ DoubleQuoteItalicTextElement <-
         / InlineMacro
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
-        / QuotedString
         / QuotedTextInDoubleQuoteItalicText
         / ElementPlaceHolder
         / DoubleQuoteItalicTextFallbackCharacter) {
@@ -2188,7 +2192,6 @@ SingleQuoteItalicTextElement <-
     / InlineMacro // must be after InlineMacro (because of BareURL)
     / SpecialCharacter
     / Symbol
-    / QuotedString
     / QuotedTextInSingleQuoteItalicText
     / ElementPlaceHolder
     / SingleQuoteItalicTextFallbackCharacter
@@ -2274,7 +2277,6 @@ DoubleQuoteMonospaceTextElement <-
         / InlineMacro
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
-        / QuotedString
         / RawApostrophe // must be before SingleQuoteMonospaceText
         / QuotedTextInDoubleQuoteMonospaceText
         / ElementPlaceHolder
@@ -2346,7 +2348,6 @@ SingleQuoteMonospaceTextElement <-
     / InlineMacro // must be after InlineMacro (because of BareURL)
     / SpecialCharacter
     / Symbol
-    / QuotedString
     / QuotedTextInSingleQuoteMonospaceText
     / RawApostrophe
     / ElementPlaceHolder
@@ -2434,7 +2435,6 @@ DoubleQuoteMarkedTextElement <- // may start and end with spaces
         / InlineMacro
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
-        / QuotedString
         / QuotedTextInDoubleMarkedBoldText
         / ElementPlaceHolder
         / DoubleQuoteMarkedTextFallbackCharacter
@@ -2504,7 +2504,6 @@ SingleQuoteMarkedTextElement <-
     / InlineMacro
     / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / Symbol
-    / QuotedString
     / QuotedTextInSingleQuoteMarkedText
     / ElementPlaceHolder
     / SingleQuoteMarkedTextFallbackCharacter
@@ -2608,115 +2607,6 @@ EscapedSuperscriptText <-
     SuperscriptTextDelimiter { // simple punctuation must be evaluated last
         return types.NewEscapedQuotedText(backslashes.(string), "^", element)
     } 
-
-// -------------------------------------------------------------------------------------------------
-// Quoted Strings (between curly single or double quotes)
-// -------------------------------------------------------------------------------------------------
-
-QuotedString <- SingleQuotedString / DoubleQuotedString
-
-SingleQuotedString <- 
-    SingleQuoteStringStart 
-    elements:SingleQuotedStringElements 
-    SingleQuoteStringEnd {
-        return types.NewQuotedString(types.SingleQuote, elements.([]interface{}))
-    }
-
-SingleQuotedStringElements <- 
-    elements:(SingleQuotedStringElement)+ {
-        c.resetSpaceSuffixTracking()
-        return types.NewInlineElements(elements)
-    }
-
-SingleQuoteStringStart <- "'`" ![ \t\r\n]
-
-SingleQuoteStringEnd <- "`'"
-
-QuotedStringWord <- [\pL0-9]+ &(Space / SingleQuoteStringEnd) {
-        return types.NewStringElement(string(c.text))
-    }
-
-// We have to treat this one special, because of ambiguity with monospace markup.
-SingleQuotedStringElement <- 
-    !SingleQuoteStringEnd
-    element:(
-        QuotedStringWord
-        / Space !SingleQuoteStringEnd
-        / Newline !Newline // 2 newlines split the paragraph
-        / AttributeReference
-        / InlineMacro
-        / SpecialCharacter // must be after InlineMacro (because of BareURL)
-        / LineBreak !SingleQuoteStringEnd
-        / Symbol
-        / QuotedTextInSingleQuotedString
-        / DoubleQuotedString
-        / SingleQuotedStringFallbackCharacter
-    ) {
-        c.trackSpaceSuffix(element)
-        return element, nil
-    }
-
-QuotedTextInSingleQuotedString <-
-    attributes:(LongHandAttributes)? 
-    text:(BoldText
-        / ItalicText
-        / (!"`'" element:(MonospaceText) { return element, nil})
-        / SubscriptText
-        / SuperscriptText
-        / MarkedText) {
-             return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-SingleQuotedStringFallbackCharacter <-  [^\r\n\t `] / "`" !"'" { // '
-        return types.NewStringElement(string(c.text))
-    }
-
-DoubleQuotedString <- DoubleQuoteStringStart elements:DoubleQuotedStringElements DoubleQuoteStringEnd {
-        return types.NewQuotedString(types.DoubleQuote, elements.([]interface{}))
-    }
-
-DoubleQuotedStringElements <- elements:(DoubleQuotedStringElement+) {
-        c.resetSpaceSuffixTracking()
-        return types.NewInlineElements(elements)
-    }
-
-// We have to treat this one special, because of ambiguity with monospace markup.
-DoubleQuotedStringElement <- 
-    !DoubleQuoteStringEnd
-    element:(
-        QuotedStringWord
-        / Space !DoubleQuoteStringEnd
-        / Newline !Newline // 2 newlines split the paragraph
-        / LineBreak !SingleQuoteStringEnd 
-        / AttributeReference
-        / InlineMacro
-        / SpecialCharacter // must be after InlineMacro (because of BareURL)
-        / QuotedTextInDoubleQuotedString
-        / SingleQuotedString
-        / DoubleQuotedStringFallbackCharacter) {
-            c.trackSpaceSuffix(element)
-            return element, nil
-        }
-
-QuotedTextInDoubleQuotedString <-
-    attributes:(LongHandAttributes)? 
-    text:(
-        BoldText
-        / ItalicText
-        / (!"`\"" element:(MonospaceText) { return element, nil})
-        / SubscriptText
-        / SuperscriptText
-        / MarkedText) {
-             return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-DoubleQuoteStringStart <- "\"`" ![ \t\r\n]
-
-DoubleQuoteStringEnd <- "`\""
-
-DoubleQuotedStringFallbackCharacter <-  ([^\r\n\t `] / "`" !"\"") {
-        return types.NewStringElement(string(c.text))
-    }
 
 // -------------------------------------------------------------------------------------
 // Sections
@@ -2837,11 +2727,7 @@ Quote <-
     &{
         return c.isSubstitutionEnabled(Quotes), nil
     }
-    element:(
-        QuotedText 
-        / QuotedString) {
-            return element, nil
-        }
+    QuotedText 
 
 Replacement <- 
     // check if enabled with the current substitution context
@@ -2889,19 +2775,29 @@ SingleLineCommentContent <- [^\r\n]* {
 // -------------------------------------------------------------------------------------
 Symbol <- 
     // escaped
-    `\` (Apostrophe / Copyright / Trademark / Registered / Ellipsis) {
+    `\` (QuotationMark / Copyright / Trademark / Registered / Ellipsis) {
         return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
     }
     // unescaped
-    / Apostrophe / Copyright / Trademark / Registered / Ellipsis 
+    / QuotationMark / Copyright / Trademark / Registered / Ellipsis 
     // 
     / TypographicQuote
 
-Apostrophe <- "`'" {
-        return types.NewSymbol("`'")
+QuotationMark <- 
+    "\"`" {
+        return types.NewSymbol("\"`")
     }
+    / "`\"" {
+        return types.NewSymbol("`\"")
+    }
+    / "'`" {
+        return types.NewSymbol("'`")
+    }
+    / "`'" {
+        return types.NewSymbol("`'")
+    } 
 
-RawApostrophe <- "`'" // no conversion
+RawApostrophe <- "`'" // no conversion // TODO: needed?
 
 Copyright <- "(C)" {
         return types.NewSymbol("(C)")

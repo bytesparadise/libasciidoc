@@ -2797,48 +2797,6 @@ func NewEscapedQuotedText(backslashes string, marker string, content interface{}
 	}, nil
 }
 
-// -------------------------------------------------------
-// Quoted Strings
-// -------------------------------------------------------
-
-// QuotedStringKind indicates whether this is 'single' or "double" quoted.
-type QuotedStringKind string
-
-const (
-	// SingleQuote means single quotes (')
-	SingleQuote = QuotedStringKind("'")
-	// DoubleQuote means double quotes (")
-	DoubleQuote = QuotedStringKind("\"")
-)
-
-// QuotedString a quoted string
-type QuotedString struct {
-	Kind     QuotedStringKind
-	Elements []interface{}
-}
-
-// NewQuotedString returns a new QuotedString
-func NewQuotedString(kind QuotedStringKind, elements []interface{}) (*QuotedString, error) {
-	return &QuotedString{Kind: kind, Elements: elements}, nil
-}
-
-var _ RawText = QuotedString{}
-
-// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
-func (s QuotedString) RawText() (string, error) {
-	result := strings.Builder{}
-	result.WriteString("`")            // opening delimiter
-	result.WriteString(string(s.Kind)) // opening delimiter
-	e, err := toRawText(s.Elements)
-	if err != nil {
-		return "", err
-	}
-	result.WriteString(e)
-	result.WriteString(string(s.Kind)) // closing delimiter
-	result.WriteString("`")            // closing delimiter
-	return result.String(), nil
-}
-
 // ------------------------------------------
 // InlinePassthrough
 // ------------------------------------------
@@ -3680,6 +3638,12 @@ func NewSymbolWithForeword(name, foreword string) (*Symbol, error) {
 		Name:   name,
 		Prefix: foreword,
 	}, nil
+}
+
+var _ RawText = &Symbol{}
+
+func (s *Symbol) RawText() (string, error) {
+	return s.Name, nil
 }
 
 // ------------------------------------------------------------------------------------

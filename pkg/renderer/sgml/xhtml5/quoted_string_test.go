@@ -31,7 +31,7 @@ var _ = Describe("quoted strings", func() {
 		It("spaces with single quoted string", func() {
 			source := "'` curly was single `' or so they say"
 			expected := "<div class=\"paragraph\">\n" +
-				"<p>'` curly was single &#8217; or so they say</p>\n" +
+				"<p>&#8216; curly was single &#8217; or so they say</p>\n" +
 				"</div>\n"
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})
@@ -201,7 +201,7 @@ var _ = Describe("quoted strings", func() {
 		It("spaces with double quoted string", func() {
 			source := "\"` curly was single `\""
 			expected := "<div class=\"paragraph\">\n" +
-				"<p>\"` curly was single `\"</p>\n" +
+				"<p>&#8220; curly was single &#8221;</p>\n" +
 				"</div>\n"
 			Expect(RenderXHTML(source)).To(MatchHTML(expected))
 		})

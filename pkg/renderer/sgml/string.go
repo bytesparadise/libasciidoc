@@ -9,32 +9,6 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-var quotes = map[types.QuotedStringKind]struct {
-	Open  string
-	Close string
-}{
-	types.SingleQuote: {
-		Open:  "&#8216;",
-		Close: "&#8217;",
-	},
-	types.DoubleQuote: {
-		Open:  "&#8220;",
-		Close: "&#8221;",
-	},
-}
-
-func (r *sgmlRenderer) renderQuotedString(ctx *renderer.Context, s *types.QuotedString) (string, error) {
-	elements := append([]interface{}{
-		&types.StringElement{
-			Content: quotes[s.Kind].Open,
-		},
-	}, s.Elements...)
-	elements = append(elements, &types.StringElement{
-		Content: quotes[s.Kind].Close,
-	})
-	return r.renderInlineElements(ctx, elements)
-}
-
 func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str *types.StringElement) (string, error) {
 	// NB: For all SGML flavors we are aware of, the numeric entities from
 	// Unicode are supported.  We generally avoid named entities.

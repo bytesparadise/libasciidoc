@@ -18,11 +18,14 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
-								Elements: []interface{}{
-									&types.StringElement{Content: "curly was single"},
-								},
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "curly was single",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -37,8 +40,11 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
+							&types.Symbol{
+								Name: "'`",
+							},
 							&types.StringElement{
-								Content: "'` curly was single ",
+								Content: " curly was single ",
 							},
 							&types.Symbol{
 								Name: "`'",
@@ -56,8 +62,11 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
+							&types.Symbol{
+								Name: "'`",
+							},
 							&types.StringElement{
-								Content: "'`curly was single ",
+								Content: "curly was single ",
 							},
 							&types.Symbol{
 								Name: "`'",
@@ -75,8 +84,11 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
+							&types.Symbol{
+								Name: "'`",
+							},
 							&types.StringElement{
-								Content: "'` curly was single",
+								Content: " curly was single",
 							},
 							&types.Symbol{
 								Name: "`'",
@@ -189,18 +201,25 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteBold,
 								Elements: []interface{}{
-									&types.StringElement{Content: "curly "},
-									&types.QuotedText{
-										Kind: types.SingleQuoteBold,
-										Elements: []interface{}{
-											&types.StringElement{Content: "was"},
-										},
+									&types.StringElement{
+										Content: "was",
 									},
-									&types.StringElement{Content: " single"},
 								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -215,18 +234,25 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteItalic,
 								Elements: []interface{}{
-									&types.StringElement{Content: "curly "},
-									&types.QuotedText{
-										Kind: types.SingleQuoteItalic,
-										Elements: []interface{}{
-											&types.StringElement{Content: "was"},
-										},
+									&types.StringElement{
+										Content: "was",
 									},
-									&types.StringElement{Content: " single"},
 								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -241,36 +267,36 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMarked,
+								Attributes: types.Attributes{
+									types.AttrRoles: types.Roles{"strikeout"},
+								},
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "curly ",
-									},
-									&types.QuotedText{
-										Kind: types.SingleQuoteMarked,
-										Attributes: types.Attributes{
-											types.AttrRoles: types.Roles{"strikeout"},
-										},
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "was",
-											},
-										},
-									},
-									&types.QuotedText{
-										Kind: types.SingleQuoteItalic,
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "is",
-											},
-										},
-									},
-
-									&types.StringElement{
-										Content: " single",
+										Content: "was",
 									},
 								},
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteItalic,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "is",
+									},
+								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -285,18 +311,25 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMonospace,
 								Elements: []interface{}{
-									&types.StringElement{Content: "curly "},
-									&types.QuotedText{
-										Kind: types.SingleQuoteMonospace,
-										Elements: []interface{}{
-											&types.StringElement{Content: "is"},
-										},
+									&types.StringElement{
+										Content: "is",
 									},
-									&types.StringElement{Content: " single"},
 								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -311,16 +344,19 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMonospace,
 								Elements: []interface{}{
-									&types.QuotedText{
-										Kind: types.SingleQuoteMonospace,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
+									&types.StringElement{
+										Content: "curly",
 									},
 								},
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -335,17 +371,23 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
-								Elements: []interface{}{
-									&types.StringElement{Content: "single"},
-									&types.QuotedString{
-										Kind: types.DoubleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "double"},
-										},
-									},
-								},
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "single",
+							},
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "double",
+							},
+							&types.Symbol{
+								Name: "`\"",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -363,11 +405,14 @@ var _ = Describe("quoted strings", func() {
 							&types.QuotedText{
 								Kind: types.SingleQuoteMonospace,
 								Elements: []interface{}{
-									&types.QuotedString{
-										Kind: types.SingleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
+									&types.Symbol{
+										Name: "'`",
+									},
+									&types.StringElement{
+										Content: "curly",
+									},
+									&types.Symbol{
+										Name: "`'",
 									},
 								},
 							},
@@ -387,11 +432,14 @@ var _ = Describe("quoted strings", func() {
 							&types.QuotedText{
 								Kind: types.SingleQuoteItalic,
 								Elements: []interface{}{
-									&types.QuotedString{
-										Kind: types.SingleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
+									&types.Symbol{
+										Name: "'`",
+									},
+									&types.StringElement{
+										Content: "curly",
+									},
+									&types.Symbol{
+										Name: "`'",
 									},
 								},
 							},
@@ -411,11 +459,14 @@ var _ = Describe("quoted strings", func() {
 							&types.QuotedText{
 								Kind: types.SingleQuoteBold,
 								Elements: []interface{}{
-									&types.QuotedString{
-										Kind: types.SingleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
+									&types.Symbol{
+										Name: "'`",
+									},
+									&types.StringElement{
+										Content: "curly",
+									},
+									&types.Symbol{
+										Name: "`'",
 									},
 								},
 							},
@@ -439,13 +490,14 @@ var _ = Describe("quoted strings", func() {
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
-										&types.QuotedString{
-											Kind: types.SingleQuote,
-											Elements: []interface{}{
-												&types.StringElement{
-													Content: "example",
-												},
-											},
+										&types.Symbol{
+											Name: "'`",
+										},
+										&types.StringElement{
+											Content: "example",
+										},
+										&types.Symbol{
+											Name: "`'",
 										},
 									},
 								},
@@ -473,13 +525,14 @@ var _ = Describe("quoted strings", func() {
 										&types.StringElement{
 											Content: "an ",
 										},
-										&types.QuotedString{
-											Kind: types.SingleQuote,
-											Elements: []interface{}{
-												&types.StringElement{
-													Content: "example",
-												},
-											},
+										&types.Symbol{
+											Name: "'`",
+										},
+										&types.StringElement{
+											Content: "example",
+										},
+										&types.Symbol{
+											Name: "`'",
 										},
 									},
 								},
@@ -507,13 +560,14 @@ var _ = Describe("quoted strings", func() {
 										&types.StringElement{
 											Content: "an ",
 										},
-										&types.QuotedString{
-											Kind: types.SingleQuote,
-											Elements: []interface{}{
-												&types.StringElement{
-													Content: "example",
-												},
-											},
+										&types.Symbol{
+											Name: "'`",
+										},
+										&types.StringElement{
+											Content: "example",
+										},
+										&types.Symbol{
+											Name: "`'",
 										},
 									},
 								},
@@ -531,16 +585,19 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
-								Elements: []interface{}{
-									&types.StringElement{Content: "a "},
-									&types.InlineImage{
-										Location: &types.Location{
-											Path: "foo.png",
-										},
-									},
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "a ",
+							},
+							&types.InlineImage{
+								Location: &types.Location{
+									Path: "foo.png",
 								},
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -555,14 +612,17 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.SingleQuote,
-								Elements: []interface{}{
-									&types.StringElement{Content: "a "},
-									&types.Icon{
-										Class: "note",
-									},
-								},
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "a ",
+							},
+							&types.Icon{
+								Class: "note",
+							},
+							&types.Symbol{
+								Name: "`'",
 							},
 						},
 					},
@@ -577,11 +637,14 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
-								Elements: []interface{}{
-									&types.StringElement{Content: "curly was single"},
-								},
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "curly was single",
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -596,7 +659,15 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.StringElement{Content: "\"` curly was single `\""},
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: " curly was single ",
+							},
+							&types.Symbol{
+								Name: "`\"",
+							},
 						},
 					},
 				},
@@ -610,7 +681,15 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.StringElement{Content: "\"`curly was single `\""},
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "curly was single ",
+							},
+							&types.Symbol{
+								Name: "`\"",
+							},
 						},
 					},
 				},
@@ -624,7 +703,15 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.StringElement{Content: "\"` curly was single`\""},
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: " curly was single",
+							},
+							&types.Symbol{
+								Name: "`\"",
+							},
 						},
 					},
 				},
@@ -638,18 +725,25 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteBold,
 								Elements: []interface{}{
-									&types.StringElement{Content: "curly "},
-									&types.QuotedText{
-										Kind: types.SingleQuoteBold,
-										Elements: []interface{}{
-											&types.StringElement{Content: "was"},
-										},
+									&types.StringElement{
+										Content: "was",
 									},
-									&types.StringElement{Content: " single"},
 								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -664,18 +758,25 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteItalic,
 								Elements: []interface{}{
-									&types.StringElement{Content: "curly "},
-									&types.QuotedText{
-										Kind: types.SingleQuoteItalic,
-										Elements: []interface{}{
-											&types.StringElement{Content: "was"},
-										},
+									&types.StringElement{
+										Content: "was",
 									},
-									&types.StringElement{Content: " single"},
 								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -690,35 +791,36 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMarked,
+								Attributes: types.Attributes{
+									types.AttrRoles: types.Roles{"strikeout"},
+								},
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "curly ",
-									},
-									&types.QuotedText{
-										Kind: types.SingleQuoteMarked,
-										Attributes: types.Attributes{
-											types.AttrRoles: types.Roles{"strikeout"},
-										},
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "was",
-											},
-										},
-									},
-									&types.QuotedText{
-										Kind: types.SingleQuoteItalic,
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "is",
-											},
-										},
-									},
-									&types.StringElement{
-										Content: " single",
+										Content: "was",
 									},
 								},
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteItalic,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "is",
+									},
+								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -733,18 +835,25 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "curly ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMonospace,
 								Elements: []interface{}{
-									&types.StringElement{Content: "curly "},
-									&types.QuotedText{
-										Kind: types.SingleQuoteMonospace,
-										Elements: []interface{}{
-											&types.StringElement{Content: "is"},
-										},
+									&types.StringElement{
+										Content: "is",
 									},
-									&types.StringElement{Content: " single"},
 								},
+							},
+							&types.StringElement{
+								Content: " single",
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -759,16 +868,17 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMonospace,
 								Elements: []interface{}{
-									&types.QuotedText{
-										Kind: types.SingleQuoteMonospace,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
-									},
+									&types.StringElement{Content: "curly"},
 								},
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -783,17 +893,23 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
-								Elements: []interface{}{
-									&types.StringElement{Content: "double"},
-									&types.QuotedString{
-										Kind: types.SingleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "single"},
-										},
-									},
-								},
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "double",
+							},
+							&types.Symbol{
+								Name: "'`",
+							},
+							&types.StringElement{
+								Content: "single",
+							},
+							&types.Symbol{
+								Name: "`'",
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -811,11 +927,14 @@ var _ = Describe("quoted strings", func() {
 							&types.QuotedText{
 								Kind: types.SingleQuoteMonospace,
 								Elements: []interface{}{
-									&types.QuotedString{
-										Kind: types.DoubleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
+									&types.Symbol{
+										Name: "\"`",
+									},
+									&types.StringElement{
+										Content: "curly",
+									},
+									&types.Symbol{
+										Name: "`\"",
 									},
 								},
 							},
@@ -835,11 +954,14 @@ var _ = Describe("quoted strings", func() {
 							&types.QuotedText{
 								Kind: types.SingleQuoteItalic,
 								Elements: []interface{}{
-									&types.QuotedString{
-										Kind: types.DoubleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
+									&types.Symbol{
+										Name: "\"`",
+									},
+									&types.StringElement{
+										Content: "curly",
+									},
+									&types.Symbol{
+										Name: "`\"",
 									},
 								},
 							},
@@ -859,11 +981,14 @@ var _ = Describe("quoted strings", func() {
 							&types.QuotedText{
 								Kind: types.SingleQuoteBold,
 								Elements: []interface{}{
-									&types.QuotedString{
-										Kind: types.DoubleQuote,
-										Elements: []interface{}{
-											&types.StringElement{Content: "curly"},
-										},
+									&types.Symbol{
+										Name: "\"`",
+									},
+									&types.StringElement{
+										Content: "curly",
+									},
+									&types.Symbol{
+										Name: "`\"",
 									},
 								},
 							},
@@ -889,13 +1014,14 @@ var _ = Describe("quoted strings", func() {
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
-										&types.QuotedString{
-											Kind: types.DoubleQuote,
-											Elements: []interface{}{
-												&types.StringElement{
-													Content: "example",
-												},
-											},
+										&types.Symbol{
+											Name: "\"`",
+										},
+										&types.StringElement{
+											Content: "example",
+										},
+										&types.Symbol{
+											Name: "`\"",
 										},
 									},
 								},
@@ -921,13 +1047,14 @@ var _ = Describe("quoted strings", func() {
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
-										&types.QuotedString{
-											Kind: types.DoubleQuote,
-											Elements: []interface{}{
-												&types.StringElement{
-													Content: "example",
-												},
-											},
+										&types.Symbol{
+											Name: "\"`",
+										},
+										&types.StringElement{
+											Content: "example",
+										},
+										&types.Symbol{
+											Name: "`\"",
 										},
 									},
 								},
@@ -953,13 +1080,14 @@ var _ = Describe("quoted strings", func() {
 								},
 								Attributes: types.Attributes{
 									types.AttrInlineLinkText: []interface{}{
-										&types.QuotedString{
-											Kind: types.DoubleQuote,
-											Elements: []interface{}{
-												&types.StringElement{
-													Content: "example",
-												},
-											},
+										&types.Symbol{
+											Name: "\"`",
+										},
+										&types.StringElement{
+											Content: "example",
+										},
+										&types.Symbol{
+											Name: "`\"",
 										},
 									},
 								},
@@ -977,16 +1105,19 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
-								Elements: []interface{}{
-									&types.StringElement{Content: "a "},
-									&types.InlineImage{
-										Location: &types.Location{
-											Path: "foo.png",
-										},
-									},
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "a ",
+							},
+							&types.InlineImage{
+								Location: &types.Location{
+									Path: "foo.png",
 								},
+							},
+							&types.Symbol{
+								Name: "`\"",
 							},
 						},
 					},
@@ -1001,12 +1132,99 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.QuotedString{
-								Kind: types.DoubleQuote,
+							&types.Symbol{
+								Name: "\"`",
+							},
+							&types.StringElement{
+								Content: "a ",
+							},
+							&types.Icon{
+								Class: "note",
+							},
+							&types.Symbol{
+								Name: "`\"",
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("curly in title", func() {
+			source := "== a '`curly`' episode"
+			title := []interface{}{
+				&types.StringElement{
+					Content: "a ",
+				},
+				&types.Symbol{
+					Name: "'`",
+				},
+				&types.StringElement{
+					Content: "curly",
+				},
+				&types.Symbol{
+					Name: "`'",
+				},
+				&types.StringElement{
+					Content: " episode",
+				},
+			}
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Section{
+						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_a_curly_episode",
+						},
+						Title: title,
+					},
+				},
+				ElementReferences: types.ElementReferences{
+					"_a_curly_episode": title,
+				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_a_curly_episode",
+							Level: 1,
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("curly in list element", func() {
+			source := "* a '`curly`' episode"
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								CheckStyle:  types.NoCheck,
+								BulletStyle: types.OneAsterisk,
 								Elements: []interface{}{
-									&types.StringElement{Content: "a "},
-									&types.Icon{
-										Class: "note",
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "a ",
+											},
+											&types.Symbol{
+												Name: "'`",
+											},
+											&types.StringElement{
+												Content: "curly",
+											},
+											&types.Symbol{
+												Name: "`'",
+											},
+											&types.StringElement{
+												Content: " episode",
+											},
+										},
 									},
 								},
 							},
@@ -1016,103 +1234,41 @@ var _ = Describe("quoted strings", func() {
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
-	})
 
-	It("curly in title", func() {
-		source := "== a '`curly`' episode"
-		title := []interface{}{
-			&types.StringElement{Content: "a "},
-			&types.QuotedString{
-				Kind: types.SingleQuote,
+		It("curly in labeled list", func() {
+			source := "'`term`':: something '`quoted`'"
+			expected := &types.Document{
 				Elements: []interface{}{
-					&types.StringElement{Content: "curly"},
-				},
-			},
-			&types.StringElement{Content: " episode"},
-		}
-		expected := &types.Document{
-			Elements: []interface{}{
-				&types.Section{
-					Level: 1,
-					Attributes: types.Attributes{
-						types.AttrID: "_a_curly_episode",
-					},
-					Title: title,
-				},
-			},
-			ElementReferences: types.ElementReferences{
-				"_a_curly_episode": title,
-			},
-			TableOfContents: &types.TableOfContents{
-				MaxDepth: 2,
-				Sections: []*types.ToCSection{
-					{
-						ID:    "_a_curly_episode",
-						Level: 1,
-					},
-				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
-
-	It("curly in list element", func() {
-		source := "* a '`curly`' episode"
-		expected := &types.Document{
-			Elements: []interface{}{
-				&types.List{
-					Kind: types.UnorderedListKind,
-					Elements: []types.ListElement{
-						&types.UnorderedListElement{
-							CheckStyle:  types.NoCheck,
-							BulletStyle: types.OneAsterisk,
-							Elements: []interface{}{
-								&types.Paragraph{
-									Elements: []interface{}{
-										&types.StringElement{Content: "a "},
-										&types.QuotedString{
-											Kind: types.SingleQuote,
-											Elements: []interface{}{
-												&types.StringElement{Content: "curly"},
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.Symbol{
+										Name: "'`",
+									},
+									&types.StringElement{
+										Content: "term",
+									},
+									&types.Symbol{
+										Name: "`'",
+									},
+								},
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "something ",
 											},
-										},
-										&types.StringElement{Content: " episode"},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
-
-	It("curly in labeled list", func() {
-		source := "'`term`':: something '`quoted`'"
-		expected := &types.Document{
-			Elements: []interface{}{
-				&types.List{
-					Kind: types.LabeledListKind,
-					Elements: []types.ListElement{
-						&types.LabeledListElement{
-							Style: types.DoubleColons,
-							Term: []interface{}{
-								&types.QuotedString{
-									Kind: types.SingleQuote,
-									Elements: []interface{}{
-										&types.StringElement{Content: "term"},
-									},
-								},
-							},
-							Elements: []interface{}{
-								&types.Paragraph{
-									Elements: []interface{}{
-										&types.StringElement{Content: "something "},
-										&types.QuotedString{
-											Kind: types.SingleQuote,
-											Elements: []interface{}{
-												&types.StringElement{Content: "quoted"},
+											&types.Symbol{
+												Name: "'`",
+											},
+											&types.StringElement{
+												Content: "quoted",
+											},
+											&types.Symbol{
+												Name: "`'",
 											},
 										},
 									},
@@ -1121,76 +1277,89 @@ var _ = Describe("quoted strings", func() {
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("double curly in title", func() {
-		source := "== a \"`curly`\" episode"
-		title := []interface{}{
-			&types.StringElement{Content: "a "},
-			&types.QuotedString{
-				Kind: types.DoubleQuote,
+		It("double curly in title", func() {
+			source := "== a \"`curly`\" episode"
+			title := []interface{}{
+				&types.StringElement{
+					Content: "a ",
+				},
+				&types.Symbol{
+					Name: "\"`",
+				},
+				&types.StringElement{
+					Content: "curly",
+				},
+				&types.Symbol{
+					Name: "`\"",
+				},
+				&types.StringElement{
+					Content: " episode",
+				},
+			}
+			expected := &types.Document{
 				Elements: []interface{}{
-					&types.StringElement{Content: "curly"},
-				},
-			},
-			&types.StringElement{Content: " episode"},
-		}
-		expected := &types.Document{
-			Elements: []interface{}{
-				&types.Section{
-					Level: 1,
-					Attributes: types.Attributes{
-						types.AttrID: "_a_curly_episode",
-					},
-					Title: title,
-				},
-			},
-			ElementReferences: types.ElementReferences{
-				"_a_curly_episode": title,
-			},
-			TableOfContents: &types.TableOfContents{
-				MaxDepth: 2,
-				Sections: []*types.ToCSection{
-					{
-						ID:    "_a_curly_episode",
+					&types.Section{
 						Level: 1,
+						Attributes: types.Attributes{
+							types.AttrID: "_a_curly_episode",
+						},
+						Title: title,
 					},
 				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
+				ElementReferences: types.ElementReferences{
+					"_a_curly_episode": title,
+				},
+				TableOfContents: &types.TableOfContents{
+					MaxDepth: 2,
+					Sections: []*types.ToCSection{
+						{
+							ID:    "_a_curly_episode",
+							Level: 1,
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("double curly in labeled list", func() {
-		source := "\"`term`\":: something \"`quoted`\""
-		expected := &types.Document{
-			Elements: []interface{}{
-				&types.List{
-					Kind: types.LabeledListKind,
-					Elements: []types.ListElement{
-						&types.LabeledListElement{
-							Style: types.DoubleColons,
-							Term: []interface{}{
-								&types.QuotedString{
-									Kind: types.DoubleQuote,
-									Elements: []interface{}{
-										&types.StringElement{
-											Content: "term",
-										},
+		It("double curly in labeled list", func() {
+			source := "\"`term`\":: something \"`quoted`\""
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.Symbol{
+										Name: "\"`",
+									},
+									&types.StringElement{
+										Content: "term",
+									},
+									&types.Symbol{
+										Name: "`\"",
 									},
 								},
-							},
-							Elements: []interface{}{
-								&types.Paragraph{
-									Elements: []interface{}{
-										&types.StringElement{Content: "something "},
-										&types.QuotedString{
-											Kind: types.DoubleQuote,
-											Elements: []interface{}{
-												&types.StringElement{Content: "quoted"},
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "something ",
+											},
+											&types.Symbol{
+												Name: "\"`",
+											},
+											&types.StringElement{
+												Content: "quoted",
+											},
+											&types.Symbol{
+												Name: "`\"",
 											},
 										},
 									},
@@ -1199,41 +1368,125 @@ var _ = Describe("quoted strings", func() {
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
-	It("double in list element", func() {
-		source := "* a \"`curly`\" episode"
-		expected := &types.Document{
-			Elements: []interface{}{
-				&types.List{
-					Kind: types.UnorderedListKind,
-					Elements: []types.ListElement{
-						&types.UnorderedListElement{
-							CheckStyle:  types.NoCheck,
-							BulletStyle: types.OneAsterisk,
-							Elements: []interface{}{
-								&types.Paragraph{
-									Elements: []interface{}{
-										&types.StringElement{Content: "a "},
-										&types.QuotedString{
-											Kind: types.DoubleQuote,
-											Elements: []interface{}{
-												&types.StringElement{Content: "curly"},
+		It("double in list element", func() {
+			source := "* a \"`curly`\" episode"
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.UnorderedListKind,
+						Elements: []types.ListElement{
+							&types.UnorderedListElement{
+								CheckStyle:  types.NoCheck,
+								BulletStyle: types.OneAsterisk,
+								Elements: []interface{}{
+									&types.Paragraph{
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "a ",
+											},
+											&types.Symbol{
+												Name: "\"`",
+											},
+											&types.StringElement{
+												Content: "curly",
+											},
+											&types.Symbol{
+												Name: "`\"",
+											},
+											&types.StringElement{
+												Content: " episode",
 											},
 										},
-										&types.StringElement{Content: " episode"},
 									},
 								},
 							},
 						},
 					},
 				},
-			},
-		}
-		Expect(ParseDocument(source)).To(MatchDocument(expected))
-	})
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
+		Context("prevented substitution", func() {
+
+			It("apostrophes and escaped quoted strings", func() {
+				source := "here`'s an escaped slash \\'`/\\`' and here`'s an escaped backslash \\'`\\\\`'."
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "here",
+								},
+								&types.Symbol{
+									Name: "`'",
+								},
+								&types.StringElement{
+									Content: "s an escaped slash '`/`' and here",
+								},
+								&types.Symbol{
+									Name: "`'",
+								},
+								&types.StringElement{
+									Content: "s an escaped backslash '`\\`'.",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("unescaped single quoted string alone", func() {
+				source := "'`hello`'"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.Symbol{
+									Name: "'`",
+								},
+								&types.StringElement{
+									Content: `hello`,
+								},
+								&types.Symbol{
+									Name: "`'",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("unescaped single quoted strings in a sentence", func() {
+				source := "'`quoted content`' and \\'`escaped content\\`'."
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.Symbol{
+									Name: "'`",
+								},
+								&types.StringElement{
+									Content: "quoted content",
+								},
+								&types.Symbol{
+									Name: "`'",
+								},
+								&types.StringElement{
+									Content: " and '`escaped content`'.",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
+	})
 })

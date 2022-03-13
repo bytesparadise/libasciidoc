@@ -133,16 +133,17 @@ var _ = DescribeTable("replace non-alphanumeric chars",
 			&types.StringElement{
 				Content: "Block Quotes and ",
 			},
-			&types.QuotedString{
-				Kind: types.DoubleQuote,
-				Elements: []interface{}{
-					&types.StringElement{
-						Content: "Smart",
-					},
-				},
+			&types.Symbol{
+				Name: "'`",
 			},
 			&types.StringElement{
-				Content: "Ones",
+				Content: "Smart",
+			},
+			&types.Symbol{
+				Name: "`'",
+			},
+			&types.StringElement{
+				Content: " Ones",
 			},
 		},
 		"_block_quotes_and_smart_ones",

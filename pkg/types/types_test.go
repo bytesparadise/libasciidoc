@@ -1086,27 +1086,6 @@ var _ = DescribeTable("rawtext",
 			},
 		},
 		"^content^"),
-	// quoted string
-	Entry("single quoted string",
-		types.QuotedString{
-			Kind: types.SingleQuote,
-			Elements: []interface{}{
-				&types.StringElement{
-					Content: "content",
-				},
-			},
-		},
-		"`'content'`"),
-	Entry("double quoted string",
-		types.QuotedString{
-			Kind: types.DoubleQuote,
-			Elements: []interface{}{
-				&types.StringElement{
-					Content: "content",
-				},
-			},
-		},
-		"`\"content\"`"),
 	// inline passthrough
 	Entry("singleplus inline passthrough",
 		&types.InlinePassthrough{
@@ -1152,26 +1131,27 @@ var _ = DescribeTable("rawtext",
 				&types.StringElement{
 					Content: "some ",
 				},
-				types.QuotedString{
-					Kind: types.DoubleQuote,
-					Elements: []interface{}{
-						&types.StringElement{
-							Content: "content",
-						},
-						&types.SpecialCharacter{
-							Name: "<",
-						},
-						&types.SpecialCharacter{
-							Name: ">",
-						},
-					},
+				&types.Symbol{
+					Name: "\"`",
+				},
+				&types.StringElement{
+					Content: "content",
+				},
+				&types.SpecialCharacter{
+					Name: "<",
+				},
+				&types.SpecialCharacter{
+					Name: ">",
+				},
+				&types.Symbol{
+					Name: "`\"",
 				},
 				&types.StringElement{
 					Content: " ",
 				},
 			},
 		},
-		"*some `\"content<>\"` *"),
+		"*some \"`content<>`\" *"),
 )
 
 var _ = DescribeTable("ifeval operands",
