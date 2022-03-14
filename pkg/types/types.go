@@ -2067,20 +2067,14 @@ type Footnote struct {
 }
 
 // NewFootnote returns a new Footnote with the given content
-func NewFootnote(ref string, elements interface{}) (*Footnote, error) {
+func NewFootnote(ref string, elements []interface{}) (*Footnote, error) {
 	log.Debugf("new footnote with elements: '%s'", spew.Sdump(elements))
-	// footnote with content get an ID
-	if elements, ok := elements.([]interface{}); ok {
-		return &Footnote{
-			// ID is only set during document processing
-			Ref:      ref,
-			Elements: elements,
-		}, nil
-	} // footnote which are just references don't get an ID, so we don't increment the sequence
 	return &Footnote{
+		// ID is only set during document processing
 		Ref:      ref,
-		Elements: []interface{}{},
+		Elements: elements,
 	}, nil
+
 }
 
 // FootnoteReference a footnote reference. Substitutes the actual footnote in the document,

@@ -1376,16 +1376,24 @@ InlineIcon <- "icon:" icon:([\pL0-9_-]+ { return string(c.text), nil }) attribut
 // -------------------------------------------------------------------------------------------------------------------------------
 // Inline Foot Notes
 // -------------------------------------------------------------------------------------------------------------------------------
-InlineFootnote <- "footnote:[" content:(FootnoteContent) "]" {
-        return types.NewFootnote("", content)
-    } / "footnote:" ref:(FootnoteRef) "[" content:(FootnoteContent)? "]" { // TODO: use only this rule with `ref:(FootnoteRef)?`
-        return types.NewFootnote(ref.(string), content)
+InlineFootnote <- "footnote:[" elements:(FootnoteElements) "]" {
+        return types.NewFootnote("",  elements.([]interface{}))
+    } / "footnote:" ref:(FootnoteRef) "[" elements:(FootnoteElements) "]" { // TODO: use only this rule with `ref:(FootnoteRef)?`
+        return types.NewFootnote(ref.(string), elements.([]interface{}))
     }
 
 FootnoteRef <- Alphanums
 
-FootnoteContent <- elements:(!"]" InlineElement)+  { // footnote content may span multiple lines
+FootnoteElements <- elements:(FootnoteElement)* {
         return types.NewInlineElements(elements.([]interface{}))
+    }
+
+FootnoteElement <- 
+    !"]" 
+    element:(
+        InlineElement
+        / Newline) {
+        return element, nil
     }
 
 // -------------------------------------------------------------------------------------

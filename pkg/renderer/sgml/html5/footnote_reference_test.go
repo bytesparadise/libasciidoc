@@ -9,8 +9,24 @@ import (
 
 var _ = Describe("footnotes", func() {
 
-	It("basic footnote in a paragraph", func() {
+	It("single-line footnote in a paragraph", func() {
 		source := `foo footnote:[a note for foo]`
+		expected := `<div class="paragraph">
+<p>foo <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. a note for foo
+</div>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("multi-line footnote in a paragraph", func() {
+		source := `foo footnote:[a note for
+foo]`
 		expected := `<div class="paragraph">
 <p>foo <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>

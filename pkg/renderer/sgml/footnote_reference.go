@@ -90,7 +90,7 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Foo
 		Footnotes []*types.Footnote
 	}{
 		Context:   ctx,
-		Content:   string(content.String()),
+		Content:   content.String(),
 		Footnotes: notes,
 	})
 	if err != nil {
@@ -100,13 +100,13 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Foo
 }
 
 func (r *sgmlRenderer) renderFootnoteItem(ctx *renderer.Context, w io.Writer, item *types.Footnote) error {
-
 	content, err := r.renderInlineElements(ctx, item.Elements)
 	if err != nil {
 		return errors.Wrapf(err, "unable to render foot note content")
 	}
 	content = strings.TrimSpace(content)
-
+	// Note: Asciidoctor will render the footnote content on a single line
+	content = strings.ReplaceAll(content, "\n", " ")
 	err = r.footnoteItem.Execute(w, struct {
 		Context *renderer.Context
 		ID      int
