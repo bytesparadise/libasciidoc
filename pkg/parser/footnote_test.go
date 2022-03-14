@@ -16,13 +16,44 @@ var _ = Describe("footnotes", func() {
 
 		It("footnote with single-line content", func() {
 			footnoteContent := "some content"
-			source := fmt.Sprintf(`foo footnote:[%s]`, footnoteContent)
+			source := fmt.Sprintf(`here is a footnote:[%s]`, footnoteContent)
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "foo ",
+								Content: "here is a ",
+							},
+							&types.FootnoteReference{
+								ID: 1,
+							},
+						},
+					},
+				},
+				Footnotes: []*types.Footnote{
+					{
+						ID: 1,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: footnoteContent,
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
+		})
+
+		It("footnote with multi-line content", func() {
+			footnoteContent := `This is a very
+long paragraph.`
+			source := fmt.Sprintf("here is a footnote:[%s]", footnoteContent)
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "here is a ",
 							},
 							&types.FootnoteReference{
 								ID: 1,
