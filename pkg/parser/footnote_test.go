@@ -127,6 +127,138 @@ long paragraph.`
 			Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
 		})
 
+		It("footnote with single quoted strings", func() {
+			source := "Afootnote:['`a`']Bfootnote:[b] `C`"
+			footnoteA := types.Footnote{
+				Elements: []interface{}{
+					&types.Symbol{
+						Name: "'`",
+					},
+					&types.StringElement{
+						Content: "a",
+					},
+					&types.Symbol{
+						Name: "`'",
+					},
+				},
+			}
+			footnoteB := types.Footnote{
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "b",
+					},
+				},
+			}
+			expected := &types.Document{
+				Footnotes: []*types.Footnote{
+					{
+						ID:       1,
+						Elements: footnoteA.Elements,
+					},
+					{
+						ID:       2,
+						Elements: footnoteB.Elements,
+					},
+				},
+				Elements: []interface{}{
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "A",
+							},
+							&types.FootnoteReference{
+								ID: 1,
+							},
+							&types.StringElement{
+								Content: "B",
+							},
+							&types.FootnoteReference{
+								ID: 2,
+							},
+							&types.StringElement{
+								Content: " ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMonospace,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "C",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
+		})
+
+		It("footnote with double quoted strings", func() {
+			source := "Afootnote:[\"`a`\"]Bfootnote:[b] `C`"
+			footnoteA := types.Footnote{
+				Elements: []interface{}{
+					&types.Symbol{
+						Name: "\"`",
+					},
+					&types.StringElement{
+						Content: "a",
+					},
+					&types.Symbol{
+						Name: "`\"",
+					},
+				},
+			}
+			footnoteB := types.Footnote{
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "b",
+					},
+				},
+			}
+			expected := &types.Document{
+				Footnotes: []*types.Footnote{
+					{
+						ID:       1,
+						Elements: footnoteA.Elements,
+					},
+					{
+						ID:       2,
+						Elements: footnoteB.Elements,
+					},
+				},
+				Elements: []interface{}{
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "A",
+							},
+							&types.FootnoteReference{
+								ID: 1,
+							},
+							&types.StringElement{
+								Content: "B",
+							},
+							&types.FootnoteReference{
+								ID: 2,
+							},
+							&types.StringElement{
+								Content: " ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteMonospace,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "C",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected)) // need to get the whole document here
+		})
+
 		It("footnote in a paragraph", func() {
 			source := `This is another paragraph.footnote:[I am footnote text and will be displayed at the bottom of the article.]`
 			expected := &types.Document{
