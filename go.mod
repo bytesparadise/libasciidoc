@@ -13,7 +13,6 @@ require (
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.13.0
 	github.com/pkg/errors v0.9.1
-	github.com/sergi/go-diff v1.0.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/sozorogami/gover v0.0.0-20171022184752-b58185e213c5
 	github.com/spf13/cobra v1.1.1

@@ -80,6 +80,42 @@ A bold statement!<sup class="footnote" id="_footnote_disclaimer">[<a id="_footno
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 
+	It("footnote with single quoted strings", func() {
+		source := "Afootnote:['`a`']Bfootnote:[b] `C`"
+		expected := `<div class="paragraph">
+<p>A<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>B<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> <code>C</code></p>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. &#8216;a&#8217;
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. b
+</div>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("footnote with double quoted strings", func() {
+		source := "Afootnote:[\"`a`\"]Bfootnote:[b] `C`"
+		expected := `<div class="paragraph">
+<p>A<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>B<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> <code>C</code></p>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. &#8220;a&#8221;
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. b
+</div>
+</div>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
 	It("footnotes everywhere", func() {
 
 		source := `= title

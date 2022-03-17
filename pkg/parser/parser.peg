@@ -1280,11 +1280,11 @@ InlineElement <-
         / Spaces 
         / LineBreak
         / !EOL ( // TODO: why !EOL here?
-            Quote
+            Symbol
+            / Quote
             / AttributeReference 
             / InlineMacro
             / SpecialCharacter // must be after InlineMacro (because of BareURL)
-            / Symbol
             / ElementPlaceHolder // TODO: needed?
             // if anything above did not match...
             / AnyChar)) {
@@ -3011,7 +3011,7 @@ Word <-
 
 InlineWord <- 
     [\pL0-9,;!?]+ // TODO: support `_` and `-` ?
-    (Space / &("." / ElementPlaceHolderDelimiter / EOL)) {
+    (Space / &("." / ElementPlaceHolderDelimiter / EOL)) { // TODO: also allow trailing quotes/quotation marks?
         return types.NewStringElement(string(c.text))
     }
 
