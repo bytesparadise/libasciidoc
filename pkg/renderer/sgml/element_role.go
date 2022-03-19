@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) (string, error) {
+func (r *sgmlRenderer) renderElementRoles(ctx *renderer.Context, attrs types.Attributes) (string, error) {
 	if roles, ok := attrs[types.AttrRoles].(types.Roles); ok {
 		result := make([]string, len(roles))
 		for i, e := range roles {
@@ -23,7 +24,7 @@ func (r *sgmlRenderer) renderElementRoles(ctx *Context, attrs types.Attributes) 
 }
 
 // Image roles add float and alignment attributes -- we turn these into roles.
-func (r *sgmlRenderer) renderImageRoles(ctx *Context, attrs types.Attributes) (string, error) {
+func (r *sgmlRenderer) renderImageRoles(ctx *renderer.Context, attrs types.Attributes) (string, error) {
 	var result []string
 	if val, ok, err := attrs.GetAsString(types.AttrFloat); err != nil {
 		return "", err
@@ -48,7 +49,7 @@ func (r *sgmlRenderer) renderImageRoles(ctx *Context, attrs types.Attributes) (s
 	return strings.Join(result, " "), nil
 }
 
-func (r *sgmlRenderer) renderElementRole(ctx *Context, role interface{}) (string, error) {
+func (r *sgmlRenderer) renderElementRole(ctx *renderer.Context, role interface{}) (string, error) {
 	result := strings.Builder{}
 	switch role := role.(type) {
 	case string:

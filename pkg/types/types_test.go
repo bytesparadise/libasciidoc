@@ -3,9 +3,8 @@ package types_test
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	. "github.com/onsi/ginkgo" // nolint:golint
-	. "github.com/onsi/ginkgo/extensions/table"
-	. "github.com/onsi/gomega" // nolint:golintt
+	. "github.com/onsi/ginkgo/v2" // nolint:golint
+	. "github.com/onsi/gomega"    // nolint:golintt
 )
 
 var _ = Describe("line ranges", func() {

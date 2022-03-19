@@ -2,6 +2,7 @@ package sgml
 
 import (
 	"strings"
+	text "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -22,7 +23,7 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t *types.QuotedTe
 			return "", errors.Wrapf(err, "unable to render text quote")
 		}
 	}
-	var tmpl *textTemplate
+	var tmpl *text.Template
 	switch t.Kind {
 	case types.SingleQuoteBold, types.DoubleQuoteBold:
 		tmpl = r.boldText

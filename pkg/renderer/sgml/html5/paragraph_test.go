@@ -7,8 +7,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo" // nolint:golint
-	. "github.com/onsi/gomega" // nolint:golintt
+	. "github.com/onsi/ginkgo/v2" // nolint:golint
+	. "github.com/onsi/gomega"    // nolint:golintt
 )
 
 var _ = Describe("paragraphs", func() {
@@ -669,8 +669,8 @@ a foo <span class="image"><img src="foo.png" alt="foo"></span>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("image block is NOT a quote", func() { // needs clarification...
-			Skip("needs clarification...")
+		It("image block is NOT a quote", Pending, func() {
+			// needs clarification on how to interpret an image block with such block attributes
 			source := `[quote, john doe, quote title]
 image::foo.png[]`
 			expected := `<div class="imageblock">

@@ -1,8 +1,8 @@
 package html5_test
 
 import (
-	. "github.com/onsi/ginkgo" // nolint:golint
-	. "github.com/onsi/gomega" // nolint:golintt
+	. "github.com/onsi/ginkgo/v2" // nolint:golint
+	. "github.com/onsi/gomega"    // nolint:golintt
 
 	"testing"
 

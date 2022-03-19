@@ -4,8 +4,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
-	. "github.com/onsi/ginkgo" // nolint:golint
-	. "github.com/onsi/gomega" // nolint:golint
+	. "github.com/onsi/ginkgo/v2" // nolint:golint
+	. "github.com/onsi/gomega"    // nolint:golint
 )
 
 var _ = Describe("preprocessing condition stack", func() {

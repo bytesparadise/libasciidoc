@@ -4,8 +4,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo" // nolint:golint
-	. "github.com/onsi/gomega" // nolint:golintt
+	. "github.com/onsi/ginkgo/v2" // nolint:golint
+	. "github.com/onsi/gomega"    // nolint:golintt
 )
 
 var _ = Describe("escapes with backslashes", func() {
@@ -257,8 +257,8 @@ In /items/{id}, the id attribute is replaced.`
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("should escape attributes on bold text", func() {
-			Skip("needs clarification...")
+		It("should escape attributes on bold text", Pending, func() {
+			// needs clarification on what should be escaped: the whole quoted text or just the attributes upfront?
 			source := `\[.role]*bold* is displayed as bold text, but without attributes.`
 			expected := &types.Document{
 				Elements: []interface{}{

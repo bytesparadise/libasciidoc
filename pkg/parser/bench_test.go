@@ -10,9 +10,9 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 
-	. "github.com/onsi/ginkgo"                  // nolint:golint
-	. "github.com/onsi/ginkgo/extensions/table" // nolint:golint
-	. "github.com/onsi/gomega"                  // nolint:golint
+	. "github.com/onsi/ginkgo/v2"                  // nolint:golint
+	. "github.com/onsi/ginkgo/v2/extensions/table" // nolint:golint
+	. "github.com/onsi/gomega"                     // nolint:golint
 )
 
 const (

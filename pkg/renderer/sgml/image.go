@@ -87,7 +87,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderInlineImage(ctx *Context, img *types.InlineImage) (string, error) {
+func (r *sgmlRenderer) renderInlineImage(ctx *renderer.Context, img *types.InlineImage) (string, error) {
 	result := &strings.Builder{}
 	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
@@ -131,7 +131,7 @@ func (r *sgmlRenderer) renderInlineImage(ctx *Context, img *types.InlineImage) (
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) getImageSrc(ctx *Context, location *types.Location) string {
+func (r *sgmlRenderer) getImageSrc(ctx *renderer.Context, location *types.Location) string {
 	if imagesdir, found, err := ctx.Attributes.GetAsString(types.AttrImagesDir); err == nil && found {
 		location.SetPathPrefix(imagesdir)
 	}
