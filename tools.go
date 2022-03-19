@@ -4,6 +4,6 @@ package libasciidoc
 
 import (
 	_ "github.com/mna/pigeon"
-	_ "github.com/onsi/ginkgo/ginkgo"
+	_ "github.com/onsi/ginkgo/v2/ginkgo"
 	_ "github.com/sozorogami/gover"
 )

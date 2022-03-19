@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	text "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -246,7 +247,7 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l *types.List) (
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) getLabeledListTmpl(l *types.List) (*textTemplate, *textTemplate, error) {
+func (r *sgmlRenderer) getLabeledListTmpl(l *types.List) (*text.Template, *text.Template, error) {
 	if layout, ok := l.Attributes[types.AttrStyle]; ok {
 		switch layout {
 		case "qanda":
@@ -260,7 +261,7 @@ func (r *sgmlRenderer) getLabeledListTmpl(l *types.List) (*textTemplate, *textTe
 	return r.labeledList, r.labeledListItem, nil
 }
 
-func (r *sgmlRenderer) renderLabeledListItem(ctx *renderer.Context, tmpl *textTemplate, w io.Writer, continuation bool, element *types.LabeledListElement) (bool, error) {
+func (r *sgmlRenderer) renderLabeledListItem(ctx *renderer.Context, tmpl *text.Template, w io.Writer, continuation bool, element *types.LabeledListElement) (bool, error) {
 
 	term, err := r.renderInlineElements(ctx, element.Term)
 	if err != nil {

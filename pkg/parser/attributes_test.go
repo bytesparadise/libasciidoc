@@ -8,9 +8,8 @@ import (
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 	log "github.com/sirupsen/logrus"
 
-	. "github.com/onsi/ginkgo"                  // nolint:golint
-	. "github.com/onsi/ginkgo/extensions/table" // nolint:golint
-	. "github.com/onsi/gomega"                  // nolint:golint
+	. "github.com/onsi/ginkgo/v2" // nolint:golint
+	. "github.com/onsi/gomega"    // nolint:golint
 )
 
 var _ = Describe("attributes", func() {

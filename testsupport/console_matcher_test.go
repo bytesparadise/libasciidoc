@@ -5,8 +5,8 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo" // nolint:golint
-	. "github.com/onsi/gomega" // nolint:golintt
+	. "github.com/onsi/ginkgo/v2" // nolint:golint
+	. "github.com/onsi/gomega"    // nolint:golintt
 	log "github.com/sirupsen/logrus"
 )
 

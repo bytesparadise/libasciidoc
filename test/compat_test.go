@@ -12,7 +12,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo/extensions/table"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega" // nolint:golintt
 	log "github.com/sirupsen/logrus"
 )
@@ -35,7 +35,22 @@ func init() {
 
 }
 
-var _ = DescribeTable("compat", compare, entries("compat/*.adoc")...)
+var _ = DescribeTable("compat", args("compat/*.adoc")...)
+
+func args(pattern string) []interface{} {
+	result := []interface{}{}
+	result = append(result, compare)
+	files, _ := filepath.Glob(pattern)
+	for _, file := range files {
+		if filepath.Base(file) == "include.adoc" {
+			// skip
+			continue
+		}
+		result = append(result, Entry(file, file))
+	}
+	return result
+
+}
 
 func compare(filename string) {
 	actual := &strings.Builder{}
@@ -58,17 +73,4 @@ func compare(filename string) {
 	}
 	// compare actual vs reference
 	Expect(actual.String()).To(MatchHTML(expected))
-}
-
-func entries(pattern string) []TableEntry {
-	files, _ := filepath.Glob(pattern)
-	result := make([]TableEntry, 0, len(files))
-	for _, file := range files {
-		if filepath.Base(file) == "include.adoc" {
-			// skip
-			continue
-		}
-		result = append(result, Entry(file, file))
-	}
-	return result
 }

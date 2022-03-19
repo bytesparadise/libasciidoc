@@ -4,6 +4,7 @@ import (
 	fmt "fmt"
 	"path"
 	"strings"
+	text "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -52,7 +53,7 @@ var defaultIconClasses = map[string]string{
 
 func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (string, error) {
 	icons := ctx.Attributes.GetAsStringWithDefault("icons", "text")
-	var template *textTemplate
+	var template *text.Template
 	font := false
 	switch icons {
 	case "font":

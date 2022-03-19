@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	texttemplate "text/template"
+	text "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -32,7 +32,7 @@ func NewRenderer(t Templates) Renderer {
 	r := &sgmlRenderer{
 		templates: t,
 		// Establish some default function handlers.
-		functions: funcMap{
+		functions: text.FuncMap{
 			"escape":        EscapeString,
 			"halign":        halign,
 			"valign":        valign,
@@ -116,7 +116,7 @@ func (r *sgmlRenderer) Templates() Templates {
 	return r.templates
 }
 
-func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*textTemplate, error) {
+func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*text.Template, error) {
 	// NB: if the data is missing below, it will be an empty string.
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*textTe
 	if len(tmpl) == 0 {
 		return nil, fmt.Errorf("empty template for '%s'", name)
 	}
-	t := texttemplate.New(name)
+	t := text.New(name)
 	t.Funcs(r.functions)
 	if t, err = t.Parse(tmpl); err != nil {
 		log.Errorf("failed to initialize the '%s' template: %v", name, err)
