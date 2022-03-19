@@ -215,7 +215,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 			Header:                renderedHeader,
 			Roles:                 roles,
 			ID:                    r.renderDocumentID(doc),
-			Content:               string(renderedContent), // nolint:gosec
+			Content:               string(renderedContent),
 			RevNumber:             ctx.Attributes.GetAsStringWithDefault("revnumber", ""),
 			LastUpdated:           ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
 			CSS:                   ctx.Config.CSS,
@@ -402,7 +402,7 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header *types.
 	}{
 		Header:    renderedHeader,
 		Name:      renderedName,
-		Content:   string(renderedContent), // nolint:gosec
+		Content:   string(renderedContent),
 		IncludeH1: len(renderedHeader) > 0,
 	})
 	if err != nil {

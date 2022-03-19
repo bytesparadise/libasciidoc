@@ -33,7 +33,7 @@ func (r *sgmlRenderer) prerenderTableOfContentsSections(ctx *renderer.Context, s
 		}
 	}
 	// log.Debugf("retrieved sections for ToC: %+v", sections)
-	return nil // nolint:gosec
+	return nil
 }
 
 func (r *sgmlRenderer) prerenderTableOfContentsEntry(ctx *renderer.Context, entry *types.ToCSection) error {
@@ -137,7 +137,7 @@ func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sect
 		return "", errors.Wrap(err, "failed to render document ToC")
 	}
 	// log.Debugf("retrieved sections for ToC: %+v", sections)
-	return resultBuf.String(), nil // nolint:gosec
+	return resultBuf.String(), nil
 }
 
 func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *types.ToCSection) (string, error) {
@@ -160,5 +160,5 @@ func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *
 	if err != nil {
 		return "", errors.Wrap(err, "failed to render document ToC")
 	}
-	return resultBuf.String(), nil // nolint:gosec
+	return resultBuf.String(), nil
 }

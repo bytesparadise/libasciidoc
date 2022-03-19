@@ -10,8 +10,8 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 
-	. "github.com/onsi/ginkgo/v2" // nolint:golint
-	. "github.com/onsi/gomega"    // nolint:golintt
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("metadata matcher", func() {

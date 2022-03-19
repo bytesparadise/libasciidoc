@@ -6,8 +6,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
-	. "github.com/onsi/ginkgo/v2" // nolint:golint
-	. "github.com/onsi/gomega"    // nolint:golintt
+	. "github.com/onsi/ginkgo/v2" //nolint:golint
+	. "github.com/onsi/gomega"    //nolint:golint
 )
 
 var _ = Describe("footnotes", func() {

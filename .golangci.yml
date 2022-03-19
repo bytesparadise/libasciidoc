@@ -16,17 +16,27 @@ linters:
     - revive
     - misspell
     - exportloopref
+    - nolintlint
   disable-all: false
   disable:
     - maligned
     - prealloc
     - scopelint
+    - golint
   presets:
     - bugs
     - unused
   fast: false
 
 linters-settings:
+  revive:
+    # Enable all available rules.
+    # Default: false
+    # enable-all-rules: true
+    rules:
+      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#dot-imports
+      - name: dot-imports
+        disabled: true
   exhaustive:
     # check switch statements in generated files also
     check-generated: false
@@ -34,3 +44,19 @@ linters-settings:
     # 'default' case is present, even if all enum members aren't listed in the
     # switch
     default-signifies-exhaustive: true
+  nolintlint:
+    # Disable to ensure that all nolint directives actually have an effect.
+    # Default: false
+    allow-unused: false
+    # Disable to ensure that nolint directives don't have a leading space.
+    # Default: true
+    allow-leading-space: false
+    # Exclude following linters from requiring an explanation.
+    # Default: []
+    allow-no-explanation: []
+    # Enable to require an explanation of nonzero length after each nolint directive.
+    # Default: false
+    require-explanation: false
+    # Enable to require nolint directives to mention the specific linter being suppressed.
+    # Default: false
+    require-specific: true

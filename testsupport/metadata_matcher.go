@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/davecgh/go-spew/spew"
-	. "github.com/onsi/ginkgo/v2" // nolint go-lint
+	. "github.com/onsi/ginkgo/v2"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 )

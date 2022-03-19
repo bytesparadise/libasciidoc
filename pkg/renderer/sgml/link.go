@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (string, error) { // nolint:unparam
+func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (string, error) {
 	result := &strings.Builder{}
 	location := l.Location.Stringify()
 	text := ""
