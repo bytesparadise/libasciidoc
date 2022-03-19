@@ -7,8 +7,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/testsupport"
 	"github.com/google/go-cmp/cmp"
 
-	. "github.com/onsi/ginkgo/v2" // nolint:golint
-	. "github.com/onsi/gomega"    // nolint:golintt
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("document matcher", func() {

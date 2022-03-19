@@ -55,7 +55,7 @@ func (r *sgmlRenderer) renderQuotedText(ctx *renderer.Context, t *types.QuotedTe
 		ID:         r.renderElementID(t.Attributes),
 		Roles:      roles,
 		Content:    string(elementsBuffer.String()),
-	}) // nolint:gosec
+	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render monospaced quote")
 	}

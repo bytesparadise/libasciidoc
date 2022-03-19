@@ -7,7 +7,7 @@ import (
 	"text/template"
 
 	"github.com/google/go-cmp/cmp"
-	. "github.com/onsi/ginkgo/v2" // nolint: revive
+	. "github.com/onsi/ginkgo/v2"
 	gomegatypes "github.com/onsi/gomega/types"
 	"github.com/pkg/errors"
 )

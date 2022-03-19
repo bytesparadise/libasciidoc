@@ -2,8 +2,8 @@ package xhtml5_test
 
 import (
 	. "github.com/bytesparadise/libasciidoc/testsupport"
-	. "github.com/onsi/ginkgo/v2" // nolint:golint
-	. "github.com/onsi/gomega"    // nolint:golintt
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("blank lines", func() {

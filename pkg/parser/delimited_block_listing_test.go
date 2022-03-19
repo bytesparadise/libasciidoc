@@ -7,8 +7,8 @@ import (
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 	log "github.com/sirupsen/logrus"
 
-	. "github.com/onsi/ginkgo/v2" // nolint:golint
-	. "github.com/onsi/gomega"    // nolint:golint
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("listing blocks", func() {
