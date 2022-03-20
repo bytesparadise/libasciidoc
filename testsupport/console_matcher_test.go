@@ -6,7 +6,7 @@ import (
 	"github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega" //nolint:golintt
+	. "github.com/onsi/gomega"
 	log "github.com/sirupsen/logrus"
 )
 
