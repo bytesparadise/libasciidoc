@@ -21,9 +21,6 @@ Don’t get discouraged if you don't get an immediate response, this is a side-p
 ** Is this bug something you have run into? Would you appreciate it being looked into faster?
 
 * You can close fixed bugs by testing old tickets to see if they are still happening.
-* You can update our changelog here:
-* You can remove duplicate bug reports by:
-
 
 == Beta testing
 
