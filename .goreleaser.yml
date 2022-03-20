@@ -17,19 +17,34 @@ builds:
     - "-s -w -X github.com/bytesparadise/libasciidoc.BuildTag={{.Version}} -X github.com/bytesparadise/libasciidoc.BuildCommit={{.Commit}} -X github.com/bytesparadise/libasciidoc.BuildTime={{.Date}}"
   env:
     - CGO_ENABLED=0
-archive:
-  replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    386: i386
-    amd64: x86_64
+
+archives:
+  - id: default
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+
 checksum:
   name_template: 'checksums.txt'
+
 snapshot:
   name_template: "{{ .Tag }}-next"
+
 changelog:
+  use: github
   sort: asc
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: Others
+      order: 999
   filters:
     exclude:
     - '^docs:'
