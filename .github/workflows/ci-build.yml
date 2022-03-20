@@ -55,11 +55,6 @@ jobs:
         # Path to coverage file to upload
         file: coverage.txt
 
-    - name: Smoke Test Benchmarks
-      if: runner.os == 'Linux'
-      run: |
-        make bench-smoke
-
   golangci:
     name: Lint with Go ${{ matrix.go-version }}
     runs-on: ubuntu-latest
