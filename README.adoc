@@ -60,7 +60,7 @@ To build libasciidoc and make it available on the command line, do this:
 
 If `$GOPATH/bin` is already in `$PATH`, then you should be good. Otherwise, for Linux and macOS users, you can run the following command:
  
-    $ sudo ln -s  ./bin/libasciidoc /usr/bin/libasciidoc
+    $ sudo ln -s "$PWD/bin/libasciidoc" /usr/bin/libasciidoc
 
 == Usage
 
