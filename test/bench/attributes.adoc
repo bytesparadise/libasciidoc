@@ -1,3 +1,0 @@
-:idprefix:
-:idseparator: -
-:icons: font
