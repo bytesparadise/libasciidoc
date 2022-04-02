@@ -1,5 +1,9 @@
 REPORTS_DIR=./tmp/bench/reports
-BENCH_COUNT=10
+BENCH_COUNT ?= 10
+
+# Detecting GOPATH and removing trailing "/" if any
+GOPATH = $(realpath $(shell go env GOPATH))
+$(info GOPATH: ${GOPATH})
 
 .PHONY: bench
 ## run the top-level benchmarks
@@ -31,10 +35,10 @@ bench-diff: clean generate-optimized check-git-status
 	@git checkout $(GIT_BRANCH_NAME)
 	@echo ""
 	@echo "Comparing with 'master' branch"
-	@benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
 	@echo ""
 	@echo "Comparing with 'v0.7.0' tag"
-	@benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench
 
 check-git-status:
 ifneq ("$(shell git status --porcelain)","")
