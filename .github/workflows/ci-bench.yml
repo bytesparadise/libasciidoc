@@ -26,6 +26,8 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Cache dependencies
       uses: actions/cache@v2
