@@ -1,10 +1,5 @@
-name: ci-build
+name: ci-bench
 on:
-  push:
-    branches:
-      - master
-    tags-ignore:
-      - '*.*'
   pull_request:
     branches:
       - master
@@ -38,11 +33,25 @@ jobs:
           ${{ runner.os }}-go-
 
     - name: Verify parser
-      if: runner.os == 'Linux'
       run: |
         make verify-parser
 
     - name: Bench and Diff
+      id: bench-diff
       run: |
         go install golang.org/x/perf/cmd/benchstat@latest
         make bench-diff
+        echo "::set-output name=summary::$(make print-bench-diff)"
+
+    - name: Comment Benchmark Diffs
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: bench
+          message: |
+            ### Benchmark Diffs
+            <details><summary>Benchmark diffs</summary>
+            ```
+            ${{ steps.bench-diff.outputs.summary }}
+            ```
+            </details>
