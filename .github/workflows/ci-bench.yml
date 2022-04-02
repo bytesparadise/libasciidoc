@@ -44,4 +44,5 @@ jobs:
 
     - name: Bench and Diff
       run: |
+        go install golang.org/x/perf/cmd/benchstat@latest
         make bench-diff
