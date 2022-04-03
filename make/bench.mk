@@ -32,7 +32,7 @@ bench-diff: clean generate-optimized check-git-status
 		github.com/bytesparadise/libasciidoc \
 		| tee $(REPORTS_DIR)/v0.7.0.bench
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
-	@git checkout $(GIT_BRANCH_NAME)
+	git checkout $(GIT_BRANCH_NAME)
 	@echo "Comparing with 'master' branch"
 	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
 	@echo ""
