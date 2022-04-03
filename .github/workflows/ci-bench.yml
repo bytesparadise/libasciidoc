@@ -44,14 +44,14 @@ jobs:
         echo "::set-output name=summary::$(make print-bench-diff)"
 
     - name: Comment Benchmark Diffs
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: bench
-          message: |
-            ### Benchmark Diffs
-            <details><summary>Benchmark diffs</summary>
-            ```
-            ${{ steps.bench-diff.outputs.summary }}
-            ```
-            </details>
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        header: bench
+        message: |
+          ### Benchmark Diffs
+          <details><summary>Benchmark diffs</summary>
+          ```
+          ${{ steps.bench-diff.outputs.summary }}
+          ```
+          </details>
