@@ -42,7 +42,9 @@ jobs:
         go install golang.org/x/perf/cmd/benchstat@latest
         make bench-diff
         OUTPUT=$(make print-bench-diff)
-        echo "::set-output name=summary::$OUTPUT"
+        echo "${OUTPUT}"
+        OUTPUT="${OUTPUT//$'\n'/%0A}"
+        echo "::set-output name=diff::$OUTPUT"
 
     - name: Comment Benchmark Diffs
       uses: marocchino/sticky-pull-request-comment@v2
@@ -53,6 +55,6 @@ jobs:
           ### Benchmark Diffs
           <details><summary>Benchmark diffs</summary>
           ```
-          ${{ steps.bench-diff.outputs.summary }}
+          ${{ steps.bench-diff.outputs.diff }}
           ```
           </details>
