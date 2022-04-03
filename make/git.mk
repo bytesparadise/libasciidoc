@@ -3,6 +3,6 @@ ifneq ($(shell git status --porcelain),)
        GIT_COMMIT_ID_SHORT := $(GIT_COMMIT_ID_SHORT)-dirty
 endif
 
-GIT_BRANCH_NAME := $(shell git rev-parse --abbrev-ref HEAD)
+REF_NAME := $(shell git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
 
-BUILD_TIME = `date -u '+%Y-%m-%dT%H:%M:%SZ'`
+BUILD_TIME = `date -u '+%Y-%m-%dT%H:%M:%SZ'`q

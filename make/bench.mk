@@ -11,8 +11,8 @@ bench: clean generate-optimized
 	@mkdir -p $(REPORTS_DIR)
 	@go test -tags bench -bench=. -benchmem -count=$(BENCH_COUNT) -run=XXX \
 		github.com/bytesparadise/libasciidoc \
-		| tee $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench
-	@echo "generated $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench"
+		| tee $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench
+	@echo "generated $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench"
 
 .PHONY: bench-diff
 ## run the top-level benchmarks and compares with results of 'master' and 'v0.7.0'
@@ -20,8 +20,8 @@ bench-diff: clean generate-optimized check-git-status
 	@mkdir -p $(REPORTS_DIR)
 	@go test -tags bench -bench=. -benchmem -count=$(BENCH_COUNT) -run=XXX \
 		github.com/bytesparadise/libasciidoc \
-		| tee $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench
-	@echo "generated $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench"
+		| tee $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench
+	@echo "generated $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench"
 	@git checkout master
 	@go test -tags bench -bench=. -benchmem -count=$(BENCH_COUNT) -run=XXX \
 		github.com/bytesparadise/libasciidoc \
@@ -32,12 +32,12 @@ bench-diff: clean generate-optimized check-git-status
 		github.com/bytesparadise/libasciidoc \
 		| tee $(REPORTS_DIR)/v0.7.0.bench
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
-	git checkout $(GIT_BRANCH_NAME)
+	git checkout $(REF_NAME)
 	@echo "Comparing with 'master' branch"
-	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
 	@echo ""
 	@echo "Comparing with 'v0.7.0' tag"
-	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench | tee $(REPORTS_DIR)/diffs.txt
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench | tee $(REPORTS_DIR)/diffs.txt
 
 .PHONY: print-bench-diff
 print-bench-diff:
