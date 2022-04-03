@@ -3,7 +3,6 @@ BENCH_COUNT ?= 10
 
 # Detecting GOPATH and removing trailing "/" if any
 GOPATH = $(realpath $(shell go env GOPATH))
-$(info GOPATH: ${GOPATH})
 
 .PHONY: bench
 ## run the top-level benchmarks
@@ -42,10 +41,7 @@ bench-diff: clean generate-optimized check-git-status
 
 .PHONY: print-bench-diff
 print-bench-diff:
-	@echo "content of $(REPORTS_DIR)/diffs.txt"
-	@echo "---"
 	@cat $(REPORTS_DIR)/diffs.txt
-	@echo "---"
 	
 check-git-status:
 ifneq ("$(shell git status --porcelain)","")
