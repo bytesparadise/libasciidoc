@@ -42,7 +42,6 @@ jobs:
         go install golang.org/x/perf/cmd/benchstat@latest
         make bench-diff
         OUTPUT=$(make print-bench-diff)
-        cat $OUTPUT
         echo "::set-output name=summary::$OUTPUT"
 
     - name: Comment Benchmark Diffs
