@@ -42,7 +42,7 @@ bench-diff: clean generate-optimized check-git-status
 
 .PHONY: print-bench-diff
 print-bench-diff:
-	cat $(REPORTS_DIR)/diffs.txt
+	echo $(REPORTS_DIR)/diffs.txt
 	
 check-git-status:
 ifneq ("$(shell git status --porcelain)","")
