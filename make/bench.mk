@@ -32,16 +32,17 @@ bench-diff: clean generate-optimized check-git-status
 		github.com/bytesparadise/libasciidoc \
 		| tee $(REPORTS_DIR)/v0.7.0.bench
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
-	git checkout $(REF_NAME)
+	@git checkout $(REF_NAME)
 	@echo "Comparing with 'master' branch"
 	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
 	@echo ""
 	@echo "Comparing with 'v0.7.0' tag"
 	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(REF_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench | tee $(REPORTS_DIR)/diffs.txt
+	@echo "Reports stored in $(REPORTS_DIR)/diffs.txt"
 
 .PHONY: print-bench-diff
 print-bench-diff:
-	@cat $(REPORTS_DIR)/diffs.txt
+	cat $(REPORTS_DIR)/diffs.txt
 	
 check-git-status:
 ifneq ("$(shell git status --porcelain)","")
