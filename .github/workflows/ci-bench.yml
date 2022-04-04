@@ -49,7 +49,7 @@ jobs:
     - name: Comment Benchmark Diffs
       uses: marocchino/sticky-pull-request-comment@v2
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         header: bench
         message: |
           ### Benchmark Diffs
