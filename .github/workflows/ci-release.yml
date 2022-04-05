@@ -1,4 +1,4 @@
-name: ci-release
+name: release
 
 on:
   push:
