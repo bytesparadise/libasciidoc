@@ -1,4 +1,4 @@
-name: ci-build
+name: ci-lint
 on:
   push:
     branches:
@@ -10,12 +10,12 @@ on:
       - master
 
 jobs:
-  golangci:
-    name: Lint with Go ${{ matrix.go-version }}
+  lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         go-version: [1.17.x]
+    name: Lint on ${{ matrix.os }} / go ${{ matrix.go-version }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2

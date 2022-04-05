@@ -11,7 +11,7 @@ jobs:
       matrix:
         go-version: [1.17.x]
         os: [ubuntu-latest]
-    name: Benchstat with Go ${{ matrix.go-version }}
+    name: Benchstat on ${{ matrix.os }} / go ${{ matrix.go-version }}
 
     steps:
     - name: Install Go
