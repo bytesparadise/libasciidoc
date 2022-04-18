@@ -33,13 +33,15 @@ bench-diff: clean generate-optimized check-git-status
 		| tee $(REPORTS_DIR)/v0.7.0.bench
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
 	@git checkout $(GIT_BRANCH_NAME)
-	@echo ""
 	@echo "Comparing with 'master' branch"
 	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
 	@echo ""
 	@echo "Comparing with 'v0.7.0' tag"
-	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench | tee $(REPORTS_DIR)/diffs.txt
 
+print-bench-diff:
+	@cat $(REPORTS_DIR)/diffs.txt
+	
 check-git-status:
 ifneq ("$(shell git status --porcelain)","")
 	@echo "Repository contains uncommitted changes:"
