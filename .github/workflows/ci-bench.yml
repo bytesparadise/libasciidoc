@@ -41,7 +41,8 @@ jobs:
       run: |
         go install golang.org/x/perf/cmd/benchstat@latest
         make bench-diff
-        echo "::set-output name=summary::$(make print-bench-diff)"
+        OUTPUT=$(make print-bench-diff)
+        echo "::set-output name=summary::$OUTPUT"
 
     - name: Comment Benchmark Diffs
       uses: marocchino/sticky-pull-request-comment@v2
@@ -49,8 +50,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         header: bench
         message: |
-          ### Benchmark Diffs
-          <details><summary>Benchmark diffs</summary>
+          Benchmark Diffs:
           ```
           ${{ steps.bench-diff.outputs.summary }}
           ```
