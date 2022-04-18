@@ -17,6 +17,7 @@ bench: clean generate-optimized
 .PHONY: bench-diff
 ## run the top-level benchmarks and compares with results of 'master' and 'v0.7.0'
 bench-diff: clean generate-optimized check-git-status
+	@git config advice.detachedHead false
 	@mkdir -p $(REPORTS_DIR)
 	@go test -tags bench -bench=. -benchmem -count=$(BENCH_COUNT) -run=XXX \
 		github.com/bytesparadise/libasciidoc \
@@ -33,6 +34,7 @@ bench-diff: clean generate-optimized check-git-status
 		| tee $(REPORTS_DIR)/v0.7.0.bench
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
 	@git checkout $(GIT_BRANCH_NAME)
+	@echo "HEAD is now at $(git rev-parse --abbrev-ref HEAD) (expecting $(GIT_BRANCH_NAME))"
 	@echo "Comparing with 'master' branch"
 	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GIT_BRANCH_NAME)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
 	@echo ""
