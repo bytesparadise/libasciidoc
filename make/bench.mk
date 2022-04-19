@@ -35,11 +35,11 @@ bench-diff: clean generate-optimized check-git-status
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
 	@git checkout $(GITHUB_SHA)
 	@echo "HEAD is now at $(shell git log -1 --format='%h') (expecting $(GITHUB_SHA))"
-	@echo "Comparing with 'master' branch"
-	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
-	@echo ""
-	@echo "Comparing with 'v0.7.0' tag"
-	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench | tee $(REPORTS_DIR)/diffs.txt
+	@echo "Comparing with 'master' branch" > $(REPORTS_DIR)/diffs.txt
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench >> $(REPORTS_DIR)/diffs.txt
+	@echo "" >> $(REPORTS_DIR)/diffs.txt
+	@echo "Comparing with 'v0.7.0' tag" >> $(REPORTS_DIR)/diffs.txt
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench >> $(REPORTS_DIR)/diffs.txt
 
 .PHONY: print-bench-diff
 print-bench-diff:

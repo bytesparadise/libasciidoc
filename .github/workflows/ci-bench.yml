@@ -42,7 +42,10 @@ jobs:
         go install golang.org/x/perf/cmd/benchstat@latest
         make bench-diff
         OUTPUT=$(make print-bench-diff)
-        echo "output: $OUTPUT"
+        # because set-output doesn't support multiline content out-of-the-box
+        OUTPUT="${OUTPUT//'%'/'%25'}"
+        OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+        OUTPUT="${OUTPUT//$'\r'/'%0D'}"
         echo "::set-output name=summary::$OUTPUT"
 
     - name: Comment Benchmark Diffs
