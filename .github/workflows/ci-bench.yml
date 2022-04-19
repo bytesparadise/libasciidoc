@@ -41,12 +41,19 @@ jobs:
       run: |
         go install golang.org/x/perf/cmd/benchstat@latest
         make bench-diff
-        OUTPUT=$(make print-bench-diff)
+        DIFF_MASTER=$(make print-bench-diff-master)
         # because set-output doesn't support multiline content out-of-the-box
-        OUTPUT="${OUTPUT//'%'/'%25'}"
-        OUTPUT="${OUTPUT//$'\n'/'%0A'}"
-        OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-        echo "::set-output name=summary::$OUTPUT"
+        DIFF_MASTER="${DIFF_MASTER//'%'/'%25'}"
+        DIFF_MASTER="${DIFF_MASTER//$'\n'/'%0A'}"
+        DIFF_MASTER="${DIFF_MASTER//$'\r'/'%0D'}"
+        echo "::set-output name=diff-master::$DIFF_MASTER"
+
+        DIFF_LATEST_RELEASE=$(make print-bench-diff-latest-release)
+        # because set-output doesn't support multiline content out-of-the-box
+        DIFF_LATEST_RELEASE="${DIFF_LATEST_RELEASE//'%'/'%25'}"
+        DIFF_LATEST_RELEASE="${DIFF_LATEST_RELEASE//$'\n'/'%0A'}"
+        DIFF_LATEST_RELEASE="${DIFF_LATEST_RELEASE//$'\r'/'%0D'}"
+        echo "::set-output name=diff-latest-release::$DIFF_LATEST_RELEASE"
 
     - name: Comment Benchmark Diffs
       uses: marocchino/sticky-pull-request-comment@v2
@@ -54,8 +61,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         header: bench
         message: |
-          Benchmark Diffs:
+          Comparing with `master` branch:
           ```
-          ${{ steps.bench-diff.outputs.summary }}
+          ${{ steps.bench-diff.outputs.diff-master }}
+          ```
+          
+          Comparing with lastest release:
+          ```
+          ${{ steps.bench-diff.outputs.diff-latest-release }}
           ```
           </details>
