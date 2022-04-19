@@ -60,14 +60,15 @@ jobs:
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         header: bench
-        append: true
         message: |
           Comparing with `master` branch:
+
           ```
           ${{ steps.bench-diff.outputs.diff-master }}
           ```
           
           Comparing with latest release:
+          
           ```
           ${{ steps.bench-diff.outputs.diff-latest-release }}
           ```
