@@ -34,7 +34,7 @@ bench-diff: clean generate-optimized check-git-status
 		| tee $(REPORTS_DIR)/v0.7.0.bench
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
 	@git checkout $(GITHUB_SHA)
-	@echo "HEAD is now at $(git rev-parse --abbrev-ref HEAD) (expecting $(GITHUB_SHA))"
+	@echo "HEAD is now at $(shell git log -1 --format='%h') (expecting $(GITHUB_SHA))"
 	@echo "Comparing with 'master' branch"
 	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench
 	@echo ""
