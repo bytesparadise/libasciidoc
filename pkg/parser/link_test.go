@@ -270,7 +270,7 @@ a link to <{example}>.`
 			})
 
 			It("with text only", func() {
-				source := "a link to mailto:foo@bar[the foo@bar email]."
+				source := "a link to mailto:hello@example.com[the hello@example.com email]."
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -279,10 +279,10 @@ a link to <{example}>.`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "mailto:",
-										Path:   "foo@bar",
+										Path:   "hello@example.com",
 									},
 									Attributes: types.Attributes{
-										types.AttrInlineLinkText: "the foo@bar email",
+										types.AttrInlineLinkText: "the hello@example.com email",
 									},
 								},
 								&types.StringElement{
@@ -296,7 +296,7 @@ a link to <{example}>.`
 			})
 
 			It("with text and extra attributes", func() {
-				source := "a link to mailto:foo@bar[the foo@bar email, foo=bar]"
+				source := "a link to mailto:hello@example.com[the hello@example.com email, foo=bar]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -305,10 +305,10 @@ a link to <{example}>.`
 								&types.InlineLink{
 									Location: &types.Location{
 										Scheme: "mailto:",
-										Path:   "foo@bar",
+										Path:   "hello@example.com",
 									},
 									Attributes: types.Attributes{
-										types.AttrInlineLinkText: "the foo@bar email",
+										types.AttrInlineLinkText: "the hello@example.com email",
 										"foo":                    "bar",
 									},
 								},
@@ -389,6 +389,103 @@ next lines`
 									},
 								},
 								&types.StringElement{Content: " and more text"},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with text and custom target", func() {
+				source := `a link to https://example.com[the doc,window=read-later]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "read-later",
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with text and custom target with noopener", func() {
+				source := `a link to https://example.com[the doc,window=read-later,opts=noopener]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "read-later",
+										types.AttrOptions:          types.Options{"noopener"},
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with text and explicit blank target", func() {
+				source := `a link to https://example.com[the doc,window=_blank]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "_blank",
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with text and blank target short-hand", func() {
+				source := `a link to https://example.com[the doc^]` // the ^ character is used to define a `blank` target
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "_blank",
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
 							},
 						},
 					},
@@ -1059,7 +1156,7 @@ a link to {scheme}://{path} and https://foo.com`
 		Context("relative links", func() {
 
 			It("to doc without text", func() {
-				source := "a link to link:foo.adoc[]"
+				source := "a link to link:https://example.com[]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -1067,8 +1164,8 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.StringElement{Content: "a link to "},
 								&types.InlineLink{
 									Location: &types.Location{
-										Scheme: "",
-										Path:   "foo.adoc",
+										Scheme: "https://",
+										Path:   "example.com",
 									},
 								},
 							},
@@ -1079,7 +1176,7 @@ a link to {scheme}://{path} and https://foo.com`
 			})
 
 			It("to doc with text", func() {
-				source := "a link to link:foo.adoc[foo doc]"
+				source := "a link to link:https://example.com[the doc]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -1087,11 +1184,11 @@ a link to {scheme}://{path} and https://foo.com`
 								&types.StringElement{Content: "a link to "},
 								&types.InlineLink{
 									Location: &types.Location{
-										Scheme: "",
-										Path:   "foo.adoc",
+										Scheme: "https://",
+										Path:   "example.com",
 									},
 									Attributes: types.Attributes{
-										types.AttrInlineLinkText: "foo doc",
+										types.AttrInlineLinkText: "the doc",
 									},
 								},
 							},
@@ -1102,7 +1199,7 @@ a link to {scheme}://{path} and https://foo.com`
 			})
 
 			It("to external URL with text only", func() {
-				source := "a link to link:https://example.com[foo doc]"
+				source := "a link to link:https://example.com[the doc]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -1114,7 +1211,7 @@ a link to {scheme}://{path} and https://foo.com`
 										Path:   "example.com",
 									},
 									Attributes: types.Attributes{
-										types.AttrInlineLinkText: "foo doc",
+										types.AttrInlineLinkText: "the doc",
 									},
 								},
 							},
@@ -1125,7 +1222,7 @@ a link to {scheme}://{path} and https://foo.com`
 			})
 
 			It("to external URL with text and extra attributes", func() {
-				source := "a link to link:https://example.com[foo doc, foo=bar]"
+				source := "a link to link:https://example.com[the doc, foo=bar]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -1137,7 +1234,7 @@ a link to {scheme}://{path} and https://foo.com`
 										Path:   "example.com",
 									},
 									Attributes: types.Attributes{
-										types.AttrInlineLinkText: "foo doc",
+										types.AttrInlineLinkText: "the doc",
 										"foo":                    "bar",
 									},
 								},
@@ -1171,21 +1268,22 @@ a link to {scheme}://{path} and https://foo.com`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("invalid syntax", func() {
-				source := "a link to link:foo.adoc"
-				expected := &types.Document{
-					Elements: []interface{}{
-						&types.Paragraph{
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "a link to link:foo.adoc",
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
-			})
+			// skipped: should be consistent with other syntaxes, and allow for skipped/missing attributes?
+			// It("invalid syntax", func() {
+			// 	source := "a link to link:https://example.com"
+			// 	expected := &types.Document{
+			// 		Elements: []interface{}{
+			// 			&types.Paragraph{
+			// 				Elements: []interface{}{
+			// 					&types.StringElement{
+			// 						Content: "a link to link:https://example.com",
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 	}
+			// 	Expect(ParseDocument(source)).To(MatchDocument(expected))
+			// })
 
 			It("with quoted text attribute", func() {
 				source := "link:/[a _a_ b *b* c `c`]"
@@ -1400,7 +1498,7 @@ a link to {scheme}:{path}[] and https://foo.com`
 			})
 
 			It("with line breaks in attributes", func() {
-				source := `link:x[
+				source := `link:example.com[
 title]`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1411,7 +1509,7 @@ title]`
 										types.AttrInlineLinkText: "title",
 									},
 									Location: &types.Location{
-										Path: "x",
+										Path: "example.com",
 									},
 								},
 							},
@@ -1421,6 +1519,102 @@ title]`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("with text and custom target", func() {
+				source := `a link to link:https://example.com[the doc,window=read-later]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "read-later",
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with text and custom target with noopener", func() {
+				source := `a link to link:https://example.com[the doc,window=read-later,opts=noopener]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "read-later",
+										types.AttrOptions:          types.Options{"noopener"},
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with text and explicit blank target", func() {
+				source := `a link to link:https://example.com[the doc,window=_blank]`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "_blank",
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("with text and blank target short-hand", func() {
+				source := `a link to link:https://example.com[the doc^]` // the ^ character is used to define a `blank` target
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText:   "the doc",
+										types.AttrInlineLinkTarget: "_blank",
+									},
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 			Context("text attribute with comma", func() {
 
 				It("with text having comma", func() {

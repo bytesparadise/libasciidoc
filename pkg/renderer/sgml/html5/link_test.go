@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -88,62 +87,20 @@ a link to <{example}>.`
 
 			It("with special character in URL", func() {
 				source := `a link to https://example.com>[].`
-				expected := &types.Document{
-					Elements: []interface{}{
-						&types.Paragraph{
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "a link to ",
-								},
-								&types.InlineLink{
-									Location: &types.Location{
-										Scheme: "https://",
-										Path: []interface{}{
-											&types.StringElement{
-												Content: "example.com",
-											},
-											&types.SpecialCharacter{
-												Name: ">",
-											},
-										},
-									},
-								},
-								&types.StringElement{
-									Content: ".",
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com&gt;" class="bare">https://example.com&gt;</a>.</p>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
 			It("with opening angle bracket", func() {
 				source := `a link to <https://example.com[].`
-				expected := &types.Document{
-					Elements: []interface{}{
-						&types.Paragraph{
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "a link to ",
-								},
-								&types.SpecialCharacter{
-									Name: "<",
-								},
-								&types.InlineLink{
-									Location: &types.Location{
-										Scheme: "https://",
-										Path:   "example.com",
-									},
-								},
-								&types.StringElement{
-									Content: ".",
-								},
-							},
-						},
-					},
-				}
-				Expect(ParseDocument(source)).To(MatchDocument(expected))
+				expected := `<div class="paragraph">
+<p>a link to &lt;<a href="https://example.com" class="bare">https://example.com</a>.</p>
+</div>
+`
+				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 		})
 	})
@@ -241,6 +198,42 @@ next lines</p>
 			source := `a link to https://example.com[window=mytarget,role=myrole]`
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare myrole" target="mytarget">https://example.com</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and custom target", func() {
+			source := `a link to https://example.com[the doc,window=read-later]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="read-later">the doc</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and custom target with noopener", func() {
+			source := `a link to https://example.com[the doc,window=read-later,opts=noopener]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="read-later" rel="noopener">the doc</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and explicit blank target", func() {
+			source := `a link to https://example.com[the doc,window=_blank]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="_blank" rel="noopener">the doc</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and blank target short-hand", func() {
+			source := `a link to https://example.com[the doc^]` // the ^ character is used to define a `blank` target
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="_blank" rel="noopener">the doc</a></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -417,6 +410,42 @@ a link to {scheme}://{path} and https://foo.baz`
 			source := `a link to link:https://example.com[window=mytarget,role=myrole]`
 			expected := `<div class="paragraph">
 <p>a link to <a href="https://example.com" class="bare myrole" target="mytarget">https://example.com</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and custom target", func() {
+			source := `a link to link:https://example.com[the doc,window=read-later]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="read-later">the doc</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and custom target with noopener", func() {
+			source := `a link to link:https://example.com[the doc,window=read-later,opts=noopener]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="read-later" rel="noopener">the doc</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and explicit blank target", func() {
+			source := `a link to link:https://example.com[the doc,window=_blank]`
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="_blank" rel="noopener">the doc</a></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with text and blank target short-hand", func() {
+			source := `a link to link:https://example.com[the doc^]` // the ^ character is used to define a `blank` target
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com" target="_blank" rel="noopener">the doc</a></p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
