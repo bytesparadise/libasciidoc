@@ -40,18 +40,22 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (s
 			class = "bare"
 		}
 	}
+	target := l.Attributes.GetAsStringWithDefault(types.AttrInlineLinkTarget, "")
+	noopener := target == "_blank" || l.Attributes.HasOption("noopener")
 	err = r.link.Execute(result, struct {
-		ID     string
-		URL    string
-		Text   string
-		Class  string
-		Target string
+		ID       string
+		URL      string
+		Text     string
+		Class    string
+		Target   string
+		NoOpener bool
 	}{
-		ID:     id,
-		URL:    location,
-		Text:   text,
-		Class:  class,
-		Target: l.Attributes.GetAsStringWithDefault(types.AttrInlineLinkTarget, ""),
+		ID:       id,
+		URL:      location,
+		Text:     text,
+		Class:    class,
+		Target:   target,
+		NoOpener: noopener,
 	})
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render link")

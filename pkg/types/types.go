@@ -2861,6 +2861,11 @@ func NewInlineLink(url *Location, attributes interface{}) (*InlineLink, error) {
 	attrs := toAttributesWithMapping(attributes, map[string]string{
 		AttrPositional1: AttrInlineLinkText,
 	})
+	// also, look for `^` suffix in `AttrInlineLinkText` attribute for a `_blank` target
+	if text, found := attrs[AttrInlineLinkText].(string); found && strings.HasSuffix(text, "^") {
+		attrs[AttrInlineLinkText] = strings.TrimSuffix(text, "^")
+		attrs[AttrInlineLinkTarget] = "_blank"
+	}
 	return &InlineLink{
 		Location:   url,
 		Attributes: attrs,
