@@ -54,7 +54,7 @@ Using `-b` (or `--backend`) the following formats are supported:
 
 To build libasciidoc and make it available on the command line, do this:
 
-    $ git checkout github.com/bytesparadise/libasciidoc
+    $ git clone https://github.com/bytesparadise/libasciidoc.git
     $ cd libasciidoc
     $ make install
 
