@@ -24,17 +24,35 @@ func merge(elements ...interface{}) []interface{} {
 		case []interface{}:
 			if len(element) > 0 {
 				f := merge(element...)
-				result, buf = appendBuffer(result, buf)
+				if content := buf.String(); len(content) > 0 {
+					result = append(result, &StringElement{
+						Content: content,
+					})
+					buf = &strings.Builder{}
+				}
 				result = merge(append(result, f...)...)
 			}
 		default:
 			// log.Debugf("Merging with 'default' case an element of type %[1]T", element)
-			result, buf = appendBuffer(result, buf)
+			if content := buf.String(); len(content) > 0 {
+				if symbol, ok := element.(*Symbol); ok && symbol.Name == " -- " && strings.HasSuffix(content, " ") {
+					// trim 1 space from actual result
+					content = content[:len(content)-1]
+				}
+				result = append(result, &StringElement{
+					Content: content,
+				})
+				buf = &strings.Builder{}
+			}
 			result = append(result, element)
 		}
 	}
 	// if buf was filled because some text was found
-	result, _ = appendBuffer(result, buf)
+	if buf.Len() > 0 {
+		result = append(result, &StringElement{
+			Content: buf.String(),
+		})
+	}
 	return result
 }
 
@@ -67,16 +85,6 @@ func AllNilEntries(elements []interface{}) bool {
 		}
 	}
 	return true
-}
-
-// appendBuffer appends the content of the given buffer to the given array of elements,
-// and returns a new buffer, or returns the given arguments if the buffer was empty
-func appendBuffer(elements []interface{}, buf *strings.Builder) ([]interface{}, *strings.Builder) {
-	if buf.Len() > 0 {
-		s, _ := NewStringElement(buf.String())
-		return append(elements, s), &strings.Builder{}
-	}
-	return elements, buf
 }
 
 // ReduceOption an option to apply on the reduced content when it is a `string`
