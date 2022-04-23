@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"unicode"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -101,31 +102,46 @@ func (p *parser) next() (val interface{}, err error) {
 	return val, p.errs.err()
 }
 
-const spaceSuffixTrackingKey = "space_suffix_tracking"
+const suffixTrackingKey = "space_suffix_tracking"
+const spaceSuffix = "space_suffix"
+const alphanumSuffix = "alphanum_suffix"
 
-func (c *current) trackSpaceSuffix(element interface{}) {
+func (c *current) trackSuffix(element interface{}) {
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("tracking space at the end of:\n%s", spew.Sdump(element))
 	// }
 	switch e := element.(type) {
 	case string:
-		c.globalStore[spaceSuffixTrackingKey] = strings.HasSuffix(e, " ")
+		doTrackSuffix(c, e)
 	case *types.StringElement:
-		c.globalStore[spaceSuffixTrackingKey] = strings.HasSuffix(e.Content, " ")
-	default:
-		delete(c.globalStore, spaceSuffixTrackingKey)
+		doTrackSuffix(c, e.Content)
 	}
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("space suffix detected: %t", c.globalStore[spaceSuffixTrackingKey])
 	// }
 }
 
+func doTrackSuffix(c *current, content string) {
+	r := []rune(content)
+	suffix := r[len(r)-1]
+	switch {
+	case suffix == ' ': // strict space, not `\n`, `\r`, etc.
+		c.globalStore[suffixTrackingKey] = spaceSuffix
+	case unicode.IsLetter(suffix) || unicode.IsNumber(suffix):
+		c.globalStore[suffixTrackingKey] = alphanumSuffix
+	default:
+		delete(c.globalStore, suffixTrackingKey)
+	}
+}
+
 func (c *current) isPreceededBySpace() bool {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("checking if element ends with space: %t", c.globalStore[spaceSuffixTrackingKey])
-	// }
-	s, ok := c.globalStore[spaceSuffixTrackingKey].(bool)
-	return ok && s
+	k, found := c.globalStore[suffixTrackingKey]
+	return found && k == spaceSuffix
+}
+
+func (c *current) isPreceededByAlphanum() bool {
+	k, found := c.globalStore[suffixTrackingKey]
+	return found && k == alphanumSuffix
 }
 
 // verifies that the content does not end with a space

@@ -1288,7 +1288,7 @@ InlineElement <-
             / ElementPlaceHolder // TODO: needed?
             // if anything above did not match...
             / AnyChar)) {
-    c.trackSpaceSuffix(element)
+    c.trackSuffix(element)
     return element, nil
 }
 
@@ -1989,8 +1989,8 @@ DoubleQuoteBoldTextElement <-
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / QuotedTextInDoubleQuoteBoldText
         / ElementPlaceHolder
         / DoubleQuoteBoldTextFallbackCharacter) {
@@ -2044,8 +2044,8 @@ SingleQuoteBoldTextElement <-
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
     / InlineMacro
-    / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / Symbol
+    / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / QuotedTextInSingleQuoteBoldText
     / ElementPlaceHolder
     / SingleQuoteBoldTextFallbackCharacter
@@ -2131,8 +2131,8 @@ DoubleQuoteItalicTextElement <-
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / QuotedTextInDoubleQuoteItalicText
         / ElementPlaceHolder
         / DoubleQuoteItalicTextFallbackCharacter) {
@@ -2198,8 +2198,8 @@ SingleQuoteItalicTextElement <-
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
     / InlineMacro // must be after InlineMacro (because of BareURL)
-    / SpecialCharacter
     / Symbol
+    / SpecialCharacter
     / QuotedTextInSingleQuoteItalicText
     / ElementPlaceHolder
     / SingleQuoteItalicTextFallbackCharacter
@@ -2283,8 +2283,8 @@ DoubleQuoteMonospaceTextElement <-
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / RawApostrophe // must be before SingleQuoteMonospaceText
         / QuotedTextInDoubleQuoteMonospaceText
         / ElementPlaceHolder
@@ -2353,9 +2353,9 @@ SingleQuoteMonospaceTextElement <-
     / Spaces 
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
-    / InlineMacro // must be after InlineMacro (because of BareURL)
-    / SpecialCharacter
+    / InlineMacro 
     / Symbol
+    / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / QuotedTextInSingleQuoteMonospaceText
     / RawApostrophe
     / ElementPlaceHolder
@@ -2441,8 +2441,8 @@ DoubleQuoteMarkedTextElement <- // may start and end with spaces
         / Newline !Newline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / Symbol
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
         / QuotedTextInDoubleMarkedBoldText
         / ElementPlaceHolder
         / DoubleQuoteMarkedTextFallbackCharacter
@@ -2510,8 +2510,8 @@ SingleQuoteMarkedTextElement <-
     / Newline !Newline // 2 newlines split the paragraph
     / AttributeReference
     / InlineMacro
-    / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / Symbol
+    / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / QuotedTextInSingleQuoteMarkedText
     / ElementPlaceHolder
     / SingleQuoteMarkedTextFallbackCharacter
@@ -2660,11 +2660,11 @@ Substitutions <- // TODO: rename to `NormalGroup`
             / InlinePassthrough
             / InlineMacro // must be before SpecialCharacter (because of CrossReference)
             / Callout // must be placed before SpecialCharacter
+            / Replacement
             / SpecialCharacter // must be after InlineMacro (because of BareURL)
             / AttributeReference
-            / Replacement
             / AnyChar) {
-                c.trackSpaceSuffix(element)
+                c.trackSuffix(element)
                 return element, nil
             }
         )+ EOF {
@@ -2686,11 +2686,11 @@ HeaderGroupElement <-
         / InlinePassthrough
         / Quote
         / Link
+        / Replacement
         / SpecialCharacter // must be after Link (because of BareURL)
         / InlineIcon
         / AttributeReference
         / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-        / Replacement
         / InlineAnchor // must be after LegacyElementID
         / InlineFootnote
         / AnyChar) {
@@ -2783,11 +2783,11 @@ SingleLineCommentContent <- [^\r\n]* {
 // -------------------------------------------------------------------------------------
 Symbol <- 
     // escaped
-    `\` (QuotationMark / Copyright / Trademark / Registered / Ellipsis) {
+    `\` (QuotationMark / Copyright / Trademark / Registered / Ellipsis / SingleRightArrow / Mdash / SingleLeftArrow / DoubleRightArrow / DoubleLeftArrow) {
         return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
     }
     // unescaped
-    / QuotationMark / Copyright / Trademark / Registered / Ellipsis 
+    / QuotationMark / Copyright / Trademark / Registered / Ellipsis / Mdash / SingleRightArrow / SingleLeftArrow / DoubleRightArrow / DoubleLeftArrow
     // 
     / TypographicQuote
 
@@ -2821,6 +2821,41 @@ Registered <- "(R)" {
 
 Ellipsis <- "..." {
         return types.NewSymbol("...")
+    }
+
+Mdash <- 
+    // 2 flavours: 
+    // a. preceeded by a space character and followed by space or EOL
+    &{
+        return c.isPreceededBySpace(), nil
+    }
+    "--" (Space / &EOL) {
+        return types.NewSymbol(" -- ")
+    }
+    /
+    // b. preceeded and followed by an alphanum character
+    &{
+        return c.isPreceededByAlphanum(), nil
+    }
+    "--" &(Alphanum / EOL) {
+        return types.NewSymbol("--")
+    }
+    
+
+SingleRightArrow <- "->" {
+        return types.NewSymbol("->")
+    }
+
+SingleLeftArrow <- "<-" {
+        return types.NewSymbol("<-")
+    }
+
+DoubleRightArrow <- "=>" {
+        return types.NewSymbol("=>")
+    }
+
+DoubleLeftArrow <- "<=" {
+        return types.NewSymbol("<=")
     }
 
 
