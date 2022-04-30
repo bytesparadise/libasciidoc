@@ -91,7 +91,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 func includeFile(ctx *ParseContext, incl *types.FileInclusion) (string, error) {
 	ctx.Opts = append(ctx.Opts, GlobalStore(documentHeaderKey, false))
 	if l, ok := incl.GetLocation().Path.([]interface{}); ok {
-		l, _, err := replaceAttributeRefsInSlice(ctx, l)
+		l, _, err := replaceAttributeRefsInSlice(ctx, l, noneSubstitutions())
 		if err != nil {
 			return "", errors.Errorf("Unresolved directive in %s - %s", ctx.filename, incl.RawText)
 		}

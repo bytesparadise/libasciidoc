@@ -25,7 +25,7 @@ func NewParseContext(config *configuration.Configuration, opts ...Option) *Parse
 	opts = append(opts, Entrypoint("DocumentFragment"))
 	opts = append(opts, GlobalStore(frontMatterKey, true))
 	opts = append(opts, GlobalStore(documentHeaderKey, true))
-	opts = append(opts, GlobalStore(enabledSubstitutions, []string{Attributes}))
+	opts = append(opts, GlobalStore(enabledSubstitutions, []string{AttributeRefs}))
 	opts = append(opts, GlobalStore(usermacrosKey, config.Macros))
 	return &ParseContext{
 		filename:     config.Filename,

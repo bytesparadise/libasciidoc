@@ -121,8 +121,8 @@ func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) err
 			b.Elements = e[:len(e)-1]
 			return nil
 		}
-		b.Elements, err = placeholders.restore(e)
-		return err
+		b.Elements = placeholders.restore(e)
+		return nil
 	default:
 		return errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", e)
 	}

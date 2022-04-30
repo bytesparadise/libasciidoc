@@ -90,9 +90,9 @@ Ifeval <- "ifeval::"
     }
 
 IfevalExpressionMember <- 
-    ("\"" s:(AttributeValueReference) "\"" { return s, nil })
-    / ("'" s:(AttributeValueReference) "'" { return s, nil })
-    / (s:(AttributeValueReference) { return s, nil })
+    ("\"" s:(AttributeReferenceValue) "\"" { return s, nil })
+    / ("'" s:(AttributeReferenceValue) "'" { return s, nil })
+    / (s:(AttributeReferenceValue) { return s, nil })
     / ("\"" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "\"" { return w, nil })
     / ("'" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "'" { return w, nil })
     / Integer
@@ -424,20 +424,15 @@ LegacyElementID <-
     }
 
 // shorthand syntax for titles. Eg: `.a title`
-ShortHandTitle <- `.` title:(
+ShortHandTitle <- `.` 
     ![. ] // may not start with a dot or a space, to avoid confusion with list items or literal block delimiters
     elements:(
-        ([^\r\n\uFFFD{]+ {
-            return string(c.text), nil
-        })
-        / AttributeValueReference
-        / ("{" { 
-            return string(c.text), nil
-        }))+ {
-            return types.Reduce(elements, strings.TrimSpace), nil
-        }
-    ) {
-        return types.NewTitleAttribute(title)
+        InlineWord
+        / Space
+        / AttributeReferenceValue
+        / ([^\r\n] { return string(c.text), nil })
+    )+ {
+        return types.NewTitleAttribute(types.Reduce(elements, strings.TrimSpace))
     }
 
 // LongHandAttributes. Eg: `[positional1,positional2,...,named1,named2,...]
@@ -545,7 +540,11 @@ PositionalAttribute <- (
         return types.NewPositionalAttribute(nil)
     })
 
-NamedAttribute <- key:(NamedAttributeKey) "=" Space* value:(AttributeValue) ("," Space*)? { // TODO: include `,` or expect `]`
+NamedAttribute <- 
+    key:(NamedAttributeKey) 
+    "=" Space* 
+    value:(AttributeValue) ("," Space*)? 
+    {
         return types.NewNamedAttribute(key.(string), value)
     }
 
@@ -597,6 +596,7 @@ DoubleQuotedAttributeValue <-
     "\"" &(!(Space* "=")) {
         return content, nil
     }
+
 DoubleQuotedAttributeValueContent <- 
     elements:(
         Alphanums
@@ -623,8 +623,7 @@ UnquotedAttributeValue <-
     // so we need to count the `[` and `]` to balance
     !Space // can't start with a space (eg: can't have `[ cookie ]`)
     elements:(
-        Quote // quotes can have their own attributes // TODO: move down
-        / ("[" UnquotedAttributeValue "]") // recursively within brackets (see comment above)
+        ("[" UnquotedAttributeValue "]") // recursively within brackets (see comment above)
         // / ElementPlaceHolder
         / ([^=,\uFFFD\]{'"` ]+ { // not within brackets and stop on space and quotation marks (`"')
             return string(c.text), nil
@@ -646,13 +645,13 @@ UnquotedAttributeValue <-
 AttributeReference <-
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Attributes), nil
+        return c.isSubstitutionEnabled(AttributeRefs), nil
     }
-    element:(CounterReference / AttributeValueReference) {
+    element:(CounterReference / AttributeReferenceValue) {
         return element, nil
     }
 
-AttributeValueReference <-  
+AttributeReferenceValue <-  
     // escaped
     `\` "{" name:AttributeName "}" { 
         log.Debug("matching escaped attribute reference")
@@ -710,7 +709,7 @@ CrossReferenceLabel <- (
     ([\pL0-9][^\r\n{<>]+ { // `{`, `>` and `>` characters are not allowed as they are used for attribute substitutions and cross-references 
         return types.NewStringElement(string(c.text))
     })
-    / AttributeValueReference
+    / AttributeReferenceValue
     / ("{" { 
         return types.NewStringElement(string(c.text))
     })
@@ -1442,7 +1441,7 @@ Link <- BareURL / RelativeLink / ExternalLink
 BareURL <-
     "<" 
     url:(LocationWithScheme) // scheme is required for this syntax
-    closingBracket:(">")? // TODO: never used?
+    ">"?
     &{
         return url.(*types.Location).TrimAngleBracketSuffix()
     }
@@ -1910,7 +1909,6 @@ QuotedText <-
     text:(UnconstrainedQuotedText / ConstrainedQuotedText) {
         return text.(*types.QuotedText).WithAttributes(attributes)
     }
-    
 
 ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "#" !"#" / "`" !"`"
 
@@ -2671,6 +2669,22 @@ Substitutions <- // TODO: rename to `NormalGroup`
             return types.NewInlineElements(elements)
         }
 
+// Substitutions for specific attributes whose value allows for quoted content and inline macros
+AttributeStructuredValue <- 
+    elements:(
+        InlineMacro
+        / Quote
+        / Word
+        / Space
+        / SpecialCharacter
+        / Symbol
+        / ElementPlaceHolder
+        / AnyChar
+    )+ EOF { 
+        return types.NewInlineElements(elements)
+    }
+
+
 // Default substitutions for Section Titles
 HeaderGroup <- 
     elements:(HeaderGroupElement)+ EOF { 
@@ -3063,7 +3077,7 @@ PunctuationCharacter <- [.,;?!] {
 }
 
 // this is a fall-back rule in case all preceeding rules failed to match the current content.
-// AnyChar <- [^\r\n] { 
+// AnyChar <- [^\r\n] { // TODO: restore this rule and replace all occurrences of `[^\r\n]` in other rules with `AnyChar`
 AnyChar <- . { 
         return types.NewStringElement(string(c.text))
     } 

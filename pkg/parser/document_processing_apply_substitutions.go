@@ -67,15 +67,15 @@ func applySubstitutionsOnElement(ctx *ParseContext, element interface{}, opts ..
 	case *types.DocumentHeader:
 		return applySubstitutionsOnDocumentHeader(ctx, b, opts...)
 	case *types.Section:
-		return applySubstitutionsOnBlockWithTitle(ctx, b, opts...)
+		return applySubstitutionsOnWithTitle(ctx, b, opts...)
 	case *types.Table:
 		return applySubstitutionsOnTable(ctx, b, opts...)
 	case *types.ListElementContinuation:
 		return applySubstitutionsOnElement(ctx, b.Element, opts...)
 	case types.WithElements:
-		return applySubstitutionsOnBlockWithElements(ctx, b, opts...)
+		return applySubstitutionsOnWithElements(ctx, b, opts...)
 	case types.WithLocation:
-		return applySubstitutionsOnBlockWithLocation(ctx, b, opts...)
+		return applySubstitutionsOnWithLocation(ctx, b, opts...)
 	default:
 		// do nothing
 		return nil
@@ -83,7 +83,7 @@ func applySubstitutionsOnElement(ctx *ParseContext, element interface{}, opts ..
 }
 
 func applySubstitutionsOnDocumentHeader(ctx *ParseContext, b *types.DocumentHeader, opts ...Option) error {
-	// process attribute declarations and resets defined in the header
+	// process attribute declarations and resets defined in the header before the title itself
 	for _, elmt := range b.Elements {
 		if err := applySubstitutionsOnElement(ctx, elmt, opts...); err != nil {
 			return err
@@ -95,12 +95,12 @@ func applySubstitutionsOnDocumentHeader(ctx *ParseContext, b *types.DocumentHead
 	if revision := b.Revision(); revision != nil {
 		ctx.attributes.setAll(revision.Expand())
 	}
-	return applySubstitutionsOnBlockWithTitle(ctx, b, opts...)
+	return applySubstitutionsOnWithTitle(ctx, b, opts...)
 }
 
-func applySubstitutionsOnBlockWithTitle(ctx *ParseContext, b types.WithTitle, opts ...Option) error {
+func applySubstitutionsOnWithTitle(ctx *ParseContext, b types.WithTitle, opts ...Option) error {
 	log.Debugf("processing element with title of type '%T' in 3 steps", b)
-	if err := replaceAttributeRefsInBlockAttributes(ctx, b); err != nil {
+	if err := applySubstitutionsOnAttributes(ctx, b, headerSubstitutions()); err != nil {
 		return err
 	}
 	opts = append(opts, Entrypoint("HeaderGroup"))
@@ -114,7 +114,7 @@ func applySubstitutionsOnBlockWithTitle(ctx *ParseContext, b types.WithTitle, op
 }
 
 func applySubstitutionsOnTable(ctx *ParseContext, t *types.Table, opts ...Option) error {
-	if err := replaceAttributeRefsInBlockAttributes(ctx, t); err != nil {
+	if err := applySubstitutionsOnAttributes(ctx, t, headerSubstitutions()); err != nil {
 		return err
 	}
 	// also, deal with special `cols` attribute
@@ -128,14 +128,14 @@ func applySubstitutionsOnTable(ctx *ParseContext, t *types.Table, opts ...Option
 	}
 	if t.Header != nil {
 		for _, c := range t.Header.Cells {
-			if err := applySubstitutionsOnBlockWithElements(ctx, c, opts...); err != nil {
+			if err := applySubstitutionsOnWithElements(ctx, c, opts...); err != nil {
 				return err
 			}
 		}
 	}
 	for _, r := range t.Rows {
 		for _, c := range r.Cells {
-			if err := applySubstitutionsOnBlockWithElements(ctx, c, opts...); err != nil {
+			if err := applySubstitutionsOnWithElements(ctx, c, opts...); err != nil {
 				return err
 			}
 		}
@@ -146,7 +146,7 @@ func applySubstitutionsOnTable(ctx *ParseContext, t *types.Table, opts ...Option
 	}
 	if t.Footer != nil {
 		for _, c := range t.Footer.Cells {
-			if err := applySubstitutionsOnBlockWithElements(ctx, c, opts...); err != nil {
+			if err := applySubstitutionsOnWithElements(ctx, c, opts...); err != nil {
 				return err
 			}
 		}
@@ -154,8 +154,11 @@ func applySubstitutionsOnTable(ctx *ParseContext, t *types.Table, opts ...Option
 	return nil
 }
 
-func applySubstitutionsOnBlockWithElements(ctx *ParseContext, b types.WithElements, opts ...Option) error {
-	if err := replaceAttributeRefsInBlockAttributes(ctx, b); err != nil {
+func applySubstitutionsOnWithElements(ctx *ParseContext, b types.WithElements, opts ...Option) error {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("applying substitutions on 'WithElements' of type '%T'", b)
+	}
+	if err := applySubstitutionsOnAttributes(ctx, b, headerSubstitutions()); err != nil {
 		return err
 	}
 	if s := b.GetAttributes().GetAsStringWithDefault(types.AttrStyle, ""); s == types.Passthrough {
@@ -182,7 +185,8 @@ func applySubstitutionsOnBlockWithElements(ctx *ParseContext, b types.WithElemen
 	opts = append(opts, Entrypoint("Substitutions"))
 	switch b := b.(type) {
 	case *types.LabeledListElement:
-		if b.Term, err = parseElements(b.Term, subs, opts...); err != nil {
+		// if b.Term, err = parseElements(b.Term, subs, opts...); err != nil { // TODO: call `processSubstitutions` instead of `parseElements`?
+		if b.Term, err = processSubstitutions(ctx, b.Term, subs, opts...); err != nil {
 			return err
 		}
 		for _, e := range b.GetElements() {
@@ -227,17 +231,44 @@ func applySubstitutionsOnBlockWithElements(ctx *ParseContext, b types.WithElemen
 	}
 }
 
-func applySubstitutionsOnBlockWithLocation(ctx *ParseContext, b types.WithLocation, _ ...Option) error {
-	_, _, err := replaceAttributeRefs(ctx, b)
+func extractMarkdownQuoteAttribution(elements []interface{}) ([]interface{}, string) {
+	// first, check if last line is an attribution (author)
+	if len(elements) == 0 {
+		return elements, ""
+	}
+	log.Debugf("attempting to extract markdown-style quote block author")
+	if l, ok := elements[len(elements)-1].(types.RawLine); ok {
+		a, err := ParseReader("", strings.NewReader(string(l)), Entrypoint("MarkdownQuoteAttribution"))
+		// assume that the last line is not an author attribution if an error occurred
+		if err != nil {
+			log.Debugf("failed to extract markdown-style quote block author: %v", err)
+			return elements, ""
+		}
+		log.Debugf("found attribution in markdown block: '%[1]v' (%[1]T)", a)
+		if a, ok := a.(string); ok {
+			return elements[:len(elements)-1], a
+		}
+	}
+	return elements, ""
+}
+
+func applySubstitutionsOnWithLocation(ctx *ParseContext, b types.WithLocation, _ ...Option) error {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("applying substitution on WithLocation of type '%T'", b)
+	}
+	_, _, err := replaceAttributeRefs(ctx, b, headerSubstitutions())
 	return err
 }
 
 func processSubstitutions(ctx *ParseContext, elements []interface{}, subs []string, opts ...Option) ([]interface{}, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("processing substitutions on %d element(s) with %s", len(elements), spew.Sdump(subs))
+	}
 	// split the steps if attribute substitution is enabled
 	for i, s := range subs {
-		if s == Attributes {
+		if s == AttributeRefs {
 			var err error
-			// apply until Attribute substitution included
+			// apply until Attribute substitution included // TODO: not all `subs`, then?
 			if elements, err = parseElements(elements, subs, opts...); err != nil {
 				return nil, err
 			}
@@ -245,32 +276,42 @@ func processSubstitutions(ctx *ParseContext, elements []interface{}, subs []stri
 			return replaceAttributeRefsAndReparse(ctx, elements, subs[i+1:], opts...)
 		}
 	}
-	return parseElements(elements, subs, opts...)
+	elements, err := parseElements(elements, subs, opts...)
+	if err != nil {
+		return nil, err
+	}
+	// also, reparse some attributes (`text`, etc.) if needed
+	err = reparseAttributesInElements(elements, subs, opts...)
+	return elements, err
+	// return parseElements(elements, subs, opts...)
 }
 
 // replaceAttributeRefsAndReparse recursively replaces the attribute refs, but only reparse the portions in which the replacements happened.
 // for example: the location of an inline link, but not the whole paragraph.
 func replaceAttributeRefsAndReparse(ctx *ParseContext, elements []interface{}, subs []string, opts ...Option) ([]interface{}, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("replacing attribute refs in %d element(s)", len(elements))
+	}
 	found := false
 	for i, e := range elements {
 		switch e := e.(type) {
 		case types.WithElements:
 			// replace in attributes
-			if err := replaceAttributeRefsInBlockAttributes(ctx, e); err != nil {
+			if err := applySubstitutionsOnAttributes(ctx, e, subs); err != nil {
 				return nil, err
 			}
-			// replace in elements
+			// replace in elements // TODO: need? (elements will be parsed again below)
 			if elements, err := replaceAttributeRefsAndReparse(ctx, e.GetElements(), subs, opts...); err != nil {
 				return nil, err
 			} else if err := e.SetElements(elements); err != nil {
 				return nil, err
 			}
 		default:
-			e, f, err := replaceAttributeRefs(ctx, e)
+			e, f, err := replaceAttributeRefs(ctx, e, subs)
 			if err != nil {
 				return nil, err
 			}
-			found = found || f
+			found = found || f // TODO: call `parseElements` here instead of after the whole loop?
 			elements[i] = e
 		}
 	}
@@ -282,6 +323,125 @@ func replaceAttributeRefsAndReparse(ctx *ParseContext, elements []interface{}, s
 		}
 	}
 	return elements, nil
+}
+
+func applySubstitutionsOnAttributes(ctx *ParseContext, b types.WithAttributes, subs []string) error {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("applying substitutions in attributes of element of type '%T':\n%s", b, spew.Sdump(b.GetAttributes()))
+	}
+	attrs := b.GetAttributes()
+	for k, v := range attrs {
+		switch v := v.(type) {
+		case []interface{}:
+			v, _, err := replaceAttributeRefsInSlice(ctx, v, subs)
+			if err != nil {
+				return err
+			}
+			attrs[k] = types.Reduce(v)
+		case types.Roles:
+			roles := make(types.Roles, len(v))
+			for i, r := range v {
+				r, _, err := replaceAttributeRefs(ctx, r, noneSubstitutions())
+				if err != nil {
+					return err
+				}
+				roles[i] = types.Reduce(r)
+			}
+			attrs[k] = roles
+		case types.Options:
+			options := make(types.Options, len(v))
+			for i, r := range v {
+				r, _, err := replaceAttributeRefs(ctx, r, noneSubstitutions())
+				if err != nil {
+					return err
+				}
+				options[i] = types.Reduce(r)
+			}
+			attrs[k] = options
+		default:
+			// do nothing
+		}
+	}
+	b.SetAttributes(attrs)
+	return reparseAttributes(b, subs)
+	// return nil
+}
+
+func replaceAttributeRefsInSlice(ctx *ParseContext, elements []interface{}, subs []string) ([]interface{}, bool, error) {
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("replacing attribute refs in slice %s", spew.Sdump(elements))
+	// }
+	found := false
+	for i, e := range elements {
+		v, f, err := replaceAttributeRefs(ctx, e, subs)
+		if err != nil {
+			return nil, false, err
+		}
+		elements[i] = v
+		found = found || f
+	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("replaced attribute refs: %s", spew.Sdump(elements))
+	// }
+	return elements, found, nil // reduce elements to return a single `string` when it's possible
+}
+
+func replaceAttributeRefs(ctx *ParseContext, b interface{}, subs []string) (interface{}, bool, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("replacing attribute refs in element of type '%T'", b)
+	}
+	switch b := b.(type) {
+	case []interface{}:
+		return replaceAttributeRefsInSlice(ctx, b, subs)
+	case types.WithLocation:
+		// replace in attributes
+		if err := applySubstitutionsOnAttributes(ctx, b, subs); err != nil {
+			return nil, false, err
+		}
+		// replace in location
+		if b.GetLocation() == nil {
+			// skip
+			return b, false, nil
+		}
+		p, found, err := replaceAttributeRefs(ctx, b.GetLocation().Path, subs)
+		if err != nil {
+			return nil, false, err
+		}
+		b.GetLocation().SetPath(p)
+		return b, found, nil
+	case *types.AttributeReference:
+		e, err := replaceAttributeRef(ctx, b)
+		if err != nil {
+			return nil, false, err
+		}
+		return e, true, nil
+	case *types.CounterSubstitution:
+		s, err := counterToStringElement(ctx, b)
+		if err != nil {
+			return nil, false, err
+		}
+		return &types.StringElement{
+			Content: s,
+		}, true, nil
+	default:
+		// do nothing, keep as-is
+		return b, false, nil
+	}
+}
+
+func replaceAttributeRef(ctx *ParseContext, a *types.AttributeReference) (*types.StringElement, error) {
+	s, found, err := ctx.attributes.getAsString(a.Name)
+	if err != nil {
+		return nil, err
+	} else if !found {
+		log.Warnf("unable to find attribute '%s'", a.Name)
+		return &types.StringElement{
+			Content: "{" + a.Name + "}",
+		}, nil
+	}
+	return &types.StringElement{
+		Content: s,
+	}, nil
 }
 
 // parseElements parse the elements, using placeholders for existing "structured" elements (ie, not RawLine or StringElements)
@@ -302,31 +462,69 @@ func parseElements(elements []interface{}, subs []string, opts ...Option) ([]int
 	if !ok {
 		return nil, fmt.Errorf("unexpected type of content after parsing elements: '%T'", result)
 	}
+	elements = placeholders.restore(elmts)
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("parsed content:\n%s", spew.Sdump(elmts))
+		log.Debugf("parsed content:\n%s", spew.Sdump(elements))
 	}
-	return placeholders.restore(elmts)
+	return elements, nil
 }
 
-func extractMarkdownQuoteAttribution(elements []interface{}) ([]interface{}, string) {
-	// first, check if last line is an attribution (author)
-	if len(elements) == 0 {
-		return elements, ""
+func reparseAttributesInElements(elements []interface{}, subs []string, opts ...Option) error {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("reparsing attributes in elements")
 	}
-	log.Debugf("attempting to extract markdown-style quote block author")
-	if l, ok := elements[len(elements)-1].(types.RawLine); ok {
-		a, err := ParseReader("", strings.NewReader(string(l)), Entrypoint("MarkdownQuoteAttribution"))
-		// assume that the last line is not an author attribution if an error occurred
-		if err != nil {
-			log.Debugf("failed to extract markdown-style quote block author: %v", err)
-			return elements, ""
+	for _, e := range elements {
+		if e, ok := e.(types.WithElements); ok {
+			if err := reparseAttributesInElements(e.GetElements(), subs, opts...); err != nil {
+				return err
+			}
 		}
-		log.Debugf("found attribution in markdown block: '%[1]v' (%[1]T)", a)
-		if a, ok := a.(string); ok {
-			return elements[:len(elements)-1], a
+		if e, ok := e.(types.WithAttributes); ok {
+			err := reparseAttributes(e, subs, opts...)
+			if err != nil {
+				return err
+			}
+			// e.SetAttributes(attrs) // needed?
 		}
 	}
-	return elements, ""
+	return nil
+}
+
+func reparseAttributes(e types.WithAttributes, subs []string, opts ...Option) error {
+	attributes := e.GetAttributes()
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("reparsing attributes in %s", spew.Sdump(attributes))
+	}
+	for k, v := range attributes {
+		switch k {
+		case types.AttrTitle, types.AttrXRefLabel, types.AttrInlineLinkText, types.AttrImageAlt:
+			v, err := ReparseAttributeValue(v, subs)
+			if err != nil {
+				return err
+			}
+			attributes[k] = types.Reduce(v)
+		}
+	}
+	return nil
+}
+
+func ReparseAttributeValue(value interface{}, subs []string) ([]interface{}, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("reparsing attribute value: %s", spew.Sdump(value))
+	}
+	switch v := value.(type) {
+	case []interface{}:
+		return parseElements(v, subs, Entrypoint("AttributeStructuredValue"))
+	case string:
+		return parseElements(
+			[]interface{}{
+				types.RawLine(v),
+			},
+			subs,
+			Entrypoint("AttributeStructuredValue"))
+	default:
+		return nil, fmt.Errorf("unexpected type of value: %T", value)
+	}
 }
 
 func serialize(content []interface{}) ([]byte, *placeholders) {
@@ -383,13 +581,13 @@ func (p *placeholders) add(element interface{}) *types.ElementPlaceHolder {
 }
 
 // replace the placeholders with their original element in the given elements
-func (p *placeholders) restore(elements []interface{}) ([]interface{}, error) {
+func (p *placeholders) restore(elements []interface{}) []interface{} {
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("restoring placeholders in\n%s", spew.Sdump(elements))
 	// }
 	// skip if there's nothing to restore
 	if len(p.elements) == 0 {
-		return elements, nil
+		return elements
 	}
 	for i, e := range elements {
 		if e, ok := e.(*types.ElementPlaceHolder); ok {
@@ -399,7 +597,7 @@ func (p *placeholders) restore(elements []interface{}) ([]interface{}, error) {
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("restored elements:\n%v", spew.Sdump(elements))
 	// }
-	return elements, nil
+	return elements
 }
 
 // ----------------------------------------------
@@ -533,7 +731,7 @@ func isIncrementalSubstitution(sub string) bool {
 func normalSubstitutions() []string {
 	return []string{
 		InlinePassthroughs,
-		Attributes,
+		AttributeRefs,
 		SpecialCharacters,
 		Quotes,
 		Replacements,
@@ -545,7 +743,18 @@ func normalSubstitutions() []string {
 func headerSubstitutions() []string {
 	return []string{
 		InlinePassthroughs,
-		Attributes,
+		AttributeRefs,
+		SpecialCharacters,
+		Quotes,
+		Macros,
+		Replacements,
+	}
+}
+
+func HeaderSubstitutions() []string {
+	return []string{
+		InlinePassthroughs,
+		AttributeRefs,
 		SpecialCharacters,
 		Quotes,
 		Macros,
@@ -615,8 +824,8 @@ const (
 	// enabledSubstitutions the key in which enabled substitutions are stored in the parser's GlobalStore
 	enabledSubstitutions string = "enabled_substitutions"
 
-	// Attributes the "attributes" substitution
-	Attributes string = "attributes"
+	// AttributeRefs the "attribute_refs" substitution
+	AttributeRefs string = "attributes" // TODO: no need to export
 	// Callouts the "callouts" substitution
 	Callouts string = "callouts"
 	// InlinePassthroughs the "inline_passthrough" substitution
@@ -670,136 +879,4 @@ func counterToStringElement(ctx *ParseContext, c *types.CounterSubstitution) (st
 	default:
 		return "", fmt.Errorf("unexpected type of counter value: '%T'", counter)
 	}
-}
-
-func replaceAttributeRefsInBlockAttributes(ctx *ParseContext, b types.WithAttributes) error {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("replacing attribute refs in attributes of block of type '%T':\n%s", b, spew.Sdump(b.GetAttributes()))
-	}
-	attrs := b.GetAttributes()
-	for k, v := range attrs {
-		switch v := v.(type) {
-		case []interface{}:
-			v, _, err := replaceAttributeRefsInSlice(ctx, v)
-			if err != nil {
-				return err
-			}
-			attrs[k] = types.Reduce(v)
-		case types.Roles:
-			roles := make(types.Roles, len(v))
-			for i, r := range v {
-				r, _, err := replaceAttributeRefs(ctx, r)
-				if err != nil {
-					return err
-				}
-				roles[i] = types.Reduce(r)
-			}
-			attrs[k] = roles
-		case types.Options:
-			options := make(types.Options, len(v))
-			for i, r := range v {
-				r, _, err := replaceAttributeRefs(ctx, r)
-				if err != nil {
-					return err
-				}
-				options[i] = types.Reduce(r)
-			}
-			attrs[k] = options
-		default:
-			// do nothing
-		}
-	}
-	b.SetAttributes(attrs)
-	return nil
-}
-
-func replaceAttributeRefsInSlice(ctx *ParseContext, elements []interface{}) ([]interface{}, bool, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("replacing attribute refs in slice %s", spew.Sdump(elements))
-	}
-	found := false
-	for i, e := range elements {
-		v, f, err := replaceAttributeRefs(ctx, e)
-		if err != nil {
-			return nil, false, err
-		}
-		elements[i] = v
-		found = found || f
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("replaced attribute refs: %s", spew.Sdump(elements))
-	}
-	return elements, found, nil // reduce elements to return a single `string` when it's possible
-}
-
-func replaceAttributeRefs(ctx *ParseContext, b interface{}) (interface{}, bool, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("replacing attribute refs in %s", spew.Sdump(b))
-	}
-	switch b := b.(type) {
-	case []interface{}:
-		return replaceAttributeRefsInSlice(ctx, b)
-	case types.WithElements:
-		// replace in attributes
-		if err := replaceAttributeRefsInBlockAttributes(ctx, b); err != nil {
-			return nil, false, err
-		}
-		// replace in elements
-		elements, found, err := replaceAttributeRefsInSlice(ctx, b.GetElements())
-		if err != nil {
-			return nil, false, err
-		}
-		if err := b.SetElements(elements); err != nil {
-			return nil, false, err
-		}
-		return b, found, nil
-	case types.WithLocation:
-		// replace in attributes
-		if err := replaceAttributeRefsInBlockAttributes(ctx, b); err != nil {
-			return nil, false, err
-		}
-		// replace in location
-		if b.GetLocation() == nil {
-			// skip
-			return b, false, nil
-		}
-		p, found, err := replaceAttributeRefs(ctx, b.GetLocation().Path)
-		if err != nil {
-			return nil, false, err
-		}
-		b.GetLocation().SetPath(p)
-		return b, found, nil
-	case *types.AttributeReference:
-		e, err := replaceAttributeRef(ctx, b)
-		if err != nil {
-			return nil, false, err
-		}
-		return e, true, nil
-	case *types.CounterSubstitution:
-		s, err := counterToStringElement(ctx, b)
-		if err != nil {
-			return nil, false, err
-		}
-		return &types.StringElement{
-			Content: s,
-		}, true, nil
-	default:
-		// do nothing, keep as-is
-		return b, false, nil
-	}
-}
-
-func replaceAttributeRef(ctx *ParseContext, a *types.AttributeReference) (*types.StringElement, error) {
-	s, found, err := ctx.attributes.getAsString(a.Name)
-	if err != nil {
-		return nil, err
-	} else if !found {
-		log.Warnf("unable to find attribute '%s'", a.Name)
-		return &types.StringElement{
-			Content: "{" + a.Name + "}",
-		}, nil
-	}
-	return &types.StringElement{
-		Content: s,
-	}, nil
 }

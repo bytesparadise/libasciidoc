@@ -22,7 +22,11 @@ What is the answer to the Ultimate Question?:: 42`
 				&types.List{
 					Kind: types.LabeledListKind,
 					Attributes: types.Attributes{
-						types.AttrTitle: "Q&A",
+						types.AttrTitle: []interface{}{
+							&types.StringElement{Content: "Q"},
+							&types.SpecialCharacter{Name: "&"},
+							&types.StringElement{Content: "A"},
+						},
 						types.AttrStyle: "qanda",
 					},
 					Elements: []types.ListElement{
@@ -83,7 +87,11 @@ What is the answer to the Ultimate Question?:: 42`
 				&types.List{
 					Kind: types.LabeledListKind,
 					Attributes: types.Attributes{
-						types.AttrTitle: "Q&A",
+						types.AttrTitle: []interface{}{
+							&types.StringElement{Content: "Q"},
+							&types.SpecialCharacter{Name: "&"},
+							&types.StringElement{Content: "A"},
+						},
 						types.AttrStyle: "qanda",
 						types.AttrID:    "quiz",
 						types.AttrRoles: types.Roles{"role1", "role2"},
@@ -125,7 +133,11 @@ What is the answer to the Ultimate Question?:: 42`
 				},
 			},
 			ElementReferences: types.ElementReferences{
-				"quiz": "Q&A",
+				"quiz": []interface{}{
+					&types.StringElement{Content: "Q"},
+					&types.SpecialCharacter{Name: "&"},
+					&types.StringElement{Content: "A"},
+				},
 			},
 		}
 		Expect(ParseDocument(source)).To(MatchDocument(expected))
