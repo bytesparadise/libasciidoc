@@ -100,7 +100,7 @@ func (r *sgmlRenderer) renderTableOfContentsTitle(ctx *renderer.Context) (string
 		return "Table of Contents", nil // default value // TODO: use a constant?
 	}
 	// parse
-	value, err := parser.ParseAttributeValue(title)
+	value, err := parser.ReparseAttributeValue(title, parser.HeaderSubstitutions()) // TODO: move this into the process substitution phase of document parsing
 	if err != nil {
 		return "", err
 	}

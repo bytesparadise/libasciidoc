@@ -406,6 +406,53 @@ import <a>
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("with quoted text and link in title", func() {
+				source := `.a *link* to https://github.com[GitHub]
+----
+content
+----`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DelimitedBlock{
+							Kind: types.Listing,
+							Attributes: types.Attributes{
+								types.AttrTitle: []interface{}{
+									&types.StringElement{
+										Content: "a ",
+									},
+									&types.QuotedText{
+										Kind: types.SingleQuoteBold,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "link",
+											},
+										},
+									},
+									&types.StringElement{
+										Content: " to ",
+									},
+									&types.InlineLink{
+										Attributes: types.Attributes{
+											types.AttrInlineLinkText: "GitHub",
+										},
+										Location: &types.Location{
+											Scheme: "https://",
+											Path:   "github.com",
+										},
+									},
+								},
+							},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "content",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			Context("with custom substitutions", func() {
 
 				// testing custom substitutions on listing blocks only, as
