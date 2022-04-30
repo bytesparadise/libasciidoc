@@ -65,3 +65,4 @@ coverage.txt
 *libasciidoc.html
 profile*.*
 !make/*.mk
+coverprofile.out
