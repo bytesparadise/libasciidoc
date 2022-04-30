@@ -53,7 +53,7 @@ jobs:
       uses: codecov/codecov-action@v1.0.6
       with:
         # Path to coverage file to upload
-        file: coverage.txt
+        file: coverprofile.out
 
   golangci:
     name: Lint with Go ${{ matrix.go-version }}
