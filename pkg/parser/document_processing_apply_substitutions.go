@@ -498,7 +498,7 @@ func reparseAttributes(e types.WithAttributes, subs []string, opts ...Option) er
 	for k, v := range attributes {
 		switch k {
 		case types.AttrTitle, types.AttrXRefLabel, types.AttrInlineLinkText, types.AttrImageAlt:
-			v, err := ReparseAttributeValue(v, subs)
+			v, err := ReparseAttributeValue(v, subs, opts...)
 			if err != nil {
 				return err
 			}
@@ -508,20 +508,20 @@ func reparseAttributes(e types.WithAttributes, subs []string, opts ...Option) er
 	return nil
 }
 
-func ReparseAttributeValue(value interface{}, subs []string) ([]interface{}, error) {
+func ReparseAttributeValue(value interface{}, subs []string, opts ...Option) ([]interface{}, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("reparsing attribute value: %s", spew.Sdump(value))
 	}
 	switch v := value.(type) {
 	case []interface{}:
-		return parseElements(v, subs, Entrypoint("AttributeStructuredValue"))
+		return parseElements(v, subs, append(opts, Entrypoint("AttributeStructuredValue"))...)
 	case string:
 		return parseElements(
 			[]interface{}{
 				types.RawLine(v),
 			},
 			subs,
-			Entrypoint("AttributeStructuredValue"))
+			append(opts, Entrypoint("AttributeStructuredValue"))...)
 	default:
 		return nil, fmt.Errorf("unexpected type of value: %T", value)
 	}
