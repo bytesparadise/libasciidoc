@@ -574,7 +574,6 @@ SingleQuotedAttributeValueContent <-
     elements:(
         Alphanums
         / Space
-        / Quote
         / QuotationMark
         / AttributeReference
         / (`\'` { 
@@ -601,7 +600,6 @@ DoubleQuotedAttributeValueContent <-
     elements:(
         Alphanums
         / Space
-        / Quote
         / QuotationMark
         / AttributeReference 
         / (`\"` { 
@@ -1918,7 +1916,7 @@ UnconstrainedQuotedText <-
     / DoubleQuoteMarkedText
     / DoubleQuoteMonospaceText
 
-EscapedQuotedText <- // TODO: use something like `&('\')` to quickly escape?
+EscapedQuotedText <-
     &(`\`)
     element:(
         EscapedBoldText 
