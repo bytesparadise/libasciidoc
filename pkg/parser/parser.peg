@@ -1786,21 +1786,13 @@ Callout <-
 
 CalloutListElement <- 
     ref:(CalloutListElementPrefix) 
-    description:(CalloutListElementContent) {
-        return types.NewCalloutListElement(ref.(int), description.(types.RawLine))
+    description:(ListElementContent) {
+        return types.NewCalloutListElement(ref.(int), description.(*types.Paragraph))
     }
 
 CalloutListElementPrefix <- 
     "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Spaces {
         return ref, nil
-    }
-
-CalloutListElementContent <- // TODO: remove in favor of `ListElementContent`
-    rawline:([^\r\n]+ {
-        return string(c.text), nil
-    })
-    EOL {
-        return types.NewRawLine(rawline.(string))
     }
 
 // -----------------------------------------------------------------------------------------------------------------------

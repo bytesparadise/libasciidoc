@@ -1027,16 +1027,12 @@ var _ ListElement = &CalloutListElement{}
 var _ DocumentElement = &CalloutListElement{}
 
 // NewCalloutListElement returns a new CalloutListElement
-func NewCalloutListElement(ref int, content RawLine) (*CalloutListElement, error) {
+func NewCalloutListElement(ref int, content *Paragraph) (*CalloutListElement, error) {
 	return &CalloutListElement{
 		Attributes: nil,
 		Ref:        ref,
 		Elements: []interface{}{
-			&Paragraph{
-				Elements: []interface{}{
-					content,
-				},
-			},
+			content,
 		},
 	}, nil
 }
