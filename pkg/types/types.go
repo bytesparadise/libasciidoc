@@ -2063,11 +2063,15 @@ type Footnote struct {
 }
 
 // NewFootnote returns a new Footnote with the given content
-func NewFootnote(ref string, elements []interface{}) (*Footnote, error) {
+func NewFootnote(ref interface{}, elements []interface{}) (*Footnote, error) {
 	log.Debugf("new footnote with elements: '%s'", spew.Sdump(elements))
+	var r string
+	if ref, ok := ref.(string); ok {
+		r = ref
+	}
 	return &Footnote{
 		// ID is only set during document processing
-		Ref:      ref,
+		Ref:      r,
 		Elements: elements,
 	}, nil
 

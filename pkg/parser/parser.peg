@@ -1371,10 +1371,8 @@ InlineIcon <- "icon:" icon:([\pL0-9_-]+ { return string(c.text), nil }) attribut
 // -------------------------------------------------------------------------------------------------------------------------------
 // Inline Foot Notes
 // -------------------------------------------------------------------------------------------------------------------------------
-InlineFootnote <- "footnote:[" elements:(FootnoteElements) "]" {
-        return types.NewFootnote("",  elements.([]interface{}))
-    } / "footnote:" ref:(FootnoteRef) "[" elements:(FootnoteElements) "]" { // TODO: use only this rule with `ref:(FootnoteRef)?`
-        return types.NewFootnote(ref.(string), elements.([]interface{}))
+InlineFootnote <- "footnote:" ref:(FootnoteRef)? "[" elements:(FootnoteElements) "]" { // TODO: use only this rule with `ref:(FootnoteRef)?`
+        return types.NewFootnote(ref, elements.([]interface{}))
     }
 
 FootnoteRef <- Alphanums
