@@ -149,6 +149,33 @@ some listing code
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("immediately after a paragraph", func() {
+				source := `a paragraph.
+----
+some listing code
+----`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a paragraph.",
+								},
+							},
+						},
+						&types.DelimitedBlock{
+							Kind: types.Listing,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some listing code",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("with unclosed delimiter", func() {
 				source := `----
 End of file here.`

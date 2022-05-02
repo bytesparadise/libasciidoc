@@ -176,6 +176,61 @@ a normal paragraph.`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("after a paragraph", func() {
+				source := `a normal paragraph.
+
+....
+some delimited content
+....`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a normal paragraph.",
+								},
+							},
+						},
+						&types.DelimitedBlock{
+							Kind: types.Literal,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some delimited content",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("immediately after a paragraph", func() {
+				source := `a normal paragraph.
+....
+some delimited content
+....`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a normal paragraph.",
+								},
+							},
+						},
+						&types.DelimitedBlock{
+							Kind: types.Literal,
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some delimited content",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			Context("with variable delimiter length", func() {
 
 				It("with 5 chars", func() {
