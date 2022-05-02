@@ -2453,7 +2453,7 @@ a short preamble
 
 		Context("unsupported section syntax", func() {
 
-			It("should not fail with underlined title", func() {
+			It("match unclosed example section", func() {
 				source := `Document Title
 ==============
 Doc Writer <thedoc@asciidoctor.org>`
@@ -2462,16 +2462,28 @@ Doc Writer <thedoc@asciidoctor.org>`
 						&types.Paragraph{
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "Document Title\n==============\nDoc Writer ",
+									Content: "Document Title",
 								},
-								&types.SpecialCharacter{
-									Name: "<",
-								},
-								&types.StringElement{
-									Content: "thedoc@asciidoctor.org",
-								},
-								&types.SpecialCharacter{
-									Name: ">",
+							},
+						},
+						&types.DelimitedBlock{
+							Kind: types.Example,
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{
+											Content: "Doc Writer ",
+										},
+										&types.SpecialCharacter{
+											Name: "<",
+										},
+										&types.StringElement{
+											Content: "thedoc@asciidoctor.org",
+										},
+										&types.SpecialCharacter{
+											Name: ">",
+										},
+									},
 								},
 							},
 						},

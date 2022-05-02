@@ -1811,6 +1811,7 @@ ShortcutParagraph <-
         !EOF 
         !BlankLine
         !BlockAttributes
+        !BlockDelimiter
         !ListElementContinuationMarker
         line:(SingleLineComment / ParagraphRawLine) {
             return line, nil
