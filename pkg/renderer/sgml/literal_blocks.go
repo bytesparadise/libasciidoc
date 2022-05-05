@@ -21,7 +21,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.Delimi
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render literal block roles")
 	}
-	title, err := r.renderElementTitle(b.Attributes)
+	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
@@ -59,7 +59,7 @@ func (r *sgmlRenderer) renderLiteralParagraph(ctx *renderer.Context, b *types.Pa
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render literal block roles")
 	}
-	title, err := r.renderElementTitle(b.Attributes)
+	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}

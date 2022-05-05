@@ -42,7 +42,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 		number = ctx.GetAndIncrementExampleBlockCounter()
 		c = strings.ReplaceAll(c, "{counter:example-number}", strconv.Itoa(number))
 	}
-	title, err := r.renderElementTitle(b.Attributes)
+	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
@@ -78,7 +78,7 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Pa
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	title, err := r.renderElementTitle(p.Attributes)
+	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}

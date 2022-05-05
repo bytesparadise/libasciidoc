@@ -16,7 +16,7 @@ import (
 
 func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageBlock) (string, error) {
 	result := &strings.Builder{}
-	title, err := r.renderElementTitle(img.Attributes)
+	title, err := r.renderElementTitle(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
@@ -99,7 +99,7 @@ func (r *sgmlRenderer) renderInlineImage(ctx *renderer.Context, img *types.Inlin
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
-	title, err := r.renderElementTitle(img.Attributes)
+	title, err := r.renderElementTitle(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}

@@ -53,7 +53,7 @@ func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Pa
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph roles")
 	}
-	title, err := r.renderElementTitle(p.Attributes)
+	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph roles")
 	}
@@ -105,7 +105,7 @@ func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.P
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
 	}
-	title, err := r.renderElementTitle(p.Attributes)
+	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
 	}
@@ -142,16 +142,20 @@ func renderCheckStyle(style interface{}) string {
 	}
 }
 
-func (r *sgmlRenderer) renderElementTitle(attrs types.Attributes) (string, error) {
-	if title, found, err := attrs.GetAsString(types.AttrTitle); err != nil {
-		return "", err
-	} else if found {
-		result := EscapeString(strings.TrimSpace(title))
-		// log.Debugf("rendered title: '%s'", result)
-		return result, nil
+func (r *sgmlRenderer) renderElementTitle(ctx *renderer.Context, attrs types.Attributes) (string, error) {
+	title, found := attrs[types.AttrTitle]
+	if !found {
+		log.Debug("no title to render")
+		return "", nil
 	}
-	log.Debug("no title to render")
-	return "", nil
+	switch title := title.(type) {
+	case string:
+		return title, nil
+	case []interface{}:
+		return r.renderElements(ctx, title)
+	default:
+		return "", errors.New("unable to render title")
+	}
 }
 
 type lineRenderer struct {
