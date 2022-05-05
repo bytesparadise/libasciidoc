@@ -50,7 +50,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l *types.List) (
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render ordered list roles")
 	}
-	title, err := r.renderElementTitle(l.Attributes)
+	title, err := r.renderElementTitle(ctx, l.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
@@ -152,7 +152,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l *types.List)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render unordered list roles")
 	}
-	title, err := r.renderElementTitle(l.Attributes)
+	title, err := r.renderElementTitle(ctx, l.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
@@ -220,7 +220,7 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l *types.List) (
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render labeled list roles")
 	}
-	title, err := r.renderElementTitle(l.Attributes)
+	title, err := r.renderElementTitle(ctx, l.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render labeled list roles")
 	}
@@ -305,7 +305,7 @@ func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l *types.List) (
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
-	title, err := r.renderElementTitle(l.Attributes)
+	title, err := r.renderElementTitle(ctx, l.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}

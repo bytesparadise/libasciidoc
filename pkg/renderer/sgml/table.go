@@ -86,7 +86,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render table roles")
 	}
-	title, err := r.renderElementTitle(t.Attributes)
+	title, err := r.renderElementTitle(ctx, t.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render table title")
 	}

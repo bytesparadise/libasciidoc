@@ -29,7 +29,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.Del
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	title, err := r.renderElementTitle(b.Attributes)
+	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
@@ -77,7 +77,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	title, err := r.renderElementTitle(p.Attributes)
+	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}

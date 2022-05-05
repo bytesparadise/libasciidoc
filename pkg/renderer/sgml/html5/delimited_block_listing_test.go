@@ -191,6 +191,21 @@ import <a>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("with quoted text and link in title", func() {
+			source := `.a *link* to https://github.com[GitHub]
+----
+content
+----`
+			expected := `<div class="listingblock">
+<div class="title">a <strong>link</strong> to <a href="https://github.com">GitHub</a></div>
+<div class="content">
+<pre>content</pre>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("paragraph blocks", func() {

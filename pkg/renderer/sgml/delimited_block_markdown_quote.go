@@ -22,7 +22,7 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
 	}
-	title, err := r.renderElementTitle(b.Attributes)
+	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}

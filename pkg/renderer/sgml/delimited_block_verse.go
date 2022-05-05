@@ -28,7 +28,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b *types.Delimite
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse block")
 	}
-	title, err := r.renderElementTitle(b.Attributes)
+	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
@@ -63,7 +63,7 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p *types.Para
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse block")
 	}
-	title, err := r.renderElementTitle(p.Attributes)
+	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
