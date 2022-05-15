@@ -81,7 +81,7 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 				if err := lvls.appendElement(e); err != nil {
 					return nil, err
 				}
-			case *types.BlankLine, *types.SingleLineComment:
+			case *types.BlankLine, *types.SinglelineComment:
 				// ignore
 			case *types.Section:
 				if err := e.ResolveID(attrs.allAttributes(), refs); err != nil {

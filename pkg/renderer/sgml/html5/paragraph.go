@@ -18,7 +18,7 @@ const (
 		"{{ .Content }}" +
 		"\n</td>\n</tr>\n</table>\n</div>\n{{ end }}"
 
-	delimitedBlockParagraphTmpl = "<p>{{ .CheckStyle }}{{ .Content }}</p>\n"
+	embeddedParagraphTmpl = "<p{{ if .Class }} class=\"{{ .Class }}\"{{ end }}>{{ .CheckStyle }}{{ .Content }}</p>\n"
 
 	verseParagraphTmpl = "<div {{ if .ID }}id=\"{{ .ID }}\" {{ end }}class=\"verseblock\">\n" +
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +

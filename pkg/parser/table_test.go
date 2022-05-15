@@ -29,31 +29,36 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.QuotedText{
-												Kind: types.SingleQuoteBold,
+											&types.Paragraph{
 												Elements: []interface{}{
+													&types.QuotedText{
+														Kind: types.SingleQuoteBold,
+														Elements: []interface{}{
+															&types.StringElement{
+																Content: "cookie",
+															},
+														},
+													},
 													&types.StringElement{
-														Content: "cookie",
+														Content: " cookie",
 													},
 												},
-											},
-											&types.StringElement{
-												Content: " cookie  ",
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.QuotedText{
-												Kind: types.SingleQuoteItalic,
+											&types.Paragraph{
 												Elements: []interface{}{
-													&types.StringElement{
-														Content: "pasta",
+													&types.QuotedText{
+														Kind: types.SingleQuoteItalic,
+														Elements: []interface{}{
+															&types.StringElement{
+																Content: "pasta",
+															},
+														},
 													},
 												},
-											},
-											&types.StringElement{
-												Content: "  ",
 											},
 										},
 									},
@@ -78,38 +83,47 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.QuotedText{
-												Kind: types.SingleQuoteBold,
+											&types.Paragraph{
 												Elements: []interface{}{
+													&types.QuotedText{
+														Kind: types.SingleQuoteBold,
+														Elements: []interface{}{
+															&types.StringElement{
+																Content: "cookie",
+															},
+														},
+													},
 													&types.StringElement{
-														Content: "cookie",
+														Content: " cookie",
 													},
 												},
-											},
-											&types.StringElement{
-												Content: " cookie  ",
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.QuotedText{
-												Kind: types.SingleQuoteItalic,
+											&types.Paragraph{
 												Elements: []interface{}{
-													&types.StringElement{
-														Content: "pasta",
+													&types.QuotedText{
+														Kind: types.SingleQuoteItalic,
+														Elements: []interface{}{
+															&types.StringElement{
+																Content: "pasta",
+															},
+														},
 													},
 												},
-											},
-											&types.StringElement{
-												Content: "  ",
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "chocolate",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "chocolate",
+													},
+												},
 											},
 										},
 									},
@@ -135,22 +149,34 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "some cookies ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "some cookies",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "some chocolate ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "some chocolate",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "some pasta",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "some pasta",
+													},
+												},
 											},
 										},
 									},
@@ -160,22 +186,34 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "more cookies ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "more cookies",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "more chocolate ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "more chocolate",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "more pasta",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "more pasta",
+													},
+												},
 											},
 										},
 									},
@@ -188,7 +226,99 @@ var _ = Describe("tables", func() {
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("table with title, headers and 1 line per cell", func() {
+		It("with compact rows", func() {
+			source := `|===
+|h1|h2|h3
+
+|one|two|three
+|===`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h1",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h2",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h3",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "one",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "two",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "three",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with title, headers and 1 line per cell", func() {
 			source := `.table title
 |===
 |header 1 |header 2
@@ -209,15 +339,23 @@ var _ = Describe("tables", func() {
 							Cells: []*types.TableCell{
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "header 1 ",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 1",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "header 2",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 2",
+												},
+											},
 										},
 									},
 								},
@@ -229,15 +367,24 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 1, column 1",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 1, column 1",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 1, column 2",
+											&types.Paragraph{
+												Elements: []interface{}{
+
+													&types.StringElement{
+														Content: "row 1, column 2",
+													},
+												},
 											},
 										},
 									},
@@ -247,15 +394,23 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 2, column 1",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 1",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 2, column 2",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 2",
+													},
+												},
 											},
 										},
 									},
@@ -268,7 +423,7 @@ var _ = Describe("tables", func() {
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("table with title, headers, id and multiple roles, stretch", func() {
+		It("with title, headers, id and multiple roles, stretch", func() {
 			source := `.table title
 [#anchor.role1%autowidth.stretch]
 |===
@@ -293,15 +448,23 @@ var _ = Describe("tables", func() {
 							Cells: []*types.TableCell{
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "header 1 ",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 1",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "header 2",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 2",
+												},
+											},
 										},
 									},
 								},
@@ -312,15 +475,23 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 1, column 1",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 1, column 1",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 1, column 2",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 1, column 2",
+													},
+												},
 											},
 										},
 									},
@@ -330,15 +501,23 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 2, column 1",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 1",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "row 2, column 2",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 2",
+													},
+												},
 											},
 										},
 									},
@@ -349,6 +528,202 @@ var _ = Describe("tables", func() {
 				},
 				ElementReferences: types.ElementReferences{
 					"anchor": "table title",
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with unseparated rows", func() {
+			source := `|===
+|header 1 |header 2
+
+|row 1, column 1
+|row 1, column 2
+|row 2, column 1
+|row 2, column 2
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 1",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 2",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 1, column 1",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 1, column 2",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 1",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 2",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with unbalanced rows", func() {
+			source := `|===
+|header 1 |header 2
+
+|row 1, column 1
+
+|row 1, column 2
+|row 2, column 1 |row 2, column 2
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 1",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "header 2",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 1, column 1",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 1, column 2",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 1",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "row 2, column 2",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -474,22 +849,34 @@ var _ = Describe("tables", func() {
 							Cells: []*types.TableCell{
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Dir (X,Y,Z) ",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Dir (X,Y,Z)",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Num Cells ",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Num Cells",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Size",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Size",
+												},
+											},
 										},
 									},
 								},
@@ -500,47 +887,34 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "X ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "X",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "10 ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "10",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "0.1",
-											},
-										},
-									},
-								},
-							},
-							{
-								Cells: []*types.TableCell{
-									{
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "Y ",
-											},
-										},
-									},
-									{
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "5  ",
-											},
-										},
-									},
-									{
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "0.2",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "0.1",
+													},
+												},
 											},
 										},
 									},
@@ -550,22 +924,71 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "Z ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "Y",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "10 ",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "5",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "0.1",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "0.2",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "Z",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "10",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "0.1",
+													},
+												},
 											},
 										},
 									},
@@ -623,22 +1046,34 @@ var _ = Describe("tables", func() {
 							Cells: []*types.TableCell{
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Column 1, header row",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Column 1, header row",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Column 2, header row",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Column 2, header row",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Column 3, header row",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Column 3, header row",
+												},
+											},
 										},
 									},
 								},
@@ -649,22 +1084,34 @@ var _ = Describe("tables", func() {
 								Cells: []*types.TableCell{
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "Cell in column 1, row 2",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "Cell in column 1, row 2",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "Cell in column 2, row 2",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "Cell in column 2, row 2",
+													},
+												},
 											},
 										},
 									},
 									{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "Cell in column 3, row 2",
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "Cell in column 3, row 2",
+													},
+												},
 											},
 										},
 									},
@@ -675,22 +1122,316 @@ var _ = Describe("tables", func() {
 							Cells: []*types.TableCell{
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Column 1, footer row",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Column 1, footer row",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Column 2, footer row",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Column 2, footer row",
+												},
+											},
 										},
 									},
 								},
 								{
 									Elements: []interface{}{
-										&types.StringElement{
-											Content: "Column 3, footer row",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Column 3, footer row",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("columns with header and alignment changes", func() {
+			source := `[cols="2*^.^,<,.>,>"]
+|===
+|h1|h2|h3|h4|h5
+
+|one|two|three|four|five
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 2,
+									HAlign:     "^",
+									VAlign:     "^",
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     "<",
+									VAlign:     "<",
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     "<",
+									VAlign:     ">",
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     ">",
+									VAlign:     "<",
+									Weight:     1,
+								},
+							},
+						},
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h1",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h2",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h3",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h4",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "h5",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "one",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "two",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "three",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "four",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "five",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with basic image blocks in cells", func() {
+			source := `[cols="2*^"]
+|===
+a|
+image::image.png[]
+a|
+image::another-image.png[]
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 2,
+									HAlign:     types.HAlignCenter,
+									VAlign:     types.VAlignTop,
+									Weight:     1,
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Format: "a",
+										Elements: []interface{}{
+											&types.ImageBlock{
+												Location: &types.Location{
+													Path: "image.png",
+												},
+											},
+										},
+									},
+									{
+										Format: "a",
+										Elements: []interface{}{
+											&types.ImageBlock{
+												Location: &types.Location{
+													Path: "another-image.png",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("with image blocks with attributes in cells", func() {
+			source := `[cols="2*^"]
+|===
+a|
+[#id]
+.A title
+image::image.png[]
+a|
+[#another-id]
+.Another title
+image::another-image.png[]
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 2,
+									HAlign:     types.HAlignCenter,
+									VAlign:     types.VAlignTop,
+									Weight:     1,
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										Format: "a",
+										Elements: []interface{}{
+											&types.ImageBlock{
+												Attributes: types.Attributes{
+													types.AttrID:    "id",
+													types.AttrTitle: "A title",
+												},
+												Location: &types.Location{
+													Path: "image.png",
+												},
+											},
+										},
+									},
+									{
+										Format: "a",
+										Elements: []interface{}{
+											&types.ImageBlock{
+												Attributes: types.Attributes{
+													types.AttrID:    "another-id",
+													types.AttrTitle: "Another title",
+												},
+												Location: &types.Location{
+													Path: "another-image.png",
+												},
+											},
 										},
 									},
 								},

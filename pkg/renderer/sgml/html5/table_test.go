@@ -622,4 +622,74 @@ var _ = Describe("tables", func() {
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
 	// TODO: Verify styles -- it's verified in the parser for now, but we still need to implement styles.
+
+	It("with basic image blocks in cells", func() {
+		source := `[cols="2*^"]
+|===
+a|
+image::image.png[]
+a|
+image::another-image.png[]
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock">
+<div class="content">
+<img src="image.png" alt="image">
+</div>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="imageblock">
+<div class="content">
+<img src="another-image.png" alt="another-image">
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("with image blocks with attributes in cells", func() {
+		source := `[cols="2*^"]
+|===
+a|
+[#id]
+.A title
+image::image.png[]
+a|
+[#another-id]
+.Another title
+image::another-image.png[]
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div id="id" class="imageblock">
+<div class="content">
+<img src="image.png" alt="image">
+</div>
+<div class="title">Figure 1. A title</div>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div class="content"><div id="another-id" class="imageblock">
+<div class="content">
+<img src="another-image.png" alt="another-image">
+</div>
+<div class="title">Figure 2. Another title</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
 })

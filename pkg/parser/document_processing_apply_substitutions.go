@@ -48,6 +48,9 @@ func applySubstitutionsOnFragment(ctx *ParseContext, f types.DocumentFragment) t
 }
 
 func applySubstitutionsOnElement(ctx *ParseContext, element interface{}, opts ...Option) error {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("applying substitutions on element of type '%T'", element)
+	}
 	switch b := element.(type) {
 	case *types.FrontMatter:
 		ctx.attributes.setAll(b.Attributes)
@@ -124,12 +127,19 @@ func applySubstitutionsOnTable(ctx *ParseContext, t *types.Table, opts ...Option
 		if err != nil {
 			return err
 		}
-		t.Attributes[types.AttrCols] = values
+		if err := t.SetColumnDefinitions(values); err != nil {
+			return err
+		}
 	}
 	if t.Header != nil {
 		for _, c := range t.Header.Cells {
-			if err := applySubstitutionsOnWithElements(ctx, c, opts...); err != nil {
-				return err
+			// assume elements to process were wrapped in a paragraph at parse time
+			if len(c.Elements) == 1 {
+				if p, ok := c.Elements[0].(*types.Paragraph); ok {
+					if err := applySubstitutionsOnWithElements(ctx, p, opts...); err != nil {
+						return err
+					}
+				}
 			}
 		}
 	}
@@ -216,9 +226,6 @@ func applySubstitutionsOnWithElements(ctx *ParseContext, b types.WithElements, o
 			return err
 		}
 	case *types.Paragraph:
-		b.Elements, err = processSubstitutions(ctx, b.Elements, subs, opts...)
-		return err
-	case *types.TableCell:
 		b.Elements, err = processSubstitutions(ctx, b.Elements, subs, opts...)
 		return err
 	default:
@@ -539,7 +546,7 @@ func serialize(content []interface{}) ([]byte, *placeholders) {
 			result.WriteString(string(element))
 		case types.RawLine:
 			result.WriteString(string(element))
-		case *types.SingleLineComment:
+		case *types.SinglelineComment:
 			// replace with placeholder
 			p := placeholders.add(element)
 			result.WriteString(p.String())

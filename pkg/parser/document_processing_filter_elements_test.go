@@ -118,12 +118,12 @@ var _ = Describe("element filters", func() {
 		actual := []interface{}{
 			&types.DocumentHeader{
 				Elements: []interface{}{
-					&types.SingleLineComment{},
+					&types.SinglelineComment{},
 					&types.AttributeDeclaration{
 						Name:  "cookie",
 						Value: "yummy",
 					},
-					&types.SingleLineComment{},
+					&types.SinglelineComment{},
 				},
 			},
 		}
@@ -142,7 +142,7 @@ var _ = Describe("element filters", func() {
 
 	It("should remove single line comment as a block", func() {
 		actual := []interface{}{
-			&types.SingleLineComment{},
+			&types.SinglelineComment{},
 			&types.Paragraph{
 				Elements: []interface{}{
 					&types.StringElement{},
@@ -164,7 +164,7 @@ var _ = Describe("element filters", func() {
 			&types.Paragraph{
 				Elements: []interface{}{
 					&types.StringElement{},
-					&types.SingleLineComment{},
+					&types.SinglelineComment{},
 				},
 			},
 		}
@@ -182,7 +182,7 @@ var _ = Describe("element filters", func() {
 		actual := []interface{}{
 			&types.Paragraph{
 				Elements: []interface{}{
-					&types.SingleLineComment{},
+					&types.SinglelineComment{},
 				},
 			},
 		}
@@ -210,7 +210,7 @@ var _ = Describe("element filters", func() {
 					&types.OrderedListElement{
 						Elements: []interface{}{
 							&types.StringElement{},
-							&types.SingleLineComment{},
+							&types.SinglelineComment{},
 						},
 					},
 				},
