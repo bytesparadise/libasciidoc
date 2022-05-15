@@ -22,7 +22,7 @@ type sgmlRenderer struct {
 	calloutList               *text.Template
 	calloutListItem           *text.Template
 	calloutRef                *text.Template
-	delimitedBlockParagraph   *text.Template
+	embeddedParagraph         *text.Template
 	documentDetails           *text.Template
 	documentAuthorDetails     *text.Template
 	externalCrossReference    *text.Template
@@ -74,6 +74,7 @@ type sgmlRenderer struct {
 	table                     *text.Template
 	tableBody                 *text.Template
 	tableCell                 *text.Template
+	tableCellBlock            *text.Template
 	tableHeader               *text.Template
 	tableHeaderCell           *text.Template
 	tableFooter               *text.Template
@@ -103,9 +104,9 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.calloutList, err = r.newTemplate("callout-list", tmpls.CalloutList, err)
 		r.calloutListItem, err = r.newTemplate("callout-list-item", tmpls.CalloutListItem, err)
 		r.calloutRef, err = r.newTemplate("callout-ref", tmpls.CalloutRef, err)
-		r.delimitedBlockParagraph, err = r.newTemplate("delimited-block-paragraph", tmpls.DelimitedBlockParagraph, err)
 		r.documentDetails, err = r.newTemplate("document-details", tmpls.DocumentDetails, err)
 		r.documentAuthorDetails, err = r.newTemplate("document-author-details", tmpls.DocumentAuthorDetails, err)
+		r.embeddedParagraph, err = r.newTemplate("embedded-paragraph", tmpls.EmbeddedParagraph, err)
 		r.exampleBlock, err = r.newTemplate("example-block", tmpls.ExampleBlock, err)
 		r.externalCrossReference, err = r.newTemplate("external-xref", tmpls.ExternalCrossReference, err)
 		r.fencedBlock, err = r.newTemplate("fenced-block", tmpls.FencedBlock, err)
@@ -155,6 +156,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.table, err = r.newTemplate("table", tmpls.Table, err)
 		r.tableBody, err = r.newTemplate("table-body", tmpls.TableBody, err)
 		r.tableCell, err = r.newTemplate("table-cell", tmpls.TableCell, err)
+		r.tableCellBlock, err = r.newTemplate("table-cell-block", tmpls.TableCellBlock, err)
 		r.tableHeader, err = r.newTemplate("table-header", tmpls.TableHeader, err)
 		r.tableHeaderCell, err = r.newTemplate("table-header-cell", tmpls.TableHeaderCell, err)
 		r.tableFooter, err = r.newTemplate("table-header", tmpls.TableFooter, err)

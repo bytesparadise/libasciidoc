@@ -34,5 +34,7 @@ const (
 
 	tableRowTmpl = "<tr>\n{{ .Content }}</tr>\n"
 
-	tableCellTmpl = "<td class=\"tableblock {{ halign .HAlign }} {{ valign .VAlign }}\"><p class=\"tableblock\">{{ .Content }}</p></td>\n"
+	tableCellTmpl = "<td class=\"tableblock {{ halign .HAlign }} {{ valign .VAlign }}\">{{ .Content }}</td>\n"
+
+	tableCellBlockTmpl = "<div class=\"content\">{{ trimLineFeedSuffix .Content }}</div>"
 )

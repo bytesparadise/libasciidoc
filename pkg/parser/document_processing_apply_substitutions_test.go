@@ -423,7 +423,12 @@ var _ = Describe("apply substitutions", func() {
 						Cells: []*types.TableCell{
 							{
 								Elements: []interface{}{
-									types.RawLine("[.{role1}]_yummy header!_"),
+									// element of header cells are wrapped in a paragraph until substitutions are applied
+									&types.Paragraph{
+										Elements: []interface{}{
+											types.RawLine("[.{role1}]_yummy header!_"),
+										},
+									},
 								},
 							},
 						},
@@ -433,7 +438,11 @@ var _ = Describe("apply substitutions", func() {
 							Cells: []*types.TableCell{
 								{
 									Elements: []interface{}{
-										types.RawLine("image:{cookie}.png[[.{role1}]_yummy row!_]"),
+										&types.Paragraph{
+											Elements: []interface{}{
+												types.RawLine("image:{cookie}.png[[.{role1}]_yummy row!_]"),
+											},
+										},
 									},
 								},
 							},
@@ -443,7 +452,11 @@ var _ = Describe("apply substitutions", func() {
 						Cells: []*types.TableCell{
 							{
 								Elements: []interface{}{
-									types.RawLine("[.{role1}]_yummy footer!_"),
+									&types.Paragraph{
+										Elements: []interface{}{
+											types.RawLine("[.{role1}]_yummy footer!_"),
+										},
+									},
 								},
 							},
 						},
@@ -464,14 +477,18 @@ var _ = Describe("apply substitutions", func() {
 						Cells: []*types.TableCell{
 							{
 								Elements: []interface{}{
-									&types.QuotedText{
-										Kind: types.SingleQuoteItalic,
-										Attributes: types.Attributes{
-											types.AttrRoles: types.Roles{"role_1"},
-										},
+									&types.Paragraph{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "yummy header!",
+											&types.QuotedText{
+												Kind: types.SingleQuoteItalic,
+												Attributes: types.Attributes{
+													types.AttrRoles: types.Roles{"role_1"},
+												},
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "yummy header!",
+													},
+												},
 											},
 										},
 									},
@@ -484,24 +501,28 @@ var _ = Describe("apply substitutions", func() {
 							Cells: []*types.TableCell{
 								{
 									Elements: []interface{}{
-										&types.InlineImage{
-											Attributes: types.Attributes{
-												types.AttrImageAlt: []interface{}{
-													&types.QuotedText{
-														Kind: types.SingleQuoteItalic,
-														Attributes: types.Attributes{
-															types.AttrRoles: types.Roles{"role_1"},
-														},
-														Elements: []interface{}{
-															&types.StringElement{
-																Content: "yummy row!",
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.InlineImage{
+													Attributes: types.Attributes{
+														types.AttrImageAlt: []interface{}{
+															&types.QuotedText{
+																Kind: types.SingleQuoteItalic,
+																Attributes: types.Attributes{
+																	types.AttrRoles: types.Roles{"role_1"},
+																},
+																Elements: []interface{}{
+																	&types.StringElement{
+																		Content: "yummy row!",
+																	},
+																},
 															},
 														},
 													},
+													Location: &types.Location{
+														Path: "yummy.png",
+													},
 												},
-											},
-											Location: &types.Location{
-												Path: "yummy.png",
 											},
 										},
 									},
@@ -513,14 +534,18 @@ var _ = Describe("apply substitutions", func() {
 						Cells: []*types.TableCell{
 							{
 								Elements: []interface{}{
-									&types.QuotedText{
-										Kind: types.SingleQuoteItalic,
-										Attributes: types.Attributes{
-											types.AttrRoles: types.Roles{"role_1"},
-										},
+									&types.Paragraph{
 										Elements: []interface{}{
-											&types.StringElement{
-												Content: "yummy footer!",
+											&types.QuotedText{
+												Kind: types.SingleQuoteItalic,
+												Attributes: types.Attributes{
+													types.AttrRoles: types.Roles{"role_1"},
+												},
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "yummy footer!",
+													},
+												},
 											},
 										},
 									},

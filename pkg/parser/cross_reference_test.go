@@ -293,15 +293,23 @@ some content`
 									Cells: []*types.TableCell{
 										{
 											Elements: []interface{}{
-												&types.StringElement{
-													Content: "A ",
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "A",
+														},
+													},
 												},
 											},
 										},
 										{
 											Elements: []interface{}{
-												&types.StringElement{
-													Content: "B",
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "B",
+														},
+													},
 												},
 											},
 										},
@@ -364,15 +372,23 @@ some content`
 													Cells: []*types.TableCell{
 														{
 															Elements: []interface{}{
-																&types.StringElement{
-																	Content: "A ",
+																&types.Paragraph{
+																	Elements: []interface{}{
+																		&types.StringElement{
+																			Content: "A",
+																		},
+																	},
 																},
 															},
 														},
 														{
 															Elements: []interface{}{
-																&types.StringElement{
-																	Content: "B",
+																&types.Paragraph{
+																	Elements: []interface{}{
+																		&types.StringElement{
+																			Content: "B",
+																		},
+																	},
 																},
 															},
 														},

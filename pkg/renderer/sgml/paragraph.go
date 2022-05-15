@@ -37,7 +37,7 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p *types.Paragraph
 			// do nothing, will move to default below
 		}
 	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
-		return r.renderEmbeddedParagraph(ctx, p)
+		return r.renderEmbeddedParagraph(ctx, p, "")
 	}
 	// default case
 	return r.renderRegularParagraph(ctx, p)
@@ -97,7 +97,7 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p *type
 	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.Paragraph, class string) (string, error) {
 	log.Debug("rendering paragraph within a delimited block or a list")
 	result := &strings.Builder{}
 
@@ -110,16 +110,18 @@ func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.P
 		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
 	}
 
-	err = r.delimitedBlockParagraph.Execute(result, struct {
+	err = r.embeddedParagraph.Execute(result, struct {
 		Context    *renderer.Context
-		ID         string
-		Title      string
+		ID         string // TODO: not used in template?
+		Title      string // TODO: not used in template?
 		CheckStyle string
+		Class      string
 		Content    string
 	}{
 		Context:    ctx,
 		ID:         r.renderElementID(p.Attributes),
 		Title:      title,
+		Class:      class,
 		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 		Content:    string(content),
 	})

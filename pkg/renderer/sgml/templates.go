@@ -12,7 +12,7 @@ type Templates struct {
 	CalloutList               string
 	CalloutListItem           string
 	CalloutRef                string
-	DelimitedBlockParagraph   string
+	EmbeddedParagraph         string
 	DocumentDetails           string
 	DocumentAuthorDetails     string
 	ExampleBlock              string
@@ -64,6 +64,7 @@ type Templates struct {
 	Table                     string
 	TableBody                 string
 	TableCell                 string
+	TableCellBlock            string
 	TableHeader               string
 	TableHeaderCell           string
 	TableFooter               string

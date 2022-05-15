@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"math"
 	"net/url"
 	"sort"
 	"strconv"
@@ -873,7 +874,7 @@ func NewListElements(elements []interface{}) (*ListElements, error) {
 				attrs = nil
 			}
 			elmts = append(elmts, e)
-		case RawLine, *SingleLineComment:
+		case RawLine, *SinglelineComment:
 			// append to last element
 			if len(elmts) > 0 {
 				switch elmt := elmts[len(elmts)-1].(type) {
@@ -1682,7 +1683,7 @@ func NewParagraph(elements ...interface{}) (*Paragraph, error) {
 		if l, ok := l.(RawLine); ok {
 			// add `\n` unless the we're on the last element
 			if i < len(elements)-1 {
-				elements[i] = RawLine(l + "\n")
+				elements[i] = RawLine(l + "\n") // TODO: add `NewRawlines()` func which takes care of appending with "\n"
 			}
 		}
 	}
@@ -2604,15 +2605,15 @@ func NewBlankLine() (*BlankLine, error) {
 // Comments
 // ------------------------------------------
 
-// SingleLineComment a single line comment
-type SingleLineComment struct {
+// SinglelineComment a single line comment
+type SinglelineComment struct {
 	Content string
 }
 
-// NewSingleLineComment initializes a new single line content
-func NewSingleLineComment(content string) (*SingleLineComment, error) {
+// NewSinglelineComment initializes a new single line content
+func NewSinglelineComment(content string) (*SinglelineComment, error) {
 	// log.Debugf("initializing a single line comment with content: '%s'", content)
-	return &SingleLineComment{
+	return &SinglelineComment{
 		Content: content,
 	}, nil
 }
@@ -3680,22 +3681,60 @@ type Table struct {
 	Rows       []*TableRow
 }
 
-func NewTable(header interface{}, elements []interface{}) (*Table, error) {
-	rows := make([]*TableRow, len(elements))
-	for i, row := range elements {
-		r, ok := row.(*TableRow)
-		if !ok {
-			return nil, fmt.Errorf("unexpected type of table row: '%T'", r)
+func NewTable(lines []interface{}) (*Table, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new table from %s", spew.Sdump(lines))
+	}
+	if len(lines) == 0 {
+		return &Table{}, nil
+	}
+	header, rows := scanTableElements(lines)
+	return &Table{
+		Header: header,
+		Rows:   rows,
+	}, nil
+}
+
+func scanTableElements(rows []interface{}) (*TableRow, []*TableRow) {
+	// check first 2 elements, expecting a row followed by a blankline as the optional header row
+	if len(rows) > 2 {
+		if header, ok := rows[0].(*TableRow); ok {
+			if _, ok := rows[1].(*BlankLine); ok {
+				rows := organizeTableCells(rows[2:], len(header.Cells))
+				return header, rows
+			}
 		}
-		rows[i] = r
 	}
-	t := &Table{
-		Rows: rows,
+	rowLength := 1
+	for _, e := range rows {
+		if r, ok := e.(*TableRow); ok {
+			rowLength = len(r.Cells)
+			break
+		}
 	}
-	if header, ok := header.(*TableRow); ok {
-		t.Header = header
+	body := organizeTableCells(rows, rowLength)
+	return nil, body
+}
+
+func organizeTableCells(elements []interface{}, rowLength int) []*TableRow {
+	// add all cells in a single slice, then group by rows
+	cells := make([]*TableCell, 0, len(elements))
+	for _, e := range elements {
+		if e, ok := e.(*TableRow); ok { // silently ignore 'BlankLines'
+			cells = append(cells, e.Cells...)
+		}
 	}
-	return t, nil
+	log.Debugf("dispatching %d cells in rows of %d cells", len(cells), rowLength)
+	rows := make([]*TableRow, 0, int(len(cells)/rowLength)+1)
+	for len(cells) > 0 {
+		r := &TableRow{}
+		rows = append(rows, r)
+		l := int(math.Min(float64(len(cells)), float64(rowLength)))
+		r.Cells = make([]*TableCell, l)
+		copy(r.Cells, cells[:l])
+		cells = cells[l:]
+	}
+	return rows
 }
 
 var _ WithElements = &Table{}
@@ -3736,10 +3775,15 @@ func (t *Table) GetAttributes() Attributes {
 // AddAttributes adds the attributes of this CalloutListElement
 func (t *Table) AddAttributes(attributes Attributes) {
 	t.Attributes = t.Attributes.AddAll(attributes)
+	t.reorganizeRows()
 }
 
 func (t *Table) SetAttributes(attributes Attributes) {
 	t.Attributes = attributes
+	t.reorganizeRows()
+}
+
+func (t *Table) reorganizeRows() {
 	// if `header` option, then make sure that the first row is the header
 	if t.Header == nil && len(t.Rows) > 0 && t.Attributes.HasOption("header") {
 		t.Header = t.Rows[0]
@@ -3750,6 +3794,53 @@ func (t *Table) SetAttributes(attributes Attributes) {
 		t.Footer = t.Rows[len(t.Rows)-1]
 		t.Rows = t.Rows[:len(t.Rows)-1]
 	}
+}
+
+func (t *Table) SetColumnDefinitions(cols interface{}) error {
+	switch cols := cols.(type) {
+	case []interface{}:
+		t.Attributes[AttrCols] = cols
+		size := 0
+		for _, c := range cols {
+			if c, ok := c.(*TableColumn); ok {
+				size += c.Multiplier
+			}
+		}
+		log.Debugf("re-organizing table in rows of %d cells", size)
+		// reorganize rows/columns
+
+		rows, header, footer := t.rows()
+		t.Rows = organizeTableCells(rows, size)
+		// restore header and footer
+		if header || t.Attributes.HasOption("header") {
+			t.Header = t.Rows[0]
+			t.Rows = t.Rows[1:]
+		}
+		if footer || t.Attributes.HasOption("footer") {
+			t.Footer = t.Rows[len(t.Rows)-1]
+			t.Rows = t.Rows[:len(t.Rows)-1]
+		}
+		return nil
+	default:
+		return fmt.Errorf("unexpected type of column definitions: '%T'", cols)
+	}
+}
+
+func (t *Table) rows() ([]interface{}, bool, bool) {
+	rows := make([]interface{}, 0, len(t.Rows)+2)
+	var header, footer bool
+	if t.Header != nil {
+		header = true
+		rows = append(rows, t.Header)
+	}
+	for _, r := range t.Rows {
+		rows = append(rows, r)
+	}
+	if t.Footer != nil {
+		footer = true
+		rows = append(rows, t.Footer)
+	}
+	return rows, header, footer
 }
 
 var _ Referencable = &Table{}
@@ -3923,6 +4014,13 @@ func NewTableRow(elements []interface{}) (*TableRow, error) {
 	}, nil
 }
 
+func (r *TableRow) AddCell(c *TableCell) {
+	if r.Cells == nil {
+		r.Cells = []*TableCell{}
+	}
+	r.Cells = append(r.Cells, c)
+}
+
 var _ WithElements = &TableRow{}
 
 func (r *TableRow) GetAttributes() Attributes {
@@ -3959,15 +4057,34 @@ func (r *TableRow) SetElements(elements []interface{}) error {
 }
 
 type TableCell struct {
+	Format   string
 	Elements []interface{}
 }
 
-func NewTableCell(content RawContent) (*TableCell, error) {
+func NewInlineTableCell(content RawLine) (*TableCell, error) {
 	return &TableCell{
 		Elements: []interface{}{
 			content,
 		},
 	}, nil
+}
+
+func NewMultilineTableCell(elements []interface{}, format interface{}) (*TableCell, error) {
+	for i, l := range elements {
+		if l, ok := l.(RawLine); ok {
+			// add `\n` unless the we're on the last element
+			if i < len(elements)-1 {
+				elements[i] = RawLine(l + "\n")
+			}
+		}
+	}
+	c := &TableCell{
+		Elements: elements,
+	}
+	if format, ok := format.(string); ok {
+		c.Format = format
+	}
+	return c, nil
 }
 
 var _ WithElements = &TableCell{}

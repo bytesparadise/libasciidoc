@@ -33,10 +33,11 @@ func NewRenderer(t Templates) Renderer {
 		templates: t,
 		// Establish some default function handlers.
 		functions: text.FuncMap{
-			"escape":        EscapeString,
-			"halign":        halign,
-			"valign":        valign,
-			"lastInStrings": lastInStrings,
+			"escape":             EscapeString,
+			"halign":             halign,
+			"valign":             valign,
+			"lastInStrings":      lastInStrings,
+			"trimLineFeedSuffix": trimLineFeedSuffix,
 		},
 	}
 	return r
@@ -107,6 +108,10 @@ func valign(v types.VAlign) string {
 
 func lastInStrings(slice []string, index int) bool {
 	return index == len(slice)-1
+}
+
+func trimLineFeedSuffix(content string) string {
+	return strings.TrimSuffix(content, "\n")
 }
 
 // Templates returns the Templates being used by this renderer.

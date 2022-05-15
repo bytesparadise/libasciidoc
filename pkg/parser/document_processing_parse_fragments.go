@@ -58,17 +58,11 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 				f.Elements = []interface{}{element}
 			}
 			for _, e := range f.Elements { // TODO: change the grammar rules of these delimited blocks to avoid 2nd parsing
-				switch e := e.(type) {
-				case *types.DelimitedBlock:
-					switch e.Kind {
-					case types.Example, types.Quote, types.Sidebar:
-						if err := reparseDelimitedBlockElements(ctx, e); err != nil {
-							// log the error, but keep the delimited block empty so we can carry on with the whole processing
-							log.WithError(err).Error("unable to parse content of delimited block")
-							e.Elements = nil
-							break
-						}
-					}
+				if err := reparseElement(ctx, e); err != nil {
+					log.WithError(err).Errorf("unable to parse content of element of type '%T'", e)
+					f.Error = err
+					f.Elements = nil
+					break
 				}
 			}
 			if log.IsLevelEnabled(log.DebugLevel) {
@@ -86,8 +80,87 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 	return resultStream
 }
 
-func reparseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) error {
-	if err := parseDelimitedBlockElements(ctx, b); err != nil {
+func reparseElement(ctx *ParseContext, element interface{}) error {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("reparsing element of type '%T'", element)
+	}
+	switch e := element.(type) {
+	case *types.ListElements:
+		for _, e := range e.Elements {
+			if err := reparseElement(ctx, e); err != nil {
+				return err
+			}
+		}
+	case *types.ListElementContinuation:
+		if err := reparseElement(ctx, e.Element); err != nil {
+			return err
+		}
+	case *types.Table:
+		if err := reparseTable(ctx, e); err != nil {
+			return err
+		}
+	case *types.DelimitedBlock:
+		switch e.Kind {
+		case types.Example, types.Quote, types.Sidebar:
+			if err := reparseDelimitedBlock(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func reparseTable(ctx *ParseContext, t *types.Table) error {
+	if t.Header != nil {
+		for _, c := range t.Header.Cells {
+			if err := reparseTableCell(ctx, c); err != nil {
+				return err
+			}
+		}
+	}
+	if t.Rows != nil {
+		for _, r := range t.Rows {
+			for _, c := range r.Cells {
+				if err := reparseTableCell(ctx, c); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	if t.Footer != nil {
+		for _, c := range t.Footer.Cells {
+			if err := reparseTableCell(ctx, c); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func reparseTableCell(ctx *ParseContext, c *types.TableCell) error {
+	log.Debugf("reparsing content of table cell")
+	switch c.Format {
+	case "a":
+		opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"))
+		elements, err := reparseElements(c.Elements, opts...)
+		if err != nil {
+			return err
+		}
+		c.Elements = elements
+	default:
+		// wrap in a paragraph
+		c.Elements = []interface{}{
+			&types.Paragraph{
+				Elements: c.Elements,
+			},
+		}
+	}
+
+	return nil
+}
+
+func reparseDelimitedBlock(ctx *ParseContext, b *types.DelimitedBlock) error {
+	if err := reparseDelimitedBlockElements(ctx, b); err != nil {
 		return err
 	}
 	log.Debugf("reparsing content of delimited block of kind '%s'", b.Kind)
@@ -96,7 +169,7 @@ func reparseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) e
 		case *types.DelimitedBlock:
 			switch e.Kind {
 			case types.Example, types.Quote, types.Sidebar:
-				if err := reparseDelimitedBlockElements(ctx, e); err != nil {
+				if err := reparseDelimitedBlock(ctx, e); err != nil {
 					return err
 				}
 			}
@@ -105,26 +178,33 @@ func reparseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) e
 	return nil
 }
 
-func parseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) error {
+// TODO: merge into `reparseDelimitedBlock` above?
+func reparseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) error {
 	log.Debugf("parsing elements of delimited block of kind '%s'", b.Kind)
-	// TODO: use real Substitution?
-	content, placeholders := serialize(b.Elements)
 	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
+	elements, err := reparseElements(b.Elements, opts...)
+	if err != nil {
+		return err
+	}
+	b.Elements = elements
+	return nil
+}
+
+func reparseElements(elements []interface{}, opts ...Option) ([]interface{}, error) {
+	content, placeholders := serialize(elements)
 	elmts, err := Parse("", content, opts...)
 	if err != nil {
-		return errors.Wrap(err, "unable to parse content") // ignore error (malformed content)
+		return nil, errors.Wrap(err, "unable to parse elements") // ignore error (malformed content)
 	}
-	switch e := elmts.(type) {
+	switch elmts := elmts.(type) {
 	case []interface{}:
 		// case where last element is `nil` because the parser found a standlone attribute
-		if len(e) > 0 && e[len(e)-1] == nil {
-			b.Elements = e[:len(e)-1]
-			return nil
+		if len(elmts) > 0 && elmts[len(elmts)-1] == nil {
+			elmts = elmts[:len(elmts)-1]
 		}
-		b.Elements = placeholders.restore(e)
-		return nil
+		return placeholders.restore(elmts), nil
 	default:
-		return errors.Errorf("unexpected type of result after parsing elements of delimited block: '%T'", e)
+		return nil, errors.Errorf("unexpected type of result after parsing elements: '%T'", elmts)
 	}
 }
 

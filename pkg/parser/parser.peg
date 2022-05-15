@@ -148,26 +148,26 @@ FileIncludeAttributes <- LongHandAttributes
 
 // extra entrypoint
 LineRanges <- value:(MultipleLineRanges 
-    / MultiLineRange 
-    / SingleLineRange 
+    / MultilineRange 
+    / SinglelineRange 
     ) EOF { // must make sure that the whole content is parsed
         return value, nil
     }
 
-MultipleLineRanges <- first:(MultiLineRange / SingleLineRange) 
+MultipleLineRanges <- first:(MultilineRange / SinglelineRange) 
     others:(
         ("," / ";") // at this point, we already got rid of the surrounding quotes, so we can accept both `,` and `;`
-        other:(MultiLineRange / SingleLineRange) {
+        other:(MultilineRange / SinglelineRange) {
             return other, nil
     })+ {
         return append([]interface{}{first}, others.([]interface{})...), nil
     }
 
-MultiLineRange <- start:(Integer) ".." end:(Integer) { // eg: lines=12..14
+MultilineRange <- start:(Integer) ".." end:(Integer) { // eg: lines=12..14
         return types.NewLineRange(start.(int), end.(int))
     } 
 
-SingleLineRange <- singleline:(Integer) { // eg: lines=12
+SinglelineRange <- singleline:(Integer) { // eg: lines=12
         return types.NewLineRange(singleline.(int), singleline.(int))
     }
 
@@ -241,7 +241,7 @@ DocumentFragment <-
         / ThematicBreak // must appear before ListElement :/
         / ListElements
         / Table
-        / SingleLineComment
+        / SinglelineComment
         / AdmonitionParagraph
         / LiteralParagraph
         / FrontMatter
@@ -1110,11 +1110,11 @@ DocumentHeader <-
         return types.NewDocumentHeader(info, attrs)
     }
 
-DocumentHeaderAttributes <- (AttributeDeclaration / AttributeReset / SingleLineComment / CommentBlock / BlankLine)* 
+DocumentHeaderAttributes <- (AttributeDeclaration / AttributeReset / SinglelineComment / CommentBlock / BlankLine)* 
 
 DocumentInformation <-
     title:(DocumentTitle)
-    (SingleLineComment / CommentBlock)* // ignored in the returned element
+    (SinglelineComment / CommentBlock)* // ignored in the returned element
     authorsAndRevision:(DocumentAuthorsAndRevision)? 
     {
         return types.NewDocumentInformation(title.([]interface{}), authorsAndRevision)
@@ -1127,7 +1127,7 @@ DocumentTitle <-
 
 DocumentAuthorsAndRevision <- 
     authors:(DocumentAuthors)
-    (SingleLineComment / CommentBlock)* // ignored in the returned element
+    (SinglelineComment / CommentBlock)* // ignored in the returned element
     revision:(DocumentRevision)? {
         return types.NewDocumentAuthorsAndRevision(authors.(types.DocumentAuthors), revision)
     }
@@ -1522,7 +1522,7 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
             element:LabeledListElement {
                 return append(attributes.([]interface{}), element), nil
             })
-        / SingleLineComment
+        / SinglelineComment
         / ( BlankLine+
             attributes:(BlockAttributes)* 
             element:LiteralParagraph {
@@ -1545,7 +1545,7 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
     }
 
 ListElementParagraphLine <- 
-    SingleLineComment {
+    SinglelineComment {
         return nil, nil // taking a shortcut to ignore commented out content and avoid having empty paragraphs
     }
     / (
@@ -1597,7 +1597,7 @@ ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
         / ThematicBreak // must appear before ListElement :/
         / ImageBlock
         / Table
-        / SingleLineComment
+        / SinglelineComment
         / AdmonitionParagraph
         / LiteralParagraph
         / ListContinuationParagraph // must be the last one... 
@@ -1813,7 +1813,7 @@ ShortcutParagraph <-
         !BlockAttributes
         !BlockDelimiter
         !ListElementContinuationMarker
-        line:(SingleLineComment / ParagraphRawLine) {
+        line:(SinglelineComment / ParagraphRawLine) {
             return line, nil
         })* 
     {
@@ -1827,7 +1827,7 @@ Paragraph <-
         !BlankLine
         !BlockAttributes
         !ListElementContinuationMarker
-        line:(SingleLineComment / ParagraphRawLine) {
+        line:(SinglelineComment / ParagraphRawLine) {
             return line, nil
         })* 
     {
@@ -1840,7 +1840,7 @@ AdmonitionParagraph <-
     firstLine:(ParagraphRawLine) 
     otherLines:(
         !ListElementContinuationMarker
-        line:(SingleLineComment / ParagraphRawLine) {
+        line:(SinglelineComment / ParagraphRawLine) {
             return line, nil
         })*
     { 
@@ -1860,7 +1860,7 @@ ParagraphRawLine <-
 
 LiteralParagraph <- 
     firstLine:(LiteralParagraphRawLine) 
-    otherLines:(SingleLineComment / ParagraphRawLine)*
+    otherLines:(SinglelineComment / ParagraphRawLine)*
     { 
         return types.NewLiteralParagraph(types.LiteralBlockWithSpacesOnFirstLine, append([]interface{}{firstLine}, otherLines.([]interface{})...))
     }
@@ -2768,14 +2768,14 @@ SpecialCharacter <-
 // -------------------------------------------------------------------------------------
 // Single Line Comment
 // -------------------------------------------------------------------------------------
-SingleLineComment <- SingleLineCommentDelimiter content:(SingleLineCommentContent) EOL {
-        return types.NewSingleLineComment(content.(string))
+SinglelineComment <- SinglelineCommentDelimiter content:(SinglelineCommentContent) EOL {
+        return types.NewSinglelineComment(content.(string))
     }
 
 // can be `//` but not `////` (comment block delimiter)
-SingleLineCommentDelimiter <- "//" !"//" 
+SinglelineCommentDelimiter <- "//" !"//" 
 
-SingleLineCommentContent <- [^\r\n]* {
+SinglelineCommentContent <- [^\r\n]* {
         return string(c.text), nil
     }
 
@@ -2881,12 +2881,10 @@ TypographicQuote <-
 // -------------------------------------------------------------------------------------
 Table <- 
     TableStartDelimiter
-    header:(TableHeader)?
-    rows:(TableRow)*
+    lines:(BlankLine / TableLine)*
     TableEndDelimiter {
-        return types.NewTable(header, rows.([]interface{}))
+        return types.NewTable(lines.([]interface{}))
     }
-
 
 TableDelimiter <- "|===" Space* EOL 
 
@@ -2894,52 +2892,61 @@ TableStartDelimiter <- TableDelimiter
 
 TableEndDelimiter <- TableDelimiter / EOF
 
-TableHeader <- 
-    // header cells MUST be on the same line
-    cells:(HeaderCell)+ EOL
-    BlankLine+ {
-        return types.NewTableRow(cells.([]interface{}))
-    }
-
-HeaderCell <- 
-    "|" Space* 
-    content:(CellContent?) {
-        return types.NewTableCell(content.(types.RawContent))
-    }
-
-TableRow <- MultiLineTableRow / SingleLineTableRow
-
-SingleLineTableRow <- 
+TableLine <-
     !TableEndDelimiter
-    cells:(TableCell)+ EOL
-    BlankLine* {
-        return types.NewTableRow(cells.([]interface{}))
+    content:(
+        (cells:(InlineTableCells / MultilineTableCells) {
+            return types.NewTableRow(cells.([]interface{}))
+        })
+        / BlankLine
+    ) {
+        return content, nil
     }
 
-MultiLineTableRow <- 
-    !TableEndDelimiter
-    cells:(cell:(TableCell) EOL {
-        return cell, nil
-    })+ 
-    (BlankLine+ / &TableEndDelimiter) // last series of cells may not be followed by a blankline
+InlineTableCells <- cells:(InlineTableCell)+ EOL { 
+    return cells, nil
+}
+
+InlineTableCell <- 
+    "|" Space* content:(InlineTableCellContent) // no format specifier supported when cells are "inline"
     {
-        return types.NewTableRow(cells.([]interface{}))
+        return types.NewInlineTableCell(content.(types.RawLine))
     }
 
-TableCell <- 
-    !TableEndDelimiter
-    !BlankLine
-    "|" Space* content:(CellContent?) // TODO: also support cell styles
-    {
-        return types.NewTableCell(content.(types.RawContent))
-    }
-
-CellContent <- 
-    content:([^\r\n|]+ {
+InlineTableCellContent <- 
+    content:([^|\r\n]* {
         return string(c.text), nil
     }) {
-        return types.NewRawContent(content.(string))
+        return types.NewRawLine(content.(string))
     }
+
+MultilineTableCells <- cells:(MultilineTableCell)+ {
+    return cells, nil
+}
+
+MultilineTableCell <- 
+    !TableEndDelimiter
+    !BlankLine
+    format:(TableCellFormat)? "|" Space* Newline? content:(MultilineTableCellContent)
+    {
+        return types.NewMultilineTableCell(content.([]interface{}), format)
+    }
+
+MultilineTableCellContent <- 
+    (
+        !TableEndDelimiter
+        !BlankLine
+        !(format:(TableCellFormat)? "|")
+        content:([^|\r\n]* {
+            return string(c.text), nil
+        }) EOL? {
+            return types.NewRawLine(content.(string))
+        }
+    )*
+
+TableCellFormat <- [^ |\r\n]* {
+    return string(c.text), nil
+}
 
 // rule for the optional `cols` attribute on a Table
 TableColumnsAttribute <- cols:(Column)* EOF {

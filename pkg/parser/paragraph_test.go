@@ -310,7 +310,7 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 									Elements: []interface{}{
 										types.RawLine("links to {github-title}: https://github.com[{github-title}] and *<https://github.com[{github-title}]>*\n"),
 										types.RawLine("and another one using attribute substitution: {github-url}[{github-title}]...\n"),
-										&types.SingleLineComment{
+										&types.SinglelineComment{
 											Content: " a single-line comment.",
 										},
 									},

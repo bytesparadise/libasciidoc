@@ -99,7 +99,7 @@ type filterMatcher func(element interface{}) bool
 
 // singleLineCommentMatcher filters the element if it is a SingleLineComment
 var singleLineCommentMatcher filterMatcher = func(element interface{}) bool {
-	_, ok := element.(*types.SingleLineComment)
+	_, ok := element.(*types.SinglelineComment)
 	return ok
 }
 
