@@ -164,5 +164,9 @@ func (r *sgmlRenderer) renderImageAlt(attrs types.Attributes, path string) (stri
 		return "", errors.Wrap(err, "unable to render image")
 	}
 	// return base path without its extension
-	return strings.TrimSuffix(filepath.Base(u.Path), filepath.Ext(u.Path)), nil
+	result := strings.TrimSuffix(filepath.Base(u.Path), filepath.Ext(u.Path))
+	// replace separators
+	result = strings.ReplaceAll(result, "-", " ")
+	result = strings.ReplaceAll(result, "_", " ")
+	return result, nil
 }

@@ -63,7 +63,7 @@ image::another-image.png[]
 </div></div></td>
 <td class="tableblock halign-center valign-top"><div class="content"><div id="another-id" class="imageblock">
 <div class="content">
-<img src="another-image.png" alt="another-image">
+<img src="another-image.png" alt="another image">
 </div>
 <div class="title">Figure 2. Another title</div>
 </div></div></td>
