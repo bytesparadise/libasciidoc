@@ -11,12 +11,22 @@ var _ = Describe("images", func() {
 
 	Context("block images", func() {
 
-		It("alone", func() {
-
-			source := "image::foo.png[]"
+		It("alone with underscores in filename", func() {
+			source := "image::an_image_here.png[]"
 			expected := `<div class="imageblock">
 <div class="content">
-<img src="foo.png" alt="foo">
+<img src="an_image_here.png" alt="an image here">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("alone with dashes in filename", func() {
+			source := "image::an-image-here.png[]"
+			expected := `<div class="imageblock">
+<div class="content">
+<img src="an-image-here.png" alt="an image here">
 </div>
 </div>
 `
