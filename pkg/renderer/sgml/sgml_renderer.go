@@ -56,6 +56,7 @@ type sgmlRenderer struct {
 	markdownQuoteBlock        *text.Template
 	markedText                *text.Template
 	monospaceText             *text.Template
+	openBlock                 *text.Template
 	orderedList               *text.Template
 	orderedListItem           *text.Template
 	paragraph                 *text.Template
@@ -138,6 +139,7 @@ func (r *sgmlRenderer) prepareTemplates() error {
 		r.markdownQuoteBlock, err = r.newTemplate("markdown-quote-block", tmpls.MarkdownQuoteBlock, err)
 		r.markedText, err = r.newTemplate("marked-text", tmpls.MarkedText, err)
 		r.monospaceText, err = r.newTemplate("monospace-text", tmpls.MonospaceText, err)
+		r.openBlock, err = r.newTemplate("open-block", tmpls.OpenBlock, err)
 		r.orderedList, err = r.newTemplate("ordered-list", tmpls.OrderedList, err)
 		r.orderedListItem, err = r.newTemplate("ordered-list-item", tmpls.OrderedListElement, err)
 		r.paragraph, err = r.newTemplate("paragraph", tmpls.Paragraph, err)

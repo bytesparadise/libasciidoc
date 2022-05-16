@@ -37,7 +37,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b *types.Delimit
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render source block title")
 	}
 
 	result := &bytes.Buffer{}

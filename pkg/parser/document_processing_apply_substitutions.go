@@ -202,7 +202,7 @@ func applySubstitutionsOnWithElements(ctx *ParseContext, b types.WithElements, o
 		return nil
 	case *types.DelimitedBlock:
 		switch b.Kind {
-		case types.Example, types.Quote, types.Sidebar:
+		case types.Example, types.Quote, types.Sidebar, types.Open: // TODO: add a func on *types.DelimitedBlock to avoid checking the exact same kinds in multiple places
 			for _, e := range b.GetElements() {
 				if err := applySubstitutionsOnElement(ctx, e, opts...); err != nil {
 					return err
@@ -779,7 +779,7 @@ func defaultSubstitutions(b types.WithElements) ([]string, error) {
 		switch b.Kind {
 		case types.Listing, types.Fenced, types.Literal:
 			return verbatimSubstitutions(), nil
-		case types.Example, types.Quote, types.Verse, types.Sidebar, types.MarkdownQuote:
+		case types.Example, types.Quote, types.Verse, types.Sidebar, types.MarkdownQuote, types.Open:
 			return normalSubstitutions(), nil
 		case types.Comment, types.Passthrough:
 			return noneSubstitutions(), nil

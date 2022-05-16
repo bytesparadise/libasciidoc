@@ -100,11 +100,8 @@ func reparseElement(ctx *ParseContext, element interface{}) error {
 			return err
 		}
 	case *types.DelimitedBlock:
-		switch e.Kind {
-		case types.Example, types.Quote, types.Sidebar:
-			if err := reparseDelimitedBlock(ctx, e); err != nil {
-				return err
-			}
+		if err := reparseDelimitedBlock(ctx, e); err != nil {
+			return err
 		}
 	}
 	return nil
@@ -160,33 +157,21 @@ func reparseTableCell(ctx *ParseContext, c *types.TableCell) error {
 }
 
 func reparseDelimitedBlock(ctx *ParseContext, b *types.DelimitedBlock) error {
-	if err := reparseDelimitedBlockElements(ctx, b); err != nil {
-		return err
-	}
-	log.Debugf("reparsing content of delimited block of kind '%s'", b.Kind)
-	for _, e := range b.Elements { // TODO: change the grammar rules of these delimited blocks to avoid 2nd parsing
-		switch e := e.(type) {
-		case *types.DelimitedBlock:
-			switch e.Kind {
-			case types.Example, types.Quote, types.Sidebar:
-				if err := reparseDelimitedBlock(ctx, e); err != nil {
-					return err
-				}
+	switch b.Kind {
+	case types.Example, types.Quote, types.Sidebar, types.Open:
+		log.Debugf("parsing elements of delimited block of kind '%s'", b.Kind)
+		opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
+		elements, err := reparseElements(b.Elements, opts...)
+		if err != nil {
+			return err
+		}
+		b.Elements = elements
+		for _, e := range b.Elements { // TODO: change the grammar rules of these delimited blocks to avoid 2nd parsing
+			if err := reparseElement(ctx, e); err != nil {
+				return err
 			}
 		}
 	}
-	return nil
-}
-
-// TODO: merge into `reparseDelimitedBlock` above?
-func reparseDelimitedBlockElements(ctx *ParseContext, b *types.DelimitedBlock) error {
-	log.Debugf("parsing elements of delimited block of kind '%s'", b.Kind)
-	opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
-	elements, err := reparseElements(b.Elements, opts...)
-	if err != nil {
-		return err
-	}
-	b.Elements = elements
 	return nil
 }
 
@@ -199,8 +184,12 @@ func reparseElements(elements []interface{}, opts ...Option) ([]interface{}, err
 	switch elmts := elmts.(type) {
 	case []interface{}:
 		// case where last element is `nil` because the parser found a standlone attribute
-		if len(elmts) > 0 && elmts[len(elmts)-1] == nil {
-			elmts = elmts[:len(elmts)-1]
+		for {
+			if len(elmts) > 0 && elmts[len(elmts)-1] == nil {
+				elmts = elmts[:len(elmts)-1]
+			} else {
+				break
+			}
 		}
 		return placeholders.restore(elmts), nil
 	default:

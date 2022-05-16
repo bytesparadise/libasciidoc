@@ -46,6 +46,7 @@ type Templates struct {
 	MarkdownQuoteBlock        string
 	MarkedText                string
 	MonospaceText             string
+	OpenBlock                 string
 	OrderedList               string
 	OrderedListElement        string
 	Paragraph                 string

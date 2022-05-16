@@ -2115,6 +2115,8 @@ const (
 	MarkdownCode string = "markdown-code"
 	// MarkdownQuote a quote block in the Markdown style
 	MarkdownQuote string = "markdown-quote"
+	// Open an Open block
+	Open string = "open"
 	// Verse a verse block
 	Verse string = "verse"
 	// Sidebar a sidebar block

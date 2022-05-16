@@ -13,7 +13,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b *types.Delimite
 	result := &strings.Builder{}
 	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render verser block")
+		return "", errors.Wrap(err, "unable to render verser block roles")
 	}
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	defer func() {
@@ -22,15 +22,15 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b *types.Delimite
 	ctx.WithinDelimitedBlock = true
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render verse block")
+		return "", errors.Wrap(err, "unable to render verse block content")
 	}
 	attribution, err := newAttribution(b)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render verse block")
+		return "", errors.Wrap(err, "unable to render verse block attribution")
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render verse block title")
 	}
 
 	err = r.verseBlock.Execute(result, struct {

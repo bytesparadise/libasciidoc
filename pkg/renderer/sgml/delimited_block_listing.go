@@ -28,7 +28,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render listing block title")
 	}
 
 	err = r.listingBlock.Execute(result, struct {

@@ -18,7 +18,7 @@ import (
 // -------------------------------------------------------------------------------------
 //
 //
-// Document Preprocessing
+// Document Preprocessing (for file inclusions)
 //
 //
 // -------------------------------------------------------------------------------------
@@ -725,6 +725,7 @@ DelimitedBlock <-
     / ListingBlock
     / LiteralBlock
     / MarkdownQuoteBlock
+    / OpenBlock
     / PassthroughBlock
     / QuoteBlock
     / SidebarBlock
@@ -779,6 +780,13 @@ ListingBlockDelimiter <-
         return string(c.text), nil
     }) Space* EOL { 
         return types.NewBlockDelimiter(types.Listing, len(delimiter.(string)), string(c.text))
+    }
+
+OpenBlockDelimiter <- 
+    delimiter:("--" { // sequence of exactly "--"
+        return string(c.text), nil
+    }) Space* EOL { 
+        return types.NewBlockDelimiter(types.Open, len(delimiter.(string)), string(c.text))
     }
 
 LiteralBlockDelimiter <- 
@@ -997,6 +1005,26 @@ MarkdownQuoteAttribution <-
     }) EOL {
         return author, nil
     }
+
+// ----------------------
+// Open Blocks
+// ----------------------
+OpenBlock <-
+    start:(OpenBlockStartDelimiter)
+    content:(OpenBlockContent)
+    end:(OpenBlockEndDelimiter)? {
+        return types.NewDelimitedBlock(types.Open, content.([]interface{}))
+    }
+
+OpenBlockStartDelimiter <- OpenBlockDelimiter
+
+OpenBlockEndDelimiter <- OpenBlockDelimiter / EOF
+
+OpenBlockContent <- 
+    (!OpenBlockEndDelimiter
+    line:(DelimitedBlockRawLine) {
+        return line, nil
+    })*
 
 // ----------------------
 // Passthrough Blocks
