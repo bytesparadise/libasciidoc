@@ -504,7 +504,7 @@ func reparseAttributes(e types.WithAttributes, subs []string, opts ...Option) er
 	}
 	for k, v := range attributes {
 		switch k {
-		case types.AttrTitle, types.AttrXRefLabel, types.AttrInlineLinkText, types.AttrImageAlt:
+		case types.AttrTitle, types.AttrXRefLabel, types.AttrInlineLinkText:
 			v, err := ReparseAttributeValue(v, subs, opts...)
 			if err != nil {
 				return err
