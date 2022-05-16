@@ -539,9 +539,6 @@ func asString(v interface{}) (string, error) {
 	switch v := v.(type) {
 	case string:
 		return v, nil
-	case RawText:
-		s, err := v.RawText()
-		return s, err
 	case []interface{}: // complex attributes are wrapped in an []interface{}
 		result := strings.Builder{}
 		for _, value := range v {

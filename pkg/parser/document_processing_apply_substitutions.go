@@ -34,11 +34,6 @@ func applySubstitutionsOnFragment(ctx *ParseContext, f types.DocumentFragment) t
 		log.Debugf("skipping substitutions because of fragment with error: %v", f.Error)
 		return f
 	}
-	// stats := &Stats{}
-	// opts := append(ctx.Opts,
-	// GlobalStore(types.AttrImagesDir, ctx.attributes.get(types.AttrImagesDir)),
-	// GlobalStore(usermacrosKey, ctx.userMacros),
-	// )
 	for i := range f.Elements {
 		if err := applySubstitutionsOnElement(ctx, f.Elements[i], ctx.Opts...); err != nil {
 			return types.NewErrorFragment(f.Position, err)
@@ -491,7 +486,6 @@ func reparseAttributesInElements(elements []interface{}, subs []string, opts ...
 			if err != nil {
 				return err
 			}
-			// e.SetAttributes(attrs) // needed?
 		}
 	}
 	return nil
@@ -542,8 +536,6 @@ func serialize(content []interface{}) ([]byte, *placeholders) {
 	result := bytes.NewBuffer(nil)
 	for _, element := range content {
 		switch element := element.(type) {
-		case types.RawContent:
-			result.WriteString(string(element))
 		case types.RawLine:
 			result.WriteString(string(element))
 		case *types.SinglelineComment:
