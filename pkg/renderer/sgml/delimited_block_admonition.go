@@ -27,11 +27,11 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.Del
 	}
 	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render admonition block roles")
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render admonition block title")
 	}
 
 	err = r.admonitionBlock.Execute(result, struct {
@@ -75,11 +75,11 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types
 	}
 	roles, err := r.renderElementRoles(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render fenced block roles")
 	}
 	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render fenced block title")
 	}
 
 	err = r.admonitionParagraph.Execute(result, struct {

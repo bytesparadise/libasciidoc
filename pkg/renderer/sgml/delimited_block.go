@@ -30,6 +30,8 @@ func (r *sgmlRenderer) renderDelimitedBlock(ctx *renderer.Context, b *types.Deli
 		return r.renderVerseBlock(ctx, b)
 	case types.Sidebar:
 		return r.renderSidebarBlock(ctx, b)
+	case types.Open:
+		return r.renderOpenBlock(ctx, b)
 	default:
 		return "", fmt.Errorf("unsupported kind of delimited block: '%s'", b.Kind)
 	}

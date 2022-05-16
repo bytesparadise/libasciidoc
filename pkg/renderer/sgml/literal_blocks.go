@@ -14,16 +14,15 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.Delimi
 	log.Debugf("rendering literal block")
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "unable to render literal block content")
 	}
-
 	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render literal block roles")
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render literal block title")
 	}
 
 	result := &strings.Builder{}

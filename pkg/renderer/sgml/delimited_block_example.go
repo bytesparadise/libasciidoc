@@ -18,20 +18,20 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 	number := 0
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render example block")
+		return "", errors.Wrap(err, "unable to render example block content")
 	}
 	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render example block")
+		return "", errors.Wrap(err, "unable to render example block roles")
 	}
 	c, found, err := b.Attributes.GetAsString(types.AttrCaption)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render example block")
+		return "", errors.Wrap(err, "unable to render example block caption")
 	}
 	if !found {
 		c, found, err = ctx.Attributes.GetAsString(types.AttrExampleCaption)
 		if err != nil {
-			return "", errors.Wrap(err, "unable to render example block")
+			return "", errors.Wrap(err, "unable to render example block caption")
 		}
 		if found && c != "" {
 			c += " {counter:example-number}. "
@@ -44,7 +44,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render example block title")
 	}
 	caption.WriteString(c)
 	err = r.exampleBlock.Execute(result, struct {
@@ -72,15 +72,15 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Pa
 	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render quote paragraph lines")
+		return "", errors.Wrap(err, "unable to render example paragraph content")
 	}
 	roles, err := r.renderElementRoles(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render example paragraph roles")
 	}
 	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render example paragraph title")
 	}
 	err = r.exampleBlock.Execute(result, struct {
 		Context       *renderer.Context

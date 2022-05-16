@@ -156,7 +156,7 @@ func (r *sgmlRenderer) renderElementTitle(ctx *renderer.Context, attrs types.Att
 	case []interface{}:
 		return r.renderElements(ctx, title)
 	default:
-		return "", errors.New("unable to render title")
+		return "", errors.Errorf("unable to render title of type '%T'", title)
 	}
 }
 

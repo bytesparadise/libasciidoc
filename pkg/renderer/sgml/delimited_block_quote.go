@@ -13,19 +13,19 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b *types.Delimite
 	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render example block content")
+		return "", errors.Wrap(err, "unable to render quote block content")
 	}
 	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render quote block roles")
 	}
 	attribution, err := newAttribution(b)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block content")
+		return "", errors.Wrap(err, "unable to render quote block atribution")
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render quote block title")
 	}
 
 	err = r.quoteBlock.Execute(result, struct {
