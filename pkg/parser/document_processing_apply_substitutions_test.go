@@ -333,19 +333,7 @@ var _ = Describe("apply substitutions", func() {
 					Elements: []interface{}{
 						&types.InlineImage{
 							Attributes: types.Attributes{
-								types.AttrImageAlt: []interface{}{
-									&types.QuotedText{
-										Kind: types.SingleQuoteItalic,
-										Attributes: types.Attributes{
-											types.AttrRoles: types.Roles{"role_1"},
-										},
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "yummy!",
-											},
-										},
-									},
-								},
+								types.AttrImageAlt: "[.role_1]_yummy!_",
 							},
 							Location: &types.Location{
 								Path: "yummy.png",
@@ -505,19 +493,7 @@ var _ = Describe("apply substitutions", func() {
 											Elements: []interface{}{
 												&types.InlineImage{
 													Attributes: types.Attributes{
-														types.AttrImageAlt: []interface{}{
-															&types.QuotedText{
-																Kind: types.SingleQuoteItalic,
-																Attributes: types.Attributes{
-																	types.AttrRoles: types.Roles{"role_1"},
-																},
-																Elements: []interface{}{
-																	&types.StringElement{
-																		Content: "yummy row!",
-																	},
-																},
-															},
-														},
+														types.AttrImageAlt: "[.role_1]_yummy row!_",
 													},
 													Location: &types.Location{
 														Path: "yummy.png",
