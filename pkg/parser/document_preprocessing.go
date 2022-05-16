@@ -47,12 +47,10 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 			switch e := element.(type) {
 			case *types.AttributeDeclaration:
 				ctx.attributes.set(e.Name, e.Value)
-				t, _ := e.RawText()
-				b.WriteString(t)
+				b.WriteString(e.RawText())
 			case *types.AttributeReset:
 				ctx.attributes.unset(e.Name)
-				t, _ := e.RawText()
-				b.WriteString(t)
+				b.WriteString(e.RawText())
 			case *types.RawSection:
 				b.WriteString(ctx.levelOffsets.apply(e))
 			case *types.FileInclusion:
@@ -64,8 +62,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 			case *types.BlockDelimiter:
 				t.push(types.BlockDelimiterKind(e.Kind), e.Length)
 				ctx.Opts = append(ctx.Opts, withinDelimitedBlock(t.withinDelimitedBlock()))
-				t, _ := e.RawText()
-				b.WriteString(t)
+				b.WriteString(e.RawText())
 			case types.ConditionalInclusion:
 				if content, ok := e.SingleLineContent(); ok {
 					if e.Eval(ctx.attributes.allAttributes()) {
@@ -295,13 +292,6 @@ func absoluteOffset(offset int) *levelOffset {
 	}
 }
 
-func (l levelOffset) String() string {
-	if l.absolute {
-		return strconv.Itoa(l.value)
-	}
-	return fmt.Sprintf("+%d", l.value)
-}
-
 // lineRanges parses the `lines` attribute if it exists in the given FileInclusion, and returns
 // a corresponding `LineRanges` (or `false` if parsing failed to invalid input)
 func lineRanges(incl *types.FileInclusion) (types.LineRanges, bool, error) {
@@ -361,12 +351,10 @@ func readWithinLines(scanner *bufio.Scanner, content *bytes.Buffer, lineRanges t
 		}
 		// TODO: stop reading if current line above highest range
 		if lineRanges.Match(line) {
-			_, err := content.Write(scanner.Bytes())
-			if err != nil {
+			if _, err := content.Write(scanner.Bytes()); err != nil {
 				return err
 			}
-			_, err = content.WriteString("\n")
-			if err != nil {
+			if _, err := content.WriteString("\n"); err != nil {
 				return err
 			}
 		}

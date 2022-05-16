@@ -23,12 +23,6 @@ type Stringer interface {
 	Stringify() string
 }
 
-// RawText interface for the elements that can provide the rawText text representation of this element
-// as it was (supposedly) written in the source document
-type RawText interface {
-	RawText() (string, error)
-}
-
 // WithAttributes base interface for types on which attributes can be substituted
 type WithAttributes interface {
 	GetAttributes() Attributes
@@ -585,10 +579,8 @@ func NewAttributeDeclaration(name string, value interface{}, rawText string) (*A
 	}, nil
 }
 
-var _ RawText = &AttributeDeclaration{}
-
-func (a *AttributeDeclaration) RawText() (string, error) {
-	return a.rawText, nil
+func (a *AttributeDeclaration) RawText() string {
+	return a.rawText
 }
 
 // AttributeReset the type for AttributeReset
@@ -606,10 +598,8 @@ func NewAttributeReset(attrName string, rawText string) (*AttributeReset, error)
 	}, nil
 }
 
-var _ RawText = &AttributeReset{}
-
-func (a *AttributeReset) RawText() (string, error) {
-	return a.rawText, nil
+func (a *AttributeReset) RawText() string {
+	return a.rawText
 }
 
 // AttributeReference the type for AttributeReference
@@ -630,13 +620,6 @@ func NewAttributeSubstitution(name, rawText string) (interface{}, error) {
 			Name:    name,
 			rawText: rawText},
 		nil
-}
-
-var _ RawText = &AttributeReference{}
-
-// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
-func (s *AttributeReference) RawText() (string, error) {
-	return s.rawText, nil
 }
 
 // PredefinedAttribute a special kind of attribute substitution, which
@@ -663,12 +646,6 @@ func NewCounterSubstitution(name string, hidden bool, val interface{}, rawText s
 		Value:   val,
 		rawText: rawText,
 	}, nil
-}
-
-var _ RawText = &CounterSubstitution{}
-
-func (s *CounterSubstitution) RawText() (string, error) {
-	return s.rawText, nil
 }
 
 // ------------------------------------------
@@ -759,41 +736,6 @@ type List struct {
 	Kind       ListKind
 	Attributes Attributes
 	Elements   []ListElement
-}
-
-var _ WithElements = &List{}
-
-func (l *List) GetAttributes() Attributes {
-	return l.Attributes
-}
-
-func (l *List) AddAttributes(attrs Attributes) {
-	l.Attributes.AddAll(attrs)
-}
-
-func (l *List) SetAttributes(attrs Attributes) {
-	l.Attributes.SetAll(attrs)
-}
-
-func (l *List) GetElements() []interface{} {
-	elements := make([]interface{}, len(l.Elements))
-	for i, e := range l.Elements {
-		elements[i] = e
-	}
-	return elements
-}
-
-func (l *List) SetElements(elements []interface{}) error {
-	elmts := make([]ListElement, len(elements))
-	for i, e := range elements {
-		if e, ok := e.(ListElement); ok {
-			elmts[i] = e
-			continue
-		}
-		return fmt.Errorf("unexpected type of list element: '%T'", e)
-	}
-	l.Elements = elmts
-	return nil
 }
 
 // CanAddElement checks if the given element can be added
@@ -2212,10 +2154,8 @@ func NewMarkdownCodeBlockDelimiter(language, rawText string) (*BlockDelimiter, e
 	}, nil
 }
 
-var _ RawText = &BlockDelimiter{}
-
-func (b *BlockDelimiter) RawText() (string, error) {
-	return b.rawText, nil
+func (b *BlockDelimiter) RawText() string {
+	return b.rawText
 }
 
 // DelimitedBlock the structure for the Listing blocks
@@ -2696,37 +2636,6 @@ func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (*QuotedText, e
 	}, nil
 }
 
-var _ RawText = &QuotedText{}
-
-// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
-func (t *QuotedText) RawText() (string, error) {
-	result := strings.Builder{}
-	result.WriteString(string(t.Kind)) // opening delimiter
-	s, err := toRawText(t.Elements)
-	if err != nil {
-		return "", err
-	}
-	result.WriteString(s)
-	result.WriteString(string(t.Kind)) // closing delimiter
-	return result.String(), nil
-}
-
-func toRawText(elements []interface{}) (string, error) {
-	result := strings.Builder{}
-	for _, e := range elements {
-		r, ok := e.(RawText)
-		if !ok {
-			return "", fmt.Errorf("element of type '%T' cannot be converted to string", e)
-		}
-		s, err := r.RawText()
-		if err != nil {
-			return "", err
-		}
-		result.WriteString(s)
-	}
-	return result.String(), nil
-}
-
 var _ WithElements = &QuotedText{}
 
 // GetElements returns this QuotedText's elements
@@ -2820,31 +2729,6 @@ func NewInlinePassthrough(kind PassthroughKind, elements []interface{}) (*Inline
 		Kind:     kind,
 		Elements: merge(elements...),
 	}, nil
-}
-
-var _ RawText = &InlinePassthrough{}
-
-// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
-func (p *InlinePassthrough) RawText() (string, error) {
-	result := strings.Builder{}
-	switch p.Kind {
-	case PassthroughMacro:
-		result.WriteString("pass:[") // opening delimiter
-	default:
-		result.WriteString(string(p.Kind)) // opening delimiter
-	}
-	e, err := toRawText(p.Elements)
-	if err != nil {
-		return "", err
-	}
-	result.WriteString(e)
-	switch p.Kind {
-	case PassthroughMacro:
-		result.WriteString("]") // closing delimiter
-	default:
-		result.WriteString(string(p.Kind)) // closing delimiter
-	}
-	return result.String(), nil
 }
 
 // ------------------------------------------
@@ -3254,17 +3138,6 @@ func (l RawLine) trim() RawLine {
 }
 
 // -------------------------------------------------------------------------------------
-// Raw Content
-// -------------------------------------------------------------------------------------
-type RawContent string
-
-// NewRawContent returns a new RawContent wrapper for the given string
-func NewRawContent(content string) (RawContent, error) {
-	// log.Debugf("new line: '%v'", content)
-	return RawContent(content), nil
-}
-
-// -------------------------------------------------------------------------------------
 // LineRanges: one or more ranges of lines to limit the content of a file to include
 // -------------------------------------------------------------------------------------
 
@@ -3611,13 +3484,6 @@ func NewSpecialCharacter(name string) (*SpecialCharacter, error) {
 	}, nil
 }
 
-var _ RawText = SpecialCharacter{}
-
-// RawText returns the rawText text representation of this element as it was (supposedly) written in the source document
-func (c SpecialCharacter) RawText() (string, error) {
-	return c.Name, nil
-}
-
 // Symbol a sequence of characters, which may get a special treatment later during rendering
 // Eg: `(C)`, `(TM)`, `...`, etc.
 type Symbol struct {
@@ -3638,12 +3504,6 @@ func NewSymbolWithForeword(name, foreword string) (*Symbol, error) {
 		Name:   name,
 		Prefix: foreword,
 	}, nil
-}
-
-var _ RawText = &Symbol{}
-
-func (s *Symbol) RawText() (string, error) {
-	return s.Name, nil
 }
 
 // ------------------------------------------------------------------------------------
@@ -4012,13 +3872,6 @@ func NewTableRow(elements []interface{}) (*TableRow, error) {
 	return &TableRow{
 		Cells: cells,
 	}, nil
-}
-
-func (r *TableRow) AddCell(c *TableCell) {
-	if r.Cells == nil {
-		r.Cells = []*TableCell{}
-	}
-	r.Cells = append(r.Cells, c)
 }
 
 var _ WithElements = &TableRow{}
