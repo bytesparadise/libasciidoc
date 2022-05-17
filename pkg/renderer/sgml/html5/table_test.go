@@ -9,11 +9,32 @@ import (
 
 var _ = Describe("tables", func() {
 
-	It("1-line table with 2 cells", func() {
+	It("1-line table with 2 cells and default border styling", func() {
 		source := `|===
 | *foo* foo  | _bar_  
 |===`
 		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>foo</strong> foo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>bar</em></p></td>
+</tr>
+</tbody>
+</table>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
+
+	It("1-line table with 2 cells and custom border styling", func() {
+		source := `[frame=ends,grid=rows]
+|===
+| *foo* foo  | _bar_  
+|===`
+		expected := `<table class="tableblock frame-ends grid-rows stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
