@@ -16,14 +16,19 @@ var _ = Describe("tables", func() {
 
 	Context("in final documents", func() {
 
-		It("1-line table with 2 cells", func() {
-			source := `|===
+		It("1-line table with 2 cells and custom border styling", func() {
+			source := `[frame=ends,grid=rows]
+|===
 | *cookie* cookie  | _pasta_  
 |===
 `
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrFrame: "ends",
+							types.AttrGrid:  "rows",
+						},
 						Rows: []*types.TableRow{
 							{
 								Cells: []*types.TableCell{
