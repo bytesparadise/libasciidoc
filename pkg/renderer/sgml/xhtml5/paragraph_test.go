@@ -521,7 +521,7 @@ int main(int argc, char **argv);
 `
 			expected := `<div class="listingblock">
 <div class="content">
-<pre class="chroma highlight"><code data-lang="c"><span class="tok-kt">int</span> <span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span> <span class="tok-n">argc</span><span class="tok-p">,</span> <span class="tok-kt">char</span> <span class="tok-o">**</span><span class="tok-n">argv</span><span class="tok-p">);</span></code></pre>
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-line"><span class="tok-cl"><span class="tok-kt">int</span> <span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span> <span class="tok-n">argc</span><span class="tok-p">,</span> <span class="tok-kt">char</span> <span class="tok-o">**</span><span class="tok-n">argv</span><span class="tok-p">);</span></span></span></code></pre>
 </div>
 </div>
 `

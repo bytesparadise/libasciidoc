@@ -3,7 +3,7 @@ module github.com/bytesparadise/libasciidoc
 go 1.11
 
 require (
-	github.com/alecthomas/chroma v0.7.1
+	github.com/alecthomas/chroma v0.10.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/google/go-cmp v0.5.5
 	github.com/kr/text v0.2.0 // indirect
