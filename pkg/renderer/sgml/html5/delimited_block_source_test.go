@@ -169,6 +169,70 @@ printf("Hello world!\n"); // <1>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with highlighter with custom prefix and callouts", func() {
+			source := `:source-highlighter: chroma
+:chroma-class-prefix: myprefix-
+[source, c]
+----
+#include <stdio.h>
+
+printf("Hello world!\n"); // <1>
+<a>link</a>
+----
+<1> A greeting
+`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="myprefix-line"><span class="myprefix-cl"><span class="myprefix-cp">#include</span> <span class="myprefix-cpf">&lt;stdio.h&gt;</span></span></span>
+
+<span class="myprefix-line"><span class="myprefix-cl"><span class="myprefix-n">printf</span><span class="myprefix-p">(</span><span class="myprefix-s">&#34;Hello world!</span><span class="myprefix-se">\n</span><span class="myprefix-s">&#34;</span><span class="myprefix-p">);</span> <span class="myprefix-c1">// 
+</span></span></span><b class="conum">(1)</b>
+<span class="myprefix-line"><span class="myprefix-cl"><span class="myprefix-o">&lt;</span><span class="myprefix-n">a</span><span class="myprefix-o">&gt;</span><span class="myprefix-n">link</span><span class="myprefix-o">&lt;/</span><span class="myprefix-n">a</span><span class="myprefix-o">&gt;</span></span></span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A greeting</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with highlighter without custom prefix and callouts", func() {
+			source := `:source-highlighter: chroma
+:chroma-class-prefix:
+[source, c]
+----
+#include <stdio.h>
+
+printf("Hello world!\n"); // <1>
+<a>link</a>
+----
+<1> A greeting
+`
+			expected := `<div class="listingblock">
+<div class="content">
+<pre class="chroma highlight"><code data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span></span></span>
+
+<span class="line"><span class="cl"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello world!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span> <span class="c1">// 
+</span></span></span><b class="conum">(1)</b>
+<span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">a</span><span class="o">&gt;</span><span class="n">link</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span></span></span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A greeting</p>
+</li>
+</ol>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("with other content", func() {
 			source := `----
   a<<b

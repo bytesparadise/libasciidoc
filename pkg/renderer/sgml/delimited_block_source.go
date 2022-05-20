@@ -106,7 +106,7 @@ func (r *sgmlRenderer) renderSourceBlockElements(ctx *renderer.Context, b *types
 		style = styles.Get(s)
 	}
 	options := []html.Option{
-		html.ClassPrefix("tok-"),
+		html.ClassPrefix(ctx.Attributes.GetAsStringWithDefault(types.AttrChromaClassPrefix, "tok-")),
 		html.PreventSurroundingPre(true),
 	}
 	// extra option: inline CSS instead of classes
