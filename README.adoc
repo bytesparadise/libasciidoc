@@ -16,7 +16,7 @@ Although it does not support the full Asciidoc/Asciidoctor syntax, Libasciidoc a
 * Document authors and revision
 * Attribute declaration and substitution
 * Paragraphs and admonition paragraphs
-* Delimited Blocks (fenced blocks, listing blocks, example blocks, comment blocks, quoted blocks, sidebar blocks, verse blocks)
+* Delimited Blocks (fenced blocks, listing blocks, example blocks, comment blocks, quoted blocks, sidebar blocks, verse blocks, open blocks)
 * Source code highlighting of delimited blocks (use either `chroma` or `pygments` as the `source-highlighter`)
 * Literal blocks (paragraph starting with a space, with the `+++....+++` delimiter or with the `[literal]` attribute)
 * Quoted text (bold, italic, monospace, marked, superscript and subscript) and substitution prevention using the backslash (`\`) character
@@ -38,10 +38,29 @@ Although it does not support the full Asciidoc/Asciidoctor syntax, Libasciidoc a
 * Table of contents
 * YAML front-matter
 
-
 See also the link:LIMITATIONS.adoc[known limitations] page for differences between Asciidoc/Asciidoctor and Libasciidoc.
 
 Further elements will be supported in the future. Feel free to open issues https://github.com/bytesparadise/libasciidoc/issues[here] to help prioritizing the upcoming work.
+
+
+=== Syntax Highlighting
+
+When enabled, syntax highlighting in `[source]` blocks is backed by the https://github.com/alecthomas/chroma[Chroma libray]. 
+The defaut class prefix is `tok-`, and it can be overridden at the document level using the `chroma-class-prefix` attribute, or from the command line interface:
+
+[source]
+----
+:chroma-class-prefix: myprefix- <1>
+:chroma-class-prefix: <2>
+----
+
+<1> classes with a custom prefix
+<2> classes without any prefix
+
+```
+$ libasciidoc -o - -a chroma-class-prefix=myprefix- mydoc.adoc
+```
+
 
 == Output Formats (backend)
 

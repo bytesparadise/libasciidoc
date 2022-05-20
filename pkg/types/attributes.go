@@ -20,6 +20,8 @@ const (
 	AttrDescription = "description"
 	// AttrSyntaxHighlighter the attribute to define the syntax highlighter on code source blocks
 	AttrSyntaxHighlighter = "source-highlighter"
+	// AttrChromaClassPrefix the class prefix used by Chroma when rendering source code (default: `tok-`)
+	AttrChromaClassPrefix = "chroma-class-prefix"
 	// AttrID the key to retrieve the ID
 	AttrID = "id"
 	// AttrIDPrefix the key to retrieve the ID Prefix
