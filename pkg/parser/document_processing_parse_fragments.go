@@ -19,7 +19,7 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			resultStream <- types.NewErrorFragment(types.Position{}, err)
 			return
 		}
-		p := newParser(ctx.filename, b, ctx.Opts...) // we want to parse block attributes to detect AttributeReferences
+		p := newParser(ctx.filename, b, ctx.opts...) // we want to parse block attributes to detect AttributeReferences
 		if err := p.setup(g); err != nil {
 			resultStream <- types.NewErrorFragment(types.Position{}, err)
 			return
@@ -138,7 +138,7 @@ func reparseTableCell(ctx *ParseContext, c *types.TableCell) error {
 	log.Debugf("reparsing content of table cell")
 	switch c.Format {
 	case "a":
-		opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"))
+		opts := append(ctx.opts, Entrypoint("DelimitedBlockElements"))
 		elements, err := reparseElements(c.Elements, opts...)
 		if err != nil {
 			return err
@@ -160,7 +160,7 @@ func reparseDelimitedBlock(ctx *ParseContext, b *types.DelimitedBlock) error {
 	switch b.Kind {
 	case types.Example, types.Quote, types.Sidebar, types.Open:
 		log.Debugf("parsing elements of delimited block of kind '%s'", b.Kind)
-		opts := append(ctx.Opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
+		opts := append(ctx.opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
 		elements, err := reparseElements(b.Elements, opts...)
 		if err != nil {
 			return err

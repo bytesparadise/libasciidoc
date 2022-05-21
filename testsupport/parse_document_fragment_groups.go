@@ -11,8 +11,7 @@ import (
 // ParseDocumentFragments parses the actual source with the options
 func ParseDocumentFragments(actual string, options ...parser.Option) ([]types.DocumentFragment, error) {
 	r := strings.NewReader(actual)
-	ctx := parser.NewParseContext(configuration.NewConfiguration())
-	ctx.Opts = append(ctx.Opts, options...)
+	ctx := parser.NewParseContext(configuration.NewConfiguration(), options...)
 	done := make(chan interface{})
 	defer close(done)
 	// ctx.Opts = append(ctx.Opts, parser.Debug(true))
