@@ -81,7 +81,6 @@ var _ = Describe("images", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 		It("with custom caption", func() {
-			// TODO: split on multiple lines for readability
 			source := ".Image Title\nimage::foo.png[foo image, 600, 400,caption=\"Bar A. \"]"
 			expected := `<div class="imageblock">
 <div class="content">
