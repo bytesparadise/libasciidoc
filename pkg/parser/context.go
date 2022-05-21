@@ -11,25 +11,27 @@ import (
 
 type ParseContext struct {
 	filename     string
-	Opts         []Option // TODO: unexport this field?
+	opts         []Option
 	levelOffsets levelOffsets
 	attributes   *contextAttributes
 	userMacros   map[string]configuration.MacroTemplate
 	counters     map[string]interface{}
 }
 
-func NewParseContext(config *configuration.Configuration, opts ...Option) *ParseContext {
+func NewParseContext(config *configuration.Configuration, options ...Option) *ParseContext {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("new parser context with attributes: %s", spew.Sdump(config.Attributes))
 	}
-	opts = append(opts, Entrypoint("DocumentFragment"))
-	opts = append(opts, GlobalStore(frontMatterKey, true))
-	opts = append(opts, GlobalStore(documentHeaderKey, true))
-	opts = append(opts, GlobalStore(enabledSubstitutions, []string{AttributeRefs}))
-	opts = append(opts, GlobalStore(usermacrosKey, config.Macros))
+	opts := []Option{
+		Entrypoint("DocumentFragment"),
+		GlobalStore(frontMatterKey, true),
+		GlobalStore(documentHeaderKey, true),
+		GlobalStore(enabledSubstitutions, []string{AttributeRefs}),
+		GlobalStore(usermacrosKey, config.Macros)}
+	opts = append(opts, options...)
 	return &ParseContext{
 		filename:     config.Filename,
-		Opts:         opts,
+		opts:         opts,
 		levelOffsets: []*levelOffset{},
 		attributes:   newContextAttributes(config.Attributes),
 		userMacros:   config.Macros,
@@ -40,7 +42,7 @@ func NewParseContext(config *configuration.Configuration, opts ...Option) *Parse
 func (c *ParseContext) Clone() *ParseContext {
 	return &ParseContext{
 		filename:     c.filename,
-		Opts:         options(c.Opts).clone(),
+		opts:         options(c.opts).clone(),
 		levelOffsets: c.levelOffsets.clone(),
 		attributes:   c.attributes.clone(),
 		userMacros:   c.userMacros,

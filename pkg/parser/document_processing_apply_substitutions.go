@@ -35,7 +35,7 @@ func applySubstitutionsOnFragment(ctx *ParseContext, f types.DocumentFragment) t
 		return f
 	}
 	for i := range f.Elements {
-		if err := applySubstitutionsOnElement(ctx, f.Elements[i], ctx.Opts...); err != nil {
+		if err := applySubstitutionsOnElement(ctx, f.Elements[i], ctx.opts...); err != nil {
 			return types.NewErrorFragment(f.Position, err)
 		}
 	}
@@ -53,13 +53,13 @@ func applySubstitutionsOnElement(ctx *ParseContext, element interface{}, opts ..
 	case *types.AttributeDeclaration:
 		ctx.attributes.set(b.Name, b.Value)
 		if b.Name == types.AttrExperimental {
-			ctx.Opts = append(ctx.Opts, enableExperimentalMacros(true))
+			ctx.opts = append(ctx.opts, enableExperimentalMacros(true))
 		}
 		return nil
 	case *types.AttributeReset:
 		ctx.attributes.unset(b.Name)
 		if b.Name == types.AttrExperimental {
-			ctx.Opts = append(ctx.Opts, enableExperimentalMacros(false))
+			ctx.opts = append(ctx.opts, enableExperimentalMacros(false))
 		}
 		return nil
 	case *types.DocumentHeader:

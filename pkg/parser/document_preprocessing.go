@@ -35,7 +35,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 	t := newBlockDelimiterTracker()
 	for scanner.Scan() {
 		line := scanner.Bytes()
-		element, err := Parse("", line, append(ctx.Opts, Entrypoint("DocumentRawLine"))...)
+		element, err := Parse("", line, append(ctx.opts, Entrypoint("DocumentRawLine"))...)
 		if err != nil {
 			// log.Error(err)
 			// content of line was not relevant in the context of preparsing (ie, it's a regular line), so let's keep it as-is
@@ -61,7 +61,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 				b.WriteString(f)
 			case *types.BlockDelimiter:
 				t.push(types.BlockDelimiterKind(e.Kind), e.Length)
-				ctx.Opts = append(ctx.Opts, withinDelimitedBlock(t.withinDelimitedBlock()))
+				ctx.opts = append(ctx.opts, withinDelimitedBlock(t.withinDelimitedBlock()))
 				b.WriteString(e.RawText())
 			case types.ConditionalInclusion:
 				if content, ok := e.SingleLineContent(); ok {
@@ -86,7 +86,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 // fragment, making it potentially big, but at the same time we ensure that the context
 // of the inclusion (for example, within a delimited block) is not lost.
 func includeFile(ctx *ParseContext, incl *types.FileInclusion) (string, error) {
-	ctx.Opts = append(ctx.Opts, GlobalStore(documentHeaderKey, false))
+	ctx.opts = append(ctx.opts, GlobalStore(documentHeaderKey, false))
 	if l, ok := incl.GetLocation().Path.([]interface{}); ok {
 		l, _, err := replaceAttributeRefsInSlice(ctx, l, noneSubstitutions())
 		if err != nil {
@@ -101,7 +101,7 @@ func includeFile(ctx *ParseContext, incl *types.FileInclusion) (string, error) {
 	if !adoc {
 		return string(content), nil
 	}
-	ctx.Opts = append(ctx.Opts, sectionEnabled())
+	ctx.opts = append(ctx.opts, sectionEnabled())
 	return preprocess(ctx, bytes.NewReader(content))
 }
 
