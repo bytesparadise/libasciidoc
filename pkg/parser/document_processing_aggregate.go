@@ -56,7 +56,6 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 					return nil, err
 				}
 			case *types.DocumentHeader:
-				// TODO: is it needed in this pipeline stage?
 				for _, elmt := range e.Elements {
 					switch attr := elmt.(type) {
 					case *types.AttributeDeclaration:

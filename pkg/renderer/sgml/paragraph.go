@@ -105,22 +105,14 @@ func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.P
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
 	}
-	title, err := r.renderElementTitle(ctx, p.Attributes)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
-	}
 
 	err = r.embeddedParagraph.Execute(result, struct {
 		Context    *renderer.Context
-		ID         string // TODO: not used in template?
-		Title      string // TODO: not used in template?
 		CheckStyle string
 		Class      string
 		Content    string
 	}{
 		Context:    ctx,
-		ID:         r.renderElementID(p.Attributes),
-		Title:      title,
 		Class:      class,
 		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 		Content:    string(content),
