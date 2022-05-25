@@ -91,7 +91,7 @@ func reparseElement(ctx *ParseContext, element interface{}) error {
 				return err
 			}
 		}
-	case *types.ListElementContinuation:
+	case *types.ListContinuation:
 		if err := reparseElement(ctx, e.Element); err != nil {
 			return err
 		}

@@ -322,7 +322,7 @@ func (h *DocumentHeader) AddAttributes(attributes Attributes) {
 	h.Attributes = h.Attributes.AddAll(attributes)
 }
 
-// ReplaceAttributes replaces the attributes in this section
+// SetAttributes sets the attributes in this element
 func (h *DocumentHeader) SetAttributes(attributes Attributes) {
 	h.Attributes = attributes
 	if _, exists := h.Attributes[AttrID]; exists {
@@ -745,7 +745,7 @@ func (l *List) CanAddElement(element interface{}) bool {
 		// any listelement can be added if there was no blankline before
 		// otherwise, only accept list element with attribute if there is no blankline before
 		return e.ListKind() == l.Kind && e.matchesStyle(l.LastElement()) // TODO: compare to `FirstElement` is enough and faster
-	case *ListElementContinuation:
+	case *ListContinuation:
 		return true
 	default:
 		return false
@@ -767,7 +767,7 @@ func (l *List) AddElement(element interface{}) error {
 			}
 			return nil
 		}
-	case *ListElementContinuation:
+	case *ListContinuation:
 		return l.LastElement().AddElement(e.Element)
 	}
 
@@ -828,7 +828,7 @@ func NewListElements(elements []interface{}) (*ListElements, error) {
 					return nil, errors.Errorf("unable to attach element of type '%T' in a list", e)
 				}
 			}
-		case *ListElementContinuation:
+		case *ListContinuation:
 			attrs = nil           // couldn't attach attribute to element, so discard it
 			if e.Element != nil { // only retain list element continuations with actual content
 				elmts = append(elmts, e)
@@ -921,21 +921,21 @@ func NewList(element ListElement) (*List, error) {
 	return list, nil
 }
 
-type ListElementContinuation struct {
+type ListContinuation struct {
 	Offset  int
 	Element interface{}
 }
 
-func NewListElementContinuation(offset int, Element interface{}) (*ListElementContinuation, error) {
-	return &ListElementContinuation{
+func NewListContinuation(offset int, Element interface{}) (*ListContinuation, error) {
+	return &ListContinuation{
 		Offset:  offset,
 		Element: Element,
 	}, nil
 }
 
-var _ WithElementAddition = &ListElementContinuation{}
+var _ WithElementAddition = &ListContinuation{}
 
-func (c *ListElementContinuation) AddElement(element interface{}) error {
+func (c *ListContinuation) AddElement(element interface{}) error {
 	if e, ok := c.Element.(WithElementAddition); ok {
 		return e.AddElement(element)
 	}
@@ -1011,17 +1011,17 @@ func (e *CalloutListElement) ListKind() ListKind {
 	return CalloutListKind
 }
 
-// GetAttributes returns the attributes of this CalloutListElement
+// GetAttributes returns the attributes of this element
 func (e *CalloutListElement) GetAttributes() Attributes {
 	return e.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (e *CalloutListElement) AddAttributes(attributes Attributes) {
 	e.Attributes = e.Attributes.AddAll(attributes)
 }
 
-// SetAttributes sets the attributes of this CalloutListElement
+// SetAttributes sets the attributes of this element
 func (e *CalloutListElement) SetAttributes(attributes Attributes) {
 	e.Attributes = attributes
 }
@@ -1161,18 +1161,18 @@ func (e *OrderedListElement) AddElement(element interface{}) error {
 
 var _ WithAttributes = &OrderedListElement{}
 
-// GetAttributes returns this list item's attributes
+// GetAttributes returns this element's attributes
 func (e *OrderedListElement) GetAttributes() Attributes {
 	return e.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (e *OrderedListElement) AddAttributes(attributes Attributes) {
 	e.Attributes = e.Attributes.AddAll(attributes)
 	e.mapAttributes()
 }
 
-// SetAttributes sets the attributes in this list item
+// SetAttributes sets the attributes in this element
 func (e *OrderedListElement) SetAttributes(attributes Attributes) {
 	e.Attributes = attributes
 	e.mapAttributes()
@@ -1327,18 +1327,18 @@ func (e *UnorderedListElement) SetElements(elements []interface{}) error {
 
 var _ WithAttributes = &UnorderedListElement{}
 
-// GetAttributes returns this list item's attributes
+// GetAttributes returns this element's attributes
 func (e *UnorderedListElement) GetAttributes() Attributes {
 	return e.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (e *UnorderedListElement) AddAttributes(attributes Attributes) {
 	e.Attributes = e.Attributes.AddAll(attributes)
 	e.mapAttributes()
 }
 
-// SetAttributes replaces the attributes in this list item
+// SetAttributes replaces the attributes in this element
 func (e *UnorderedListElement) SetAttributes(attributes Attributes) {
 	e.Attributes = attributes
 	e.mapAttributes()
@@ -1568,18 +1568,18 @@ func (e *LabeledListElement) SetElements(elements []interface{}) error {
 
 var _ WithAttributes = &LabeledListElement{}
 
-// GetAttributes returns this list item's attributes
+// GetAttributes returns this element's attributes
 func (e *LabeledListElement) GetAttributes() Attributes {
 	return e.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (e *LabeledListElement) AddAttributes(attributes Attributes) {
 	e.Attributes = e.Attributes.AddAll(attributes)
 	e.mapAttributes()
 }
 
-// ReplaceAttributes replaces the attributes in this list item
+// SetAttributes sets the attributes in this element
 func (e *LabeledListElement) SetAttributes(attributes Attributes) {
 	e.Attributes = attributes
 	e.mapAttributes()
@@ -1619,7 +1619,7 @@ type Paragraph struct {
 }
 
 // NewParagraph initializes a new `Paragraph`
-func NewParagraph(elements ...interface{}) (*Paragraph, error) {
+func NewParagraph(style interface{}, elements ...interface{}) (*Paragraph, error) {
 	// log.Debugf("new paragraph with attributes: '%v'", attributes)
 	for i, l := range elements {
 		if l, ok := l.(RawLine); ok {
@@ -1629,13 +1629,19 @@ func NewParagraph(elements ...interface{}) (*Paragraph, error) {
 			}
 		}
 	}
-	return &Paragraph{
+	p := &Paragraph{
 		Elements: elements,
-	}, nil
+	}
+	if style, ok := style.(string); ok {
+		p.AddAttributes(Attributes{
+			AttrStyle: style,
+		})
+	}
+	return p, nil
 }
 
 func NewAdmonitionParagraph(kind string, elements []interface{}) (*Paragraph, error) {
-	p, _ := NewParagraph(elements...)
+	p, _ := NewParagraph(kind, elements...)
 	p.Attributes = Attributes{
 		AttrStyle: kind,
 	}
@@ -1643,7 +1649,7 @@ func NewAdmonitionParagraph(kind string, elements []interface{}) (*Paragraph, er
 }
 
 func NewLiteralParagraph(kind string, elements []interface{}) (*Paragraph, error) {
-	p, _ := NewParagraph(elements...)
+	p, _ := NewParagraph(kind, elements...)
 	p.Attributes = Attributes{
 		AttrStyle:            Literal,
 		AttrLiteralBlockType: kind,
@@ -1681,13 +1687,13 @@ func (p *Paragraph) GetAttributes() Attributes {
 	return p.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (p *Paragraph) AddAttributes(attributes Attributes) {
 	p.Attributes = p.Attributes.AddAll(attributes)
 	p.mapAttributes()
 }
 
-// ReplaceAttributes replaces the attributes in this paragraph
+// SetAttributes sets the attributes in this element
 func (p *Paragraph) SetAttributes(attributes Attributes) {
 	p.Attributes = attributes
 	p.mapAttributes()
@@ -1828,7 +1834,7 @@ func (x *ExternalCrossReference) AddAttributes(attributes Attributes) {
 	x.Attributes = x.Attributes.AddAll(attributes)
 }
 
-// ReplaceAttributes replaces the attributes in this paragraph
+// SetAttributes sets the attributes in this element
 func (x *ExternalCrossReference) SetAttributes(attributes Attributes) {
 	x.Attributes = x.Attributes.SetAll(attributes)
 }
@@ -1904,7 +1910,7 @@ func NewImageBlock(location *Location, inlineAttributes Attributes) (*ImageBlock
 
 var _ WithAttributes = &ImageBlock{}
 
-// GetAttributes returns this list item's attributes
+// GetAttributes returns this element's attributes
 func (i *ImageBlock) GetAttributes() Attributes {
 	return i.Attributes
 }
@@ -1914,7 +1920,7 @@ func (i *ImageBlock) AddAttributes(attributes Attributes) {
 	i.Attributes = i.Attributes.AddAll(attributes)
 }
 
-// SetAttributes sets the attributes in this image
+// SetAttributes sets the attributes in this element
 func (i *ImageBlock) SetAttributes(attributes Attributes) {
 	i.Attributes = attributes
 }
@@ -1951,12 +1957,12 @@ func (i *InlineImage) GetAttributes() Attributes {
 	return i.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (i *InlineImage) AddAttributes(attributes Attributes) {
 	i.Attributes = i.Attributes.AddAll(attributes)
 }
 
-// ReplaceAttributes replaces the attributes in this inline image
+// SetAttributes sets the attributes in this element
 func (i *InlineImage) SetAttributes(attributes Attributes) {
 	i.Attributes = attributes
 }
@@ -2224,13 +2230,13 @@ func (b *DelimitedBlock) GetAttributes() Attributes {
 	return b.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (b *DelimitedBlock) AddAttributes(attributes Attributes) {
 	b.Attributes = b.Attributes.AddAll(attributes)
 	b.mapAttributes()
 }
 
-// ReplaceAttributes replaces the attributes in this paragraph
+// SetAttributes sets the attributes in this element
 func (b *DelimitedBlock) SetAttributes(attributes Attributes) {
 	b.Attributes = attributes
 	b.mapAttributes()
@@ -2377,12 +2383,12 @@ func (s *Section) GetAttributes() Attributes {
 	return s.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (s *Section) AddAttributes(attributes Attributes) {
 	s.Attributes = s.Attributes.AddAll(attributes)
 }
 
-// ReplaceAttributes replaces the attributes in this section
+// SetAttributes sets the attributes in this element
 func (s *Section) SetAttributes(attributes Attributes) {
 	s.Attributes = attributes
 	if _, exists := s.Attributes[AttrID]; exists {
@@ -2653,17 +2659,17 @@ func (t *QuotedText) SetElements(elements []interface{}) error {
 
 var _ WithAttributes = &QuotedText{}
 
-// GetAttributes returns the attributes of this QuotedText
+// GetAttributes returns the attributes of this element
 func (t *QuotedText) GetAttributes() Attributes {
 	return t.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (t *QuotedText) AddAttributes(attributes Attributes) {
 	t.Attributes = t.Attributes.AddAll(attributes)
 }
 
-// ReplaceAttributes replaces the attributes in this QuotedText
+// SetAttributes sets the attributes in this element
 func (t *QuotedText) SetAttributes(attributes Attributes) {
 	t.Attributes = attributes
 }
@@ -2775,11 +2781,12 @@ func (l *InlineLink) GetAttributes() Attributes {
 	return l.Attributes
 }
 
-// AddAttributes adds the attributes of this CalloutListElement
+// AddAttributes adds the attributes of this element
 func (l *InlineLink) AddAttributes(attributes Attributes) {
 	l.Attributes = l.Attributes.AddAll(attributes)
 }
 
+// SetAttributes sets the attributes in this element
 func (l *InlineLink) SetAttributes(attributes Attributes) {
 	l.Attributes = attributes
 }
@@ -3120,7 +3127,7 @@ func (f *FileInclusion) AddAttributes(attributes Attributes) {
 	f.Attributes = f.Attributes.AddAll(attributes)
 }
 
-// ReplaceAttributes replaces the attributes in this element
+// SetAttributes sets the attributes in this element
 func (f *FileInclusion) SetAttributes(attributes Attributes) {
 	f.Attributes = attributes
 }
@@ -3640,6 +3647,7 @@ func (t *Table) AddAttributes(attributes Attributes) {
 	t.reorganizeRows()
 }
 
+// SetAttributes sets the attributes in this element
 func (t *Table) SetAttributes(attributes Attributes) {
 	t.Attributes = attributes
 	t.reorganizeRows()

@@ -68,7 +68,7 @@ func applySubstitutionsOnElement(ctx *ParseContext, element interface{}, opts ..
 		return applySubstitutionsOnWithTitle(ctx, b, opts...)
 	case *types.Table:
 		return applySubstitutionsOnTable(ctx, b, opts...)
-	case *types.ListElementContinuation:
+	case *types.ListContinuation:
 		return applySubstitutionsOnElement(ctx, b.Element, opts...)
 	case types.WithElements:
 		return applySubstitutionsOnWithElements(ctx, b, opts...)
