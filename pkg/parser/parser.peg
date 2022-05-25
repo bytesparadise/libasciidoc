@@ -23,7 +23,6 @@ import (
 //
 // -------------------------------------------------------------------------------------
 DocumentRawLine <- 
-    // TODO: include blanklines?
     element:(
         AttributeDeclaration
         / AttributeReset
@@ -242,7 +241,6 @@ DocumentFragment <-
         / ListElements
         / Table
         / SinglelineComment
-        / AdmonitionParagraph
         / LiteralParagraph
         / FrontMatter
         / Paragraph // must be the last one... 
@@ -290,15 +288,15 @@ FrontMatterFragmentElement <-
 // -------------------------------------------------------------------------------------
 // Admonitions
 // -------------------------------------------------------------------------------------
-AdmonitionKind <- "TIP" {
+AdmonitionKind <- "TIP: " {
     return types.Tip, nil
-} / "NOTE" {
+} / "NOTE: " {
     return types.Note, nil
-} / "IMPORTANT" {
+} / "IMPORTANT: " {
     return types.Important, nil
-} / "WARNING" {
+} / "WARNING: " {
     return types.Warning, nil
-} / "CAUTION" {
+} / "CAUTION: " {
     return types.Caution, nil
 }
 
@@ -662,7 +660,6 @@ AttributeReferenceValue <-
         return types.NewAttributeSubstitution(name.(string), string(c.text))
     }
     
-// TODO: simplify the 'start' optional attribute
 CounterReference <- CounterSubstitution1 / CounterSubstitution2
 
 CounterSubstitution1 <- "{counter:" name:AttributeName start:(CounterStart)? "}" {
@@ -1541,7 +1538,7 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
             element:CalloutListElement {
                 return append(attributes.([]interface{}), element), nil
             })
-        / ListElementContinuation
+        / ListContinuation
         / ( BlankLine* 
             element:LabeledListElement {
                 return element, nil
@@ -1562,8 +1559,8 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
                     }
                 }
                 // implicit attachment to list element
-                // by wrapping into a ListElementContinuation
-                return types.NewListElementContinuation(0, element)
+                // by wrapping into a ListContinuation
+                return types.NewListContinuation(0, element)
             })
         / ( element:ListElementParagraphLine {
                 return element, nil
@@ -1573,12 +1570,13 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
     }
 
 ListElementParagraphLine <- 
-    SinglelineComment {
+    SinglelineComment { // TODO: needed?
         return nil, nil // taking a shortcut to ignore commented out content and avoid having empty paragraphs
     }
-    / (
+    / 
+    (
         !BlankLine
-        !ListElementContinuationMarker
+        !ListContinuationMarker
         !OrderedListElementPrefix
         !UnorderedListElementPrefix
         !CalloutListElementPrefix
@@ -1593,27 +1591,27 @@ ListElementParagraphLine <-
     )
 
 ListElementContent <- 
-    rawline:([^\r\n]+ {
+    rawlines:([^\r\n]+ {
         return types.NewRawLine(string(c.text))
-    })
+    })+
     EOL {
-        return types.NewParagraph(rawline)
+        return types.NewParagraph(nil, rawlines.([]interface{})...)
     }
 
 // ---------------------------
 // List Element Continuations
 // ---------------------------
-ListElementContinuation <- 
+ListContinuation <- 
     offset:(Space* Newline)* 
-    ListElementContinuationMarker
-    element:ListElementContinuationElement?
+    ListContinuationMarker
+    element:ListContinuationElement?
     {
-        return types.NewListElementContinuation(len(offset.([]interface{})), element)    
+        return types.NewListContinuation(len(offset.([]interface{})), element)    
     }
 
-ListElementContinuationMarker <- "+" Space* Newline
+ListContinuationMarker <- "+" Space* Newline
 
-ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
+ListContinuationElement <- // TODO: same as DelimitedBlockElement?
     !EOF // quick escapes
     !ListElement
     attributes:(BlockAttributes)?
@@ -1626,7 +1624,6 @@ ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
         / ImageBlock
         / Table
         / SinglelineComment
-        / AdmonitionParagraph
         / LiteralParagraph
         / ListContinuationParagraph // must be the last one... 
     ) {
@@ -1641,11 +1638,9 @@ ListElementContinuationElement <- // TODO: same as DelimitedBlockElement?
 
 // new paragraph with single line (other lines will be appended afterwards)
 ListContinuationParagraph <- 
-    content:([^\r\n]+ {
-        return string(c.text), nil
-    })
-    EOL { // do not retain the EOL chars
-        return types.NewParagraph(types.RawLine(content.(string)))
+    kind:(AdmonitionKind)? 
+    content:(ListElementParagraphLine) {
+        return types.NewParagraph(kind, content)
     }
 
 // ------------------------
@@ -1774,16 +1769,16 @@ LabeledListElementSeparator <-
         return separator, nil
     }
 
-LabeledListElementDescription <- 
+LabeledListElementDescription <- // TODO: simplify in a single sub-rule instead of 2?
     (
-        // no description on the same line as the term
+        // description not on the same line as the term
         Space* EOL 
         BlankLine* 
         content:(ListElementParagraphLine)? {
             if content == nil {
                 return nil, nil
             }
-            return types.NewParagraph(content)
+            return types.NewParagraph(nil, content)
         }
     ) / (
         // description on the same line as the term
@@ -1792,7 +1787,7 @@ LabeledListElementDescription <-
             return types.NewRawLine(string(c.text))
         })
         EOL {
-            return types.NewParagraph(content)
+            return types.NewParagraph(nil, content)
         }
     )
 
@@ -1826,7 +1821,7 @@ ShortcutParagraph <-
     &(Alphanum) // make sure that the line starts with an alphanum and it's not an ordered list element prefix
     &(!OrderedListElementPrefix)
     &(!UnorderedListElementPrefix)
-    &(!AdmonitionKind)
+    kind:(AdmonitionKind)?
     firstLine:(ParagraphRawLine) 
     &{
         // also, make sure that there is no LabeledListElement delimiter (`::` - `::::`) 
@@ -1840,39 +1835,27 @@ ShortcutParagraph <-
         !BlankLine
         !BlockAttributes
         !BlockDelimiter
-        !ListElementContinuationMarker
+        !ListContinuationMarker
         line:(SinglelineComment / ParagraphRawLine) {
             return line, nil
         })* 
     {
-        return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
+        return types.NewParagraph(kind, append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
     }
 
 Paragraph <- 
+    kind:(AdmonitionKind)? 
     firstLine:(ParagraphRawLine) 
     otherLines:(
         !EOF
         !BlankLine
         !BlockAttributes
-        !ListElementContinuationMarker
+        !ListContinuationMarker // TODO: needed?
         line:(SinglelineComment / ParagraphRawLine) {
             return line, nil
         })* 
     {
-        return types.NewParagraph(append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
-    }
-
-// TODO: reuse `Paragraph` rule
-AdmonitionParagraph <- 
-    kind:(AdmonitionKind) ": " 
-    firstLine:(ParagraphRawLine) 
-    otherLines:(
-        !ListElementContinuationMarker
-        line:(SinglelineComment / ParagraphRawLine) {
-            return line, nil
-        })*
-    { 
-        return types.NewAdmonitionParagraph(kind.(string), append([]interface{}{firstLine}, otherLines.([]interface{})...))
+        return types.NewParagraph(kind, append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
     }
 
 ParagraphRawLine <- 
@@ -1886,7 +1869,7 @@ ParagraphRawLine <-
         return types.NewRawLine(content.(string))
     }
 
-LiteralParagraph <- 
+LiteralParagraph <- // TODO: merge with paragraph?
     firstLine:(LiteralParagraphRawLine) 
     otherLines:(SinglelineComment / ParagraphRawLine)*
     { 

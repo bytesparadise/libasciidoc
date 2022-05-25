@@ -163,7 +163,7 @@ func (s *listStack) parentFor(element interface{}) *types.List {
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.Debugf("looking-up parent for %s", spew.Sdump(element))
 	// }
-	if c, ok := element.(*types.ListElementContinuation); ok {
+	if c, ok := element.(*types.ListContinuation); ok {
 		for i := 0; i < c.Offset; i++ {
 			s.pop()
 		}
