@@ -29,7 +29,7 @@ another paragraph`
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrStyle: "pass",
+									types.AttrStyle: types.Passthrough,
 								},
 								Elements: []interface{}{
 									types.RawLine("_foo_\n"),

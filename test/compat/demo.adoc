@@ -116,7 +116,7 @@ with this literal text
 ....
 
 * first level
-
++
  with more literal text
 
 ** second level

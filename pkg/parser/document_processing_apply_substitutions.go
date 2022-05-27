@@ -166,7 +166,7 @@ func applySubstitutionsOnWithElements(ctx *ParseContext, b types.WithElements, o
 	if err := applySubstitutionsOnAttributes(ctx, b, headerSubstitutions()); err != nil {
 		return err
 	}
-	if s := b.GetAttributes().GetAsStringWithDefault(types.AttrStyle, ""); s == types.Passthrough {
+	if style, found := b.GetAttributes()[types.AttrStyle]; found && style == types.Passthrough {
 		log.Debugf("skipping substitutions on passthrough block of type '%T'", b)
 		content, _ := serialize(b.GetElements())
 		return b.SetElements([]interface{}{

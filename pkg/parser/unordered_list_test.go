@@ -466,7 +466,7 @@ on 2 lines, too.`
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												&types.StringElement{Content: "item 1\non 2 lines."}, // leading spaces are trimmed
+												&types.StringElement{Content: "item 1\n  on 2 lines."},
 											},
 										},
 									},
@@ -1464,10 +1464,11 @@ another delimited block
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("with implicit continuation for literal paragraph without attributes", func() {
+		It("with continuation for literal paragraph without attributes", func() {
 			source := `* first level
-
++
  with more literal text
+  on multiple lines
 
 ** second level
 `
@@ -1487,12 +1488,11 @@ another delimited block
 									},
 									&types.Paragraph{
 										Attributes: types.Attributes{
-											types.AttrStyle:            types.Literal,
-											types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+											types.AttrStyle: types.LiteralParagraph,
 										},
 										Elements: []interface{}{
 											&types.StringElement{
-												Content: " with more literal text",
+												Content: " with more literal text\n  on multiple lines", // spaces on first line of literal paragraphs are NOT trimmed by parser
 											},
 										},
 									},
@@ -1520,11 +1520,12 @@ another delimited block
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
-		It("with implicit continuation for literal paragraph with attributes", func() {
+		It("with continuation for literal paragraph with attributes", func() {
 			source := `* first level
-
++
 [role="a_role"]
  with more literal text
+  on multiple lines
 
 ** second level
 `
@@ -1544,13 +1545,12 @@ another delimited block
 									},
 									&types.Paragraph{
 										Attributes: types.Attributes{
-											types.AttrStyle:            types.Literal,
-											types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
-											types.AttrRoles:            types.Roles{"a_role"},
+											types.AttrStyle: types.LiteralParagraph,
+											types.AttrRoles: types.Roles{"a_role"},
 										},
 										Elements: []interface{}{
 											&types.StringElement{
-												Content: " with more literal text",
+												Content: " with more literal text\n  on multiple lines", // spaces on first line of literal paragraphs are NOT trimmed by parser
 											},
 										},
 									},
@@ -1590,8 +1590,8 @@ with this literal text
 ....
 
 * first level
-
- with more literal text
++
+ with more literal text on a single line
 
 ** second level
 *** third level
@@ -1647,12 +1647,11 @@ first level`
 									},
 									&types.Paragraph{
 										Attributes: types.Attributes{
-											types.AttrStyle:            types.Literal,
-											types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+											types.AttrStyle: types.LiteralParagraph,
 										},
 										Elements: []interface{}{
 											&types.StringElement{
-												Content: " with more literal text",
+												Content: " with more literal text on a single line", // spaces on first line of literal paragraphs are NOT trimmed by parser
 											},
 										},
 									},

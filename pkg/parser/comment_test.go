@@ -26,12 +26,11 @@ var _ = Describe("comments", func() {
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrStyle: types.LiteralParagraph,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "  // A single-line comment.",
+									Content: "  // A single-line comment.", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -46,12 +45,11 @@ var _ = Describe("comments", func() {
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrStyle: types.LiteralParagraph,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "\t\t// A single-line comment.",
+									Content: "\t\t// A single-line comment.", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},

@@ -69,7 +69,7 @@ var _ = Describe("ordered lists", func() {
 										&types.Paragraph{
 											Elements: []interface{}{
 												&types.StringElement{
-													Content: "element\non\nmultiple\nlines", // spaces are trimmed
+													Content: "element\n\ton\n\tmultiple\n\tlines",
 												},
 											},
 										},

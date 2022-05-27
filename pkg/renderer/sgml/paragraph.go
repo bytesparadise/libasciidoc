@@ -11,36 +11,32 @@ import (
 
 func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debugf("rendering a regular paragraph with style '%v' and embedded: %t", p.Attributes[types.AttrStyle], (ctx.WithinDelimitedBlock || ctx.WithinList > 0))
-	if k, ok := p.Attributes[types.AttrStyle].(string); ok {
-		switch k {
-		case string(types.Example):
-			return r.renderExampleParagraph(ctx, p)
-		case string(types.Listing):
-			return r.renderListingParagraph(ctx, p)
-		case string(types.Source):
-			return r.renderSourceParagraph(ctx, p)
-		case string(types.Verse):
-			return r.renderVerseParagraph(ctx, p)
-		case string(types.Quote):
-			return r.renderQuoteParagraph(ctx, p)
-		case string(types.Passthrough):
-			return r.renderPassthroughParagraph(ctx, p)
-		case types.Tip, types.Note, types.Important, types.Warning, types.Caution:
-			return r.renderAdmonitionParagraph(ctx, p)
-		case types.Literal:
-			// if t, found := p.Attributes[types.AttrLiteralBlockType]; found && t == types.LiteralBlockWithSpacesOnFirstLine {
-			// }
-			return r.renderLiteralParagraph(ctx, p)
-		case "manpage":
-			return r.renderManpageNameParagraph(ctx, p)
-		default:
-			// do nothing, will move to default below
-		}
-	} else if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
+	if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
 		return r.renderEmbeddedParagraph(ctx, p, "")
 	}
-	// default case
-	return r.renderRegularParagraph(ctx, p)
+	switch p.Attributes[types.AttrStyle] {
+	case types.Example:
+		return r.renderExampleParagraph(ctx, p)
+	case types.Listing:
+		return r.renderListingParagraph(ctx, p)
+	case types.Source:
+		return r.renderSourceParagraph(ctx, p)
+	case types.Verse:
+		return r.renderVerseParagraph(ctx, p)
+	case types.Quote:
+		return r.renderQuoteParagraph(ctx, p)
+	case types.Passthrough:
+		return r.renderPassthroughParagraph(ctx, p)
+	case "manpage":
+		return r.renderManpageNameParagraph(ctx, p)
+	case types.Tip, types.Note, types.Important, types.Warning, types.Caution:
+		return r.renderAdmonitionParagraph(ctx, p)
+	case types.LiteralParagraph, types.Literal:
+		return r.renderLiteralParagraph(ctx, p)
+	default:
+		// default case
+		return r.renderRegularParagraph(ctx, p)
+	}
 }
 
 func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
@@ -115,9 +111,23 @@ func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.P
 		Context:    ctx,
 		Class:      class,
 		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
-		Content:    string(content),
+		Content:    trimSpaces(content),
 	})
 	return result.String(), err
+}
+
+// trimSpaces removes heading and trailing spaces on each line of the given content
+func trimSpaces(content string) string {
+	// trim spaces
+	contentBuf := &strings.Builder{}
+	lines := strings.Split(content, "\n")
+	for i, line := range lines {
+		contentBuf.WriteString(strings.TrimSpace(line))
+		if i < len(lines)-1 {
+			contentBuf.WriteString("\n")
+		}
+	}
+	return contentBuf.String()
 }
 
 func renderCheckStyle(style interface{}) string {

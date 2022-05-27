@@ -20,12 +20,11 @@ var _ = Describe("literal blocks", func() {
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrStyle: types.LiteralParagraph,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: " some literal content",
+									Content: " some literal content", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -42,12 +41,11 @@ lines.`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrStyle: types.LiteralParagraph,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: " some literal content\non 3\nlines.",
+									Content: " some literal content\non 3\nlines.", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -65,12 +63,11 @@ lines.`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrStyle: types.LiteralParagraph,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: " some literal content\n  on 3\n   lines.",
+									Content: " some literal content\n  on 3\n   lines.", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -89,14 +86,13 @@ a normal paragraph.`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
-								types.AttrID:               "ID",
-								types.AttrTitle:            "title",
+								types.AttrStyle: types.LiteralParagraph,
+								types.AttrID:    "ID",
+								types.AttrTitle: "title",
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "  some literal content",
+									Content: "  some literal content", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -286,8 +282,7 @@ a normal paragraph.`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
+								types.AttrStyle: types.Literal,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
@@ -319,10 +314,9 @@ a normal paragraph.`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrID:               "ID",
-								types.AttrTitle:            "title",
-								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
+								types.AttrStyle: types.Literal,
+								types.AttrID:    "ID",
+								types.AttrTitle: "title",
 							},
 							Elements: []interface{}{
 								&types.StringElement{
@@ -340,6 +334,26 @@ a normal paragraph.`
 					},
 					ElementReferences: types.ElementReferences{
 						"ID": "title",
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("not an admonition", func() {
+				source := `[literal]   
+TIP: not an admonition`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Attributes: types.Attributes{
+								types.AttrStyle: types.Literal,
+							},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "TIP: not an admonition",
+								},
+							},
+						},
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -633,13 +647,12 @@ and <more text> on the +
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
-								types.AttrSubstitutions:    "quotes,macros",
+								types.AttrStyle:         types.LiteralParagraph,
+								types.AttrSubstitutions: "quotes,macros",
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "  a link to ",
+									Content: "  a link to ", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 								&types.InlineLink{
 									Location: &types.Location{
@@ -708,9 +721,8 @@ and <more text> on the +
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithAttribute,
-								types.AttrSubstitutions:    "quotes,macros",
+								types.AttrStyle:         types.Literal,
+								types.AttrSubstitutions: "quotes,macros",
 							},
 							Elements: []interface{}{
 								&types.StringElement{
