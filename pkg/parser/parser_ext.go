@@ -213,7 +213,7 @@ type blockDelimiterTracker struct {
 }
 
 type blockDelimiter struct {
-	kind   types.BlockDelimiterKind
+	kind   string
 	length int
 }
 
@@ -223,7 +223,7 @@ func newBlockDelimiterTracker() *blockDelimiterTracker {
 	}
 }
 
-func (t *blockDelimiterTracker) push(kind types.BlockDelimiterKind, length int) {
+func (t *blockDelimiterTracker) push(kind string, length int) {
 	switch {
 	case len(t.stack) > 0 && t.stack[len(t.stack)-1].kind == kind && t.stack[len(t.stack)-1].length == length:
 		// trim

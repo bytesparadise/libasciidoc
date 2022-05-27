@@ -253,7 +253,7 @@ var _ = Describe("attributes", func() {
 						&types.ImageBlock{
 							Attributes: types.Attributes{
 								types.AttrImageAlt: `Quoted, Here`,
-								types.AttrHeight:   "100", // last one wins
+								types.AttrHeight:   "100", // named attribute one wins
 								types.AttrWidth:    "1",
 							},
 							Location: &types.Location{

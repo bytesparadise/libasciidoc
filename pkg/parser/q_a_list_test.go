@@ -41,8 +41,7 @@ What is the answer to the Ultimate Question?:: 42`
 								&types.Paragraph{
 									Elements: []interface{}{
 										&types.StringElement{
-											// leading spaces are trimmed
-											Content: "An implementation of the AsciiDoc processor in Golang.",
+											Content: "\tAn implementation of the AsciiDoc processor in Golang.",
 										},
 									},
 								},
@@ -106,7 +105,7 @@ What is the answer to the Ultimate Question?:: 42`
 								&types.Paragraph{
 									Elements: []interface{}{
 										&types.StringElement{
-											Content: "An implementation of the AsciiDoc processor in Golang.", // leading spaces are trimmed
+											Content: "\tAn implementation of the AsciiDoc processor in Golang.",
 										},
 									},
 								},

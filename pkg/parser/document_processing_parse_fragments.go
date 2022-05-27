@@ -223,3 +223,21 @@ func (c *current) isDocumentHeaderAllowed() bool {
 func (c *current) disableDocumentHeaderRule() {
 	c.globalStore[documentHeaderKey] = false
 }
+
+const blockAttributesKey = "block_attributes"
+
+func (c *current) storeBlockAttributes(attributes types.Attributes) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("storing block attributes in global store: %s", spew.Sdump(attributes))
+	}
+	c.globalStore[blockAttributesKey] = attributes
+}
+
+func (c *current) isWithinLiteralParagraph() bool {
+	if attrs, ok := c.globalStore[blockAttributesKey].(types.Attributes); ok {
+		log.Debugf("within literal paragraph: %t", attrs[types.AttrStyle] == types.Literal)
+		return attrs[types.AttrPositional1] == types.Literal || attrs[types.AttrStyle] == types.Literal
+	}
+	log.Debug("not within literal paragraph")
+	return false
+}

@@ -60,7 +60,7 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 				}
 				b.WriteString(f)
 			case *types.BlockDelimiter:
-				t.push(types.BlockDelimiterKind(e.Kind), e.Length)
+				t.push(e.Kind, e.Length)
 				ctx.opts = append(ctx.opts, withinDelimitedBlock(t.withinDelimitedBlock()))
 				b.WriteString(e.RawText())
 			case types.ConditionalInclusion:

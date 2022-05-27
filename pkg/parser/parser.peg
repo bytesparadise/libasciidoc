@@ -226,7 +226,13 @@ IncludedFileEndTag <- "end::" tag:(Alphanums {return string(c.text), nil}) "[]" 
 // -------------------------------------------------------------------------------------
 DocumentFragment <-
     !EOF
-    attributes:(BlockAttributes)?
+    attributes:(BlockAttributes)? 
+    #{
+        if attributes, ok := attributes.(types.Attributes); ok {
+            c.storeBlockAttributes(attributes)
+        }
+        return nil
+    }
     element:(
         ImageBlock // must appear before ShortcutParagraph
         / UserMacroBlock // must appear before ShortcutParagraph
@@ -241,7 +247,6 @@ DocumentFragment <-
         / ListElements
         / Table
         / SinglelineComment
-        / LiteralParagraph
         / FrontMatter
         / Paragraph // must be the last one... 
     )? // allow attribute on empty/no element
@@ -286,21 +291,6 @@ FrontMatterFragmentElement <-
     // if no match, parser will return an error and content will be store in a RawLine
 
 // -------------------------------------------------------------------------------------
-// Admonitions
-// -------------------------------------------------------------------------------------
-AdmonitionKind <- "TIP: " {
-    return types.Tip, nil
-} / "NOTE: " {
-    return types.Note, nil
-} / "IMPORTANT: " {
-    return types.Important, nil
-} / "WARNING: " {
-    return types.Warning, nil
-} / "CAUTION: " {
-    return types.Caution, nil
-}
-
-// -------------------------------------------------------------------------------------
 // Attribute Declarations and Resets
 // -------------------------------------------------------------------------------------
 AttributeDeclaration <- 
@@ -313,7 +303,7 @@ AttributeDeclaration <-
     )? 
     EOL
     {
-        return types.NewAttributeDeclaration(name.(string), types.Reduce(value, strings.TrimSpace), string(c.text))
+        return types.NewAttributeDeclaration(name.(string), value, string(c.text))
     }
 
 // AttributeName must be at least one character long, 
@@ -333,6 +323,7 @@ AttributeDeclarationValue <-
         }
     )*
     {
+        // TODO: do not call `types.Reduce(..., strings.TrimSpace)` each time?
         if otherElements, ok := otherElements.([]interface{}); ok {
             return types.Reduce(append(elements.([]interface{}), otherElements...), strings.TrimSpace), nil
         }
@@ -428,7 +419,7 @@ ShortHandTitle <- `.`
         InlineWord
         / Space
         / AttributeReferenceValue
-        / ([^\r\n] { return string(c.text), nil })
+        / ([^\r\n] { return string(c.text), nil }) // TODO: create a rule for this (used multiple times)
     )+ {
         return types.NewTitleAttribute(types.Reduce(elements, strings.TrimSpace))
     }
@@ -548,7 +539,7 @@ NamedAttribute <-
 
 // The spec says attributes have be alphanumeric but does not consider foreign letters.  We are more generous.
 NamedAttributeKey <- !Space [^\r\n=,\]]+ Space* {
-        return strings.TrimSpace(string(c.text)), nil
+        return strings.TrimSpace(string(c.text)), nil // TODO: call `strings.TrimSpace` within `types.NewNamedAttribute()`
     }
 
 AttributeValue <- 
@@ -1482,6 +1473,7 @@ RelativeLink <-
 
 ExternalLink <- 
     // escaped
+    // TODO: do not attempt to parse url and attributes here, and support escaped element once for all at a higher level     
     `\` url:(LocationWithScheme) attributes:(InlineAttributes)? {
         return types.NewStringElement(strings.TrimPrefix(string(c.text), `\`))
     }
@@ -1548,20 +1540,6 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
                 return append(attributes.([]interface{}), element), nil
             })
         / SinglelineComment
-        / ( BlankLine+
-            attributes:(BlockAttributes)* 
-            element:LiteralParagraph {
-                if e, ok := element.(types.WithAttributes); ok {
-                    for _, a := range attributes.([]interface{}) {
-                        if a, ok := a.(types.Attributes); ok {
-                            e.AddAttributes(a)
-                        }
-                    }
-                }
-                // implicit attachment to list element
-                // by wrapping into a ListContinuation
-                return types.NewListContinuation(0, element)
-            })
         / ( element:ListElementParagraphLine {
                 return element, nil
             }) // must follow directly a list element
@@ -1583,7 +1561,7 @@ ListElementParagraphLine <-
         !(LabeledListElementTerm LabeledListElementSeparator)
         !BlockDelimiter
         content:([^\r\n]+ {
-            return strings.TrimSpace(string(c.text)), nil
+            return string(c.text), nil
         })
         EOL { // do not retain the EOL chars
             return types.NewRawLine(content.(string))
@@ -1624,7 +1602,6 @@ ListContinuationElement <- // TODO: same as DelimitedBlockElement?
         / ImageBlock
         / Table
         / SinglelineComment
-        / LiteralParagraph
         / ListContinuationParagraph // must be the last one... 
     ) {
         if element,ok := element.(types.WithAttributes); ok && attributes != nil {
@@ -1638,9 +1615,9 @@ ListContinuationElement <- // TODO: same as DelimitedBlockElement?
 
 // new paragraph with single line (other lines will be appended afterwards)
 ListContinuationParagraph <- 
-    kind:(AdmonitionKind)? 
+    style:(ParagraphStyle)? 
     content:(ListElementParagraphLine) {
-        return types.NewParagraph(kind, content)
+        return types.NewParagraph(style, content)
     }
 
 // ------------------------
@@ -1817,11 +1794,32 @@ CalloutListElementPrefix <-
 // -----------------------------------------------------------------------------------------------------------------------
 // Paragraphs
 // -----------------------------------------------------------------------------------------------------------------------
+
+ParagraphStyle <- 
+    &{
+        return !c.isWithinLiteralParagraph(), nil
+    }
+    style:("TIP: " {
+            return types.Tip, nil
+        } / "NOTE: " {
+            return types.Note, nil
+        } / "IMPORTANT: " {
+            return types.Important, nil
+        } / "WARNING: " {
+            return types.Warning, nil
+        } / "CAUTION: " {
+            return types.Caution, nil
+        } / &(Spaces) { // check 
+            return types.LiteralParagraph, nil
+        }) {
+            return style, nil
+        }
+
 ShortcutParagraph <- 
     &(Alphanum) // make sure that the line starts with an alphanum and it's not an ordered list element prefix
     &(!OrderedListElementPrefix)
     &(!UnorderedListElementPrefix)
-    kind:(AdmonitionKind)?
+    style:(ParagraphStyle)?
     firstLine:(ParagraphRawLine) 
     &{
         // also, make sure that there is no LabeledListElement delimiter (`::` - `::::`) 
@@ -1840,11 +1838,11 @@ ShortcutParagraph <-
             return line, nil
         })* 
     {
-        return types.NewParagraph(kind, append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
+        return types.NewParagraph(style, append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
     }
 
 Paragraph <- 
-    kind:(AdmonitionKind)? 
+    style:(ParagraphStyle)? 
     firstLine:(ParagraphRawLine) 
     otherLines:(
         !EOF
@@ -1855,33 +1853,15 @@ Paragraph <-
             return line, nil
         })* 
     {
-        return types.NewParagraph(kind, append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
+        return types.NewParagraph(style, append([]interface{}{firstLine}, otherLines.([]interface{})...)...)
     }
 
 ParagraphRawLine <- 
     content:([^\r\n]+ {
-        return strings.TrimRight(string(c.text), " \t"), nil // trim spaces and tabs
-    })
-    &{
-        return len(strings.TrimSpace(content.(string))) > 0, nil
-    }
-    EOL {
-        return types.NewRawLine(content.(string))
-    }
-
-LiteralParagraph <- // TODO: merge with paragraph?
-    firstLine:(LiteralParagraphRawLine) 
-    otherLines:(SinglelineComment / ParagraphRawLine)*
-    { 
-        return types.NewLiteralParagraph(types.LiteralBlockWithSpacesOnFirstLine, append([]interface{}{firstLine}, otherLines.([]interface{})...))
-    }
-
-LiteralParagraphRawLine <- 
-    content:(Spaces [^\r\n]+ {
         return string(c.text), nil
     })
     &{
-        return len(strings.TrimSpace(string(c.text))) > 0, nil
+        return len(strings.TrimSpace(content.(string))) > 0, nil // stop if blank line
     }
     EOL {
         return types.NewRawLine(content.(string))

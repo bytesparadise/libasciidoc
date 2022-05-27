@@ -574,7 +574,7 @@ func NewAttributeDeclaration(name string, value interface{}, rawText string) (*A
 	}
 	return &AttributeDeclaration{
 		Name:    name,
-		Value:   value,
+		Value:   Reduce(value, strings.TrimSpace),
 		rawText: rawText,
 	}, nil
 }
@@ -719,11 +719,11 @@ func addToListElement(e ListElement, element interface{}) error {
 		// append to last element of this OrderedListElement if it's a Paragraph,
 		// otherwise, append a new Paragraph with this RawLine
 		if p, ok := e.LastElement().(*Paragraph); ok {
-			return p.AddElement(element.trim())
+			return p.AddElement(element)
 		}
 		return e.SetElements(append(e.GetElements(), &Paragraph{
 			Elements: []interface{}{
-				element.trim(),
+				element,
 			},
 		}))
 
@@ -1632,27 +1632,10 @@ func NewParagraph(style interface{}, elements ...interface{}) (*Paragraph, error
 	p := &Paragraph{
 		Elements: elements,
 	}
-	if style, ok := style.(string); ok {
+	if style != nil {
 		p.AddAttributes(Attributes{
 			AttrStyle: style,
 		})
-	}
-	return p, nil
-}
-
-func NewAdmonitionParagraph(kind string, elements []interface{}) (*Paragraph, error) {
-	p, _ := NewParagraph(kind, elements...)
-	p.Attributes = Attributes{
-		AttrStyle: kind,
-	}
-	return p, nil
-}
-
-func NewLiteralParagraph(kind string, elements []interface{}) (*Paragraph, error) {
-	p, _ := NewParagraph(kind, elements...)
-	p.Attributes = Attributes{
-		AttrStyle:            Literal,
-		AttrLiteralBlockType: kind,
 	}
 	return p, nil
 }
@@ -1700,21 +1683,15 @@ func (p *Paragraph) SetAttributes(attributes Attributes) {
 }
 
 func (p *Paragraph) mapAttributes() {
-	// add an extra `literalBlockType: literalBlockWithAttribute` attribute
-	// before mapping, so we know that the `style=Literal` came from
-	// block attributes
-	if p.Attributes.GetAsStringWithDefault(AttrPositional1, "") == Literal {
-		p.Attributes.Set(AttrLiteralBlockType, LiteralBlockWithAttribute)
-	}
 	p.Attributes = toAttributesWithMapping(p.Attributes, map[string]string{
 		AttrPositional1: AttrStyle,
 	})
-	switch p.Attributes.GetAsStringWithDefault(AttrStyle, "") {
-	case string(Source):
+	switch p.Attributes[AttrStyle] {
+	case Source:
 		p.Attributes = toAttributesWithMapping(p.Attributes, map[string]string{
 			AttrPositional2: AttrLanguage,
 		})
-	case string(Quote), string(Verse):
+	case Quote, Verse:
 		p.Attributes = toAttributesWithMapping(p.Attributes, map[string]string{
 			AttrPositional2: AttrQuoteAuthor,
 			AttrPositional3: AttrQuoteTitle,
@@ -1748,19 +1725,18 @@ func (p *Paragraph) SubstituteFootnotes(notes *Footnotes) {
 // Admonitions
 // ------------------------------------------
 
+// TODO: use custom `AdmonitionKind` type
 const (
 	// Tip the 'TIP' type of admonition
-	Tip = "TIP"
+	Tip string = "TIP"
 	// Note the 'NOTE' type of admonition
-	Note = "NOTE"
+	Note string = "NOTE"
 	// Important the 'IMPORTANT' type of admonition
-	Important = "IMPORTANT"
+	Important string = "IMPORTANT"
 	// Warning the 'WARNING' type of admonition
-	Warning = "WARNING"
+	Warning string = "WARNING"
 	// Caution the 'CAUTION' type of admonition
-	Caution = "CAUTION"
-	// Unknown is the zero value for admonition kind
-	Unknown = ""
+	Caution string = "CAUTION"
 )
 
 // ------------------------------------------
@@ -2104,8 +2080,7 @@ func (s *sequence) nextVal() int {
 // Delimited blocks
 // ------------------------------------------
 
-type BlockDelimiterKind string
-
+// TODO: use custom `BlockKind` type
 const (
 	// Fenced a fenced block
 	Fenced string = "fenced"
@@ -2129,13 +2104,17 @@ const (
 	Sidebar string = "sidebar"
 	// Literal a literal block
 	Literal string = "literal"
+	// LiteralParagraph a literal parsgraph
+	LiteralParagraph = "literal_paragraph"
 	// Source a source block
 	Source string = "source"
 	// Passthrough a passthrough block
 	Passthrough string = "pass"
 )
 
-type BlockDelimiter struct { // TODO: use BlockDelimiterKind directly?
+// LiteralParagraph custom type to retain the number of spaces on the first line (needed during rendering)
+
+type BlockDelimiter struct { // TODO: use string directly?
 	Kind       string
 	Length     int
 	Attributes Attributes
@@ -2168,7 +2147,7 @@ func (b *BlockDelimiter) RawText() string {
 
 // DelimitedBlock the structure for the Listing blocks
 type DelimitedBlock struct {
-	Kind       string
+	Kind       string // TODO: move into attributes, renaming `AttrParagraphKind`? (and more consistent with Paragraph)
 	Attributes Attributes
 	Elements   []interface{}
 }
@@ -2282,18 +2261,6 @@ func (b *DelimitedBlock) Reference(refs ElementReferences) {
 		}
 	}
 }
-
-// TODO: not needed?
-const (
-	// AttrLiteralBlockType the type of literal block, ie, how it was parsed
-	AttrLiteralBlockType = "literalBlockType"
-	// LiteralBlockWithDelimiter a literal block parsed with a delimiter
-	LiteralBlockWithDelimiter = "literalBlockWithDelimiter"
-	// LiteralBlockWithSpacesOnFirstLine a literal block parsed with one or more spaces on the first line
-	LiteralBlockWithSpacesOnFirstLine = "literalBlockWithSpacesOnFirstLine"
-	// LiteralBlockWithAttribute a literal block parsed with a `[literal]` attribute`
-	LiteralBlockWithAttribute = "literalBlockWithAttribute"
-)
 
 // ------------------------------------------
 // Sections
@@ -3135,15 +3102,11 @@ func (f *FileInclusion) SetAttributes(attributes Attributes) {
 // -------------------------------------------------------------------------------------
 // Raw Line
 // -------------------------------------------------------------------------------------
-type RawLine string
+type RawLine string // TODO: convert to struct with `Content` field, or alias to StringElement
 
 // NewRawLine returns a new RawLine wrapper for the given string
 func NewRawLine(content string) (RawLine, error) {
 	return RawLine(strings.TrimRight(content, " \t")), nil
-}
-
-func (l RawLine) trim() RawLine {
-	return RawLine(strings.TrimSpace(string(l)))
 }
 
 // -------------------------------------------------------------------------------------

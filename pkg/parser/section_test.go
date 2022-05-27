@@ -948,11 +948,10 @@ a short preamble
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrStyle:            types.Literal,
-									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+									types.AttrStyle: types.LiteralParagraph,
 								},
 								Elements: []interface{}{
-									types.RawLine(" = a header with a prefix space"),
+									types.RawLine(" = a header with a prefix space"), // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -991,11 +990,10 @@ a short preamble
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
-									types.AttrStyle:            types.Literal,
-									types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+									types.AttrStyle: types.LiteralParagraph,
 								},
 								Elements: []interface{}{
-									types.RawLine("   == section with prefix space"),
+									types.RawLine("   == section with prefix space"), // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -2407,12 +2405,11 @@ a short preamble
 					Elements: []interface{}{
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrStyle: types.LiteralParagraph,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: " = a header with a prefix space",
+									Content: " = a header with a prefix space", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},
@@ -2435,12 +2432,11 @@ a short preamble
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
-								types.AttrStyle:            types.Literal,
-								types.AttrLiteralBlockType: types.LiteralBlockWithSpacesOnFirstLine,
+								types.AttrStyle: types.LiteralParagraph,
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: " == section with prefix space",
+									Content: " == section with prefix space", // spaces on first line of literal paragraphs are NOT trimmed by parser
 								},
 							},
 						},

@@ -109,7 +109,7 @@ const (
 	AttrUnicode = "unicode"
 	// AttrCaption is the caption for block images, tables, and so forth
 	AttrCaption = "caption"
-	// AttrStyle block or list style
+	// AttrStyle paragraph, block or list style
 	AttrStyle = "style"
 	// AttrInlineLinkText the text attribute (first positional) of links
 	AttrInlineLinkText = "text"
