@@ -323,9 +323,8 @@ AttributeDeclarationValue <-
         }
     )*
     {
-        // TODO: do not call `types.Reduce(..., strings.TrimSpace)` each time?
         if otherElements, ok := otherElements.([]interface{}); ok {
-            return types.Reduce(append(elements.([]interface{}), otherElements...), strings.TrimSpace), nil
+            elements = append(elements.([]interface{}), otherElements...)
         }
         return types.Reduce(elements.([]interface{}), strings.TrimSpace), nil
     }
@@ -513,7 +512,7 @@ ShortHandAttributeValue <-
 
 
 PositionalAttribute <- (
-    value:(AttributeValue) (("," Space*)? / &"]") { // TODO: see if we can just use `((",")? / &"]")` instead (ie, no need to check for Space*)
+    value:(AttributeValue) (("," Space*)? / &"]") {
     	return types.NewPositionalAttribute(value)
     }) 
     / 
@@ -1507,66 +1506,34 @@ ExtraListElement <- // other elements can be separated by blankline WITHOUT attr
     !EOF 
     element:(
         (   BlankLine* 
-            element:OrderedListElement {
+            element:(OrderedListElement / UnorderedListElement / CalloutListElement / LabeledListElement) { 
                 return element, nil
             })
         / ( attributes:(BlockAttributes)+ 
-            element:OrderedListElement {
-                return append(attributes.([]interface{}), element), nil
-            })
-        / ( BlankLine* 
-            element:UnorderedListElement {
-                return element, nil
-            })
-        / ( attributes:(BlockAttributes)+ 
-            element:UnorderedListElement {
-                return append(attributes.([]interface{}), element), nil
-            })
-        / ( BlankLine* 
-            element:CalloutListElement {
-                return element, nil
-            })
-        / ( attributes:(BlockAttributes)+ 
-            element:CalloutListElement {
+            element:(OrderedListElement / UnorderedListElement / CalloutListElement / LabeledListElement) { 
                 return append(attributes.([]interface{}), element), nil
             })
         / ListContinuation
-        / ( BlankLine* 
-            element:LabeledListElement {
-                return element, nil
-            })
-        / ( attributes:(BlockAttributes)+ 
-            element:LabeledListElement {
-                return append(attributes.([]interface{}), element), nil
-            })
-        / SinglelineComment
-        / ( element:ListElementParagraphLine {
-                return element, nil
-            }) // must follow directly a list element
+        / SinglelineComment // must be attached, i.e., no intermediate blankline allowed
+        / ListElementParagraphLine // must be attached, i.e., no intermediate blankline allowed
     ) {
         return element, nil
     }
 
 ListElementParagraphLine <- 
-    SinglelineComment { // TODO: needed?
-        return nil, nil // taking a shortcut to ignore commented out content and avoid having empty paragraphs
+    !BlankLine
+    !ListContinuationMarker
+    !OrderedListElementPrefix
+    !UnorderedListElementPrefix
+    !CalloutListElementPrefix
+    !(LabeledListElementTerm LabeledListElementSeparator)
+    !BlockDelimiter
+    content:([^\r\n]+ {
+        return string(c.text), nil
+    })
+    EOL { // do not retain the EOL chars
+        return types.NewRawLine(content.(string))
     }
-    / 
-    (
-        !BlankLine
-        !ListContinuationMarker
-        !OrderedListElementPrefix
-        !UnorderedListElementPrefix
-        !CalloutListElementPrefix
-        !(LabeledListElementTerm LabeledListElementSeparator)
-        !BlockDelimiter
-        content:([^\r\n]+ {
-            return string(c.text), nil
-        })
-        EOL { // do not retain the EOL chars
-            return types.NewRawLine(content.(string))
-        }
-    )
 
 ListElementContent <- 
     rawlines:([^\r\n]+ {
@@ -1577,7 +1544,7 @@ ListElementContent <-
     }
 
 // ---------------------------
-// List Element Continuations
+// List Continuations
 // ---------------------------
 ListContinuation <- 
     offset:(Space* Newline)* 
@@ -1681,34 +1648,19 @@ UnorderedListElement <-
     }
 
 UnorderedListElementPrefix <- 
-    Space* prefix:((
-        // implicit numbering: "*" to "*****" 
-        depth:(("*")+ {   
-            // `*` is 1, etc.
-            return (len(c.text)), nil 
-        }) 
-        &{  
-            // use a predicate to make sure that only `*` to `*****` are allowed
-            return depth.(int) <= 5, nil 
-        } 
-        {
-            switch depth.(int){
-            case 1:
-                return types.NewUnorderedListElementPrefix(types.OneAsterisk)
-            case 2:
-                return types.NewUnorderedListElementPrefix(types.TwoAsterisks)
-            case 3:
-                return types.NewUnorderedListElementPrefix(types.ThreeAsterisks)
-            case 4:
-                return types.NewUnorderedListElementPrefix(types.FourAsterisks)
-            default:
-                return types.NewUnorderedListElementPrefix(types.FiveAsterisks)
-            }
-        }) / depth:(("-") {
-            return types.NewUnorderedListElementPrefix(types.Dash)
-        })) Spaces {
-    return prefix, nil
-} 
+    Space* 
+    style:(
+        (("-") / ("*")+) { // `-` or `*` to `*****`
+            return string(c.text), nil 
+        }
+    ) &{  
+        // use a predicate to make sure that only `*` to `*****` are allowed
+        return len(style.(string)) <= 5, nil 
+    } 
+    Spaces
+    {
+        return types.NewUnorderedListElementPrefix(style.(string))
+    }
 
 UnorderedListElementCheckStyle <- 
     &"[" style:(
@@ -1725,7 +1677,7 @@ UnorderedListElementCheckStyle <-
 LabeledListElement <- 
     term:(LabeledListElementTerm) 
     separator:(LabeledListElementSeparator) 
-    description:(LabeledListElementDescription)
+    description:(LabeledListElementDescription) // `description` is not necessarily on the same line as the `term`
     {
         return types.NewLabeledListElement(len(separator.(string)) - 1, term, description)
     }
@@ -1746,24 +1698,22 @@ LabeledListElementSeparator <-
         return separator, nil
     }
 
-LabeledListElementDescription <- // TODO: simplify in a single sub-rule instead of 2?
+LabeledListElementDescription <-
     (
-        // description not on the same line as the term
-        Space* EOL 
-        BlankLine* 
-        content:(ListElementParagraphLine)? {
-            if content == nil {
-                return nil, nil
-            }
-            return types.NewParagraph(nil, content)
+        // description NOT on the same line as the term
+        Space* EOL
+        BlankLine*
+        {
+            return nil, nil
         }
     ) / (
         // description on the same line as the term
-        Spaces // trim spaces right after delimiter
+        Spaces // requires spaces after delimiter (trimmed from content)
         content:([^\r\n]+ {
             return types.NewRawLine(string(c.text))
         })
-        EOL {
+        EOL 
+        {
             return types.NewParagraph(nil, content)
         }
     )

@@ -1416,6 +1416,45 @@ a description`
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
+		It("with 2 descritptions as single line comment after blanklines", func() {
+			source := `term 1::
+
+
+// a comment
+
+term 2::
+
+
+// another comment`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term 1",
+									},
+								},
+							},
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term 2",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
 		It("with descritption as comment block attached", func() {
 			source := `term::
 ////
@@ -1432,6 +1471,49 @@ a comment
 								Term: []interface{}{
 									&types.StringElement{
 										Content: "term",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("distinct lists with descritption as comment block attached", func() {
+			source := `term 1::
+////
+a comment
+////
+term 2::
+////
+another comment
+////`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term 1",
+									},
+								},
+							},
+						},
+					},
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term 2",
 									},
 								},
 							},
@@ -1460,6 +1542,54 @@ a comment
 								Term: []interface{}{
 									&types.StringElement{
 										Content: "term",
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("distinct lists with descritption as comment block after blanklines", func() {
+			source := `term 1::
+
+
+////
+a comment
+////
+
+term 2::
+
+
+////
+a comment
+////`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term 1",
+									},
+								},
+							},
+						},
+					},
+					&types.List{
+						Kind: types.LabeledListKind,
+						Elements: []types.ListElement{
+							&types.LabeledListElement{
+								Style: types.DoubleColons,
+								Term: []interface{}{
+									&types.StringElement{
+										Content: "term 2",
 									},
 								},
 							},
