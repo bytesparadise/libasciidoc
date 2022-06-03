@@ -1429,13 +1429,36 @@ const (
 	FiveAsterisks UnorderedListElementBulletStyle = "5asterisks"
 )
 
+func NewUnorderedListElementBulletStyle(style string) (UnorderedListElementBulletStyle, error) {
+	switch style {
+	case "-":
+		return Dash, nil
+	case "*":
+		return OneAsterisk, nil
+	case "**":
+		return TwoAsterisks, nil
+	case "***":
+		return ThreeAsterisks, nil
+	case "****":
+		return FourAsterisks, nil
+	case "*****":
+		return FiveAsterisks, nil
+	default:
+		return "", fmt.Errorf("unexpected unordered list element bullet style: '%s'", style)
+	}
+}
+
 // UnorderedListElementPrefix the prefix used to construct an UnorderedListElement
 type UnorderedListElementPrefix struct {
 	BulletStyle UnorderedListElementBulletStyle
 }
 
 // NewUnorderedListElementPrefix initializes a new UnorderedListElementPrefix
-func NewUnorderedListElementPrefix(s UnorderedListElementBulletStyle) (UnorderedListElementPrefix, error) {
+func NewUnorderedListElementPrefix(style string) (UnorderedListElementPrefix, error) {
+	s, err := NewUnorderedListElementBulletStyle(style)
+	if err != nil {
+		return UnorderedListElementPrefix{}, err
+	}
 	return UnorderedListElementPrefix{
 		BulletStyle: s,
 	}, nil
@@ -2147,7 +2170,7 @@ func (b *BlockDelimiter) RawText() string {
 
 // DelimitedBlock the structure for the Listing blocks
 type DelimitedBlock struct {
-	Kind       string // TODO: move into attributes, renaming `AttrParagraphKind`? (and more consistent with Paragraph)
+	Kind       string
 	Attributes Attributes
 	Elements   []interface{}
 }
