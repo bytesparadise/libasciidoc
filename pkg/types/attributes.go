@@ -324,6 +324,7 @@ type PositionalAttribute struct {
 
 // NewPositionalAttribute returns a new attribute who key is the position in the group
 func NewPositionalAttribute(value interface{}) (*PositionalAttribute, error) {
+	value = Reduce(value, strings.TrimSpace)
 	// log.Debugf("new positional attribute: '%s'", value)
 	return &PositionalAttribute{
 		Value: value,
@@ -339,7 +340,7 @@ type Options []interface{} // more explicit than `[]interface{}`, and to bypass 
 
 // NewOptionAttribute sets a boolean option.
 func NewOptionAttribute(option interface{}) (*Attribute, error) {
-	option = Reduce(option)
+	option = Reduce(option, strings.TrimSpace)
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("new option attribute: '%s'", spew.Sdump(option))
 	}
@@ -351,7 +352,8 @@ func NewOptionAttribute(option interface{}) (*Attribute, error) {
 
 // NewNamedAttribute a named (or positional) element
 func NewNamedAttribute(key string, value interface{}) (*Attribute, error) {
-	value = Reduce(value)
+	// value = Reduce(value, strings.TrimSpace)
+	key = strings.TrimSpace(key)
 	if key == AttrOpts { // Handle the alias
 		key = AttrOptions
 	}
@@ -362,36 +364,20 @@ func NewNamedAttribute(key string, value interface{}) (*Attribute, error) {
 }
 
 // NewTitleAttribute initializes a new attribute map with a single entry for the title using the given value
-func NewTitleAttribute(title interface{}) (*Attribute, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("initializing a new Title attribute with %s", spew.Sdump(title))
-	}
-	return &Attribute{
-		Key:   AttrTitle,
-		Value: title,
-	}, nil
+func NewTitleAttribute(value interface{}) (*Attribute, error) {
+	return NewNamedAttribute(AttrTitle, value)
 }
 
 // NewRoleAttribute initializes a new attribute map with a single entry for the title using the given value
-func NewRoleAttribute(role interface{}) (*Attribute, error) {
-	role = Reduce(role)
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("new role attribute: '%s'", spew.Sdump(role))
-	}
-	return &Attribute{
-		Key:   AttrRole,
-		Value: role,
-	}, nil
+func NewRoleAttribute(value interface{}) (*Attribute, error) {
+	return NewNamedAttribute(AttrRole, value)
 }
 
 type Roles []interface{} // more explicit than `[]interface{}`, and to bypass the `Reduce` func that would merge all roles into a single string :/
 
 // NewIDAttribute initializes a new attribute map with a single entry for the ID using the given value
-func NewIDAttribute(id interface{}) (*Attribute, error) {
-	return &Attribute{
-		Key:   AttrID,
-		Value: id,
-	}, nil
+func NewIDAttribute(value interface{}) (*Attribute, error) {
+	return NewNamedAttribute(AttrID, value)
 }
 
 // Set adds the given attribute to the current ones

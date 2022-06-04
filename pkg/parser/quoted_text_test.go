@@ -2048,6 +2048,20 @@ var _ = Describe("quoted texts", func() {
 						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
+					It("escaped bold text with single backslash and attributes", func() {
+						source := `[k1=v1,k2=v2]\*bold content*`
+						expected := &types.Document{
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{Content: "[k1=v1,k2=v2]*bold content*"},
+									},
+								},
+							},
+						}
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
+					})
+
 					It("escaped bold text with multiple backslashes", func() {
 						source := `\\*bold content*`
 						expected := &types.Document{
@@ -2128,6 +2142,27 @@ var _ = Describe("quoted texts", func() {
 								&types.Paragraph{
 									Elements: []interface{}{
 										&types.StringElement{Content: "*"},
+										&types.QuotedText{
+											Kind: types.SingleQuoteItalic,
+											Elements: []interface{}{
+												&types.StringElement{Content: "italic content"},
+											},
+										},
+										&types.StringElement{Content: "*"},
+									},
+								},
+							},
+						}
+						Expect(ParseDocument(source)).To(MatchDocument(expected))
+					})
+
+					It("escaped bold text with nested italic text and attributes", func() {
+						source := `[k1=v1,k2=v2]\*_italic content_*`
+						expected := &types.Document{
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{Content: "[k1=v1,k2=v2]*"},
 										&types.QuotedText{
 											Kind: types.SingleQuoteItalic,
 											Elements: []interface{}{
@@ -2535,8 +2570,8 @@ var _ = Describe("quoted texts", func() {
 
 				Context("with nested quoted text", func() {
 
-					It("escaped subscript text with nested bold text", func() {
-						source := `\~*boldcontent*~`
+					It("escaped subscript text with nested bold text - case 1", func() {
+						source := `\~*bold content*~`
 						expected := &types.Document{
 							Elements: []interface{}{
 								&types.Paragraph{
@@ -2545,7 +2580,7 @@ var _ = Describe("quoted texts", func() {
 										&types.QuotedText{
 											Kind: types.SingleQuoteBold,
 											Elements: []interface{}{
-												&types.StringElement{Content: "boldcontent"},
+												&types.StringElement{Content: "bold content"},
 											},
 										},
 										&types.StringElement{Content: "~"},
@@ -2556,7 +2591,7 @@ var _ = Describe("quoted texts", func() {
 						Expect(ParseDocument(source)).To(MatchDocument(expected))
 					})
 
-					It("escaped subscript text with nested bold text", func() {
+					It("escaped subscript text with nested bold text - case 2", func() {
 						source := `\~subscript *and bold* content~`
 						expected := &types.Document{
 							Elements: []interface{}{
