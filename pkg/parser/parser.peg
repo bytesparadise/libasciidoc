@@ -537,8 +537,8 @@ NamedAttribute <-
     }
 
 // The spec says attributes have be alphanumeric but does not consider foreign letters.  We are more generous.
-NamedAttributeKey <- !Space [^\r\n=,\]]+ Space* {
-        return strings.TrimSpace(string(c.text)), nil // TODO: call `strings.TrimSpace` within `types.NewNamedAttribute()`
+NamedAttributeKey <- !Space [^\r\n=,\]]+ {
+        return string(c.text), nil
     }
 
 AttributeValue <- 
@@ -610,7 +610,6 @@ UnquotedAttributeValue <-
     !Space // can't start with a space (eg: can't have `[ cookie ]`)
     elements:(
         ("[" UnquotedAttributeValue "]") // recursively within brackets (see comment above)
-        // / ElementPlaceHolder
         / ([^=,\uFFFD\]{'"` ]+ { // not within brackets and stop on space and quotation marks (`"')
             return string(c.text), nil
         }) 
@@ -1574,9 +1573,6 @@ ListContinuationElement <- // TODO: same as DelimitedBlockElement?
         if element,ok := element.(types.WithAttributes); ok && attributes != nil {
             element.AddAttributes(attributes.(types.Attributes))
         }
-        // if log.IsLevelEnabled(log.DebugLevel) {
-        //     log.Debugf("returning element '%s'\n", spew.Sdump(element))
-        // }
         return element, nil
     }
 
@@ -1798,7 +1794,6 @@ Paragraph <-
         !EOF
         !BlankLine
         !BlockAttributes
-        !ListContinuationMarker // TODO: needed?
         line:(SinglelineComment / ParagraphRawLine) {
             return line, nil
         })* 
@@ -1823,19 +1818,34 @@ ParagraphRawLine <-
 QuotedText <- 
     // TODO: do not check for attributes twice here?  
     // TODO: also, do not check for attributes on quoted text if we're already parsing an attribute value?
-    // escaped with optional attributes
-    attributes:(LongHandAttributes { 
-        return types.NewStringElement(string(c.text))
-    })?
-    text:EscapedQuotedText {
-        log.Debugf("matched escaped quoted text")
-        return append([]interface{}{attributes}, text.([]interface{})...), nil
+    attributes:(LongHandAttributes)?
+    #{
+        if attributes != nil { // otherwise, `c.text` matches the current character read by the parser
+            c.state["attrs"] = attributes
+            c.state["attrs_text"] = string(c.text)
+        } else {
+            // make sure that current state does not contain attributes of parent/surrounding quoted text
+            delete(c.state, "attrs")
+            delete(c.state, "attrs_text")
+        }
+        return nil
     }
-    / 
-    // unescaped 
-    attributes:(LongHandAttributes)? 
-    text:(UnconstrainedQuotedText / ConstrainedQuotedText) {
-        return text.(*types.QuotedText).WithAttributes(attributes)
+    element:(
+        // escaped
+        escaped:(EscapedQuotedText) {
+            attributes := c.state["attrs_text"]
+            log.Debugf("matched escaped quoted text (attrs='%v')", attributes)
+            return append([]interface{}{attributes}, escaped.([]interface{})...), nil
+        }
+        / 
+        // unescaped 
+        unescaped:(UnconstrainedQuotedText / ConstrainedQuotedText) {
+            attributes := c.state["attrs"]
+            log.Debugf("matched unescaped quoted text (attrs='%v')", attributes)
+            return unescaped.(*types.QuotedText).WithAttributes(attributes)
+        }
+    ) {
+        return element, nil
     }
 
 ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "#" !"#" / "`" !"`"
