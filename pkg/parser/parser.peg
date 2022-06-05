@@ -54,7 +54,7 @@ RawSection <-
         // use a predicate to make sure that only `=` (level 0) to `======` (level 5) are allowed
         return level.(int) <= 5, nil 
     } 
-    Spaces [^\r\n]+ EOF {
+    Spaces ManyChars EOF {
         return types.NewRawSection(level.(int), string(c.text)) // just retain the raw content
     }
 
@@ -262,9 +262,7 @@ DocumentFragment <-
 
 RawLine <- 
     !EOF
-    content:([^\r\n]* {
-        return string(c.text), nil
-    })
+    content:(AnyChars)
     EOL {
         return types.NewRawLine(content.(string))
     }
@@ -418,7 +416,7 @@ ShortHandTitle <- `.`
         InlineWord
         / Space
         / AttributeReferenceValue
-        / ([^\r\n] { return string(c.text), nil }) // TODO: create a rule for this (used multiple times)
+        / AnyChar
     )+ {
         return types.NewTitleAttribute(types.Reduce(elements, strings.TrimSpace))
     }
@@ -805,9 +803,7 @@ SidebarBlockDelimiter <-
 
 DelimitedBlockRawLine <- 
     !EOF // in case the block is unclosed and at the end of the document
-    content:([^\r\n]* { // content is NOT mandatory
-        return string(c.text), nil
-    }) EOL { 
+    content:(AnyChars) EOL { 
         return types.NewRawLine(content.(string))
     }
 
@@ -979,16 +975,12 @@ MarkdownQuoteBlock <-
 MarkdownQuoteRawLine <- 
     !BlankLine
     "> " 
-    content:(([^\r\n]+) { 
-        return string(c.text), nil
-    }) EOL {
+    content:(ManyChars) EOL {
         return types.NewRawLine(content.(string))
     }
 
 MarkdownQuoteAttribution <- 
-    "-- " author:(([^\r\n]+) {
-        return string(c.text), nil
-    }) EOL {
+    "-- " author:(ManyChars) EOL {
         return author, nil
     }
 
@@ -1527,9 +1519,7 @@ ListElementParagraphLine <-
     !CalloutListElementPrefix
     !(LabeledListElementTerm LabeledListElementSeparator)
     !BlockDelimiter
-    content:([^\r\n]+ {
-        return string(c.text), nil
-    })
+    content:(ManyChars)
     EOL { // do not retain the EOL chars
         return types.NewRawLine(content.(string))
     }
@@ -1802,9 +1792,7 @@ Paragraph <-
     }
 
 ParagraphRawLine <- 
-    content:([^\r\n]+ {
-        return string(c.text), nil
-    })
+    content:(ManyChars)
     &{
         return len(strings.TrimSpace(content.(string))) > 0, nil // stop if blank line
     }
@@ -1816,8 +1804,6 @@ ParagraphRawLine <-
 // Quoted Texts (bold, italic, monospace, marked, superscript and subscript)
 // -----------------------------------------------------------------------------------------------------------------------
 QuotedText <- 
-    // TODO: do not check for attributes twice here?  
-    // TODO: also, do not check for attributes on quoted text if we're already parsing an attribute value?
     attributes:(LongHandAttributes)?
     #{
         if attributes != nil { // otherwise, `c.text` matches the current character read by the parser
@@ -2726,9 +2712,7 @@ SinglelineComment <- SinglelineCommentDelimiter content:(SinglelineCommentConten
 // can be `//` but not `////` (comment block delimiter)
 SinglelineCommentDelimiter <- "//" !"//" 
 
-SinglelineCommentContent <- [^\r\n]* {
-        return string(c.text), nil
-    }
+SinglelineCommentContent <- AnyChars
 
 // -------------------------------------------------------------------------------------
 // Symbols
@@ -3022,10 +3006,17 @@ PunctuationCharacter <- [.,;?!] {
 }
 
 // this is a fall-back rule in case all preceeding rules failed to match the current content.
-// AnyChar <- [^\r\n] { // TODO: restore this rule and replace all occurrences of `[^\r\n]` in other rules with `AnyChar`
-AnyChar <- . { 
-        return types.NewStringElement(string(c.text))
-    } 
+AnyChar <- [^\r\n] { 
+        return string(c.text), nil
+    }
+
+AnyChars <- [^\r\n]* { 
+        return string(c.text), nil
+    }
+
+ManyChars <- [^\r\n]+ { 
+        return string(c.text), nil
+    }
 
 FileLocation <- path:(Filename / ElementPlaceHolder)+ {
         return types.NewLocation("", path.([]interface{}))
