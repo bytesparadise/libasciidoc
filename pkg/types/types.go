@@ -47,7 +47,7 @@ type Filterable interface {
 type WithTitle interface {
 	WithAttributes
 	GetTitle() []interface{}
-	SetTitle([]interface{}) error
+	SetTitle([]interface{})
 }
 
 type WithLocation interface {
@@ -297,9 +297,8 @@ func (h *DocumentHeader) GetTitle() []interface{} {
 	return h.Title
 }
 
-func (h *DocumentHeader) SetTitle(title []interface{}) error {
+func (h *DocumentHeader) SetTitle(title []interface{}) {
 	h.Title = title
-	return nil
 }
 
 var _ WithElements = &DocumentHeader{}
@@ -2322,10 +2321,11 @@ type Section struct {
 // NewSection returns a new Section
 func NewSection(level int, title []interface{}) (*Section, error) {
 	// log.Debugf("new rawsection: '%s' (%d)", title, level)
-	return &Section{
+	s := &Section{
 		Level: level,
-		Title: title,
-	}, nil
+	}
+	s.SetTitle(title)
+	return s, nil
 }
 
 func (s *Section) GetID() (string, error) {
@@ -2354,7 +2354,10 @@ func (s *Section) GetTitle() []interface{} {
 }
 
 // SetTitle sets this section's title
-func (s *Section) SetTitle(title []interface{}) error {
+func (s *Section) SetTitle(title []interface{}) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("setting section title: %s", spew.Sdump(title))
+	}
 	// inline ID attribute foud at the end is *moved* at the attributes level of the section
 	if id, ok := title[len(title)-1].(*Attribute); ok {
 		sectionID := stringify(id.Value)
@@ -2365,7 +2368,6 @@ func (s *Section) SetTitle(title []interface{}) error {
 		title = title[:len(title)-1]
 	}
 	s.Title = title
-	return nil
 }
 
 // GetAttributes returns this section's attributes
@@ -2376,6 +2378,10 @@ func (s *Section) GetAttributes() Attributes {
 // AddAttributes adds the attributes of this element
 func (s *Section) AddAttributes(attributes Attributes) {
 	s.Attributes = s.Attributes.AddAll(attributes)
+	if _, exists := s.Attributes[AttrID]; exists {
+		// needed to track custom ID during rendering
+		s.Attributes[AttrCustomID] = true
+	}
 }
 
 // SetAttributes sets the attributes in this element

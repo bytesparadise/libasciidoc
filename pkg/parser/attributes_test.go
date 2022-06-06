@@ -338,11 +338,14 @@ var _ = Describe("attributes", func() {
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID:    "custom",
-								types.AttrRoles: types.Roles{"cookie"},
+								types.AttrID:       "custom",
+								types.AttrCustomID: true,
+								types.AttrRoles:    types.Roles{"cookie"},
 							},
 							Title: []interface{}{
-								types.RawLine("Section A"),
+								&types.StringElement{
+									Content: "Section A",
+								},
 							},
 						},
 					},
@@ -368,11 +371,14 @@ var _ = Describe("attributes", func() {
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID:    "custom",
-								types.AttrRoles: types.Roles{"cookie"},
+								types.AttrID:       "custom",
+								types.AttrCustomID: true,
+								types.AttrRoles:    types.Roles{"cookie"},
 							},
 							Title: []interface{}{
-								types.RawLine("Section A"),
+								&types.StringElement{
+									Content: "Section A",
+								},
 							},
 						},
 					},

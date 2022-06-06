@@ -47,7 +47,24 @@ var _ = Describe("apply substitutions", func() {
 						},
 					},
 					Title: []interface{}{
-						types.RawLine("Document [.{role1}]*{title}*"),
+						&types.StringElement{
+							Content: "Document ",
+						},
+						&types.QuotedText{
+							Kind: "*",
+							Attributes: types.Attributes{
+								types.AttrRoles: types.Roles{
+									&types.AttributeReference{
+										Name: "role1",
+									},
+								},
+							},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "Title",
+								},
+							},
+						},
 					},
 					Elements: []interface{}{
 						&types.DocumentAuthors{ // TODO: support attribute references in document authors
@@ -122,7 +139,20 @@ var _ = Describe("apply substitutions", func() {
 						},
 					},
 					Title: []interface{}{
-						types.RawLine("Section [.{role1}]*{title}*"),
+						&types.StringElement{
+							Content: "Section ",
+						},
+						&types.QuotedText{
+							Kind: types.SingleQuoteBold,
+							Attributes: types.Attributes{
+								types.AttrRoles: types.Roles{"role_1"},
+							},
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "Title",
+								},
+							},
+						},
 					},
 				},
 			},

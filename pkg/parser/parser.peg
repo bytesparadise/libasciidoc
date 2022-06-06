@@ -2558,11 +2558,42 @@ Section <-
         return types.NewSection(level.(int), title.([]interface{})) 
     }
 
-SectionTitle <- [^\r\n]+ { // can't have empty title, that may collide with example block delimiter (`====`)
-        return []interface{}{
-            types.RawLine(c.text),
-        }, nil 
+// SectionTitle <- [^\r\n]+ { // can't have empty title, that may collide with example block delimiter (`====`)
+//         return []interface{}{
+//             types.RawLine(c.text),
+//         }, nil 
+//     }
+SectionTitle <- 
+    #{
+        // enable substitutions
+        c.state[enabledSubstitutions] = headerSubstitutions()
+        return nil
     }
+    elements:(SectionTitleElement)+ { 
+        return types.NewInlineElements(elements)
+    }
+
+SectionTitleElement <-
+    !EOL
+    element:(
+        Word
+        / (Space+ id:(LegacyElementID) Space* &EOL { return id, nil}) // (legacy) element ID
+        / Space
+        / InlinePassthrough
+        / Quote
+        / Link
+        / Replacement
+        / SpecialCharacter // must be after Link (because of BareURL)
+        / Symbol
+        / InlineIcon
+        / AttributeReference
+        / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
+        / InlineAnchor // must be after LegacyElementID
+        / InlineFootnote
+        / AnyChar) {
+            return element, nil
+        }
+
 
 // -------------------------------------------------------------------------------------
 // Substitutions
