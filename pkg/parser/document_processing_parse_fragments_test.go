@@ -285,7 +285,9 @@ on
 						&types.Section{
 							Level: 1,
 							Title: []interface{}{
-								types.RawLine("section title"),
+								&types.StringElement{
+									Content: "section title",
+								},
 							},
 						},
 					},

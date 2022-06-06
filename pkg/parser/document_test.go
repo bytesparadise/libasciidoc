@@ -32,7 +32,9 @@ Garrett D'Amore
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
-								types.RawLine("My title"),
+								&types.StringElement{
+									Content: "My title",
+								},
 							},
 							Elements: []interface{}{
 								&types.AttributeDeclaration{
@@ -76,7 +78,9 @@ Garrett D'Amore
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
-								types.RawLine("My title"),
+								&types.StringElement{
+									Content: "My title",
+								},
 							},
 							Elements: []interface{}{
 								&types.AttributeDeclaration{

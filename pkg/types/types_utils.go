@@ -112,6 +112,8 @@ func Reduce(elements interface{}, opts ...ReduceOption) interface{} {
 		default:
 			return e
 		}
+	case *StringElement:
+		return Reduce(e.Content)
 	case string:
 		for _, apply := range opts {
 			e = apply(e)

@@ -97,18 +97,65 @@ func applySubstitutionsOnDocumentHeader(ctx *ParseContext, b *types.DocumentHead
 }
 
 func applySubstitutionsOnWithTitle(ctx *ParseContext, b types.WithTitle, opts ...Option) error {
-	log.Debugf("processing element with title of type '%T' in 3 steps", b)
+	log.Debugf("processing element with title of type '%T'", b)
 	if err := applySubstitutionsOnAttributes(ctx, b, headerSubstitutions()); err != nil {
 		return err
 	}
-	opts = append(opts, Entrypoint("HeaderGroup"))
-	// apply until Attribute substitution included
-	// TODO: parse InlinePassthroughs and Attributes in the first pass (instead of dumb raw content)
-	title, err := processSubstitutions(ctx, b.GetTitle(), headerSubstitutions(), opts...)
-	if err != nil {
-		return err
+	// only reparse only if title contains attribute references
+	if hasAttributeReferenceInSlice(b.GetTitle()) {
+		opts = append(opts, Entrypoint("HeaderGroup"))
+		title, err := replaceAttributeRefsAndReparse(ctx, b.GetTitle(), headerSubstitutions()[2:], opts...)
+		if err != nil {
+			return err
+		}
+		b.SetTitle(title)
 	}
-	return b.SetTitle(title)
+	return nil
+}
+
+func hasAttributeReferenceInSlice(elements []interface{}) bool {
+	for _, e := range elements {
+		switch e := e.(type) {
+		case *types.AttributeReference:
+			log.Debug("found an attribute reference")
+			return true
+		case types.WithElements:
+			if hasAttributeReferenceInAttributes(e.GetAttributes()) {
+				log.Debug("found an attribute reference in an element attributes")
+				return true
+			}
+			if hasAttributeReferenceInSlice(e.GetElements()) {
+				log.Debug("found an attribute reference in an element")
+				return true
+			}
+		case types.WithAttributes:
+			if hasAttributeReferenceInAttributes(e.GetAttributes()) {
+				log.Debug("found an attribute reference in an element attributes")
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func hasAttributeReferenceInAttributes(attrs types.Attributes) bool {
+	for _, v := range attrs {
+		switch v := v.(type) {
+		case []interface{}:
+			if hasAttributeReferenceInSlice(v) {
+				return true
+			}
+		case types.Roles:
+			if hasAttributeReferenceInSlice(v) {
+				return true
+			}
+		case types.Options:
+			if hasAttributeReferenceInSlice(v) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func applySubstitutionsOnTable(ctx *ParseContext, t *types.Table, opts ...Option) error {
@@ -327,6 +374,7 @@ func replaceAttributeRefsAndReparse(ctx *ParseContext, elements []interface{}, s
 	return elements, nil
 }
 
+// TODO: return bool to see if an attribute ref was replaced
 func applySubstitutionsOnAttributes(ctx *ParseContext, b types.WithAttributes, subs []string) error {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("applying substitutions in attributes of element of type '%T':\n%s", b, spew.Sdump(b.GetAttributes()))
@@ -621,6 +669,9 @@ func (c *current) isExperimentalEnabled() bool {
 // ----------------------------------------------
 
 func (c *current) lookupCurrentSubstitutions() ([]string, bool) {
+	if s, found := c.state[enabledSubstitutions].([]string); found {
+		return s, true
+	}
 	s, found := c.globalStore[enabledSubstitutions].([]string)
 	return s, found
 }
