@@ -181,10 +181,6 @@ func (c *current) isSectionEnabled() bool {
 
 const withinDelimitedBlockKey = "within_delimited_block"
 
-func withinDelimitedBlock(v bool) Option {
-	return GlobalStore(withinDelimitedBlockKey, v)
-}
-
 // state info to determine if parsing is happening within a delimited block (any kind),
 // in which case some grammar rules need to be disabled
 func (c *current) isWithinDelimitedBlock() bool {
@@ -206,39 +202,6 @@ func (c *current) setBlockDelimiterLength(length int) (bool, error) {
 // check if the length of the current block delimiters match
 func (c *current) matchBlockDelimiterLength(length int) (bool, error) {
 	return c.globalStore[blockDelimiterLengthKey] == length, nil
-}
-
-type blockDelimiterTracker struct {
-	stack []blockDelimiter
-}
-
-type blockDelimiter struct {
-	kind   string
-	length int
-}
-
-func newBlockDelimiterTracker() *blockDelimiterTracker {
-	return &blockDelimiterTracker{
-		stack: []blockDelimiter{},
-	}
-}
-
-func (t *blockDelimiterTracker) push(kind string, length int) {
-	switch {
-	case len(t.stack) > 0 && t.stack[len(t.stack)-1].kind == kind && t.stack[len(t.stack)-1].length == length:
-		// trim
-		t.stack = t.stack[:len(t.stack)-1]
-	default:
-		// append
-		t.stack = append(t.stack, blockDelimiter{
-			kind:   kind,
-			length: length,
-		})
-	}
-}
-
-func (t *blockDelimiterTracker) withinDelimitedBlock() bool {
-	return len(t.stack) > 0
 }
 
 const usermacrosKey = "user_macros"

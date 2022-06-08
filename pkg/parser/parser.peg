@@ -225,7 +225,6 @@ IncludedFileEndTag <- "end::" tag:(Alphanums {return string(c.text), nil}) "[]" 
 // Document Fragments
 // -------------------------------------------------------------------------------------
 DocumentFragment <-
-    !EOF
     attributes:(BlockAttributes)? 
     #{
         if attributes, ok := attributes.(types.Attributes); ok {
@@ -250,6 +249,10 @@ DocumentFragment <-
         / FrontMatter
         / Paragraph // must be the last one... 
     )? // allow attribute on empty/no element
+    &{
+        // there must be at least `attributes` or `element`
+        return attributes != nil || element != nil, nil
+    }
     {
         c.disableFrontMatterRule() // not allowed as soon as a single element is found
         c.disableDocumentHeaderRule() // not allowed anymore, based on element that was found
@@ -270,6 +273,10 @@ RawLine <-
 
 // reads all elements at once (for example, within a delimited block)
 DelimitedBlockElements <- 
+    #{
+    	c.globalStore[withinDelimitedBlockKey]=true
+        return nil
+    }
     elements:(
         ElementPlaceHolder // if there was a fileinclusion 
         / DocumentFragment
