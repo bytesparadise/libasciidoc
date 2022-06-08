@@ -160,7 +160,7 @@ func reparseDelimitedBlock(ctx *ParseContext, b *types.DelimitedBlock) error {
 	switch b.Kind {
 	case types.Example, types.Quote, types.Sidebar, types.Open:
 		log.Debugf("parsing elements of delimited block of kind '%s'", b.Kind)
-		opts := append(ctx.opts, Entrypoint("DelimitedBlockElements"), withinDelimitedBlock(true))
+		opts := append(ctx.opts, Entrypoint("DelimitedBlockElements"))
 		elements, err := reparseElements(b.Elements, opts...)
 		if err != nil {
 			return err
@@ -238,6 +238,6 @@ func (c *current) isWithinLiteralParagraph() bool {
 		log.Debugf("within literal paragraph: %t", attrs[types.AttrStyle] == types.Literal)
 		return attrs[types.AttrPositional1] == types.Literal || attrs[types.AttrStyle] == types.Literal
 	}
-	log.Debug("not within literal paragraph")
+	// log.Debug("not within literal paragraph")
 	return false
 }

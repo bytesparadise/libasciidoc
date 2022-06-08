@@ -60,8 +60,8 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 				}
 				b.WriteString(f)
 			case *types.BlockDelimiter:
-				t.push(e.Kind, e.Length)
-				ctx.opts = append(ctx.opts, withinDelimitedBlock(t.withinDelimitedBlock()))
+				t.track(e.Kind, e.Length)
+				ctx.opts = append(ctx.opts, t.withinDelimitedBlock())
 				b.WriteString(e.RawText())
 			case types.ConditionalInclusion:
 				if content, ok := e.SingleLineContent(); ok {
@@ -79,6 +79,39 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 		}
 	}
 	return b.String(), nil
+}
+
+type blockDelimiterTracker struct {
+	stack []blockDelimiter
+}
+
+type blockDelimiter struct {
+	kind   string
+	length int
+}
+
+func newBlockDelimiterTracker() *blockDelimiterTracker {
+	return &blockDelimiterTracker{
+		stack: []blockDelimiter{},
+	}
+}
+
+func (t *blockDelimiterTracker) track(kind string, length int) {
+	switch {
+	case len(t.stack) > 0 && t.stack[len(t.stack)-1].kind == kind && t.stack[len(t.stack)-1].length == length:
+		// pop
+		t.stack = t.stack[:len(t.stack)-1]
+	default:
+		// push
+		t.stack = append(t.stack, blockDelimiter{
+			kind:   kind,
+			length: length,
+		})
+	}
+}
+
+func (t *blockDelimiterTracker) withinDelimitedBlock() Option {
+	return GlobalStore(withinDelimitedBlockKey, len(t.stack) > 0)
 }
 
 // replace the content of this FileInclusion element the content of the target file
