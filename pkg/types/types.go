@@ -141,6 +141,58 @@ func (d *Document) AddElement(element interface{}) error {
 	return nil
 }
 
+type SectionNumbers map[string]string // assigned number by section id
+
+func (d *Document) SectionNumbers() (SectionNumbers, error) {
+	enabled := false
+	if h := d.Header(); h != nil {
+		// lookup the `sectnums` or `numbered` attribute in the header
+		var err error
+		if _, enabled, err = traverseElements(h.Elements, false, ""); err != nil {
+			return nil, err
+		}
+	}
+	numbers, _, err := traverseElements(d.Elements, enabled, "") // disabled by default
+	return numbers, err
+}
+
+func traverseElements(elements []interface{}, enabled bool, prefix string) (map[string]string, bool, error) {
+	result := map[string]string{}
+	counter := 0
+	for _, e := range elements {
+		switch e := e.(type) {
+		case *AttributeDeclaration:
+			if e.Name == AttrSectionNumbering || e.Name == AttrNumbered {
+				enabled = true
+			}
+		case *AttributeReset:
+			if e.Name == AttrSectionNumbering || e.Name == AttrNumbered {
+				enabled = false
+			}
+		case *Section:
+			var n string
+			if enabled {
+				id, err := e.GetID()
+				if err != nil {
+					return nil, false, err
+				}
+				counter++
+				n = prefix + strconv.Itoa(counter)
+				result[id] = n
+			}
+			numbers, en, err := traverseElements(e.Elements, enabled, n+".")
+			if err != nil {
+				return nil, false, err
+			}
+			enabled = en
+			for id, n := range numbers {
+				result[id] = n
+			}
+		}
+	}
+	return result, enabled, nil
+}
+
 // ------------------------------------------
 // Document Metadata
 // ------------------------------------------

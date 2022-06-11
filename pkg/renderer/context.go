@@ -15,7 +15,7 @@ type Context struct {
 	Attributes           types.Attributes
 	ElementReferences    types.ElementReferences
 	HasHeader            bool
-	SectionNumbering     SectionNumbers
+	SectionNumbering     types.SectionNumbers
 }
 
 // NewContext returns a new rendering context for the given document.

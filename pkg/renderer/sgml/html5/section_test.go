@@ -153,7 +153,7 @@ var _ = Describe("sections", func() {
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("with numbering", func() {
+		It("with numbering always enabled", func() {
 			source := `= A title
 :sectnums:
 
@@ -172,6 +172,64 @@ var _ = Describe("sections", func() {
 == Section C`
 
 			expected := `<div class="sect1">
+<h2 id="_section_a">1. Section A</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_section_a_a">1.1. Section A.a</h3>
+</div>
+<div class="sect2">
+<h3 id="_section_a_b">1.2. Section A.b</h3>
+<div class="sect3">
+<h4 id="_section_that_shall_not_be_in_toc">1.2.1. Section that shall not be in ToC</h4>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_b">2. Section B</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_section_b_a">2.1. Section B.a</h3>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_section_c">3. Section C</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with numbering disabled and enabled again", func() {
+			source := `= A title
+:sectnums!:
+
+== Disclaimer
+
+:sectnums:
+
+== Section A
+
+=== Section A.a
+
+=== Section A.b
+
+==== Section that shall not be in ToC
+
+== Section B
+
+=== Section B.a
+
+== Section C`
+
+			expected := `<div class="sect1">
+<h2 id="_disclaimer">Disclaimer</h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
 <h2 id="_section_a">1. Section A</h2>
 <div class="sectionbody">
 <div class="sect2">
