@@ -172,13 +172,8 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 			}
 		}
 	}
-	if ctx.Attributes.Has(types.AttrSectionNumbering) || ctx.Attributes.Has(types.AttrNumbered) {
-		var err error
-		if ctx.SectionNumbering, err = renderer.NewSectionNumbers(doc); err != nil {
-			return metadata, errors.Wrapf(err, "unable to render full document")
-		}
-	} else {
-		log.Debug("section numbering is not enabled")
+	if ctx.SectionNumbering, err = doc.SectionNumbers(); err != nil {
+		return metadata, errors.Wrapf(err, "unable to render full document")
 	}
 
 	// needs to be set before rendering the content elements
