@@ -42,7 +42,7 @@ const (
 func validateManpage(doc *types.Document) []Problem {
 	problems := []Problem{}
 	// checks the presence of a header
-	if doc.Header() == nil {
+	if header, _ := doc.Header(); header == nil {
 		problems = append(problems, Problem{
 			Severity: Error,
 			Message:  "manpage document is missing a header",

@@ -255,7 +255,7 @@ DocumentFragment <-
     }
     {
         c.disableFrontMatterRule() // not allowed as soon as a single element is found
-        c.disableDocumentHeaderRule() // not allowed anymore, based on element that was found
+        c.disableDocumentHeaderRule(element) // not allowed anymore, based on element that was found
     
         if element, ok := element.(types.WithAttributes); ok && attributes != nil {
             element.AddAttributes(attributes.(types.Attributes))

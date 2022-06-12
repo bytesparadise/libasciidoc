@@ -9,6 +9,11 @@ import (
 
 var _ = Describe("insert preambles", func() {
 
+	frontmatter := &types.FrontMatter{
+		Attributes: map[string]interface{}{
+			"draft": true,
+		},
+	}
 	header := &types.DocumentHeader{
 		Title: []interface{}{
 			&types.StringElement{
@@ -156,6 +161,38 @@ var _ = Describe("insert preambles", func() {
 						paragraph,
 						blankline,
 						anotherParagraph,
+						blankline,
+					},
+				},
+				sectionA,
+				sectionB,
+			},
+		}
+		// when
+		insertPreamble(doc)
+		// then
+		Expect(doc).To(Equal(expected))
+	})
+
+	It("should insert preamble with 1 paragraph and blankline when doc has frontmatter", func() {
+		// given
+		doc := &types.Document{
+			Elements: []interface{}{
+				frontmatter,
+				header,
+				paragraph,
+				blankline,
+				sectionA,
+				sectionB,
+			},
+		}
+		expected := &types.Document{
+			Elements: []interface{}{
+				frontmatter,
+				header,
+				&types.Preamble{
+					Elements: []interface{}{
+						paragraph,
 						blankline,
 					},
 				},

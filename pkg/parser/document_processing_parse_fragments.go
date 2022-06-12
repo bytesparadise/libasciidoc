@@ -220,8 +220,14 @@ func (c *current) isDocumentHeaderAllowed() bool {
 	return found && allowed && !c.isWithinDelimitedBlock()
 }
 
-func (c *current) disableDocumentHeaderRule() {
-	c.globalStore[documentHeaderKey] = false
+// disables the `DocumentHeader` grammar rule if the element is anything but a BlankLine or a FrontMatter
+func (c *current) disableDocumentHeaderRule(element interface{}) {
+	switch element.(type) {
+	case *types.BlankLine, *types.FrontMatter:
+		return
+	default:
+		c.globalStore[documentHeaderKey] = false
+	}
 }
 
 const blockAttributesKey = "block_attributes"
