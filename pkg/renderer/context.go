@@ -20,7 +20,7 @@ type Context struct {
 
 // NewContext returns a new rendering context for the given document.
 func NewContext(doc *types.Document, config *configuration.Configuration) *Context {
-	header := doc.Header()
+	header, _ := doc.Header()
 	ctx := &Context{
 		Config:            config,
 		counters:          make(map[string]int),

@@ -162,11 +162,14 @@ func insertPreamble(doc *types.Document) {
 	// now, insert the preamble instead of the 'n' blocks that belong to the preamble
 	// and copy the other items
 	elements := make([]interface{}, len(doc.Elements)-len(preamble.Elements)+1)
-	if header := doc.Header(); header != nil {
+	if frontmatter := doc.FrontMatter(); frontmatter != nil {
+		elements[0] = frontmatter
+	}
+	if header, offset := doc.Header(); header != nil {
 		log.Debug("inserting preamble after header")
-		elements[0] = header
-		elements[1] = preamble
-		copy(elements[2:], doc.Elements[1+len(preamble.Elements):])
+		elements[0+offset] = header
+		elements[1+offset] = preamble
+		copy(elements[2+offset:], doc.Elements[1+len(preamble.Elements)+offset:])
 	} else {
 		log.Debug("inserting preamble at beginning of document")
 		elements[0] = preamble
@@ -176,7 +179,7 @@ func insertPreamble(doc *types.Document) {
 }
 
 func newPreamble(doc *types.Document) *types.Preamble {
-	if doc.Header() == nil {
+	if header, _ := doc.Header(); header == nil {
 		log.Debug("skipping preamble: no header in doc")
 		return nil
 	}
@@ -185,7 +188,7 @@ func newPreamble(doc *types.Document) *types.Preamble {
 	}
 	for _, e := range doc.Elements {
 		switch e.(type) {
-		case *types.DocumentHeader:
+		case *types.DocumentHeader, *types.FrontMatter:
 			continue
 		case *types.Section:
 			return preamble

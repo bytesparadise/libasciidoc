@@ -101,21 +101,33 @@ type Document struct {
 	TableOfContents   *TableOfContents
 }
 
-// Header returns the header, i.e., the section with level 0 if it found as the first element of the document
-// For manpage documents, this also includes the first section (`Name` along with its first paragraph)
-func (d *Document) Header() *DocumentHeader {
-	if len(d.Elements) == 0 {
-		log.Debug("no header for empty doc")
-		return nil
-	}
-	// expect header (if it exists) to be in first position of the doc
-	if h, ok := d.Elements[0].(*DocumentHeader); ok {
-		return h
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("no header in document: %T", d.Elements[0])
+// FrontMatter returns the FrontMatter element if it is in the first position
+// in the document, `nil` otherwise.
+func (d *Document) FrontMatter() *FrontMatter {
+	if frontmatter, ok := d.Elements[0].(*FrontMatter); ok {
+		return frontmatter
 	}
 	return nil
+}
+
+// Header returns the header, i.e., the section with level 0 if it found as the first element of the document
+// For manpage documents, this also includes the first section (`Name` along with its first paragraph)
+// also returns the position of the DocumentHeader element in the Document's Elements (in case there's a FrontMatter before, for example)
+func (d *Document) Header() (*DocumentHeader, int) {
+elements:
+	for i, e := range d.Elements {
+		switch e := e.(type) {
+		case *DocumentHeader:
+			return e, i
+		case *BlankLine, *FrontMatter:
+			// expect DocumentHeader to be positioned after optional FrontMatter and blanklines in-between
+			continue
+		default:
+			log.Debugf("no header in document")
+			break elements
+		}
+	}
+	return nil, -1
 }
 
 // BodyElements returns the elements to render in the body
@@ -145,10 +157,10 @@ type SectionNumbers map[string]string // assigned number by section id
 
 func (d *Document) SectionNumbers() (SectionNumbers, error) {
 	enabled := false
-	if h := d.Header(); h != nil {
+	if header, _ := d.Header(); header != nil {
 		// lookup the `sectnums` or `numbered` attribute in the header
 		var err error
-		if _, enabled, err = traverseElements(h.Elements, false, ""); err != nil {
+		if _, enabled, err = traverseElements(header.Elements, false, ""); err != nil {
 			return nil, err
 		}
 	}

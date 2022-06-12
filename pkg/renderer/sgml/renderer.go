@@ -162,7 +162,7 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 		renderedTitle = DefaultTitle
 	}
 	// process attribute declaration in the header
-	if header := doc.Header(); header != nil {
+	if header, _ := doc.Header(); header != nil {
 		for _, e := range header.Elements {
 			switch e := e.(type) {
 			case *types.AttributeDeclaration:
@@ -252,7 +252,8 @@ func (r *sgmlRenderer) splitAndRender(ctx *renderer.Context, doc *types.Document
 func (r *sgmlRenderer) splitAndRenderForArticle(ctx *renderer.Context, doc *types.Document) (string, string, error) {
 	log.Debugf("rendering article (within HTML/Body: %t)", ctx.Config.WrapInHTMLBodyElement)
 
-	renderedHeader, err := r.renderDocumentHeader(ctx, doc.Header())
+	header, _ := doc.Header()
+	renderedHeader, err := r.renderDocumentHeader(ctx, header)
 	if err != nil {
 		return "", "", err
 	}
@@ -270,7 +271,8 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *type
 	elements := doc.BodyElements()
 	nameSection := elements[0].(*types.Section) // TODO: enforce
 	if ctx.Config.WrapInHTMLBodyElement {
-		renderedHeader, err := r.renderManpageHeader(ctx, doc.Header(), nameSection)
+		header, _ := doc.Header()
+		renderedHeader, err := r.renderManpageHeader(ctx, header, nameSection)
 		if err != nil {
 			return "", "", err
 		}
@@ -296,14 +298,14 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *type
 }
 
 func (r *sgmlRenderer) renderDocumentRoles(ctx *renderer.Context, doc *types.Document) (string, error) {
-	if header := doc.Header(); header != nil {
+	if header, _ := doc.Header(); header != nil {
 		return r.renderElementRoles(ctx, header.Attributes)
 	}
 	return "", nil
 }
 
 func (r *sgmlRenderer) renderDocumentID(doc *types.Document) string {
-	if header := doc.Header(); header != nil {
+	if header, _ := doc.Header(); header != nil {
 		// if header.Attributes.Has(types.AttrCustomID) {
 		// We only want to emit a document body ID if one was explicitly set
 		return r.renderElementID(header.Attributes)
@@ -313,7 +315,7 @@ func (r *sgmlRenderer) renderDocumentID(doc *types.Document) string {
 }
 
 func (r *sgmlRenderer) renderAuthors(_ *renderer.Context, doc *types.Document) string { // TODO: pass header instead of doc
-	if header := doc.Header(); header != nil {
+	if header, _ := doc.Header(); header != nil {
 		if a := header.Authors(); a != nil {
 			authorStrs := make([]string, len(a))
 			for i, author := range a {
@@ -330,7 +332,7 @@ func (r *sgmlRenderer) renderAuthors(_ *renderer.Context, doc *types.Document) s
 const DefaultTitle = "Untitled"
 
 func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc *types.Document) (string, bool, error) {
-	if header := doc.Header(); header != nil {
+	if header, _ := doc.Header(); header != nil {
 		// TODO: This feels wrong.  The title should not need markup.
 		title, err := r.renderPlainText(ctx, header.Title)
 		if err != nil {

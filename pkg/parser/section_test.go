@@ -106,7 +106,7 @@ and a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("section 0, 1 and paragraph with bold quote", func() {
+			It("header, section 1 and paragraph with bold quote", func() {
 				source := `= a header
 				
 == section 1
@@ -1333,6 +1333,65 @@ a short preamble
 == Section 1`
 				expected := &types.Document{
 					Elements: []interface{}{
+						&types.DocumentHeader{
+							Title: []interface{}{
+								&types.StringElement{Content: "A Title"},
+							},
+						},
+						&types.Preamble{
+							Elements: []interface{}{
+								&types.Paragraph{
+									Elements: []interface{}{
+										&types.StringElement{Content: "a short preamble"},
+									},
+								},
+							},
+						},
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID: "_section_1",
+							},
+							Level: 1,
+							Title: []interface{}{
+								&types.StringElement{Content: "Section 1"},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_section_1": []interface{}{
+							&types.StringElement{Content: "Section 1"},
+						},
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("front-matter on top of header", func() {
+				source := `---
+draft: true
+---
+				
+= A Title
+
+a short preamble
+
+== Section 1`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.FrontMatter{
+							Attributes: map[string]interface{}{
+								"draft": true,
+							},
+						},
 						&types.DocumentHeader{
 							Title: []interface{}{
 								&types.StringElement{Content: "A Title"},
