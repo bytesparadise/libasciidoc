@@ -12,7 +12,7 @@ var _ = Describe("attribute substitutions", func() {
 
 	Context("in final documents", func() {
 
-		It("paragraph with attribute substitution", func() {
+		It("paragraph with attribute reference", func() {
 			source := `:author: Xavier
 
 a paragraph written by {author}.`
@@ -136,7 +136,7 @@ This journey continues`
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("paragraph with attribute substitution from front-matter", func() {
+		It("paragraph with attribute reference from front-matter", func() {
 			source := `---
 author: Xavier
 ---
@@ -153,6 +153,78 @@ a paragraph written by {author}.`
 						Elements: []interface{}{
 							&types.StringElement{
 								Content: "a paragraph written by Xavier.",
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("link with attribute reference with hyphen", func() {
+			source := `:download-version: 1.0.0
+
+a link to https://example.com/version/v{download-version}[here]`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "download-version",
+								Value: "1.0.0",
+							},
+						},
+					},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a link to ",
+							},
+							&types.InlineLink{
+								Attributes: types.Attributes{
+									types.AttrInlineLinkText: "here",
+								},
+								Location: &types.Location{
+									Scheme: "https://",
+									Path:   "example.com/version/v1.0.0",
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("link with unknown attribute reference in URL", func() {
+			source := `:version: 1.0.0
+
+a link to https://example.com/version/v{unknown}[here]`
+
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "version",
+								Value: "1.0.0",
+							},
+						},
+					},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a link to ",
+							},
+							&types.InlineLink{
+								Attributes: types.Attributes{
+									types.AttrInlineLinkText: "here",
+								},
+								Location: &types.Location{
+									Scheme: "https://",
+									Path:   "example.com/version/v{unknown}",
+								},
 							},
 						},
 					},
