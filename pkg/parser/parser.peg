@@ -312,8 +312,8 @@ AttributeDeclaration <-
     }
 
 // AttributeName must be at least one character long, 
-// must begin with a word character (A-Z, a-z, 0-9 or _) and 
-// must only contain word Word and hyphens ("-").
+// must begin with a word character (A-Z, a-z, 0-9) or an underscore ("_") 
+// and must only contain word characters (A-Z, a-z, 0-9) and hyphens ("-").
 AttributeName <- [\pL0-9_] ([\pL0-9-])* {
         return string(c.text), nil
     }
@@ -651,7 +651,7 @@ AttributeReferenceValue <-
     /
     // unescaped
     "{" name:AttributeName "}" { 
-        return types.NewAttributeSubstitution(name.(string), string(c.text))
+        return types.NewAttributeReference(name.(string), string(c.text))
     }
     
 CounterReference <- CounterSubstitution1 / CounterSubstitution2

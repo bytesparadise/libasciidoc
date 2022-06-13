@@ -671,8 +671,8 @@ type AttributeReference struct {
 	rawText string
 }
 
-// NewAttributeSubstitution initializes a new Attribute Substitutions
-func NewAttributeSubstitution(name, rawText string) (interface{}, error) {
+// NewAttributeReference initializes a new Attribute Reference
+func NewAttributeReference(name, rawText string) (interface{}, error) {
 	if isPrefedinedAttribute(name) {
 		return &PredefinedAttribute{
 				Name:    name,
