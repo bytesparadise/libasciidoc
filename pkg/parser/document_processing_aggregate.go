@@ -28,7 +28,7 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 	// TODO: update `toc.MaxDepth` when `AttrTableOfContentsLevels` is declared afterwards
 	toc := types.NewTableOfContents(attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2))
 
-	lvls := &levels{
+	a := &aggregator{
 		doc,
 	}
 	for f := range fragmentStream {
@@ -46,15 +46,8 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 					log.Debugf("setting ToC.MaxDepth to %d", maxDepth)
 					toc.MaxDepth = maxDepth
 				}
-				// yet, retain the element, in case we need it during rendering (eg: `figure-caption`, etc.)
-				if err := lvls.appendElement(e); err != nil {
-					return nil, err
-				}
 			case *types.FrontMatter:
 				attrs.setAll(e.Attributes)
-				if err := lvls.appendElement(e); err != nil {
-					return nil, err
-				}
 			case *types.DocumentHeader:
 				for _, elmt := range e.Elements {
 					switch attr := elmt.(type) {
@@ -70,32 +63,28 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 						ctx.attributes.unset(attr.Name)
 					}
 				}
-				if err := lvls.appendElement(e); err != nil {
-					return nil, err
-				}
 				// do not add header to ToC
 			case *types.AttributeReset:
 				attrs.unset(e.Name)
-				// yet, retain the element, in case we need it during rendering (eg: `figure-caption`, etc.)
-				if err := lvls.appendElement(e); err != nil {
-					return nil, err
-				}
 			case *types.BlankLine, *types.SinglelineComment:
 				// ignore
 			case *types.Section:
-				if err := e.ResolveID(attrs.allAttributes(), refs); err != nil {
-					return nil, err
-				}
-				if err := lvls.appendSection(e); err != nil {
-					return nil, err
-				}
+				e.ResolveID(attrs.allAttributes(), refs)
 				if toc != nil {
 					toc.Add(e)
 				}
-			default:
-				if err := lvls.appendElement(e); err != nil {
-					return nil, err
+			case *types.Paragraph:
+				for _, elmt := range e.Elements {
+					switch elmt := elmt.(type) {
+					case *types.InternalCrossReference:
+						elmt.ResolveID(attrs.allAttributes())
+					}
 				}
+			}
+			// also, retain the element
+			// yet, retain the element, in case we need it during rendering (eg: `figure-caption`, etc.)
+			if err := a.append(element); err != nil {
+				return nil, err
 			}
 			// also, check if the element has refs
 			if e, ok := element.(types.Referencable); ok {
@@ -114,27 +103,40 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 	return doc, nil
 }
 
-type levels []types.WithElementAddition
+type aggregator []types.WithElementAddition
 
-func (l *levels) appendSection(s *types.Section) error {
-	// note: section levels start at 0, but first level is root (doc)
-	if idx, found := l.indexOfParent(s); found {
-		*l = (*l)[:idx+1] // trim to parent level
+func (a *aggregator) append(e interface{}) error {
+	switch e := e.(type) {
+	case *types.Section:
+		return a.appendSection(e)
+	default:
+		return a.appendElement(e)
 	}
-	log.Debugf("adding section with level %d at position %d in levels", s.Level, len(*l))
+}
+
+func (a *aggregator) appendElement(e interface{}) error {
+	return (*a)[len(*a)-1].AddElement(e)
+}
+
+func (a *aggregator) appendSection(s *types.Section) error {
+	// note: section levels start at 0, but first level is root (doc)
+	if idx, found := a.indexOfParent(s); found {
+		*a = (*a)[:idx+1] // trim to parent level
+	}
+	log.Debugf("adding section with level %d at position %d in levels", s.Level, len(*a))
 	// append
-	if err := (*l)[len(*l)-1].AddElement(s); err != nil {
+	if err := (*a)[len(*a)-1].AddElement(s); err != nil {
 		return err
 	}
-	*l = append(*l, s)
+	*a = append(*a, s)
 	return nil
 }
 
 // return the index of the parent element for the given section,
 // taking account the given section's level, and also gaps in other
 // sections (eg: `1,2,4` instead of `0,1,2`)
-func (l *levels) indexOfParent(s *types.Section) (int, bool) {
-	for i, e := range *l {
+func (a *aggregator) indexOfParent(s *types.Section) (int, bool) {
+	for i, e := range *a {
 		if p, ok := e.(*types.Section); ok {
 			if p.Level >= s.Level {
 				log.Debugf("found parent at index %d for section with level %d", i-1, s.Level)
@@ -144,10 +146,6 @@ func (l *levels) indexOfParent(s *types.Section) (int, bool) {
 	}
 	//
 	return -1, false
-}
-
-func (l *levels) appendElement(e interface{}) error {
-	return (*l)[len(*l)-1].AddElement(e)
 }
 
 func insertPreamble(doc *types.Document) {

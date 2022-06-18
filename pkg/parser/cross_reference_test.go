@@ -464,6 +464,110 @@ Here's a reference to the definition of <<a_term>>.`
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("natural ref to section with plaintext title", func() {
+				source := `see <<Section 1>>.
+
+== Section 1`
+				sectionTitle := []interface{}{
+					&types.StringElement{
+						Content: "Section 1",
+					},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "see ",
+								},
+								&types.InternalCrossReference{
+									ID: "_section_1",
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+						&types.Section{
+							Level: 1,
+							Attributes: types.Attributes{
+								types.AttrID: "_section_1",
+							},
+							Title: sectionTitle,
+						},
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_section_1": sectionTitle,
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("natural ref to section with rich title", func() {
+				source := `see <<Section *1*>>.
+
+== Section *1*`
+				sectionTitle := []interface{}{
+					&types.StringElement{
+						Content: "Section ",
+					},
+					&types.QuotedText{
+						Kind: types.SingleQuoteBold,
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "1",
+							},
+						},
+					},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "see ",
+								},
+								&types.InternalCrossReference{
+									ID: "_section_1",
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+						&types.Section{
+							Level: 1,
+							Attributes: types.Attributes{
+								types.AttrID: "_section_1",
+							},
+							Title: sectionTitle,
+						},
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_section_1",
+								Level: 1,
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_section_1": sectionTitle,
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 
 		Context("external references", func() {

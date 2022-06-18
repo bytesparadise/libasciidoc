@@ -6,11 +6,16 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref *types.InternalCrossReference) (string, error) {
-	// log.Debugf("rendering cross reference with ID: %s", xref.ID)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("rendering cross reference with ID: %s", spew.Sdump(xref.ID))
+	}
 	result := &strings.Builder{}
 	var label string
 	xrefID, ok := xref.ID.(string)
@@ -24,11 +29,25 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 		case string:
 			label = t
 		case []interface{}:
-			renderedContent, err := r.renderPlainText(ctx, t)
-			if err != nil {
-				return "", errors.Wrap(err, "error while rendering internal cross reference")
+			// render as usual except for links as plain text (since the cross reference is already displayed as a link)
+			buff := &strings.Builder{}
+			for _, e := range t {
+				switch e := e.(type) {
+				case *types.InlineLink:
+					renderedElement, err := r.renderPlainText(ctx, e)
+					if err != nil {
+						return "", err
+					}
+					buff.WriteString(renderedElement)
+				default:
+					renderedElement, err := r.renderElement(ctx, e)
+					if err != nil {
+						return "", err
+					}
+					buff.WriteString(renderedElement)
+				}
 			}
-			label = renderedContent
+			label = buff.String()
 		default:
 			return "", errors.Errorf("unable to process internal cross reference to element of type %T", target)
 		}

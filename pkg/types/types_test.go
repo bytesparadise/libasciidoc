@@ -494,9 +494,8 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			section.ResolveID(types.Attributes{}, types.ElementReferences{})
 			// then
-			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
 		})
 
@@ -518,9 +517,8 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			section.ResolveID(types.Attributes{}, types.ElementReferences{})
 			// then
-			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
 		})
 
@@ -536,9 +534,8 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			section.ResolveID(types.Attributes{}, types.ElementReferences{})
 			// then
-			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
 		})
 	})
@@ -557,14 +554,13 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			err := section.ResolveID(
+			section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
-			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("custom_foo"))
 		})
 
@@ -586,14 +582,13 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			err := section.ResolveID(
+			section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
-			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("custom_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
 		})
 	})
@@ -614,14 +609,13 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			err := section.ResolveID(
+			section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
-			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
 		})
 
@@ -645,14 +639,13 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			err := section.ResolveID(
+			section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
-			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
 		})
 

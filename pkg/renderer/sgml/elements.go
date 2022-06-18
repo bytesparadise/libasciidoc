@@ -5,6 +5,7 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
 )
@@ -118,7 +119,9 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 }
 
 func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) (string, error) {
-	// log.Debugf("rendering plain string for element of type %T", element)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("rendering plain string for element of type %T", element)
+	}
 	switch e := element.(type) {
 	case []interface{}:
 		return r.renderInlineElements(ctx, e, withRenderer(r.renderPlainText))
