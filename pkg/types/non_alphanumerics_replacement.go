@@ -6,27 +6,21 @@ import (
 )
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
-func ReplaceNonAlphanumerics(elements []interface{}, prefix, separator string) (string, error) {
-	replacement, err := replaceNonAlphanumericsOnElements(elements, separator)
-	if err != nil {
-		return "", err
-	}
+func ReplaceNonAlphanumerics(elements []interface{}, prefix, separator string) string {
+	replacement := replaceNonAlphanumericsOnElements(elements, separator)
 	// avoid duplicate prefix
 	if strings.HasPrefix(replacement, prefix) {
-		return replacement, nil
+		return replacement
 	}
-	return prefix + replacement, nil
+	return prefix + replacement
 }
 
-func replaceNonAlphanumericsOnElements(elements []interface{}, separator string) (string, error) {
+func replaceNonAlphanumericsOnElements(elements []interface{}, separator string) string {
 	result := &strings.Builder{}
 	for i, element := range elements {
 		switch e := element.(type) {
 		case *QuotedText:
-			r, err := replaceNonAlphanumericsOnElements(e.Elements, separator)
-			if err != nil {
-				return "", err
-			}
+			r := replaceNonAlphanumericsOnElements(e.Elements, separator)
 			result.WriteString(r)
 			result.WriteString(separator)
 		case *StringElement:
@@ -58,8 +52,7 @@ func replaceNonAlphanumericsOnElements(elements []interface{}, separator string)
 	}
 	r := strings.TrimSuffix(result.String(), separator)
 	// avoid duplicate separators
-	r = strings.ReplaceAll(r, separator+separator, separator)
-	return r, nil
+	return strings.ReplaceAll(r, separator+separator, separator)
 }
 
 func replaceNonAlphanumerics(content, replacement string) string {

@@ -11,18 +11,37 @@ var _ = Describe("cross references", func() {
 
 	Context("using shorthand syntax", func() {
 
-		It("with custom id", func() {
+		It("with custom id to section above with rich title", func() {
 
 			source := `[[thetitle]]
-== a title
+== a *title*
 
 with some content linked to <<thetitle>>!`
 			expected := `<div class="sect1">
-<h2 id="thetitle">a title</h2>
+<h2 id="thetitle">a <strong>title</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>with some content linked to <a href="#thetitle">a title</a>!</p>
+<p>with some content linked to <a href="#thetitle">a <strong>title</strong></a>!</p>
 </div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("with custom id to section afterwards", func() {
+
+			source := `see <<thetitle>>
+			
+[#thetitle]
+== a *title*
+`
+			expected := `<div class="paragraph">
+<p>see <a href="#thetitle">a <strong>title</strong></a></p>
+</div>
+<div class="sect1">
+<h2 id="thetitle">a <strong>title</strong></h2>
+<div class="sectionbody">
 </div>
 </div>
 `
@@ -114,6 +133,38 @@ with some content linked to <<thewrongtitle>>!`
 <div class="paragraph">
 <p>with some content linked to <a href="#thewrongtitle">[thewrongtitle]</a>!</p>
 </div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("natural ref to section with plaintext title", func() {
+			source := `see <<Section 1>>.
+
+== Section 1`
+			expected := `<div class="paragraph">
+<p>see <a href="#_section_1">Section 1</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="_section_1">Section 1</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("natural ref to section with rich title", func() {
+			source := `see <<Section *1*>>.
+
+== Section *1*`
+			expected := `<div class="paragraph">
+<p>see <a href="#_section_1">Section <strong>1</strong></a>.</p>
+</div>
+<div class="sect1">
+<h2 id="_section_1">Section <strong>1</strong></h2>
+<div class="sectionbody">
 </div>
 </div>
 `

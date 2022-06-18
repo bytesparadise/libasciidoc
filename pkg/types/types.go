@@ -1862,6 +1862,23 @@ func NewInternalCrossReference(id, label interface{}) (*InternalCrossReference, 
 	}, nil
 }
 
+func (x *InternalCrossReference) ResolveID(attrs Attributes) {
+	prefix := attrs.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
+	separator := attrs.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
+	switch id := x.ID.(type) {
+	case []interface{}:
+		x.ID = ReplaceNonAlphanumerics(id, prefix, separator)
+	case string:
+		if strings.Contains(id, " ") || id != strings.ToLower(id) {
+			x.ID = ReplaceNonAlphanumerics([]interface{}{
+				&StringElement{
+					Content: id,
+				},
+			}, prefix, separator)
+		}
+	}
+}
+
 // ExternalCrossReference the struct for Cross References
 type ExternalCrossReference struct {
 	Location   *Location
@@ -2458,12 +2475,8 @@ func (s *Section) SetAttributes(attributes Attributes) {
 }
 
 // ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s *Section) ResolveID(attrs map[string]interface{}, refs ElementReferences) error {
-	base, err := s.resolveID(attrs)
-	if err != nil {
-		return err
-	}
-
+func (s *Section) ResolveID(attrs Attributes, refs ElementReferences) {
+	base := s.resolveID(attrs)
 	for i := 1; ; i++ {
 		var id string
 		if i == 1 {
@@ -2477,28 +2490,24 @@ func (s *Section) ResolveID(attrs map[string]interface{}, refs ElementReferences
 			break
 		}
 	}
-	return nil
 }
 
 // resolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s *Section) resolveID(attrs Attributes) (string, error) {
+func (s *Section) resolveID(attrs Attributes) string {
 	if s.Attributes == nil {
 		s.Attributes = Attributes{}
 	}
 	// block attribute
 	if id := s.Attributes.GetAsStringWithDefault(AttrID, ""); id != "" {
-		return id, nil
+		return id
 	}
 	log.Debugf("resolving section id")
 	prefix := attrs.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
 	separator := attrs.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
-	id, err := ReplaceNonAlphanumerics(s.Title, prefix, separator)
-	if err != nil {
-		return "", errors.Wrapf(err, "failed to generate default ID on Section element")
-	}
+	id := ReplaceNonAlphanumerics(s.Title, prefix, separator)
 	s.Attributes[AttrID] = id
 	log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
-	return id, nil
+	return id
 }
 
 var _ Referencable = &Section{}
