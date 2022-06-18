@@ -196,6 +196,9 @@ image::cookie.png[cookie image, 600, 400]`
 						},
 					},
 				},
+				ElementReferences: types.ElementReferences{
+					"myid": "mytitle",
+				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})

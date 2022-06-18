@@ -2010,6 +2010,16 @@ func (i *ImageBlock) GetLocation() *Location {
 	return i.Location
 }
 
+var _ Referencable = &ImageBlock{}
+
+func (i *ImageBlock) Reference(refs ElementReferences) {
+	id := i.Attributes.GetAsStringWithDefault(AttrID, "")
+	title := i.Attributes.GetAsStringWithDefault(AttrTitle, "")
+	if id != "" && title != "" {
+		refs[id] = title
+	}
+}
+
 // InlineImage the structure for the inline image macros
 type InlineImage struct {
 	Location   *Location

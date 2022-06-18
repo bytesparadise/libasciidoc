@@ -170,6 +170,25 @@ with some content linked to <<thewrongtitle>>!`
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("to image with title", func() {
+			source := `see <<thecookie>>
+
+[#thecookie]
+.A cookie
+image::cookie.jpg[]`
+			expected := `<div class="paragraph">
+<p>see <a href="#thecookie">A cookie</a></p>
+</div>
+<div id="thecookie" class="imageblock">
+<div class="content">
+<img src="cookie.jpg" alt="cookie">
+</div>
+<div class="title">Figure 1. A cookie</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("using macro syntax", func() {
