@@ -3796,6 +3796,34 @@ func (t *Table) Reference(refs ElementReferences) {
 	if id != "" && title != nil {
 		refs[id] = title
 	}
+	// also, traverse all cells to find referencable content
+	if t.Header != nil {
+		for _, c := range t.Header.Cells {
+			for _, e := range c.Elements {
+				if e, ok := e.(Referencable); ok {
+					e.Reference(refs)
+				}
+			}
+		}
+	}
+	for _, r := range t.Rows {
+		for _, c := range r.Cells {
+			for _, e := range c.Elements {
+				if e, ok := e.(Referencable); ok {
+					e.Reference(refs)
+				}
+			}
+		}
+	}
+	if t.Footer != nil {
+		for _, c := range t.Footer.Cells {
+			for _, e := range c.Elements {
+				if e, ok := e.(Referencable); ok {
+					e.Reference(refs)
+				}
+			}
+		}
+	}
 }
 
 type HAlign string

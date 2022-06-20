@@ -189,6 +189,37 @@ image::cookie.jpg[]`
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
+
+		It("to image in table cell", func() {
+			source := `a reference to <<cookie>>
+
+|===
+a|
+[#cookie]
+.A cookie
+image::cookie.png[Cookie]
+|===`
+			expected := `<div class="paragraph">
+<p>a reference to <a href="#cookie">A cookie</a></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div id="cookie" class="imageblock">
+<div class="content">
+<img src="cookie.png" alt="Cookie">
+</div>
+<div class="title">Figure 1. A cookie</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 
 	Context("using macro syntax", func() {

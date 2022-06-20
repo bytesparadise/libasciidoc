@@ -325,6 +325,58 @@ some content`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("to image in table cell", func() {
+				source := `a reference to <<cookie>>
+
+|===
+a|
+[#cookie]
+.A cookie
+image::cookie.png[Cookie]
+|===`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a reference to ",
+								},
+								&types.InternalCrossReference{
+									ID: "cookie",
+								},
+							},
+						},
+						&types.Table{
+							Rows: []*types.TableRow{
+								{
+									Cells: []*types.TableCell{
+										{
+											Format: "a",
+											Elements: []interface{}{
+												&types.ImageBlock{
+													Attributes: types.Attributes{
+														types.AttrID:       "cookie",
+														types.AttrTitle:    "A cookie",
+														types.AttrImageAlt: "Cookie",
+													},
+													Location: &types.Location{
+														Path: "cookie.png",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"cookie": "A cookie",
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("to attached element in a list", func() {
 				source := `a reference to <<table>>
 	

@@ -1387,12 +1387,12 @@ image::another-image.png[]
 			source := `[cols="2*^"]
 |===
 a|
-[#id]
-.A title
+[#image-id]
+.An image
 image::image.png[]
 a|
-[#another-id]
-.Another title
+[#another-image-id]
+.Another image
 image::another-image.png[]
 |===`
 			expected := &types.Document{
@@ -1416,8 +1416,8 @@ image::another-image.png[]
 										Elements: []interface{}{
 											&types.ImageBlock{
 												Attributes: types.Attributes{
-													types.AttrID:    "id",
-													types.AttrTitle: "A title",
+													types.AttrID:    "image-id",
+													types.AttrTitle: "An image",
 												},
 												Location: &types.Location{
 													Path: "image.png",
@@ -1430,8 +1430,8 @@ image::another-image.png[]
 										Elements: []interface{}{
 											&types.ImageBlock{
 												Attributes: types.Attributes{
-													types.AttrID:    "another-id",
-													types.AttrTitle: "Another title",
+													types.AttrID:    "another-image-id",
+													types.AttrTitle: "Another image",
 												},
 												Location: &types.Location{
 													Path: "another-image.png",
@@ -1443,6 +1443,10 @@ image::another-image.png[]
 							},
 						},
 					},
+				},
+				ElementReferences: types.ElementReferences{
+					"image-id":         "An image",
+					"another-image-id": "Another image",
 				},
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
