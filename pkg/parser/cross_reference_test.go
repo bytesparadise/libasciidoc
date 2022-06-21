@@ -14,7 +14,7 @@ var _ = Describe("cross references", func() {
 
 		Context("internal references", func() {
 
-			It("with custom id alone", func() {
+			It("to section, with custom id alone", func() {
 				source := `[[thetitle]]
 == a title
 
@@ -66,7 +66,7 @@ with some content linked to <<thetitle>>!`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("with custom id and label", func() {
+			It("to section, with custom id and label", func() {
 				source := `[[thetitle]]
 == a title
 
@@ -616,6 +616,135 @@ Here's a reference to the definition of <<a_term>>.`
 					},
 					ElementReferences: types.ElementReferences{
 						"_section_1": sectionTitle,
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("natural ref to section from within list element", func() {
+				source := `== Somewhere Else
+
+term:: see <<Somewhere Else>>.
+`
+				sectionTitle := []interface{}{
+					&types.StringElement{
+						Content: "Somewhere Else",
+					},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Section{
+							Level: 1,
+							Attributes: types.Attributes{
+								types.AttrID: "_somewhere_else",
+							},
+							Title: sectionTitle,
+							Elements: []interface{}{
+								&types.List{
+									Kind: types.LabeledListKind,
+									Elements: []types.ListElement{
+										&types.LabeledListElement{
+											Style: types.DoubleColons,
+											Term: []interface{}{
+												&types.StringElement{
+													Content: "term",
+												},
+											},
+											Elements: []interface{}{
+												&types.Paragraph{
+													Elements: []interface{}{
+														&types.StringElement{
+															Content: "see ",
+														},
+														&types.InternalCrossReference{
+															ID: "_somewhere_else",
+														},
+														&types.StringElement{
+															Content: ".",
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_somewhere_else",
+								Level: 1,
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_somewhere_else": sectionTitle,
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("natural ref to section afterwards from within list element", func() {
+				source := `term:: see <<Somewhere Else>>.
+
+== Somewhere Else`
+				sectionTitle := []interface{}{
+					&types.StringElement{
+						Content: "Somewhere Else",
+					},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.List{
+							Kind: types.LabeledListKind,
+							Elements: []types.ListElement{
+								&types.LabeledListElement{
+									Style: types.DoubleColons,
+									Term: []interface{}{
+										&types.StringElement{
+											Content: "term",
+										},
+									},
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "see ",
+												},
+												&types.InternalCrossReference{
+													ID: "_somewhere_else",
+												},
+												&types.StringElement{
+													Content: ".",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						&types.Section{
+							Level: 1,
+							Attributes: types.Attributes{
+								types.AttrID: "_somewhere_else",
+							},
+							Title: sectionTitle,
+						},
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_somewhere_else",
+								Level: 1,
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_somewhere_else": sectionTitle,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
