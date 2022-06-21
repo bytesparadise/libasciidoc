@@ -73,14 +73,8 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 				if toc != nil {
 					toc.Add(e)
 				}
-			case *types.Paragraph:
-				for _, elmt := range e.Elements {
-					switch elmt := elmt.(type) {
-					case *types.InternalCrossReference:
-						elmt.ResolveID(attrs.allAttributes())
-					}
-				}
 			}
+
 			// also, retain the element
 			// yet, retain the element, in case we need it during rendering (eg: `figure-caption`, etc.)
 			if err := a.append(element); err != nil {
@@ -91,16 +85,34 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 				e.Reference(refs)
 			}
 		}
-	}
 
+	}
 	if len(refs) > 0 {
 		doc.ElementReferences = refs
+		// also, resolve cross references (only needed if there are referenced elements)
+		for _, e := range doc.Elements {
+			resolveCrossReferences(e, attrs)
+		}
 	}
 	if len(toc.Sections) > 0 {
 		doc.TableOfContents = toc
 	}
 	log.WithField("pipeline_task", "aggregate").Debug("done")
 	return doc, nil
+}
+
+func resolveCrossReferences(element interface{}, attrs *contextAttributes) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("resolving cross references in element of type '%T'", element)
+	}
+	switch e := element.(type) {
+	case types.WithElements:
+		for _, elmt := range e.GetElements() {
+			resolveCrossReferences(elmt, attrs)
+		}
+	case *types.InternalCrossReference:
+		e.ResolveID(attrs.allAttributes())
+	}
 }
 
 type aggregator []types.WithElementAddition

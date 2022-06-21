@@ -801,6 +801,36 @@ type List struct {
 	Elements   []ListElement
 }
 
+var _ WithElements = &List{}
+
+// GetAttributes returns the attributes of this element
+func (l *List) GetAttributes() Attributes {
+	return l.Attributes
+}
+
+// AddAttributes adds the attributes of this element
+func (l *List) AddAttributes(attributes Attributes) {
+	l.Attributes = l.Attributes.AddAll(attributes)
+}
+
+// SetAttributes sets the attributes of this element
+func (l *List) SetAttributes(attributes Attributes) {
+	l.Attributes = attributes
+}
+
+func (l *List) GetElements() []interface{} {
+	elements := make([]interface{}, len(l.Elements))
+	for i, e := range l.Elements {
+		elements[i] = e
+	}
+	return elements
+}
+
+func (l *List) SetElements(elements []interface{}) error {
+	// not implemented
+	return nil
+}
+
 // CanAddElement checks if the given element can be added
 func (l *List) CanAddElement(element interface{}) bool {
 	switch e := element.(type) {
@@ -814,6 +844,8 @@ func (l *List) CanAddElement(element interface{}) bool {
 		return false
 	}
 }
+
+var _ WithElementAddition = &List{}
 
 // AddElement adds the given element `e` in the target list or sublist (depending on its type)
 func (l *List) AddElement(element interface{}) error {
@@ -836,6 +868,8 @@ func (l *List) AddElement(element interface{}) error {
 
 	return errors.Errorf("cannot add element of type '%T' to list of kind '%s'", element, l.Kind)
 }
+
+var _ Referencable = &List{}
 
 func (l *List) Reference(refs ElementReferences) {
 	id := l.Attributes.GetAsStringWithDefault(AttrID, "")

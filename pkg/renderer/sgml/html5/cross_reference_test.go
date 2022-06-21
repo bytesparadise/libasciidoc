@@ -171,6 +171,49 @@ with some content linked to <<thewrongtitle>>!`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("natural ref to section from within list element", func() {
+			source := `== Somewhere Else
+
+term:: see <<Somewhere Else>>.
+`
+			expected := `<div class="sect1">
+<h2 id="_somewhere_else">Somewhere Else</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">term</dt>
+<dd>
+<p>see <a href="#_somewhere_else">Somewhere Else</a>.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
+		It("natural ref to section afterwards from within list element", func() {
+			source := `term:: see <<Somewhere Else>>.
+
+== Somewhere Else`
+			expected := `<div class="dlist">
+<dl>
+<dt class="hdlist1">term</dt>
+<dd>
+<p>see <a href="#_somewhere_else">Somewhere Else</a>.</p>
+</dd>
+</dl>
+</div>
+<div class="sect1">
+<h2 id="_somewhere_else">Somewhere Else</h2>
+<div class="sectionbody">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("to image with title", func() {
 			source := `see <<thecookie>>
 
