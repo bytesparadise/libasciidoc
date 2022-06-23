@@ -162,15 +162,12 @@ func stringify(element interface{}) string {
 	}
 }
 
-// TrimLeft returns a slice of elements where the
-// `strings.TrimLeft` func was applied on the content of the first entry
-// if it is a `*StringElement`
-func TrimLeft(elements []interface{}, cutset string) []interface{} {
-	if len(elements) == 0 {
-		return elements
-	}
-	if first, ok := elements[0].(*StringElement); ok {
-		first.Content = strings.TrimLeft(first.Content, cutset)
+// TrimTrailingSpaces trims trailing spaces on the last element (if applicable)
+func TrimTrailingSpaces(elements []interface{}) []interface{} {
+	if len(elements) > 0 {
+		if s, ok := elements[len(elements)-1].(*StringElement); ok {
+			s.Content = strings.TrimRight(s.Content, " ")
+		}
 	}
 	return elements
 }
