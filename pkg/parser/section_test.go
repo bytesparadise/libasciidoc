@@ -30,15 +30,51 @@ var _ = Describe("sections", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("header with many spaces around content", func() {
-				source := "= a header   "
+			It("header with trailing spaces", func() {
+				source := "= a header  "
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.DocumentHeader{
 							Title: []interface{}{
 								&types.StringElement{
-									Content: "a header   ",
+									Content: "a header",
 								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("section with trailing spaces", func() {
+				source := "== a section  "
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Section{
+							Level: 1,
+							Attributes: types.Attributes{
+								types.AttrID: "_a_section",
+							},
+							Title: []interface{}{
+								&types.StringElement{
+									Content: "a section",
+								},
+							},
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_a_section": []interface{}{
+							&types.StringElement{
+								Content: "a section",
+							},
+						},
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_a_section",
+								Level: 1,
 							},
 						},
 					},

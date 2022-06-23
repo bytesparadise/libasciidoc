@@ -298,7 +298,7 @@ func NewDocumentHeader(info interface{}, extraAttrs []interface{}) (*DocumentHea
 	header := &DocumentHeader{}
 	elements := make([]interface{}, 0, 2+len(extraAttrs)) // estimated max capacity
 	if info, ok := info.(*DocumentInformation); ok {
-		header.Title = info.Title
+		header.Title = TrimTrailingSpaces(info.Title)
 		if len(info.Authors) > 0 {
 			// header.Authors = info.Authors
 			elements = append(elements, &AttributeDeclaration{
@@ -2492,7 +2492,7 @@ func (s *Section) SetTitle(title []interface{}) {
 		})
 		title = title[:len(title)-1]
 	}
-	s.Title = title
+	s.Title = TrimTrailingSpaces(title)
 }
 
 // GetAttributes returns this section's attributes

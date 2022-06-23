@@ -31,57 +31,80 @@ var _ = Describe("convert to inline elements", func() {
 	})
 })
 
-// var _ = DescribeTable("TrimLeft",
+var _ = DescribeTable("TrimTrailingSpaces",
 
-// 	func(source, expected []interface{}) {
+	func(source, expected []interface{}) {
+		Expect(types.TrimTrailingSpaces(source)).To(Equal(expected))
+	},
+	Entry("empty slice",
+		[]interface{}{},
+		[]interface{}{}),
 
-// 	},
-// 	Entry("empty slice",
-// 		[]interface{}{},
-// 		[]interface{}{}),
+	Entry("single element with trailing spaces",
+		[]interface{}{
+			&types.StringElement{
+				Content: "pasta ", // trailing spaces
+			},
+		},
+		[]interface{}{
+			&types.StringElement{
+				Content: "pasta", // timmed
+			},
+		}),
 
-// 	Entry("valid slice",
-// 		[]interface{}{
-// 			&types.StringElement{
-// 				Content: "  cookies",
-// 			},
-// 			&types.StringElement{
-// 				Content: "  pasta",
-// 			},
-// 		},
-// 		[]interface{}{
-// 			&types.StringElement{
-// 				Content: "cookies", // trimmed
-// 			},
-// 			&types.StringElement{
-// 				Content: "  pasta",
-// 			},
-// 		}),
+	Entry("multiple elements with trailing spaces",
+		[]interface{}{
+			&types.StringElement{
+				Content: "cookies",
+			},
+			&types.InlineLink{},
+			&types.StringElement{
+				Content: "pasta ", // trailing spaces
+			},
+		},
+		[]interface{}{
+			&types.StringElement{
+				Content: "cookies",
+			},
+			&types.InlineLink{},
+			&types.StringElement{
+				Content: "pasta", // timmed
+			},
+		}),
 
-// 	Entry("noop slice",
-// 		[]interface{}{
-// 			&types.SpecialCharacter{
-// 				Name: ">",
-// 			},
-// 			&types.StringElement{
-// 				Content: "  cookies",
-// 			},
-// 			&types.StringElement{
-// 				Content: "  pasta",
-// 			},
-// 		},
-// 		[]interface{}{
-// 			&types.SpecialCharacter{
-// 				Name: ">",
-// 			},
-// 			&types.StringElement{
-// 				Content: "  cookies", // not trimmed
-// 			},
-// 			&types.StringElement{
-// 				Content: "  pasta",
-// 			},
-// 		}),
-// )
+	Entry("multiple elements without trailing spaces",
+		[]interface{}{
+			&types.StringElement{
+				Content: "cookies",
+			},
+			&types.InlineLink{},
+			&types.StringElement{
+				Content: "pasta", // no trailing spaces
+			},
+		},
+		[]interface{}{&types.StringElement{
+			Content: "cookies",
+		},
+			&types.InlineLink{},
+			&types.StringElement{
+				Content: "pasta", // no change
+			},
+		}),
+
+	Entry("noop",
+		[]interface{}{
+			&types.StringElement{
+				Content: "cookies",
+			},
+			&types.InlineLink{}, // not a StringElement
+		},
+		[]interface{}{
+			&types.StringElement{
+				Content: "cookies",
+			},
+			&types.InlineLink{},
+		}),
+)
 
 var _ = DescribeTable("split elements per line",
 	func(elements []interface{}, expected [][]interface{}) {

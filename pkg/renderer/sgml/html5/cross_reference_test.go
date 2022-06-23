@@ -139,10 +139,10 @@ with some content linked to <<thewrongtitle>>!`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
-		It("natural ref to section with plaintext title", func() {
+		It("natural ref to section with plaintext title with trailing spaces", func() {
 			source := `see <<Section 1>>.
 
-== Section 1`
+== Section 1 ` // trailing spaces in the title
 			expected := `<div class="paragraph">
 <p>see <a href="#_section_1">Section 1</a>.</p>
 </div>
