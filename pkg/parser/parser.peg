@@ -1443,7 +1443,7 @@ PassthroughMacroCharacter <- [^\]] {
 // -------------------------------------------------------------------------------------
 // Links
 // -------------------------------------------------------------------------------------
-Link <- BareURL / RelativeLink / ExternalLink
+Link <- BareURL / RelativeLink / ExternalLink / EmailAddress
 
 BareURL <-
     "<" 
@@ -1480,6 +1480,25 @@ ExternalLink <-
         return types.NewInlineLink(url.(*types.Location), attributes)
     }
 
+EmailAddress <- local:(EmailAddressLocal) "@" domain:(EmailAddressDomain) {
+    return types.NewEmailAddressLink(local.(string) +"@" + domain.(string))
+}
+
+EmailAddressLocal <- [a-zA-Z0-9!#$%&'*+-/=?^_`{|}~.]+ // `'
+    &{
+        // must not start or end with dot (`.`), not contain two consecutive dots (`..`)
+        local := string(c.text)
+        return !strings.HasPrefix(local, ".") &&
+            !strings.HasSuffix(local, ".") &&
+            !strings.Contains(local, ".."), nil
+    }
+    { 
+        return string(c.text), nil
+    }
+
+EmailAddressDomain <- [a-zA-Z0-9-]+ ("." [a-zA-Z0-9-]+)* {
+        return string(c.text), nil
+    }
 
 // -----------------------------------------------------------------------------------------------------------------------
 // List 

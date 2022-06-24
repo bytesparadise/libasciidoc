@@ -37,7 +37,7 @@ func replaceNonAlphanumericsOnElements(elements []interface{}, separator string)
 			}
 		case *InlineLink:
 			if e.Location != nil {
-				r := replaceNonAlphanumerics(e.Location.Stringify(), separator)
+				r := replaceNonAlphanumerics(e.Location.ToDisplayString(), separator)
 				result.WriteString(r)
 				result.WriteString(separator)
 			}

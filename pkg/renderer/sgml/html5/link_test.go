@@ -105,6 +105,18 @@ a link to <{example}>.`
 		})
 	})
 
+	Context("email autolinks", func() {
+
+		It("email in paragraph", func() {
+			source := `write to contact@example.com.`
+			expected := `<div class="paragraph">
+<p>write to <a href="mailto:contact@example.com">contact@example.com</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+	})
+
 	Context("external links", func() {
 
 		It("without text", func() {

@@ -12,7 +12,7 @@ import (
 
 func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (string, error) {
 	result := &strings.Builder{}
-	location := l.Location.Stringify()
+	location := l.Location.ToString()
 	text := ""
 	class := ""
 	id := l.Attributes.GetAsStringWithDefault(types.AttrID, "")
@@ -33,11 +33,12 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (s
 		}
 		class = roles // can be empty (and it's fine)
 	} else {
-		text = html.EscapeString(location)
-		if len(roles) > 0 {
-			class = "bare " + roles
-		} else if len(text) > 0 { // keep empty 'class' when there's no location
+		text = html.EscapeString(l.Location.ToDisplayString())
+		if l.Location != nil && l.Location.Scheme != "mailto:" {
 			class = "bare"
+		}
+		if len(roles) > 0 {
+			class = strings.Join([]string{class, roles}, " ") // support case where class == "" (for email addresses)
 		}
 	}
 	target := l.Attributes.GetAsStringWithDefault(types.AttrInlineLinkTarget, "")

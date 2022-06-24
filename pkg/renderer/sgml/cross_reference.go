@@ -96,17 +96,17 @@ func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref 
 }
 
 func defaultXrefLabel(xref *types.ExternalCrossReference) string {
-	loc := xref.Location.Stringify()
-	ext := filepath.Ext(xref.Location.Stringify())
+	loc := xref.Location.ToDisplayString()
+	ext := filepath.Ext(loc)
 	if ext == "" {
-		return "[" + loc + "]" // intenal references are within brackets
+		return "[" + loc + "]" // internal references are within brackets
 	}
 	return loc[:len(loc)-len(ext)] + ".html"
 }
 
 func getCrossReferenceLocation(xref *types.ExternalCrossReference) string {
-	loc := xref.Location.Stringify()
-	ext := filepath.Ext(xref.Location.Stringify())
+	loc := xref.Location.ToDisplayString()
+	ext := filepath.Ext(loc)
 	if ext == "" { // internal reference
 		return "#" + loc
 	}

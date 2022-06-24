@@ -185,6 +185,51 @@ a link to <{example}>.`
 			})
 		})
 
+		Context("email autolinks", func() {
+
+			It("valid email in paragraph", func() {
+				source := `write to contact@example.com.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "write to ",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "mailto:",
+										Path:   "contact@example.com",
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("invalid email in paragraph", func() {
+				source := `write to contact.@example.com.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "write to contact.@example.com.",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+		})
+
 		Context("external links", func() {
 
 			It("without text", func() {
@@ -1740,5 +1785,6 @@ title]`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
+
 	})
 })

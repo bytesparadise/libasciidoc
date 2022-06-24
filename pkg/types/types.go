@@ -18,11 +18,6 @@ import (
 // common interfaces
 // ------------------------------------------
 
-// Stringer a type which can be serializes as a string
-type Stringer interface {
-	Stringify() string
-}
-
 // WithAttributes base interface for types on which attributes can be substituted
 type WithAttributes interface {
 	GetAttributes() Attributes
@@ -2887,6 +2882,16 @@ func NewInlineAnchor(id string) (*InlineLink, error) {
 	}, nil
 }
 
+// NewEmailAddressLink creates a new link from an email address
+func NewEmailAddressLink(address string) (*InlineLink, error) {
+	return &InlineLink{
+		Location: &Location{
+			Scheme: "mailto:",
+			Path:   address,
+		},
+	}, nil
+}
+
 var _ WithAttributes = &InlineLink{}
 
 // GetAttributes returns this link's attributes
@@ -3510,8 +3515,8 @@ func (l *Location) SetPathPrefix(p interface{}) {
 		if !strings.HasSuffix(p, "/") {
 			p = p + "/"
 		}
-		if l.Scheme == "" && !strings.HasPrefix(l.Stringify(), "/") {
-			if u, err := url.Parse(l.Stringify()); err == nil {
+		if l.Scheme == "" && !strings.HasPrefix(l.ToString(), "/") {
+			if u, err := url.Parse(l.ToString()); err == nil {
 				if !u.IsAbs() {
 					l.SetPath(merge(p, l.Path))
 				}
@@ -3540,14 +3545,29 @@ func (l *Location) TrimAngleBracketSuffix() (bool, error) {
 	return false, nil
 }
 
-// Stringify returns a string representation of the location
+// ToString returns a string representation of the location
 // or empty string if the location is nil
-func (l *Location) Stringify() string {
+func (l *Location) ToString() string {
 	if l == nil {
 		return ""
 	}
 	result := &strings.Builder{}
 	result.WriteString(l.Scheme)
+	result.WriteString(stringify(l.Path))
+	return result.String()
+}
+
+// ToDisplayString returns a string representation of the location
+// or empty string if the location is nil, but does not include the `mailto:` scheme
+// if the link refers to an email address
+func (l *Location) ToDisplayString() string {
+	if l == nil {
+		return ""
+	}
+	result := &strings.Builder{}
+	if l.Scheme != "mailto:" {
+		result.WriteString(l.Scheme)
+	}
 	result.WriteString(stringify(l.Path))
 	return result.String()
 }

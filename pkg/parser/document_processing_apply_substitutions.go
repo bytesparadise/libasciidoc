@@ -542,11 +542,19 @@ func reparseAttributesInElements(elements []interface{}, subs []string, opts ...
 func reparseAttributes(e types.WithAttributes, subs []string, opts ...Option) error {
 	attributes := e.GetAttributes()
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("reparsing attributes in %s", spew.Sdump(attributes))
+		log.Debugf("reparsing attributes with subs='%s' in %s", strings.Join(subs, ","), spew.Sdump(attributes))
 	}
 	for k, v := range attributes {
 		switch k {
-		case types.AttrTitle, types.AttrXRefLabel, types.AttrInlineLinkText:
+		case types.AttrTitle, types.AttrXRefLabel:
+			v, err := ReparseAttributeValue(v, subs, opts...)
+			if err != nil {
+				return err
+			}
+			attributes[k] = types.Reduce(v)
+		case types.AttrInlineLinkText:
+			// same as above, but do not allow for inline macros (eg: links)
+			subs = removeSubstitution(subs, Macros)
 			v, err := ReparseAttributeValue(v, subs, opts...)
 			if err != nil {
 				return err
@@ -868,6 +876,18 @@ func substitutions(s string) ([]string, error) {
 		// TODO: return `none` instead of `err` and log an error with the fragment position (use logger with fields?)
 		return nil, fmt.Errorf("unsupported substitution: '%v'", s)
 	}
+}
+
+// removes the given `sub` from the given `subs`
+func removeSubstitution(subs []string, sub string) []string {
+	result := make([]string, 0, len(subs))
+	for _, s := range subs {
+		if s == sub {
+			continue
+		}
+		result = append(result, s)
+	}
+	return result
 }
 
 const (
