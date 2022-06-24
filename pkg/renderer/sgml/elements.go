@@ -135,7 +135,7 @@ func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{
 		if alt, ok := e.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
 			return r.renderPlainText(ctx, alt)
 		}
-		return e.Location.Stringify(), nil
+		return e.Location.ToDisplayString(), nil
 	case *types.BlankLine, types.ThematicBreak:
 		return "\n\n", nil
 	case *types.SpecialCharacter:

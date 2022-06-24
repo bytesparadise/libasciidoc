@@ -214,7 +214,7 @@ func (c *conditions) eval() bool {
 }
 
 func contentOf(ctx *ParseContext, incl *types.FileInclusion) ([]byte, bool, error) {
-	path := incl.Location.Stringify()
+	path := incl.Location.ToString()
 	currentDir := filepath.Dir(ctx.filename)
 	filename := filepath.Join(currentDir, path)
 

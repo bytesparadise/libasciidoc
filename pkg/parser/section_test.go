@@ -1574,8 +1574,11 @@ Doc Writer <thedoc@asciidoctor.org>`
 										&types.SpecialCharacter{
 											Name: "<",
 										},
-										&types.StringElement{
-											Content: "thedoc@asciidoctor.org",
+										&types.InlineLink{
+											Location: &types.Location{
+												Scheme: "mailto:",
+												Path:   "thedoc@asciidoctor.org",
+											},
 										},
 										&types.SpecialCharacter{
 											Name: ">",
