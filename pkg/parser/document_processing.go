@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const bufferSize = 10
+const bufferSize = 100 // bigger buffer improves perfs on large documents
 
 // ParseDocument parses the content of the reader identitied by the filename and applies all the substitutions and arrangements
 func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Option) (*types.Document, error) {
