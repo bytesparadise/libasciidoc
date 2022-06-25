@@ -34,8 +34,8 @@ bench-diff: clean generate-optimized check-git-status
 	@echo "generated $(REPORTS_DIR)/v0.7.0.bench"
 	@git checkout $(GITHUB_SHA)
 	@echo "HEAD is now at $(shell git log -1 --format='%h') (expecting $(GITHUB_SHA))"
-	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/master.bench >> $(REPORTS_DIR)/diffs-master.txt
-	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench $(REPORTS_DIR)/v0.7.0.bench >> $(REPORTS_DIR)/diffs-latest-release.txt
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/master.bench $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench >> $(REPORTS_DIR)/diffs-master.txt
+	@$(GOPATH)/bin/benchstat $(REPORTS_DIR)/v0.7.0.bench $(REPORTS_DIR)/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).bench >> $(REPORTS_DIR)/diffs-latest-release.txt
 
 .PHONY: print-bench-diff-master
 print-bench-diff-master:
