@@ -24,8 +24,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.Delimi
 		return "", errors.Wrap(err, "unable to render literal block title")
 	}
 
-	result := &strings.Builder{}
-	err = r.literalBlock.Execute(result, struct {
+	return r.execute(r.literalBlock, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -38,8 +37,4 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.Delimi
 		Roles:   roles,
 		Content: strings.Trim(content, "\n"),
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render literal block")
-	}
-	return result.String(), nil
 }

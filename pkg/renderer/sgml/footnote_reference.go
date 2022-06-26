@@ -2,7 +2,6 @@ package sgml
 
 import (
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -14,36 +13,45 @@ func (r *sgmlRenderer) renderFootnoteReference(note *types.FootnoteReference) (s
 	result := &strings.Builder{}
 	if note.ID != types.InvalidFootnoteReference && !note.Duplicate {
 		// valid case for a footnote with content, with our without an explicit reference
-		err := r.footnote.Execute(result, struct {
+		tmpl, err := r.footnote()
+		if err != nil {
+			return "", errors.Wrap(err, "unable to load footnote template")
+		}
+		if err := tmpl.Execute(result, struct {
 			ID  int
 			Ref string
 		}{
 			ID:  note.ID,
 			Ref: note.Ref,
-		})
-		if err != nil {
+		}); err != nil {
 			return "", errors.Wrap(err, "unable to render footnote")
 		}
 	} else if note.Duplicate {
 		// valid case for a footnote with content, with our without an explicit reference
-		err := r.footnoteRef.Execute(result, struct {
+		tmpl, err := r.footnoteRef()
+		if err != nil {
+			return "", errors.Wrap(err, "unable to load footnote template")
+		}
+		if err := tmpl.Execute(result, struct {
 			ID  int
 			Ref string
 		}{
 			ID:  note.ID,
 			Ref: note.Ref,
-		})
-		if err != nil {
+		}); err != nil {
 			return "", errors.Wrap(err, "unable to render footnote")
 		}
 	} else {
 		// invalid footnote
-		err := r.invalidFootnote.Execute(result, struct {
+		tmpl, err := r.invalidFootnote()
+		if err != nil {
+			return "", errors.Wrap(err, "unable to load missing footnote template")
+		}
+		if err := tmpl.Execute(result, struct {
 			Ref string
 		}{
 			Ref: note.Ref,
-		})
-		if err != nil {
+		}); err != nil {
 			return "", errors.Wrap(err, "unable to render missing footnote")
 		}
 	}
@@ -51,23 +59,17 @@ func (r *sgmlRenderer) renderFootnoteReference(note *types.FootnoteReference) (s
 }
 
 func (r *sgmlRenderer) renderFootnoteReferencePlainText(note *types.FootnoteReference) (string, error) {
-	result := &strings.Builder{}
 	if note.ID != types.InvalidFootnoteReference {
 		// valid case for a footnote with content, with our without an explicit reference
-		err := r.footnoteRefPlain.Execute(result, struct {
+		return r.execute(r.footnoteRefPlain, struct {
 			ID    int
 			Class string
 		}{
 			ID:    note.ID,
 			Class: "footnote",
 		})
-		if err != nil {
-			return "", errors.Wrap(err, "unable to render footnote")
-		}
-	} else {
-		return "", fmt.Errorf("unable to render missing footnote")
 	}
-	return result.String(), nil
+	return "", fmt.Errorf("unable to render missing footnote")
 }
 
 func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Footnote) (string, error) {
@@ -75,16 +77,15 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Foo
 	if len(notes) == 0 {
 		return "", nil
 	}
-	result := &strings.Builder{}
 	content := &strings.Builder{}
-
-	for _, item := range notes {
-		if err := r.renderFootnoteItem(ctx, content, item); err != nil {
-			return "", errors.Wrap(err, "failed to render footnote item")
+	for _, note := range notes {
+		renderedNote, err := r.renderFootnoteElement(ctx, note)
+		if err != nil {
+			return "", errors.Wrap(err, "failed to render footnote element")
 		}
+		content.WriteString(renderedNote)
 	}
-
-	err := r.footnotes.Execute(result, struct {
+	return r.execute(r.footnotes, struct {
 		Context   *renderer.Context
 		Content   string
 		Footnotes []*types.Footnote
@@ -93,30 +94,25 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Foo
 		Content:   content.String(),
 		Footnotes: notes,
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "failed to render footnotes")
-	}
-	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderFootnoteItem(ctx *renderer.Context, w io.Writer, item *types.Footnote) error {
-	content, err := r.renderInlineElements(ctx, item.Elements)
+func (r *sgmlRenderer) renderFootnoteElement(ctx *renderer.Context, note *types.Footnote) (string, error) {
+	content, err := r.renderInlineElements(ctx, note.Elements)
 	if err != nil {
-		return errors.Wrapf(err, "unable to render foot note content")
+		return "", errors.Wrapf(err, "unable to render foot note content")
 	}
 	content = strings.TrimSpace(content)
 	// Note: Asciidoctor will render the footnote content on a single line
 	content = strings.ReplaceAll(content, "\n", " ")
-	err = r.footnoteItem.Execute(w, struct {
+	return r.execute(r.footnoteElement, struct {
 		Context *renderer.Context
 		ID      int
 		Ref     string
 		Content string
 	}{
 		Context: ctx,
-		ID:      item.ID,
-		Ref:     item.Ref,
+		ID:      note.ID,
+		Ref:     note.Ref,
 		Content: string(content),
 	})
-	return err
 }

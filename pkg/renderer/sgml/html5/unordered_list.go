@@ -10,5 +10,5 @@ const (
 		"<ul{{ if .Checklist }} class=\"checklist\"{{ else if .Style }} class=\"{{ .Style }}\"{{ end }}>\n" +
 		"{{ .Content }}</ul>\n</div>\n"
 
-	unorderedListItemTmpl = "<li>\n{{ .Content }}</li>\n"
+	unorderedListElementTmpl = "<li>\n{{ .Content }}</li>\n"
 )

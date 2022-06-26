@@ -12,9 +12,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
-	result := &strings.Builder{}
-	caption := &strings.Builder{}
-
 	// default, example block
 	number := 0
 	content, err := r.renderElements(ctx, b.Elements)
@@ -47,8 +44,9 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block title")
 	}
+	caption := &strings.Builder{}
 	caption.WriteString(c)
-	err = r.exampleBlock.Execute(result, struct {
+	return r.execute(r.exampleBlock, struct {
 		Context       *renderer.Context
 		ID            string
 		Title         string
@@ -65,12 +63,10 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 		ExampleNumber: number,
 		Content:       content,
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering example paragraph...")
-	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example paragraph content")
@@ -83,7 +79,7 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Pa
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example paragraph title")
 	}
-	err = r.exampleBlock.Execute(result, struct {
+	return r.execute(r.exampleBlock, struct {
 		Context       *renderer.Context
 		ID            string
 		Title         string
@@ -98,8 +94,6 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Pa
 		Title:   title,
 		Content: string(content) + "\n",
 	})
-
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderLiteralParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
@@ -118,10 +112,9 @@ func (r *sgmlRenderer) renderLiteralParagraph(ctx *renderer.Context, p *types.Pa
 	}
 	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render literal block roles")
 	}
-	result := &strings.Builder{}
-	err = r.literalBlock.Execute(result, struct {
+	return r.execute(r.literalBlock, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -134,7 +127,6 @@ func (r *sgmlRenderer) renderLiteralParagraph(ctx *renderer.Context, p *types.Pa
 		Roles:   roles,
 		Content: content,
 	})
-	return result.String(), err
 }
 
 // adjustHeadingSpaces removes the same number of heading spaces on each line, based on the

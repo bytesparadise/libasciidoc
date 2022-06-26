@@ -8,7 +8,7 @@ const (
 	footnotesTmpl        = "<div id=\"footnotes\">\n<hr>\n{{ .Content }}</div>\n"
 
 	// arguably this should instead be an ordered list.
-	footnoteItemTmpl = "<div class=\"footnote\" id=\"_footnotedef_{{ .ID }}\">\n" +
+	footnoteElementTmpl = "<div class=\"footnote\" id=\"_footnotedef_{{ .ID }}\">\n" +
 		"<a href=\"#_footnoteref_{{ .ID }}\">{{ .ID }}</a>. {{ .Content }}\n" +
 		"</div>\n"
 )

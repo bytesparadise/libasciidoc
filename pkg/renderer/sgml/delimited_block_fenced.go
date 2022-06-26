@@ -14,8 +14,6 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b *types.Delimit
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
 	}()
 	ctx.WithinDelimitedBlock = true
-	result := &strings.Builder{}
-	// lines := discardEmptyLines(b.Elements)
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
@@ -26,10 +24,9 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b *types.Delimit
 	}
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render fenced block roles")
 	}
-
-	err = r.fencedBlock.Execute(result, struct {
+	return r.execute(r.fencedBlock, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -42,5 +39,4 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b *types.Delimit
 		Roles:   roles,
 		Content: strings.Trim(content, "\n"),
 	})
-	return result.String(), err
 }

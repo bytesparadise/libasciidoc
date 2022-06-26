@@ -7,11 +7,9 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (string, error) {
-	result := &strings.Builder{}
 	location := l.Location.ToString()
 	text := ""
 	class := ""
@@ -43,7 +41,7 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (s
 	}
 	target := l.Attributes.GetAsStringWithDefault(types.AttrInlineLinkTarget, "")
 	noopener := target == "_blank" || l.Attributes.HasOption("noopener")
-	err = r.link.Execute(result, struct {
+	return r.execute(r.link, struct {
 		ID       string
 		URL      string
 		Text     string
@@ -58,9 +56,4 @@ func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (s
 		Target:   target,
 		NoOpener: noopener,
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render link")
-	}
-	log.Debugf("rendered link: %s", result.String())
-	return result.String(), nil
 }

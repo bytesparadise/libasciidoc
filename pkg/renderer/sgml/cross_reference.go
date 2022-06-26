@@ -16,7 +16,6 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("rendering cross reference with ID: %s", spew.Sdump(xref.ID))
 	}
-	result := &strings.Builder{}
 	var label string
 	xrefID, ok := xref.ID.(string)
 	if !ok {
@@ -54,22 +53,17 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 	} else {
 		label = "[" + xrefID + "]"
 	}
-	err := r.internalCrossReference.Execute(result, struct {
+	return r.execute(r.internalCrossReference, struct {
 		Href  string
 		Label string
 	}{
 		Href:  xrefID,
 		Label: label,
 	})
-	if err != nil {
-		return "", errors.Wrapf(err, "unable to render internal cross reference")
-	}
-	return result.String(), nil
 }
 
 func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref *types.ExternalCrossReference) (string, error) {
 	// log.Debugf("rendering cross reference with ID: %s", xref.Location)
-	result := &strings.Builder{}
 	var label string
 	var err error
 	switch l := xref.Attributes[types.AttrXRefLabel].(type) {
@@ -77,22 +71,18 @@ func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref 
 		label = l
 	case []interface{}:
 		if label, err = r.renderInlineElements(ctx, l); err != nil {
-			return "", errors.Wrap(err, "unable to render external cross reference")
+			return "", err
 		}
 	default:
 		label = defaultXrefLabel(xref)
 	}
-	err = r.externalCrossReference.Execute(result, struct {
+	return r.execute(r.externalCrossReference, struct {
 		Href  string
 		Label string
 	}{
 		Href:  getCrossReferenceLocation(xref),
 		Label: label,
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render external cross reference")
-	}
-	return result.String(), nil
 }
 
 func defaultXrefLabel(xref *types.ExternalCrossReference) string {

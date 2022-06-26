@@ -17,7 +17,6 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
 	}()
 	ctx.WithinDelimitedBlock = true
-	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
@@ -30,8 +29,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block title")
 	}
-
-	err = r.listingBlock.Execute(result, struct {
+	return r.execute(r.listingBlock, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -44,11 +42,9 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 		Roles:   roles,
 		Content: strings.Trim(content, "\n"),
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
-	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
@@ -59,10 +55,9 @@ func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p *types.Pa
 	}
 	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render listing paragraph roles")
 	}
-
-	err = r.listingBlock.Execute(result, struct {
+	return r.execute(r.listingBlock, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -75,5 +70,4 @@ func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p *types.Pa
 		Roles:   roles,
 		Content: content,
 	})
-	return result.String(), err
 }

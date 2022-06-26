@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"text/template"
+	texttemplate "text/template"
 
 	"github.com/google/go-cmp/cmp"
 	. "github.com/onsi/ginkgo/v2"
@@ -117,7 +117,7 @@ func (m *htmlTemplateMatcher) Match(actual interface{}) (success bool, err error
 	if _, ok := actual.(string); !ok {
 		return false, errors.Errorf("MatchHTMLTemplate matcher expects a string (actual: %T)", actual)
 	}
-	expectedTmpl, err := template.New("test").Parse(string(m.expectedTmpl))
+	expectedTmpl, err := texttemplate.New("test").Parse(string(m.expectedTmpl))
 	if err != nil {
 		return false, err
 	}
@@ -171,7 +171,7 @@ func (m *htmlTemplateFileMatcher) Match(actual interface{}) (success bool, err e
 		return false, err
 	}
 	expected = bytes.ReplaceAll(expected, []byte{'\r'}, []byte{})
-	expectedTmpl, err := template.New("test").Parse(string(expected))
+	expectedTmpl, err := texttemplate.New("test").Parse(string(expected))
 	if err != nil {
 		return false, err
 	}

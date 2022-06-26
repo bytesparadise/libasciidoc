@@ -1,8 +1,6 @@
 package sgml
 
 import (
-	"strings"
-
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
@@ -10,7 +8,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
-	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote block content")
@@ -27,8 +24,7 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b *types.Delimite
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote block title")
 	}
-
-	err = r.quoteBlock.Execute(result, struct {
+	return r.execute(r.quoteBlock, struct {
 		Context     *renderer.Context
 		ID          string
 		Title       string
@@ -43,13 +39,10 @@ func (r *sgmlRenderer) renderQuoteBlock(ctx *renderer.Context, b *types.Delimite
 		Attribution: attribution,
 		Content:     content,
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering quote paragraph...")
-	result := &strings.Builder{}
-
 	content, err := r.renderParagraphElements(ctx, p)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render quote paragraph lines")
@@ -62,8 +55,7 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p *types.Para
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
-
-	err = r.quoteParagraph.Execute(result, struct {
+	return r.execute(r.quoteParagraph, struct {
 		Context     *renderer.Context
 		ID          string
 		Title       string
@@ -76,6 +68,4 @@ func (r *sgmlRenderer) renderQuoteParagraph(ctx *renderer.Context, p *types.Para
 		Attribution: attribution,
 		Content:     string(content),
 	})
-
-	return result.String(), err
 }

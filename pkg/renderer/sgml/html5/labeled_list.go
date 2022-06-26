@@ -7,7 +7,7 @@ const (
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<dl>\n{{ .Content }}</dl>\n</div>\n"
 
-	labeledListItemTmpl = "<dt class=\"hdlist1\">{{ .Term }}</dt>\n" +
+	labeledListElementTmpl = "<dt class=\"hdlist1\">{{ .Term }}</dt>\n" +
 		"{{ if .Content }}<dd>\n{{ .Content }}</dd>\n{{ end }}"
 
 	labeledListHorizontalTmpl = `<div` +
@@ -17,7 +17,7 @@ const (
 		"<table>\n{{ .Content }}</table>\n</div>\n"
 
 	// Continuation items (multiple terms sharing a single definition) make this a bit more complex.
-	labeledListHorizontalItemTmpl = "{{ if not .Continuation }}<tr>\n" +
+	labeledListHorizontalElementTmpl = "{{ if not .Continuation }}<tr>\n" +
 		"<td class=\"hdlist1\">\n{{ else }}<br>\n{{ end }}" +
 		"{{ .Term }}\n" +
 		"{{ if .Content }}</td>\n<td class=\"hdlist2\">\n{{ .Content }}</td>\n</tr>\n{{ end }}"
@@ -28,5 +28,5 @@ const (
 		"{{ if .Title }}<div class=\"title\">{{ .Title }}</div>\n{{ end }}" +
 		"<ol>\n{{ .Content }}</ol>\n</div>\n"
 
-	qAndAListItemTmpl = "<li>\n<p><em>{{ .Term }}</em></p>\n{{ .Content }}</li>\n"
+	qAndAListElementTmpl = "<li>\n<p><em>{{ .Term }}</em></p>\n{{ .Content }}</li>\n"
 )

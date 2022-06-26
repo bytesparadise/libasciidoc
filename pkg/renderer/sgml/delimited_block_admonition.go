@@ -19,7 +19,6 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.Del
 	if err != nil {
 		return "", err
 	}
-	result := &strings.Builder{}
 	blocks := discardBlankLines(b.Elements)
 	content, err := r.renderElements(ctx, blocks)
 	if err != nil {
@@ -33,8 +32,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.Del
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render admonition block title")
 	}
-
-	err = r.admonitionBlock.Execute(result, struct {
+	return r.execute(r.admonitionBlock, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -51,18 +49,16 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.Del
 		Icon:    icon,
 		Content: content,
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering admonition paragraph...")
-	result := &strings.Builder{}
 	kind, ok, err := p.Attributes.GetAsString(types.AttrStyle)
 	if err != nil {
 		return "", err
 	}
 	if !ok {
-		return "", errors.Errorf("failed to render admonition with unknown kind: %T", p.Attributes[types.AttrStyle])
+		return "", errors.Errorf("failed to render admonition paragraph with unknown kind: %T", p.Attributes[types.AttrStyle])
 	}
 	kind = strings.ToLower(kind)
 	icon, err := r.renderIcon(ctx, types.Icon{Class: kind, Attributes: p.Attributes}, true)
@@ -75,14 +71,13 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types
 	}
 	roles, err := r.renderElementRoles(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block roles")
+		return "", err
 	}
 	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render fenced block title")
+		return "", err
 	}
-
-	err = r.admonitionParagraph.Execute(result, struct {
+	return r.execute(r.admonitionParagraph, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -99,6 +94,4 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types
 		Icon:    icon,
 		Content: content,
 	})
-
-	return result.String(), err
 }

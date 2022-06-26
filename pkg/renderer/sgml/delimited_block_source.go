@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
@@ -39,9 +38,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b *types.Delimit
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render source block title")
 	}
-
-	result := &bytes.Buffer{}
-	err = r.sourceBlock.Execute(result, struct {
+	return r.execute(r.sourceBlock, struct {
 		ID                string
 		Title             string
 		Roles             string
@@ -58,8 +55,6 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b *types.Delimit
 		Nowrap:            nowrap,
 		Content:           strings.Trim(content, "\n"),
 	})
-
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
@@ -180,9 +175,13 @@ func (r *sgmlRenderer) renderSourceLine(ctx *renderer.Context, line interface{})
 
 func (r *sgmlRenderer) renderCalloutRef(co *types.Callout) (string, error) {
 	result := &strings.Builder{}
-	err := r.calloutRef.Execute(result, co)
+
+	tmpl, err := r.calloutRef()
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout number")
+		return "", errors.Wrap(err, "unable to load cross references template")
+	}
+	if err = tmpl.Execute(result, co); err != nil {
+		return "", errors.Wrap(err, "unable to render callout reference")
 	}
 	return result.String(), nil
 }
