@@ -25,9 +25,7 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s *types.Section) (s
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render section roles")
 	}
-
-	result := &strings.Builder{}
-	err = r.sectionContent.Execute(result, struct {
+	return r.execute(r.sectionContent, struct {
 		Context  *renderer.Context
 		Header   string
 		Content  string
@@ -44,30 +42,24 @@ func (r *sgmlRenderer) renderSection(ctx *renderer.Context, s *types.Section) (s
 		Roles:    roles,
 		Content:  string(content),
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "error while rendering section")
-	}
-	// log.Debugf("rendered section: %s", result.Bytes())
-	return result.String(), nil
 }
 
 func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s *types.Section) (string, error) {
-	result := &strings.Builder{}
 	renderedContent, err := r.renderInlineElements(ctx, s.Title)
 	if err != nil {
-		return "", errors.Wrap(err, "error while rendering sectionTitle content")
+		return "", errors.Wrap(err, "error while rendering section title")
 	}
 	renderedContentStr := strings.TrimSpace(renderedContent)
 	var number string
 	if ctx.SectionNumbering != nil {
 		id, err := s.GetID()
 		if err != nil {
-			return "", errors.Wrap(err, "error while rendering sectionTitle content")
+			return "", errors.Wrap(err, "error while rendering section title")
 		}
 		log.Debugf("number for section '%s': '%s'", id, number)
 		number = ctx.SectionNumbering[id]
 	}
-	err = r.sectionTitle.Execute(result, struct {
+	return r.execute(r.sectionTitle, struct {
 		Level        int
 		LevelPlusOne int
 		ID           string
@@ -80,9 +72,4 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *renderer.Context, s *types.Sectio
 		Number:       number,
 		Content:      renderedContentStr,
 	})
-	if err != nil {
-		return "", errors.Wrapf(err, "error while rendering sectionTitle")
-	}
-	// log.Debugf("rendered sectionTitle: %s", result.Bytes())
-	return string(result.String()), nil
 }

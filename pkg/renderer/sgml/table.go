@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -13,9 +12,7 @@ import (
 )
 
 func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (string, error) {
-	result := &strings.Builder{}
 	caption := &strings.Builder{}
-
 	number := 0
 	fit := "stretch"
 	frame := t.Attributes.GetAsStringWithDefault(types.AttrFrame, "all")
@@ -92,7 +89,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render table title")
 	}
-	err = r.table.Execute(result, struct {
+	return r.execute(r.table, struct {
 		Context     *renderer.Context
 		ID          string
 		Title       string
@@ -127,17 +124,12 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 		Body:        body,
 		Footer:      footer,
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "failed to render table")
-	}
-	return result.String(), nil
 }
 
 func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, h *types.TableRow, cols []*types.TableColumn) (string, error) {
 	if h == nil {
 		return "", nil
 	}
-	result := &strings.Builder{}
 	content := &strings.Builder{}
 	col := 0
 	for _, cell := range h.Cells {
@@ -148,12 +140,11 @@ func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, h *types.TableRo
 		}
 		content.WriteString(c)
 	}
-	err := r.tableHeader.Execute(result, struct {
+	return r.execute(r.tableHeader, struct {
 		Content string
 	}{
 		Content: content.String(),
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, c *types.TableCell, col *types.TableColumn) (string, error) {
@@ -164,8 +155,7 @@ func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, c *types.Tab
 			if err != nil {
 				return "", errors.Wrap(err, "unable to render header cell")
 			}
-			result := &strings.Builder{}
-			if err := r.tableHeaderCell.Execute(result, struct {
+			return r.execute(r.tableHeaderCell, struct {
 				HAlign  types.HAlign
 				VAlign  types.VAlign
 				Content string
@@ -173,10 +163,7 @@ func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, c *types.Tab
 				HAlign:  col.HAlign,
 				VAlign:  col.VAlign,
 				Content: content,
-			}); err != nil {
-				return "", errors.Wrap(err, "unable to render header cell")
-			}
-			return result.String(), nil
+			})
 		}
 	}
 	return "", fmt.Errorf("invalid header content (expected a single paragraph)")
@@ -186,18 +173,17 @@ func (r *sgmlRenderer) renderTableFooter(ctx *renderer.Context, f *types.TableRo
 	if f == nil {
 		return "", nil
 	}
-	result := &strings.Builder{}
 	content := &strings.Builder{}
 	col := 0
 	for _, cell := range f.Cells {
 		c, err := r.renderTableFooterCell(ctx, cell, cols[col%len(cols)])
 		col++
 		if err != nil {
-			return "", errors.Wrap(err, "unable to render header")
+			return "", errors.Wrap(err, "unable to render footer")
 		}
 		content.WriteString(c)
 	}
-	err := r.tableFooter.Execute(result, struct {
+	return r.execute(r.tableFooter, struct {
 		Context *renderer.Context
 		Content string
 		Cells   []*types.TableCell
@@ -206,7 +192,6 @@ func (r *sgmlRenderer) renderTableFooter(ctx *renderer.Context, f *types.TableRo
 		Content: content.String(),
 		Cells:   f.Cells,
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderTableFooterCell(ctx *renderer.Context, c *types.TableCell, col *types.TableColumn) (string, error) {
@@ -215,10 +200,9 @@ func (r *sgmlRenderer) renderTableFooterCell(ctx *renderer.Context, c *types.Tab
 		if p, ok := c.Elements[0].(*types.Paragraph); ok {
 			content, err := r.renderInlineElements(ctx, p.Elements)
 			if err != nil {
-				return "", errors.Wrap(err, "unable to render header cell")
+				return "", errors.Wrap(err, "unable to render footer cell")
 			}
-			result := &strings.Builder{}
-			if err := r.tableFooterCell.Execute(result, struct {
+			return r.execute(r.tableFooterCell, struct {
 				HAlign  types.HAlign
 				VAlign  types.VAlign
 				Content string
@@ -226,22 +210,13 @@ func (r *sgmlRenderer) renderTableFooterCell(ctx *renderer.Context, c *types.Tab
 				HAlign:  col.HAlign,
 				VAlign:  col.VAlign,
 				Content: content,
-			}); err != nil {
-				return "", errors.Wrap(err, "unable to render footer cell")
-			}
-			return result.String(), nil
+			})
 		}
 	}
 	return "", fmt.Errorf("invalid footer content (expected a single paragraph)")
 }
 
 func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.TableRow, columns []*types.TableColumn) (string, error) {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debug("rendering table body")
-	// 	log.Debugf("columns:\n%s", spew.Sdump(columns))
-	// 	log.Debugf("rows:\n%s", spew.Sdump(rows))
-	// }
-	result := &strings.Builder{}
 	content := &strings.Builder{}
 	for _, row := range rows {
 		c, err := r.renderTableRow(ctx, row, columns)
@@ -250,7 +225,7 @@ func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.Tabl
 		}
 		content.WriteString(c)
 	}
-	err := r.tableBody.Execute(result, struct {
+	return r.execute(r.tableBody, struct {
 		Context *renderer.Context
 		Content string
 		Rows    []*types.TableRow
@@ -261,20 +236,18 @@ func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.Tabl
 		Rows:    rows,
 		Columns: columns,
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l *types.TableRow, cols []*types.TableColumn) (string, error) {
-	result := &strings.Builder{}
 	content := &strings.Builder{}
 	for i, cell := range l.Cells {
-		c, err := r.renderTableCell(ctx, r.tableCell, cell, cols[i])
+		c, err := r.renderTableCell(ctx, cell, cols[i])
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render row")
 		}
 		content.WriteString(c)
 	}
-	err := r.tableRow.Execute(result, struct {
+	return r.execute(r.tableRow, struct {
 		Context *renderer.Context
 		Content string
 		Cells   []*types.TableCell
@@ -283,12 +256,9 @@ func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l *types.TableRow, 
 		Content: content.String(),
 		Cells:   l.Cells,
 	})
-	return result.String(), err
 }
 
-func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, tmpl *template.Template, cell *types.TableCell, col *types.TableColumn) (string, error) {
-	result := &strings.Builder{}
-	// custom rendering of cell elements
+func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell *types.TableCell, col *types.TableColumn) (string, error) {
 	buff := &strings.Builder{}
 	for _, element := range cell.Elements {
 		renderedElement, err := r.renderTableCellBlock(ctx, element)
@@ -297,10 +267,7 @@ func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, tmpl *template.Tem
 		}
 		buff.WriteString(renderedElement)
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("rendering cell with content '%s' and def %s", content, spew.Sdump(col))
-	// }
-	err := tmpl.Execute(result, struct {
+	return r.execute(r.tableCell, struct {
 		Context *renderer.Context
 		Content string
 		Cell    *types.TableCell
@@ -313,14 +280,12 @@ func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, tmpl *template.Tem
 		HAlign:  col.HAlign,
 		VAlign:  col.VAlign,
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderTableCellBlock(ctx *renderer.Context, element interface{}) (string, error) {
 	switch e := element.(type) {
 	case *types.Paragraph:
 		log.Debug("rendering paragraph within table cell")
-		result := &strings.Builder{}
 		content, err := r.renderElements(ctx, e.Elements)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render table cell paragraph content")
@@ -329,7 +294,7 @@ func (r *sgmlRenderer) renderTableCellBlock(ctx *renderer.Context, element inter
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render table cell paragraph content")
 		}
-		if err = r.embeddedParagraph.Execute(result, struct {
+		result, err := r.execute(r.embeddedParagraph, struct {
 			Context    *renderer.Context
 			ID         string // TODO: not used in template?
 			Title      string // TODO: not used in template?
@@ -343,24 +308,21 @@ func (r *sgmlRenderer) renderTableCellBlock(ctx *renderer.Context, element inter
 			Class:      "tableblock",
 			CheckStyle: renderCheckStyle(e.Attributes[types.AttrCheckStyle]),
 			Content:    string(content),
-		}); err != nil {
+		})
+		if err != nil {
 			return "", errors.Wrap(err, "unable to render table cell paragraph content")
 		}
-		return strings.TrimSuffix(result.String(), "\n"), err
+		return strings.TrimSuffix(result, "\n"), nil
 	default:
 		// Note: Asciidoctor wraps the `<div class=imageblock>` elements within a `<div class="content">`, which we also do here for the sake of compatibility
 		renderedElement, err := r.renderElement(ctx, e)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render table cell")
 		}
-		result := &strings.Builder{}
-		if err := r.tableCellBlock.Execute(result, struct {
+		return r.execute(r.tableCellBlock, struct {
 			Content string
 		}{
 			Content: renderedElement,
-		}); err != nil {
-			return "", errors.Wrap(err, "unable to render cell block")
-		}
-		return result.String(), nil
+		})
 	}
 }

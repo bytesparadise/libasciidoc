@@ -9,8 +9,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
-	result := &strings.Builder{}
-	// lines := discardEmptyLines(b.Lines)
 	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
 	defer func() {
 		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
@@ -24,7 +22,7 @@ func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b *types.De
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render passthrough block roles")
 	}
-	err = r.passthroughBlock.Execute(result, struct {
+	return r.execute(r.passthroughBlock, struct {
 		Context *renderer.Context
 		ID      string
 		Roles   string
@@ -35,5 +33,4 @@ func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b *types.De
 		Roles:   roles,
 		Content: strings.Trim(content, "\n"),
 	})
-	return result.String(), err
 }

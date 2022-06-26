@@ -1,7 +1,7 @@
 package sgml
 
 import (
-	"html/template"
+	htmltemplate "html/template"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -26,7 +26,7 @@ func (r *sgmlRenderer) renderInlinePassthrough(ctx *renderer.Context, p *types.I
 	case types.SinglePlusPassthrough:
 		// rendered passthrough content is in an HTML-escaped form
 		buf := &strings.Builder{}
-		template.HTMLEscape(buf, []byte(renderedContent))
+		htmltemplate.HTMLEscape(buf, []byte(renderedContent))
 		return buf.String(), nil
 	default:
 		return renderedContent, nil

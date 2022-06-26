@@ -15,7 +15,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageBlock) (string, error) {
-	result := &strings.Builder{}
 	title, err := r.renderElementTitle(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
@@ -57,7 +56,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
-	err = r.blockImage.Execute(result, struct {
+	return r.execute(r.blockImage, struct {
 		ID          string
 		Src         string
 		Title       string
@@ -80,31 +79,24 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 		Width:       img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height:      img.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
 	})
-
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render image")
-	}
-	return result.String(), nil
 }
 
 func (r *sgmlRenderer) renderInlineImage(ctx *renderer.Context, img *types.InlineImage) (string, error) {
-	result := &strings.Builder{}
 	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render image")
+		return "", errors.Wrap(err, "unable to render inline image")
 	}
 	href := img.Attributes.GetAsStringWithDefault(types.AttrInlineLink, "")
 	src := r.getImageSrc(ctx, img.Location)
 	alt, err := r.renderImageAlt(img.Attributes, src)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render image")
+		return "", errors.Wrap(err, "unable to render inline image")
 	}
 	title, err := r.renderElementTitle(ctx, img.Attributes)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list roles")
+		return "", errors.Wrap(err, "unable to render inline image roles")
 	}
-
-	err = r.inlineImage.Execute(result, struct {
+	return r.execute(r.inlineImage, struct {
 		Src    string
 		Roles  string
 		Title  string
@@ -121,14 +113,6 @@ func (r *sgmlRenderer) renderInlineImage(ctx *renderer.Context, img *types.Inlin
 		Width:  img.Attributes.GetAsStringWithDefault(types.AttrWidth, ""),
 		Height: img.Attributes.GetAsStringWithDefault(types.AttrHeight, ""),
 	})
-
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render inline image")
-	}
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("rendered inline image: %s", result.String())
-	}
-	return result.String(), nil
 }
 
 func (r *sgmlRenderer) getImageSrc(ctx *renderer.Context, location *types.Location) string {

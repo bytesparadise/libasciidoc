@@ -53,8 +53,7 @@ func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Pa
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph roles")
 	}
-	result := &strings.Builder{}
-	err = r.paragraph.Execute(result, struct {
+	return r.execute(r.paragraph, struct {
 		Context *renderer.Context
 		ID      string
 		Roles   string
@@ -67,42 +66,29 @@ func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Pa
 		Roles:   roles,
 		Content: strings.Trim(string(content), "\n"),
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render paragraph")
-	}
-	return result.String(), nil
-
 }
 
 func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering name section paragraph in manpage...")
-	result := &strings.Builder{}
-
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render quote paragraph lines")
+		return "", errors.Wrap(err, "unable to render manpage 'NAME' paragraph content")
 	}
-
-	err = r.manpageNameParagraph.Execute(result, struct {
+	return r.execute(r.manpageNameParagraph, struct {
 		Context *renderer.Context
 		Content string
 	}{
 		Context: ctx,
 		Content: string(content),
 	})
-	return result.String(), err
 }
 
 func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.Paragraph, class string) (string, error) {
-	log.Debug("rendering paragraph within a delimited block or a list")
-	result := &strings.Builder{}
-
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
-		return "", errors.Wrap(err, "unable to render delimited block paragraph content")
+		return "", errors.Wrap(err, "unable to render embedded paragraph content")
 	}
-
-	err = r.embeddedParagraph.Execute(result, struct {
+	return r.execute(r.embeddedParagraph, struct {
 		Context    *renderer.Context
 		CheckStyle string
 		Class      string
@@ -113,7 +99,6 @@ func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.P
 		CheckStyle: renderCheckStyle(p.Attributes[types.AttrCheckStyle]),
 		Content:    trimSpaces(content),
 	})
-	return result.String(), err
 }
 
 // trimSpaces removes heading and trailing spaces on each line of the given content
@@ -210,8 +195,12 @@ func (r *sgmlRenderer) renderParagraphElements(ctx *renderer.Context, p *types.P
 	result := buf.String()
 	if lr.hardBreaks { // TODO: move within the call to `render`?
 		linebreak := &strings.Builder{}
-		if err := r.lineBreak.Execute(linebreak, nil); err != nil {
-			return "", err
+		tmpl, err := r.lineBreak()
+		if err != nil {
+			return "", errors.Wrap(err, "unable to load line break template")
+		}
+		if err := tmpl.Execute(linebreak, nil); err != nil {
+			return "", errors.Wrap(err, "unable to render line break")
 		}
 		result = strings.ReplaceAll(result, "\n", linebreak.String()+"\n")
 	}

@@ -6,7 +6,11 @@ import (
 
 func (r *sgmlRenderer) renderLineBreak() (string, error) {
 	buf := &strings.Builder{}
-	if err := r.lineBreak.Execute(buf, nil); err != nil {
+	tmpl, err := r.lineBreak()
+	if err != nil {
+		return "", err
+	}
+	if err := tmpl.Execute(buf, nil); err != nil {
 		return "", err
 	}
 	return buf.String(), nil
@@ -14,7 +18,11 @@ func (r *sgmlRenderer) renderLineBreak() (string, error) {
 
 func (r *sgmlRenderer) renderThematicBreak() (string, error) {
 	buf := &strings.Builder{}
-	if err := r.thematicBreak.Execute(buf, nil); err != nil {
+	tmpl, err := r.thematicBreak()
+	if err != nil {
+		return "", err
+	}
+	if err := tmpl.Execute(buf, nil); err != nil {
 		return "", err
 	}
 	return buf.String(), nil

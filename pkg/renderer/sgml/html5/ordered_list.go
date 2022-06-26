@@ -13,5 +13,5 @@ const (
 		`{{ if .Reversed }} reversed{{ end }}` +
 		">\n{{ .Content }}</ol>\n</div>\n"
 
-	orderedListItemTmpl = "<li>\n{{ .Content }}</li>\n"
+	orderedListElementTmpl = "<li>\n{{ .Content }}</li>\n"
 )

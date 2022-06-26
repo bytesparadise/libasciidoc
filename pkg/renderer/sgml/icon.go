@@ -4,7 +4,7 @@ import (
 	fmt "fmt"
 	"path"
 	"strings"
-	text "text/template"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -12,8 +12,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon *types.Icon) (string, error) {
-	result := &strings.Builder{}
-
 	iconStr, err := r.renderIcon(ctx, types.Icon{
 		Class:      icon.Class,
 		Attributes: icon.Attributes,
@@ -21,7 +19,7 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon *types.Icon)
 	if err != nil {
 		return "", err
 	}
-	err = r.inlineIcon.Execute(result, struct {
+	return r.execute(r.inlineIcon, struct {
 		Class  string
 		Role   string
 		Link   string
@@ -36,11 +34,6 @@ func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon *types.Icon)
 		Window: icon.Attributes.GetAsStringWithDefault(types.AttrImageWindow, ""),
 		Role:   icon.Attributes.GetAsStringWithDefault(types.AttrRoles, ""),
 	})
-
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render inline image")
-	}
-	return result.String(), nil
 }
 
 var defaultIconClasses = map[string]string{
@@ -53,18 +46,22 @@ var defaultIconClasses = map[string]string{
 
 func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (string, error) {
 	icons := ctx.Attributes.GetAsStringWithDefault("icons", "text")
-	var template *text.Template
+	var tmpl *texttemplate.Template
+	var err error
 	font := false
 	switch icons {
 	case "font":
 		font = true
-		template = r.iconFont
+		tmpl, err = r.iconFont()
 	case "text":
-		template = r.iconText
+		tmpl, err = r.iconText()
 	case "image", "":
-		template = r.iconImage
+		tmpl, err = r.iconImage()
 	default:
 		return "", fmt.Errorf("unsupported icon type %s", icons)
+	}
+	if err != nil {
+		return "", errors.Wrap(err, "unable to load icon template")
 	}
 	title := ""
 	alt := icon.Class
@@ -88,7 +85,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		title = icon.Attributes.GetAsStringWithDefault(types.AttrTitle, "")
 	}
 	s := &strings.Builder{}
-	err := template.Execute(s, struct {
+	if err := tmpl.Execute(s, struct {
 		Class      string
 		Alt        string
 		Title      string
@@ -114,8 +111,10 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		Window:     icon.Attributes.GetAsStringWithDefault(types.AttrImageWindow, ""),
 		Src:        renderIconPath(ctx, icon.Class),
 		Admonition: admonition,
-	})
-	return string(s.String()), err
+	}); err != nil {
+		return "", errors.Wrap(err, "unable to render icon")
+	}
+	return string(s.String()), nil
 }
 
 func renderIconPath(ctx *renderer.Context, name string) string {

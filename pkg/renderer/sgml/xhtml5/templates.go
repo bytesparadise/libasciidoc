@@ -18,7 +18,6 @@ func init() {
 
 	// XHTML5 overrides of HTML5.
 	templates.Article = articleTmpl
-	templates.BlankLine = blankLineTmpl
 	templates.BlockImage = blockImageTmpl
 	templates.LineBreak = lineBreakTmpl
 	templates.DocumentAuthorDetails = documentAuthorDetailsTmpl
@@ -26,7 +25,7 @@ func init() {
 	templates.Footnotes = footnotesTmpl
 	templates.IconImage = iconImageTmpl
 	templates.InlineImage = inlineImageTmpl
-	templates.LabeledListHorizontalItem = labeledListHorizontalItemTmpl
+	templates.LabeledListHorizontalElement = labeledListHorizontalItemTmpl
 	templates.Table = tableTmpl
 	templates.ThematicBreak = thematicBreakTmpl
 	templates.QuoteBlock = quoteBlockTmpl

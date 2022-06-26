@@ -9,7 +9,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
-	result := &strings.Builder{}
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render markdown quote block content")
@@ -26,8 +25,7 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render markdown quote block title")
 	}
-
-	err = r.markdownQuoteBlock.Execute(result, struct {
+	return r.execute(r.markdownQuoteBlock, struct {
 		Context     *renderer.Context
 		ID          string
 		Title       string
@@ -42,5 +40,4 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.
 		Attribution: attribution,
 		Content:     strings.Trim(content, "\n"),
 	})
-	return result.String(), err
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	text "text/template"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
@@ -32,7 +32,7 @@ func NewRenderer(t Templates) Renderer {
 	r := &sgmlRenderer{
 		templates: t,
 		// Establish some default function handlers.
-		functions: text.FuncMap{
+		functions: texttemplate.FuncMap{
 			"escape":             EscapeString,
 			"halign":             halign,
 			"valign":             valign,
@@ -121,7 +121,7 @@ func (r *sgmlRenderer) Templates() Templates {
 	return r.templates
 }
 
-func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*text.Template, error) {
+func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*texttemplate.Template, error) {
 	// NB: if the data is missing below, it will be an empty string.
 	if err != nil {
 		return nil, err
@@ -129,7 +129,7 @@ func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*text.T
 	if len(tmpl) == 0 {
 		return nil, fmt.Errorf("empty template for '%s'", name)
 	}
-	t := text.New(name)
+	t := texttemplate.New(name)
 	t.Funcs(r.functions)
 	if t, err = t.Parse(tmpl); err != nil {
 		log.Errorf("failed to initialize the '%s' template: %v", name, err)
@@ -148,11 +148,6 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 	var metadata types.Metadata
 	// arguably this should be a time.Time for use in Go
 	metadata.LastUpdated = ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat)
-	err := r.prepareTemplates()
-	if err != nil {
-		return metadata, err
-	}
-
 	renderedTitle, exists, err := r.renderDocumentTitle(ctx, doc)
 	if err != nil {
 		return metadata, errors.Wrapf(err, "unable to render full document")
@@ -191,7 +186,11 @@ func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output
 	}
 	if ctx.Config.WrapInHTMLBodyElement {
 		log.Debugf("Rendering full document...")
-		err = r.article.Execute(output, struct {
+		tmpl, err := r.article()
+		if err != nil {
+			return metadata, errors.Wrapf(err, "unable to render full document")
+		}
+		err = tmpl.Execute(output, struct {
 			Doctype               string
 			Generator             string
 			Description           string
@@ -355,18 +354,13 @@ func (r *sgmlRenderer) renderDocumentHeader(ctx *renderer.Context, header *types
 	if err != nil {
 		return "", err
 	}
-	output := &strings.Builder{}
-	err = r.articleHeader.Execute(output, struct {
+	return r.execute(r.articleHeader, struct {
 		Header  string
-		Details *string // TODO: convert to string (no need to be a pointer)
+		Details string
 	}{
 		Header:  renderedHeader,
 		Details: documentDetails,
 	})
-	if err != nil {
-		return "", err
-	}
-	return output.String(), nil
 }
 
 func (r *sgmlRenderer) renderDocumentHeaderTitle(ctx *renderer.Context, header *types.DocumentHeader) (string, error) {
@@ -396,7 +390,11 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header *types.
 		return "", err
 	}
 	output := &strings.Builder{}
-	err = r.manpageHeader.Execute(output, struct {
+	tmpl, err := r.manpageHeader()
+	if err != nil {
+		return "", errors.Wrap(err, "unable to load manpage header template")
+	}
+	if err = tmpl.Execute(output, struct {
 		Header    string
 		Name      string
 		Content   string
@@ -406,9 +404,8 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header *types.
 		Name:      renderedName,
 		Content:   string(renderedContent),
 		IncludeH1: len(renderedHeader) > 0,
-	})
-	if err != nil {
-		return "", err
+	}); err != nil {
+		return "", errors.Wrap(err, "unable to render manpage header")
 	}
 	return output.String(), nil
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	text "text/template"
+	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -30,7 +30,6 @@ func (r *sgmlRenderer) renderList(ctx *renderer.Context, l *types.List) (string,
 // Ordered Lists
 // -------------------------------------------------------
 func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l *types.List) (string, error) {
-	result := &strings.Builder{}
 	content := &strings.Builder{}
 
 	for _, element := range l.Elements {
@@ -54,7 +53,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l *types.List) (
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
-	err = r.orderedList.Execute(result, struct {
+	return r.execute(r.orderedList, struct {
 		Context   *renderer.Context
 		ID        string
 		Title     string
@@ -64,7 +63,6 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l *types.List) (
 		Start     string
 		Content   string
 		Reversed  bool
-		// Elements  []types.ListElement
 	}{
 		ID:        r.renderElementID(l.Attributes),
 		Title:     title,
@@ -72,14 +70,9 @@ func (r *sgmlRenderer) renderOrderedList(ctx *renderer.Context, l *types.List) (
 		Style:     style,
 		ListStyle: r.numberingType(style),
 		Start:     l.Attributes.GetAsStringWithDefault(types.AttrStart, ""),
-		Content:   string(content.String()),
+		Content:   content.String(),
 		Reversed:  l.Attributes.HasOption("reversed"),
-		// Elements:  l.Elements,
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render ordered list")
-	}
-	return result.String(), nil
 }
 
 func getNumberingStyle(l *types.List) (string, error) {
@@ -114,15 +107,22 @@ func (r *sgmlRenderer) numberingType(style string) string {
 func (r *sgmlRenderer) renderOrderedListElement(ctx *renderer.Context, w io.Writer, element *types.OrderedListElement) error {
 	content, err := r.renderListElements(ctx, element.GetElements())
 	if err != nil {
-		return errors.Wrap(err, "unable to render unordered list element content")
+		return errors.Wrap(err, "unable to render ordered list element content")
 	}
-	return r.orderedListItem.Execute(w, struct {
+	tmpl, err := r.orderedListElement()
+	if err != nil {
+		return errors.Wrap(err, "unable to load ordered list element template")
+	}
+	if err = tmpl.Execute(w, struct {
 		Context *renderer.Context
 		Content string
 	}{
 		Context: ctx,
 		Content: string(content),
-	})
+	}); err != nil {
+		return errors.Wrap(err, "unable to render ordered list element")
+	}
+	return nil
 }
 
 // -------------------------------------------------------
@@ -140,7 +140,6 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l *types.List)
 			checkList = true
 		}
 	}
-	result := &strings.Builder{}
 	content := &strings.Builder{}
 
 	for _, element := range l.Elements {
@@ -156,9 +155,7 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l *types.List)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
-
-	// here we must preserve the HTML tags
-	err = r.unorderedList.Execute(result, struct {
+	return r.execute(r.unorderedList, struct {
 		Context   *renderer.Context
 		ID        string
 		Title     string
@@ -173,27 +170,30 @@ func (r *sgmlRenderer) renderUnorderedList(ctx *renderer.Context, l *types.List)
 		Title:     title,
 		Checklist: checkList,
 		Items:     l.Elements,
-		Content:   string(content.String()),
+		Content:   content.String(),
 		Roles:     roles,
 		Style:     r.renderElementStyle(l.Attributes),
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render unordered list")
-	}
-	return result.String(), nil
 }
 func (r *sgmlRenderer) renderUnorderedListElement(ctx *renderer.Context, w io.Writer, element types.ListElement) error {
 	content, err := r.renderListElements(ctx, element.GetElements())
 	if err != nil {
 		return errors.Wrap(err, "unable to render unordered list element content")
 	}
-	return r.unorderedListItem.Execute(w, struct {
+	tmpl, err := r.unorderedListElement()
+	if err != nil {
+		return errors.Wrap(err, "unable to load unordered list element template")
+	}
+	if err := tmpl.Execute(w, struct {
 		Context *renderer.Context
 		Content string
 	}{
 		Context: ctx,
 		Content: string(content),
-	})
+	}); err != nil {
+		return errors.Wrap(err, "unable to render unordered list element")
+	}
+	return nil
 }
 
 // -------------------------------------------------------
@@ -225,8 +225,7 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l *types.List) (
 		return "", errors.Wrap(err, "unable to render labeled list roles")
 	}
 	result := &strings.Builder{}
-	// here we must preserve the HTML tags
-	err = tmpl.Execute(result, struct {
+	if err := tmpl.Execute(result, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -238,30 +237,53 @@ func (r *sgmlRenderer) renderLabeledList(ctx *renderer.Context, l *types.List) (
 		ID:      r.renderElementID(l.Attributes),
 		Title:   title,
 		Roles:   roles,
-		Content: string(content.String()),
+		Content: content.String(),
 		Items:   l.Elements,
-	})
-	if err != nil {
+	}); err != nil {
 		return "", errors.Wrap(err, "unable to render labeled list")
 	}
 	return result.String(), nil
 }
 
-func (r *sgmlRenderer) getLabeledListTmpl(l *types.List) (*text.Template, *text.Template, error) {
+func (r *sgmlRenderer) getLabeledListTmpl(l *types.List) (*texttemplate.Template, *texttemplate.Template, error) {
 	if layout, ok := l.Attributes[types.AttrStyle]; ok {
 		switch layout {
 		case "qanda":
-			return r.qAndAList, r.qAndAListItem, nil
+			listTmpl, err := r.qAndAList()
+			if err != nil {
+				return nil, nil, errors.Wrap(err, "unable to load q&A list template")
+			}
+			listElementTmpl, err := r.qAndAListElement()
+			if err != nil {
+				return nil, nil, errors.Wrap(err, "unable to load q&A list element template")
+			}
+			return listTmpl, listElementTmpl, nil
 		case "horizontal":
-			return r.labeledListHorizontal, r.labeledListHorizontalItem, nil
+			listTmpl, err := r.labeledListHorizontal()
+			if err != nil {
+				return nil, nil, errors.Wrap(err, "unable to load horizontal list template")
+			}
+			listElementTmpl, err := r.labeledListHorizontalElement()
+			if err != nil {
+				return nil, nil, errors.Wrap(err, "unable to load horizontal list element template")
+			}
+			return listTmpl, listElementTmpl, nil
 		default:
 			return nil, nil, errors.Errorf("unsupported labeled list layout: %s", layout)
 		}
 	}
-	return r.labeledList, r.labeledListItem, nil
+	listTmpl, err := r.labeledList()
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "unable to load labeled list template")
+	}
+	listElementTmpl, err := r.labeledListElement()
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "unable to load labeld list element template")
+	}
+	return listTmpl, listElementTmpl, nil
 }
 
-func (r *sgmlRenderer) renderLabeledListItem(ctx *renderer.Context, tmpl *text.Template, w io.Writer, continuation bool, element *types.LabeledListElement) (bool, error) {
+func (r *sgmlRenderer) renderLabeledListItem(ctx *renderer.Context, tmpl *texttemplate.Template, w io.Writer, continuation bool, element *types.LabeledListElement) (bool, error) {
 
 	term, err := r.renderInlineElements(ctx, element.Term)
 	if err != nil {
@@ -289,17 +311,17 @@ func (r *sgmlRenderer) renderLabeledListItem(ctx *renderer.Context, tmpl *text.T
 // Callout Lists
 // -------------------------------------------------------
 func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l *types.List) (string, error) {
-	result := &strings.Builder{}
 	content := &strings.Builder{}
-
 	for _, element := range l.Elements {
 		e, ok := element.(*types.CalloutListElement)
 		if !ok {
 			return "", errors.Errorf("unable to render callout list element of type '%T'", element)
 		}
-		if err := r.renderCalloutListItem(ctx, content, e); err != nil {
+		rendererElement, err := r.renderCalloutListElement(ctx, e)
+		if err != nil {
 			return "", errors.Wrap(err, "unable to render callout list element")
 		}
+		content.WriteString(rendererElement)
 	}
 	roles, err := r.renderElementRoles(ctx, l.Attributes)
 	if err != nil {
@@ -309,8 +331,7 @@ func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l *types.List) (
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
-
-	err = r.calloutList.Execute(result, struct {
+	return r.execute(r.calloutList, struct {
 		Context *renderer.Context
 		ID      string
 		Title   string
@@ -322,21 +343,17 @@ func (r *sgmlRenderer) renderCalloutList(ctx *renderer.Context, l *types.List) (
 		ID:      r.renderElementID(l.Attributes),
 		Title:   title,
 		Roles:   roles,
-		Content: string(content.String()),
+		Content: content.String(),
 		Items:   l.Elements,
 	})
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render callout list")
-	}
-	return result.String(), nil
 }
 
-func (r *sgmlRenderer) renderCalloutListItem(ctx *renderer.Context, w io.Writer, element *types.CalloutListElement) error {
+func (r *sgmlRenderer) renderCalloutListElement(ctx *renderer.Context, element *types.CalloutListElement) (string, error) {
 	content, err := r.renderListElements(ctx, element.Elements)
 	if err != nil {
-		return errors.Wrap(err, "unable to render callout list element content")
+		return "", errors.Wrap(err, "unable to render callout list element content")
 	}
-	err = r.calloutListItem.Execute(w, struct {
+	return r.execute(r.calloutListElement, struct {
 		Context *renderer.Context
 		Ref     int
 		Content string
@@ -345,8 +362,4 @@ func (r *sgmlRenderer) renderCalloutListItem(ctx *renderer.Context, w io.Writer,
 		Ref:     element.Ref,
 		Content: string(content),
 	})
-	if err != nil {
-		return errors.Wrap(err, "unable to render callout list")
-	}
-	return nil
 }
