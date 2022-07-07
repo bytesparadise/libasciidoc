@@ -4,12 +4,12 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml"
 )
 
-// Templates returns the default Templates use for HTML5.  It may be useful
-// for derived implementations.
+// Templates returns the default Templates use for HTML5.
 func Templates() sgml.Templates {
 	return templates
 }
 
+// the Templates used for HTML5.
 var templates = sgml.Templates{
 	AdmonitionBlock:              admonitionBlockTmpl,
 	AdmonitionParagraph:          admonitionParagraphTmpl,

@@ -1,30 +1,33 @@
 package xhtml5
 
-const (
-	articleTmpl = "<!DOCTYPE html>\n" +
-		"<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\">\n" +
-		"<head>\n" +
-		"<meta charset=\"UTF-8\"/>\n" +
-		"<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"/>\n" +
-		"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n" +
-		"{{ if .Generator }}<meta name=\"generator\" content=\"{{ .Generator }}\"/>\n{{ end }}" +
-		"{{ if .Authors }}<meta name=\"author\" content=\"{{ .Authors }}\"/>\n{{ end }}" +
-		"{{ range $css := .CSS }}<link type=\"text/css\" rel=\"stylesheet\" href=\"{{ $css }}\"/>\n{{ end }}" +
-		"<title>{{ .Title }}</title>\n" +
-		"</head>\n" +
-		"<body" +
-		"{{ if .ID }} id=\"{{ .ID }}\"{{ end }}" +
-		" class=\"{{ .Doctype }}{{ if .Roles }} {{ .Roles }}{{ end }}\">\n" +
-		"{{ if .IncludeHTMLBodyHeader }}{{ .Header }}{{ end }}" +
-		"<div id=\"content\">\n" +
-		"{{ .Content }}" +
-		"</div>\n" +
-		"{{ if .IncludeHTMLBodyFooter }}<div id=\"footer\">\n" +
-		"<div id=\"footer-text\">\n" +
-		"{{ if .RevNumber }}Version {{ .RevNumber }}<br/>\n{{ end }}" +
-		"Last updated {{ .LastUpdated }}\n" +
-		"</div>\n" +
-		"</div>\n{{ end }}" +
-		"</body>\n" +
-		"</html>\n"
+import (
+	"io"
+
+	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml"
+	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/html5"
+	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
+
+// Render renders the document to the output, using the SGML renderer configured with the XHTML5 templates
+func Render(doc *types.Document, config *configuration.Configuration, output io.Writer) (types.Metadata, error) {
+	templates := html5.Templates()
+	// XHTML5 overrides of HTML5.
+	templates.Article = articleTmpl
+	templates.BlockImage = blockImageTmpl
+	templates.LineBreak = lineBreakTmpl
+	templates.DocumentAuthorDetails = documentAuthorDetailsTmpl
+	templates.DocumentDetails = documentDetailsTmpl
+	templates.Footnotes = footnotesTmpl
+	templates.IconImage = iconImageTmpl
+	templates.InlineImage = inlineImageTmpl
+	templates.LabeledListHorizontalElement = labeledListHorizontalItemTmpl
+	templates.Table = tableTmpl
+	templates.ThematicBreak = thematicBreakTmpl
+	templates.QuoteBlock = quoteBlockTmpl
+	templates.QuoteParagraph = quoteParagraphTmpl
+	templates.VerseBlock = verseBlockTmpl
+	templates.VerseParagraph = verseParagraphTmpl
+
+	return sgml.Render(doc, config, output, templates)
+}
