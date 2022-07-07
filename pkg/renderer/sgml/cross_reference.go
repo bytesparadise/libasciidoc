@@ -4,7 +4,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	"github.com/davecgh/go-spew/spew"
@@ -12,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref *types.InternalCrossReference) (string, error) {
+func (r *sgmlRenderer) renderInternalCrossReference(ctx *context, xref *types.InternalCrossReference) (string, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("rendering cross reference with ID: %s", spew.Sdump(xref.ID))
 	}
@@ -23,7 +22,7 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 	}
 	if xrefLabel, ok := xref.Label.(string); ok {
 		label = xrefLabel
-	} else if target, found := ctx.ElementReferences[xrefID]; found {
+	} else if target, found := ctx.elementReferences[xrefID]; found {
 		switch t := target.(type) {
 		case string:
 			label = t
@@ -62,7 +61,7 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *renderer.Context, xref 
 	})
 }
 
-func (r *sgmlRenderer) renderExternalCrossReference(ctx *renderer.Context, xref *types.ExternalCrossReference) (string, error) {
+func (r *sgmlRenderer) renderExternalCrossReference(ctx *context, xref *types.ExternalCrossReference) (string, error) {
 	// log.Debugf("rendering cross reference with ID: %s", xref.Location)
 	var label string
 	var err error

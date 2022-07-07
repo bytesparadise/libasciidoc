@@ -1,12 +1,14 @@
 package html5
 
 import (
-	"io"
-
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml"
-	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
+
+// Templates returns the default Templates use for HTML5.  It may be useful
+// for derived implementations.
+func Templates() sgml.Templates {
+	return templates
+}
 
 var templates = sgml.Templates{
 	AdmonitionBlock:              admonitionBlockTmpl,
@@ -85,23 +87,4 @@ var templates = sgml.Templates{
 	UnorderedListElement:         unorderedListElementTmpl,
 	VerseBlock:                   verseBlockTmpl,
 	VerseParagraph:               verseParagraphTmpl,
-}
-
-var defaultRenderer sgml.Renderer
-
-func init() {
-	// NB: This is fast, and doesn't including parsing.
-	defaultRenderer = sgml.NewRenderer(templates)
-}
-
-// Render renders the document to the output, using a default instance
-// of the renderer, with default templates.
-func Render(ctx *renderer.Context, doc *types.Document, output io.Writer) (types.Metadata, error) {
-	return defaultRenderer.Render(ctx, doc, output)
-}
-
-// Templates returns the default Templates use for HTML5.  It may be useful
-// for derived implementations.
-func Templates() sgml.Templates {
-	return templates
 }

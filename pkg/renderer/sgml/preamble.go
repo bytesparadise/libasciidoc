@@ -1,12 +1,11 @@
 package sgml
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p *types.Preamble) (string, error) {
+func (r *sgmlRenderer) renderPreamble(ctx *context, p *types.Preamble) (string, error) {
 	// log.Debugf("rendering preamble...")
 	// the <div id="preamble"> wrapper is only necessary
 	// if the document has a section 0
@@ -20,13 +19,13 @@ func (r *sgmlRenderer) renderPreamble(ctx *renderer.Context, p *types.Preamble) 
 		return "", errors.Wrap(err, "error rendering preamble elements")
 	}
 	return r.execute(r.preamble, struct {
-		Context *renderer.Context
+		Context *context
 		Wrapper bool
 		Content string
 		ToC     string
 	}{
 		Context: ctx,
-		Wrapper: ctx.HasHeader,
+		Wrapper: ctx.hasHeader,
 		Content: string(content),
 		ToC:     string(toc),
 	})

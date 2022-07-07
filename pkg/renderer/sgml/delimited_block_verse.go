@@ -3,22 +3,21 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderVerseBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	roles, err := r.renderElementRoles(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verser block roles")
 	}
-	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	previousWithinDelimitedBlock := ctx.withinDelimitedBlock
 	defer func() {
-		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.withinDelimitedBlock = previousWithinDelimitedBlock
 	}()
-	ctx.WithinDelimitedBlock = true
+	ctx.withinDelimitedBlock = true
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse block content")
@@ -32,7 +31,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b *types.Delimite
 		return "", errors.Wrap(err, "unable to render verse block title")
 	}
 	return r.execute(r.verseBlock, struct {
-		Context     *renderer.Context
+		Context     *context
 		ID          string
 		Title       string
 		Roles       string
@@ -48,7 +47,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *renderer.Context, b *types.Delimite
 	})
 }
 
-func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderVerseParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering verse paragraph...")
 	content, err := r.renderParagraphElements(ctx, p, withRenderer(r.renderPlainText))
 	if err != nil {
@@ -63,7 +62,7 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *renderer.Context, p *types.Para
 		return "", errors.Wrap(err, "unable to render callout list roles")
 	}
 	return r.execute(r.verseParagraph, struct {
-		Context     *renderer.Context
+		Context     *context
 		ID          string
 		Title       string
 		Attribution Attribution

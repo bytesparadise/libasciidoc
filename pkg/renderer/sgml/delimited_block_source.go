@@ -8,14 +8,13 @@ import (
 	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderSourceBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	// first, render the content
 	content, highlighter, language, err := r.renderSourceBlockElements(ctx, b)
 	if err != nil {
@@ -57,7 +56,7 @@ func (r *sgmlRenderer) renderSourceBlock(ctx *renderer.Context, b *types.Delimit
 	})
 }
 
-func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderSourceParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	attributes := p.Attributes
 	attributes[types.AttrStyle] = types.Source
 	return r.renderSourceBlock(ctx, &types.DelimitedBlock{
@@ -66,13 +65,13 @@ func (r *sgmlRenderer) renderSourceParagraph(ctx *renderer.Context, p *types.Par
 	})
 }
 
-func (r *sgmlRenderer) renderSourceBlockElements(ctx *renderer.Context, b *types.DelimitedBlock) (string, string, string, error) {
-	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+func (r *sgmlRenderer) renderSourceBlockElements(ctx *context, b *types.DelimitedBlock) (string, string, string, error) {
+	previousWithinDelimitedBlock := ctx.withinDelimitedBlock
 	defer func() {
-		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.withinDelimitedBlock = previousWithinDelimitedBlock
 	}()
-	ctx.WithinDelimitedBlock = true
-	highlighter := ctx.Attributes.GetAsStringWithDefault(types.AttrSyntaxHighlighter, "")
+	ctx.withinDelimitedBlock = true
+	highlighter := ctx.attributes.GetAsStringWithDefault(types.AttrSyntaxHighlighter, "")
 	language := b.Attributes.GetAsStringWithDefault(types.AttrLanguage, "")
 
 	// render without syntax highlight
@@ -95,17 +94,17 @@ func (r *sgmlRenderer) renderSourceBlockElements(ctx *renderer.Context, b *types
 	}
 	lexer = chroma.Coalesce(lexer)
 	style := styles.Fallback
-	if s, found, err := ctx.Attributes.GetAsString(highlighter + "-style"); err != nil {
+	if s, found, err := ctx.attributes.GetAsString(highlighter + "-style"); err != nil {
 		return "", "", "", err
 	} else if found {
 		style = styles.Get(s)
 	}
 	options := []html.Option{
-		html.ClassPrefix(ctx.Attributes.GetAsStringWithDefault(types.AttrChromaClassPrefix, "tok-")),
+		html.ClassPrefix(ctx.attributes.GetAsStringWithDefault(types.AttrChromaClassPrefix, "tok-")),
 		html.PreventSurroundingPre(true),
 	}
 	// extra option: inline CSS instead of classes
-	if ctx.Attributes.GetAsStringWithDefault(highlighter+"-css", "classes") == "style" {
+	if ctx.attributes.GetAsStringWithDefault(highlighter+"-css", "classes") == "style" {
 		options = append(options, html.WithClasses(false))
 	} else {
 		options = append(options, html.WithClasses(true))
@@ -149,7 +148,7 @@ func (r *sgmlRenderer) renderSourceBlockElements(ctx *renderer.Context, b *types
 	return result.String(), highlighter, language, nil
 }
 
-func (r *sgmlRenderer) renderSourceLine(ctx *renderer.Context, line interface{}) (string, []*types.Callout, error) {
+func (r *sgmlRenderer) renderSourceLine(ctx *context, line interface{}) (string, []*types.Callout, error) {
 	elements, ok := line.([]interface{})
 	if !ok {
 		return "", nil, fmt.Errorf("invalid type of line: '%T'", line)

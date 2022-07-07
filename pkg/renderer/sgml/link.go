@@ -4,12 +4,11 @@ import (
 	"html"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderLink(ctx *renderer.Context, l *types.InlineLink) (string, error) {
+func (r *sgmlRenderer) renderLink(ctx *context, l *types.InlineLink) (string, error) {
 	location := l.Location.ToString()
 	text := ""
 	class := ""

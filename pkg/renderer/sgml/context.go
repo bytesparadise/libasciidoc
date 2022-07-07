@@ -1,79 +1,79 @@
-package renderer
+package sgml
 
 import (
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-// Context is a custom implementation of the standard golang context.Context interface,
+// context is a custom implementation of the standard golang context.context interface,
 // which carries the types.Document which is being processed
-type Context struct {
-	Config               *configuration.Configuration // TODO: use composition (remove the `Config` field)
-	WithinDelimitedBlock bool
-	WithinList           int
+type context struct {
+	config               *configuration.Configuration // TODO: use composition (remove the `Config` field)
+	withinDelimitedBlock bool
+	withinList           int
 	counters             map[string]int
-	Attributes           types.Attributes
-	ElementReferences    types.ElementReferences
-	HasHeader            bool
-	SectionNumbering     types.SectionNumbers
+	attributes           types.Attributes
+	elementReferences    types.ElementReferences
+	hasHeader            bool
+	sectionNumbering     types.SectionNumbers
 }
 
-// NewContext returns a new rendering context for the given document.
-func NewContext(doc *types.Document, config *configuration.Configuration) *Context {
+// newContext returns a new rendering context for the given document.
+func newContext(doc *types.Document, config *configuration.Configuration) *context {
 	header, _ := doc.Header()
-	ctx := &Context{
-		Config:            config,
+	ctx := &context{
+		config:            config,
 		counters:          make(map[string]int),
-		Attributes:        config.Attributes,
-		ElementReferences: doc.ElementReferences,
-		HasHeader:         header != nil,
+		attributes:        config.Attributes,
+		elementReferences: doc.ElementReferences,
+		hasHeader:         header != nil,
 	}
 	// TODO: add other attributes from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#builtin-attributes-i18n
-	ctx.Attributes[types.AttrFigureCaption] = "Figure"
-	ctx.Attributes[types.AttrExampleCaption] = "Example"
-	ctx.Attributes[types.AttrTableCaption] = "Table"
-	ctx.Attributes[types.AttrVersionLabel] = "version"
+	ctx.attributes[types.AttrFigureCaption] = "Figure"
+	ctx.attributes[types.AttrExampleCaption] = "Example"
+	ctx.attributes[types.AttrTableCaption] = "Table"
+	ctx.attributes[types.AttrVersionLabel] = "version"
 	// also, expand authors and revision
 	if header != nil {
 		if authors := header.Authors(); authors != nil {
-			ctx.Attributes.AddAll(authors.Expand())
+			ctx.attributes.AddAll(authors.Expand())
 		}
 
 		if revision := header.Revision(); revision != nil {
-			ctx.Attributes.AddAll(revision.Expand())
+			ctx.attributes.AddAll(revision.Expand())
 
 		}
 	}
 	return ctx
 }
 
-func (ctx *Context) UseUnicode() bool {
-	return ctx.Attributes.GetAsBoolWithDefault(types.AttrUnicode, true)
+func (ctx *context) UseUnicode() bool {
+	return ctx.attributes.GetAsBoolWithDefault(types.AttrUnicode, true)
 }
 
 const tableCounter = "tableCounter"
 
 // GetAndIncrementTableCounter returns the current value for the table counter after internally incrementing it.
-func (ctx *Context) GetAndIncrementTableCounter() int {
+func (ctx *context) GetAndIncrementTableCounter() int {
 	return ctx.getAndIncrementCounter(tableCounter)
 }
 
 const imageCounter = "imageCounter"
 
 // GetAndIncrementImageCounter returns the current value for the image counter after internally incrementing it.
-func (ctx *Context) GetAndIncrementImageCounter() int {
+func (ctx *context) GetAndIncrementImageCounter() int {
 	return ctx.getAndIncrementCounter(imageCounter)
 }
 
 const exampleBlockCounter = "exampleBlockCounter"
 
 // GetAndIncrementExampleBlockCounter returns the current value for the example block counter after internally incrementing it.
-func (ctx *Context) GetAndIncrementExampleBlockCounter() int {
+func (ctx *context) GetAndIncrementExampleBlockCounter() int {
 	return ctx.getAndIncrementCounter(exampleBlockCounter)
 }
 
 // getAndIncrementCounter returns the current value for the  counter after internally incrementing it.
-func (ctx *Context) getAndIncrementCounter(name string) int {
+func (ctx *context) getAndIncrementCounter(name string) int {
 	if _, found := ctx.counters[name]; !found {
 		ctx.counters[name] = 1
 		return 1

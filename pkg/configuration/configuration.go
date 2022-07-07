@@ -10,8 +10,11 @@ import (
 // NewConfiguration returns a new configuration
 func NewConfiguration(settings ...Setting) *Configuration {
 	config := &Configuration{
-		Attributes: map[string]interface{}{},
-		Macros:     map[string]MacroTemplate{},
+		Attributes: map[string]interface{}{
+			"basebackend-html": true, // along with default backend, to support `ifdef::basebackend-html` conditionals out-of-the-box
+		},
+		BackEnd: "html5", // default backend
+		Macros:  map[string]MacroTemplate{},
 	}
 	for _, set := range settings {
 		set(config)
@@ -86,6 +89,12 @@ func WithBackEnd(backend string) Setting {
 	return func(config *Configuration) {
 		config.Attributes.Set("backend", backend)
 		config.BackEnd = backend
+		switch backend {
+		case "html", "html5", "xhtml", "xhtml5":
+			config.Attributes.Set("basebackend-html", true)
+		default:
+			config.Attributes.Unset("basebackend-html")
+		}
 	}
 }
 

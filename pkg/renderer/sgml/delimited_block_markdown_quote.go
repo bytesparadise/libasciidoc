@@ -3,12 +3,11 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render markdown quote block content")
@@ -26,7 +25,7 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *renderer.Context, b *types.
 		return "", errors.Wrap(err, "unable to render markdown quote block title")
 	}
 	return r.execute(r.markdownQuoteBlock, struct {
-		Context     *renderer.Context
+		Context     *context
 		ID          string
 		Title       string
 		Roles       string

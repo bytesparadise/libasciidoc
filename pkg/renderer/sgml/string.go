@@ -5,11 +5,10 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderStringElement(ctx *renderer.Context, str *types.StringElement) (string, error) {
+func (r *sgmlRenderer) renderStringElement(ctx *context, str *types.StringElement) (string, error) {
 	// NB: For all SGML flavors we are aware of, the numeric entities from
 	// Unicode are supported.  We generally avoid named entities.
 	result := str.Content

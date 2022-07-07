@@ -6,12 +6,11 @@ import (
 	"strings"
 	texttemplate "text/template"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderInlineIcon(ctx *renderer.Context, icon *types.Icon) (string, error) {
+func (r *sgmlRenderer) renderInlineIcon(ctx *context, icon *types.Icon) (string, error) {
 	iconStr, err := r.renderIcon(ctx, types.Icon{
 		Class:      icon.Class,
 		Attributes: icon.Attributes,
@@ -44,8 +43,8 @@ var defaultIconClasses = map[string]string{
 	types.AttrWarningCaption:   "Warning",
 }
 
-func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admonition bool) (string, error) {
-	icons := ctx.Attributes.GetAsStringWithDefault("icons", "text")
+func (r *sgmlRenderer) renderIcon(ctx *context, icon types.Icon, admonition bool) (string, error) {
+	icons := ctx.attributes.GetAsStringWithDefault("icons", "text")
 	var tmpl *texttemplate.Template
 	var err error
 	font := false
@@ -72,7 +71,7 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 		// Admonition uses title on block instead of the icon, and the alt text is
 		// taken from the caption.  However, in admonitions using the font, the alt
 		// is used as the title element instead.  Go figure.
-		alt = ctx.Attributes.GetAsStringWithDefault(icon.Class+"-caption", defaultIconClasses[icon.Class+"-caption"])
+		alt = ctx.attributes.GetAsStringWithDefault(icon.Class+"-caption", defaultIconClasses[icon.Class+"-caption"])
 		alt = icon.Attributes.GetAsStringWithDefault(types.AttrCaption, alt)
 		if font {
 			title = alt
@@ -117,12 +116,12 @@ func (r *sgmlRenderer) renderIcon(ctx *renderer.Context, icon types.Icon, admoni
 	return string(s.String()), nil
 }
 
-func renderIconPath(ctx *renderer.Context, name string) string {
+func renderIconPath(ctx *context, name string) string {
 	// Icon files by default are in {imagesdir}/icons, where {imagesdir} defaults to "./images"
-	dir := ctx.Attributes.GetAsStringWithDefault("iconsdir",
-		path.Join(ctx.Attributes.GetAsStringWithDefault(types.AttrImagesDir, "./images"), "icons"))
+	dir := ctx.attributes.GetAsStringWithDefault("iconsdir",
+		path.Join(ctx.attributes.GetAsStringWithDefault(types.AttrImagesDir, "./images"), "icons"))
 	// TODO: perform attribute substitutions here!
-	ext := ctx.Attributes.GetAsStringWithDefault("icontype", "png")
+	ext := ctx.attributes.GetAsStringWithDefault("icontype", "png")
 
 	return path.Join(dir, name+"."+ext)
 }

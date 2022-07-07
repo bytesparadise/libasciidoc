@@ -3,14 +3,13 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interface{}) (string, error) {
+func (r *sgmlRenderer) renderElements(ctx *context, elements []interface{}) (string, error) {
 	// log.Debugf("rendering %d elements(s)...", len(elements))
 	buff := &strings.Builder{}
 	for _, element := range elements {
@@ -25,19 +24,19 @@ func (r *sgmlRenderer) renderElements(ctx *renderer.Context, elements []interfac
 
 // renderListElements is similar to the `renderElements` func above,
 // but it sets the `withinList` context flag to true for the first element only
-func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []interface{}) (string, error) {
+func (r *sgmlRenderer) renderListElements(ctx *context, elements []interface{}) (string, error) {
 	// log.Debugf("rendering list with %d element(s)...", len(elements))
 	buff := &strings.Builder{}
 	for i, element := range elements {
 		if i == 0 {
-			ctx.WithinList++
+			ctx.withinList++
 		}
 		renderedElement, err := r.renderElement(ctx, element)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render a list element")
 		}
 		if i == 0 {
-			ctx.WithinList--
+			ctx.withinList--
 		}
 		buff.WriteString(renderedElement)
 	}
@@ -45,7 +44,7 @@ func (r *sgmlRenderer) renderListElements(ctx *renderer.Context, elements []inte
 }
 
 //nolint:gocyclo
-func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{}) (string, error) {
+func (r *sgmlRenderer) renderElement(ctx *context, element interface{}) (string, error) {
 	// log.Debugf("rendering element of type `%T`", element)
 	switch e := element.(type) {
 	case *types.TableOfContents:
@@ -105,20 +104,20 @@ func (r *sgmlRenderer) renderElement(ctx *renderer.Context, element interface{})
 	case *types.PredefinedAttribute:
 		return r.renderPredefinedAttribute(e)
 	case *types.AttributeDeclaration:
-		ctx.Attributes[e.Name] = e.Value
+		ctx.attributes[e.Name] = e.Value
 		return "", nil
 	case *types.AttributeReset:
-		delete(ctx.Attributes, e.Name)
+		delete(ctx.attributes, e.Name)
 		return "", nil
 	case *types.FrontMatter:
-		ctx.Attributes.AddAll(e.Attributes)
+		ctx.attributes.AddAll(e.Attributes)
 		return "", nil
 	default:
 		return "", errors.Errorf("unsupported type of element: %T", element)
 	}
 }
 
-func (r *sgmlRenderer) renderPlainText(ctx *renderer.Context, element interface{}) (string, error) {
+func (r *sgmlRenderer) renderPlainText(ctx *context, element interface{}) (string, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("rendering plain string for element of type %T", element)
 	}

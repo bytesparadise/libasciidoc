@@ -3,17 +3,16 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
-	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+func (r *sgmlRenderer) renderPassthroughBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
+	previousWithinDelimitedBlock := ctx.withinDelimitedBlock
 	defer func() {
-		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.withinDelimitedBlock = previousWithinDelimitedBlock
 	}()
-	ctx.WithinDelimitedBlock = true
+	ctx.withinDelimitedBlock = true
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render passthrough block content")
@@ -23,7 +22,7 @@ func (r *sgmlRenderer) renderPassthroughBlock(ctx *renderer.Context, b *types.De
 		return "", errors.Wrap(err, "unable to render passthrough block roles")
 	}
 	return r.execute(r.passthroughBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Roles   string
 		Content string

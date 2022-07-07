@@ -3,13 +3,12 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderLiteralBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	log.Debugf("rendering literal block")
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
@@ -25,7 +24,7 @@ func (r *sgmlRenderer) renderLiteralBlock(ctx *renderer.Context, b *types.Delimi
 	}
 
 	return r.execute(r.literalBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Roles   string

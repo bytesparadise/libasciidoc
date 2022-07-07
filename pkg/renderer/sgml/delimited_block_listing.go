@@ -3,20 +3,19 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderListingBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	if k, found := b.Attributes[types.AttrStyle]; found && k == types.Source {
 		return r.renderSourceBlock(ctx, b)
 	}
-	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+	previousWithinDelimitedBlock := ctx.withinDelimitedBlock
 	defer func() {
-		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.withinDelimitedBlock = previousWithinDelimitedBlock
 	}()
-	ctx.WithinDelimitedBlock = true
+	ctx.withinDelimitedBlock = true
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
@@ -30,7 +29,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 		return "", errors.Wrap(err, "unable to render listing block title")
 	}
 	return r.execute(r.listingBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Roles   string
@@ -44,7 +43,7 @@ func (r *sgmlRenderer) renderListingBlock(ctx *renderer.Context, b *types.Delimi
 	})
 }
 
-func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderListingParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render listing block content")
@@ -58,7 +57,7 @@ func (r *sgmlRenderer) renderListingParagraph(ctx *renderer.Context, p *types.Pa
 		return "", errors.Wrap(err, "unable to render listing paragraph roles")
 	}
 	return r.execute(r.listingBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Roles   string

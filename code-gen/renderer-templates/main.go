@@ -28,6 +28,25 @@ type sgmlRenderer struct {
 {{ end }}
 }
 
+type template func() (*texttemplate.Template, error)
+
+func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*texttemplate.Template, error) {
+	// NB: if the data is missing below, it will be an empty string.
+	if err != nil {
+		return nil, err
+	}
+	if len(tmpl) == 0 {
+		return nil, fmt.Errorf("empty template for '%s'", name)
+	}
+	t := texttemplate.New(name)
+	t.Funcs(r.functions)
+	if t, err = t.Parse(tmpl); err != nil {
+		log.Errorf("failed to initialize the '%s' template: %v", name, err)
+		return nil, err
+	}
+	return t, nil
+}
+
 {{ range  $i, $tmpl := . }}
 func (r *sgmlRenderer) {{ func $tmpl }} (*text.Template, error) {
 	var err error

@@ -5,13 +5,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (string, error) {
-	if !ctx.Attributes.Has(types.AttrAuthors) {
+func (r *sgmlRenderer) renderDocumentDetails(ctx *context) (string, error) {
+	if !ctx.attributes.Has(types.AttrAuthors) {
 		return "", nil
 	}
 	authors, err := r.renderDocumentAuthorsDetails(ctx)
@@ -19,19 +18,19 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (string, err
 		return "", errors.Wrap(err, "error while rendering the document details")
 	}
 	documentDetailsBuff := &bytes.Buffer{}
-	revLabel, _, err := ctx.Attributes.GetAsString(types.AttrVersionLabel)
+	revLabel, _, err := ctx.attributes.GetAsString(types.AttrVersionLabel)
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering the document details")
 	}
-	revNumber, _, err := ctx.Attributes.GetAsString("revnumber")
+	revNumber, _, err := ctx.attributes.GetAsString("revnumber")
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering the document details")
 	}
-	revDate, _, err := ctx.Attributes.GetAsString("revdate")
+	revDate, _, err := ctx.attributes.GetAsString("revdate")
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering the document details")
 	}
-	revRemark, _, err := ctx.Attributes.GetAsString("revremark")
+	revRemark, _, err := ctx.attributes.GetAsString("revremark")
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering the document details")
 	}
@@ -57,7 +56,7 @@ func (r *sgmlRenderer) renderDocumentDetails(ctx *renderer.Context) (string, err
 	return documentDetailsBuff.String(), nil
 }
 
-func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (string, error) { // TODO: use  `types.DocumentAuthor` attribute in context
+func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *context) (string, error) { // TODO: use  `types.DocumentAuthor` attribute in context
 	authorsDetailsBuff := &strings.Builder{}
 	i := 1
 	for {
@@ -74,13 +73,13 @@ func (r *sgmlRenderer) renderDocumentAuthorsDetails(ctx *renderer.Context) (stri
 			emailKey = "email_" + index
 		}
 		// having at least one author is the minimal requirement for document details
-		if author, ok, err := ctx.Attributes.GetAsString(authorKey); err != nil {
+		if author, ok, err := ctx.attributes.GetAsString(authorKey); err != nil {
 			return "", errors.Wrap(err, "error while rendering the document authors")
 		} else if ok {
 			if i > 1 {
 				authorsDetailsBuff.WriteString("\n")
 			}
-			email, _, err := ctx.Attributes.GetAsString(emailKey)
+			email, _, err := ctx.attributes.GetAsString(emailKey)
 			if err != nil {
 				return "", errors.Wrap(err, "error while rendering the document authors")
 			}

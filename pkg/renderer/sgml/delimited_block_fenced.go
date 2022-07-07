@@ -3,17 +3,16 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
-	previousWithinDelimitedBlock := ctx.WithinDelimitedBlock
+func (r *sgmlRenderer) renderFencedBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
+	previousWithinDelimitedBlock := ctx.withinDelimitedBlock
 	defer func() {
-		ctx.WithinDelimitedBlock = previousWithinDelimitedBlock
+		ctx.withinDelimitedBlock = previousWithinDelimitedBlock
 	}()
-	ctx.WithinDelimitedBlock = true
+	ctx.withinDelimitedBlock = true
 	content, err := r.renderElements(ctx, b.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render fenced block content")
@@ -27,7 +26,7 @@ func (r *sgmlRenderer) renderFencedBlock(ctx *renderer.Context, b *types.Delimit
 		return "", errors.Wrap(err, "unable to render fenced block roles")
 	}
 	return r.execute(r.fencedBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Roles   string
