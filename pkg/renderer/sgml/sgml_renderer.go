@@ -6,7 +6,6 @@ import (
 	"sync"
 	texttemplate "text/template"
 
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -245,6 +244,18 @@ type sgmlRenderer struct {
 
 type template func() (*texttemplate.Template, error)
 
+func (r *sgmlRenderer) execute(tmpl template, data interface{}) (string, error) {
+	result := &strings.Builder{}
+	t, err := tmpl()
+	if err != nil {
+		return "", err
+	}
+	if err := t.Execute(result, data); err != nil {
+		return "", err
+	}
+	return result.String(), nil
+}
+
 func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*texttemplate.Template, error) {
 	// NB: if the data is missing below, it will be an empty string.
 	if err != nil {
@@ -260,19 +271,6 @@ func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*textte
 		return nil, err
 	}
 	return t, nil
-}
-
-func (s *sgmlRenderer) execute(loadTmpl template, data interface{}) (string, error) {
-	tmpl, err := loadTmpl()
-	result := &strings.Builder{}
-	if err != nil {
-		return "", errors.Wrap(err, "unable to load template")
-	}
-	if err := tmpl.Execute(result, data); err != nil {
-		return "", err
-	}
-	return result.String(), nil
-
 }
 
 func (r *sgmlRenderer) admonitionBlock() (*texttemplate.Template, error) {

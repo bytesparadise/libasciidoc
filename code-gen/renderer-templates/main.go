@@ -15,20 +15,36 @@ const (
 	sgmlRenderer = `package sgml
 
 import (
+	"fmt"
 	"sync"
-	text "text/template"
+	"strings"
+	texttemplate "text/template"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type sgmlRenderer struct {
 	    templates   Templates
-		functions   text.FuncMap
+		functions   texttemplate.FuncMap
 {{ range  $i, $tmpl := . }}
 		{{ once $tmpl}} sync.Once
-		{{ tmpl $tmpl}} *text.Template
+		{{ tmpl $tmpl}} *texttemplate.Template
 {{ end }}
 }
 
 type template func() (*texttemplate.Template, error)
+
+func (r *sgmlRenderer) execute(tmpl template, data interface{}) (string, error) {
+	result := &strings.Builder{}
+	t, err := tmpl()
+	if err != nil {
+		return "", err
+	}
+	if err := t.Execute(result, data); err != nil {
+		return "", err
+	}
+	return result.String(), nil
+}
 
 func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*texttemplate.Template, error) {
 	// NB: if the data is missing below, it will be an empty string.
@@ -48,7 +64,7 @@ func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*textte
 }
 
 {{ range  $i, $tmpl := . }}
-func (r *sgmlRenderer) {{ func $tmpl }} (*text.Template, error) {
+func (r *sgmlRenderer) {{ func $tmpl }} (*texttemplate.Template, error) {
 	var err error
 	r.{{ once $tmpl }}.Do(func() {
 		r.{{ tmpl $tmpl }}, err = r.newTemplate("{{ $tmpl }}", r.templates.{{ $tmpl }}, err)
