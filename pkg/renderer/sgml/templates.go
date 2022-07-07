@@ -21,7 +21,6 @@ type Templates struct {
 	Footnote                     string
 	FootnoteElement              string
 	FootnoteRef                  string
-	FootnoteRefPlain             string
 	Footnotes                    string
 	IconFont                     string
 	IconImage                    string

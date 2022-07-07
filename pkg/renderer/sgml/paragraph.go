@@ -38,9 +38,9 @@ func (r *sgmlRenderer) renderParagraph(ctx *context, p *types.Paragraph) (string
 	}
 }
 
-func (r *sgmlRenderer) renderRegularParagraph(ctx *context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
+func (r *sgmlRenderer) renderRegularParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering a regular paragraph")
-	content, err := r.renderParagraphElements(ctx, p, opts...)
+	content, err := r.renderParagraphElements(ctx, p)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render paragraph content")
 	}
@@ -146,44 +146,11 @@ func (r *sgmlRenderer) renderElementTitle(ctx *context, attrs types.Attributes) 
 	}
 }
 
-type lineRenderer struct {
-	render     renderFunc
-	hardBreaks bool
-}
-
-func (r *sgmlRenderer) newLineRenderer(opts ...lineRendererOption) *lineRenderer {
-	lr := &lineRenderer{
-		render: r.renderElement,
-	}
-	for _, apply := range opts {
-		apply(lr)
-	}
-	return lr
-}
-
-// RenderLinesOption an option to configure the rendering
-type lineRendererOption func(c *lineRenderer)
-
-// WithHardBreaks sets the hard break option
-func withHardBreaks(hardBreaks bool) lineRendererOption {
-	return func(lr *lineRenderer) {
-		lr.hardBreaks = hardBreaks
-	}
-}
-
-// withRenderer sets the render func
-func withRenderer(f renderFunc) lineRendererOption {
-	return func(c *lineRenderer) {
-		c.render = f
-	}
-}
-
-func (r *sgmlRenderer) renderParagraphElements(ctx *context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
+func (r *sgmlRenderer) renderParagraphElements(ctx *context, p *types.Paragraph) (string, error) {
 	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) || ctx.attributes.HasOption(types.AttrHardBreaks)
-	lr := r.newLineRenderer(append(opts, withHardBreaks(hardbreaks))...)
 	buf := &strings.Builder{}
 	for _, e := range p.Elements {
-		renderedElement, err := lr.render(ctx, e)
+		renderedElement, err := r.renderElement(ctx, e)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render paragraph elements")
 		}
@@ -192,7 +159,7 @@ func (r *sgmlRenderer) renderParagraphElements(ctx *context, p *types.Paragraph,
 		}
 	}
 	result := buf.String()
-	if lr.hardBreaks { // TODO: move within the call to `render`?
+	if hardbreaks { // TODO: move within the call to `render`?
 		linebreak := &strings.Builder{}
 		tmpl, err := r.lineBreak()
 		if err != nil {

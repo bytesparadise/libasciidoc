@@ -8,6 +8,6 @@ const (
 
 	tocSectionTmpl = "<ul class=\"sectlevel{{ .Level }}\">\n{{ .Content }}</ul>\n"
 
-	tocEntryTmpl = "<li><a href=\"#{{ .ID }}\">{{ if .Number }}{{ .Number }}. {{ end }}{{ escape .Title }}</a>" +
+	tocEntryTmpl = "<li><a href=\"#{{ .ID }}\">{{ if .Number }}{{ .Number }}. {{ end }}{{ .Title }}</a>" +
 		"{{ if .Content }}\n{{ .Content }}{{ end }}</li>\n"
 )

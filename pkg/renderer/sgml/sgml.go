@@ -8,8 +8,8 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	"github.com/davecgh/go-spew/spew"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
@@ -19,7 +19,7 @@ func Render(doc *types.Document, config *configuration.Configuration, output io.
 		templates: tmpls,
 		// Establish some default function handlers.
 		functions: texttemplate.FuncMap{
-			"escape":             EscapeString,
+			"escape":             escapeString,
 			"halign":             halign,
 			"valign":             valign,
 			"lastInStrings":      lastInStrings,
@@ -139,7 +139,7 @@ var predefinedAttributes = map[string]string{
 	"deg":            "&#176;",
 	"plus":           "&#43;",
 	"brvbar":         "&#166;",
-	"vbar":           "|", // TODO: maybe convert this because of tables?
+	"vbar":           "|",
 	"amp":            "&",
 	"lt":             "<",
 	"gt":             ">",
@@ -193,13 +193,6 @@ func lastInStrings(slice []string, index int) bool {
 func trimLineFeedSuffix(content string) string {
 	return strings.TrimSuffix(content, "\n")
 }
-
-// // Templates returns the Templates being used by this renderer.
-// // A copy is made, as we cannot change the original Templates
-// // due to it already being used.
-// func (r *sgmlRenderer) Templates() Templates {
-// 	return r.templates
-// }
 
 // splitAndRender the document with the header elements on one side
 // and all other elements (table of contents, with preamble, content) on the other side,
@@ -297,10 +290,10 @@ func (r *sgmlRenderer) renderAuthors(_ *context, doc *types.Document) string { /
 // DefaultTitle the default title to render when the document has none
 const DefaultTitle = "Untitled"
 
-func (r *sgmlRenderer) renderDocumentTitle(ctx *context, doc *types.Document) (string, bool, error) {
+func (r *sgmlRenderer) renderDocumentTitle(_ *context, doc *types.Document) (string, bool, error) {
 	if header, _ := doc.Header(); header != nil {
 		// TODO: This feels wrong.  The title should not need markup.
-		title, err := r.renderPlainText(ctx, header.Title)
+		title, err := RenderPlainText(header.Title)
 		if err != nil {
 			return "", true, errors.Wrap(err, "unable to render document title")
 		}

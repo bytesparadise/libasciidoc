@@ -6,16 +6,14 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderInlineElements(ctx *context, elements []interface{}, options ...lineRendererOption) (string, error) {
+func (r *sgmlRenderer) renderInlineElements(ctx *context, elements []interface{}) (string, error) {
 	if len(elements) == 0 {
 		return "", nil
 	}
 	// log.Debugf("rendering line with %d element(s)...", len(elements))
-	lr := r.newLineRenderer(options...)
-	// first pass or rendering, using the provided `renderElementFunc`:
 	buf := &strings.Builder{}
 	for i, element := range elements {
-		renderedElement, err := lr.render(ctx, element)
+		renderedElement, err := r.renderElement(ctx, element)
 		if err != nil {
 			return "", err
 		}
@@ -35,5 +33,3 @@ func (r *sgmlRenderer) renderInlineElements(ctx *context, elements []interface{}
 	// }
 	return buf.String(), nil
 }
-
-type renderFunc func(*context, interface{}) (string, error)

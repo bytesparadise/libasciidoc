@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -16,19 +17,24 @@ func NewConfiguration(settings ...Setting) *Configuration {
 		BackEnd: "html5", // default backend
 		Macros:  map[string]MacroTemplate{},
 	}
+	// default backed
+	WithBackEnd("html5")(config)
+	// custom settings
 	for _, set := range settings {
 		set(config)
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new configuration: %s", spew.Sdump(config))
 	}
 	return config
 }
 
 // Configuration the configuration used when rendering a document
 type Configuration struct {
-	Filename    string // TODO: move out of Configuration?
-	Attributes  types.Attributes
-	LastUpdated time.Time
-	// WrapInHTMLBodyElement flag to include the content in an html>body element
-	WrapInHTMLBodyElement bool
+	Filename              string // TODO: move out of Configuration?
+	Attributes            types.Attributes
+	LastUpdated           time.Time
+	WrapInHTMLBodyElement bool // flag to include the content in an html>body element
 	CSS                   []string
 	BackEnd               string
 	Macros                map[string]MacroTemplate
@@ -88,6 +94,12 @@ func WithCSS(hrefs []string) Setting {
 func WithBackEnd(backend string) Setting {
 	return func(config *Configuration) {
 		config.Attributes.Set("backend", backend)
+		switch backend {
+		case "html", "html5", "xhtml", "xhtml5":
+			config.Attributes.Set("basebackend-html", true)
+		default:
+			config.Attributes.Unset("basebackend-html")
+		}
 		config.BackEnd = backend
 		switch backend {
 		case "html", "html5", "xhtml", "xhtml5":

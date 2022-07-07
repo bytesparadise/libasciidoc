@@ -45,7 +45,8 @@ func RenderHTMLFromFile(filename string, settings ...configuration.Setting) (str
 	allSettings := append([]configuration.Setting{
 		configuration.WithLastUpdated(info.ModTime()),
 		configuration.WithFilename(filename),
-		configuration.WithBackEnd("html5")}, settings...)
+		configuration.WithBackEnd("html5")},
+		settings...)
 	config := configuration.NewConfiguration(allSettings...)
 	f, err := os.Open(filename)
 	if err != nil {

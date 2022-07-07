@@ -4,7 +4,6 @@ import (
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml"
 	. "github.com/bytesparadise/libasciidoc/testsupport"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -15,17 +14,14 @@ var helloMacroTmpl *texttemplate.Template
 
 func init() {
 	t := texttemplate.New("hello")
-	t.Funcs(texttemplate.FuncMap{
-		"escape": sgml.EscapeString,
-	})
 	helloMacroTmpl = texttemplate.Must(t.Parse(`{{- if eq .Kind "block" -}}
 <div class="helloblock">
 <div class="content">
 {{end -}}
 <span>
-{{- $prefix := index .Attributes "prefix" }}{{ $suffix := index .Attributes "suffix" }}{{ if $prefix }}{{- escape ($prefix) }}{{ else }}hello {{end -}}
-{{- if ne .Value "" }}{{ escape .Value }}{{ else }}world{{- end -}}
-{{- if $suffix }}{{ escape $suffix -}}{{ end -}}
+{{- $prefix := index .Attributes "prefix" }}{{ $suffix := index .Attributes "suffix" }}{{ if $prefix }}{{- ($prefix) }}{{ else }}hello {{end -}}
+{{- if ne .Value "" }}{{ .Value }}{{ else }}world{{- end -}}
+{{- if $suffix }}{{ $suffix -}}{{ end -}}
 </span>
 {{- if eq .Kind "block"}}
 </div>

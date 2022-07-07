@@ -29,7 +29,6 @@ var templates = sgml.Templates{
 	Footnote:                     footnoteTmpl,
 	FootnoteElement:              footnoteElementTmpl,
 	FootnoteRef:                  footnoteRefTmpl,
-	FootnoteRefPlain:             footnoteRefPlainTmpl,
 	Footnotes:                    footnotesTmpl,
 	IconFont:                     iconFontTmpl,
 	IconImage:                    iconImageTmpl,

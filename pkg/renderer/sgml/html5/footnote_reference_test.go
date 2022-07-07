@@ -119,15 +119,22 @@ A bold statement!<sup class="footnote" id="_footnote_disclaimer">[<a id="_footno
 	It("footnotes everywhere", func() {
 
 		source := `= title
-	
+:toc:
+
 a preamble with a footnote:[foo]
 
 == section 1 footnote:[bar]
 
 a paragraph with another footnote:[baz]`
 
-		// WARNING: differs from asciidoc in the order of footnotes in the doc and at the end of the doc, and the section id (numbering)
-		expected := `<div id="preamble">
+		// NOTE: differs from asciidoc in the section and footnote numbering (which also impacts the 'footnotes' portion at the end of the doc)
+		expected := `<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_section_1">section 1 <sup class="footnote">[2]</sup></a></li>
+</ul>
+</div>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>a preamble with a <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>

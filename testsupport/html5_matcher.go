@@ -56,9 +56,9 @@ func (m *htmlMatcher) NegatedFailureMessage(_ interface{}) (message string) {
 
 // MatchHTMLFromFile a custom matcher to verify that a document renders
 // as the content of the file with the given name
-func MatchHTMLFromFile(filname string) gomegatypes.GomegaMatcher {
+func MatchHTMLFromFile(filename string) gomegatypes.GomegaMatcher {
 	return &htmlFileMatcher{
-		filename: filname,
+		filename: filename,
 	}
 }
 
@@ -78,8 +78,8 @@ func (m *htmlFileMatcher) Match(actual interface{}) (success bool, err error) {
 	expected = bytes.ReplaceAll(expected, []byte{'\r'}, []byte{})
 	if string(expected) != actual {
 		GinkgoT().Logf("actual HTML:\n'%s'", actual)
-		GinkgoT().Logf("expected HTML:\n'%s'", expected)
-		m.diffs = cmp.Diff(expected, actual)
+		GinkgoT().Logf("expected HTML:\n'%s'", string(expected))
+		m.diffs = cmp.Diff(string(expected), actual)
 		return false, nil
 	}
 	return true, nil

@@ -32,7 +32,7 @@ func (r *sgmlRenderer) renderInternalCrossReference(ctx *context, xref *types.In
 			for _, e := range t {
 				switch e := e.(type) {
 				case *types.InlineLink:
-					renderedElement, err := r.renderPlainText(ctx, e)
+					renderedElement, err := RenderPlainText(e)
 					if err != nil {
 						return "", err
 					}
