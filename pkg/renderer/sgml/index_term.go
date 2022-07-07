@@ -1,11 +1,10 @@
 package sgml
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderIndexTerm(ctx *renderer.Context, t *types.IndexTerm) (string, error) {
+func (r *sgmlRenderer) renderIndexTerm(ctx *context, t *types.IndexTerm) (string, error) {
 	return r.renderInlineElements(ctx, t.Term)
 }
 

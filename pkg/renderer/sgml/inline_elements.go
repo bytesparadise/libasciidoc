@@ -3,11 +3,10 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []interface{}, options ...lineRendererOption) (string, error) {
+func (r *sgmlRenderer) renderInlineElements(ctx *context, elements []interface{}, options ...lineRendererOption) (string, error) {
 	if len(elements) == 0 {
 		return "", nil
 	}
@@ -37,4 +36,4 @@ func (r *sgmlRenderer) renderInlineElements(ctx *renderer.Context, elements []in
 	return buf.String(), nil
 }
 
-type renderFunc func(*renderer.Context, interface{}) (string, error)
+type renderFunc func(*context, interface{}) (string, error)

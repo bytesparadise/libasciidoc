@@ -1,12 +1,11 @@
 package sgml
 
 import (
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderSidebarBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	blocks := discardBlankLines(b.Elements)
 	content, err := r.renderElements(ctx, blocks)
 	if err != nil {
@@ -21,7 +20,7 @@ func (r *sgmlRenderer) renderSidebarBlock(ctx *renderer.Context, b *types.Delimi
 		return "", errors.Wrap(err, "unable to render sidebar block title")
 	}
 	return r.execute(r.sidebarBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Roles   string

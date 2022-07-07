@@ -8,13 +8,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageBlock) (string, error) {
+func (r *sgmlRenderer) renderImageBlock(ctx *context, img *types.ImageBlock) (string, error) {
 	title, err := r.renderElementTitle(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
@@ -30,7 +29,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render image")
 		} else if !found {
-			c, found, err = ctx.Attributes.GetAsString(types.AttrFigureCaption)
+			c, found, err = ctx.attributes.GetAsString(types.AttrFigureCaption)
 			if err != nil {
 				return "", errors.Wrap(err, "unable to render image")
 			}
@@ -81,7 +80,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *renderer.Context, img *types.ImageB
 	})
 }
 
-func (r *sgmlRenderer) renderInlineImage(ctx *renderer.Context, img *types.InlineImage) (string, error) {
+func (r *sgmlRenderer) renderInlineImage(ctx *context, img *types.InlineImage) (string, error) {
 	roles, err := r.renderImageRoles(ctx, img.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render inline image")
@@ -115,17 +114,17 @@ func (r *sgmlRenderer) renderInlineImage(ctx *renderer.Context, img *types.Inlin
 	})
 }
 
-func (r *sgmlRenderer) getImageSrc(ctx *renderer.Context, location *types.Location) string {
-	if imagesdir, found, err := ctx.Attributes.GetAsString(types.AttrImagesDir); err == nil && found {
+func (r *sgmlRenderer) getImageSrc(ctx *context, location *types.Location) string {
+	if imagesdir, found, err := ctx.attributes.GetAsString(types.AttrImagesDir); err == nil && found {
 		location.SetPathPrefix(imagesdir)
 	}
 	src := location.ToString()
 
 	// if Data URI is enables, then include the content of the file in the `src` attribute of the `<img>` tag
-	if !ctx.Attributes.Has("data-uri") {
+	if !ctx.attributes.Has("data-uri") {
 		return src
 	}
-	dir := filepath.Dir(ctx.Config.Filename)
+	dir := filepath.Dir(ctx.config.Filename)
 	src = filepath.Join(dir, src)
 	result := "data:image/" + strings.TrimPrefix(filepath.Ext(src), ".") + ";base64,"
 	data, err := ioutil.ReadFile(src)

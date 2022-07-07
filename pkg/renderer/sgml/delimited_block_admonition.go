@@ -3,13 +3,12 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderAdmonitionBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	kind, _, err := b.Attributes.GetAsString(types.AttrStyle)
 	if err != nil {
 		return "", err
@@ -33,7 +32,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.Del
 		return "", errors.Wrap(err, "unable to render admonition block title")
 	}
 	return r.execute(r.admonitionBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Kind    string
@@ -51,7 +50,7 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *renderer.Context, b *types.Del
 	})
 }
 
-func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering admonition paragraph...")
 	kind, ok, err := p.Attributes.GetAsString(types.AttrStyle)
 	if err != nil {
@@ -78,7 +77,7 @@ func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *renderer.Context, p *types
 		return "", err
 	}
 	return r.execute(r.admonitionParagraph, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Roles   string

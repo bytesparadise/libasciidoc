@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
@@ -72,7 +71,7 @@ func (r *sgmlRenderer) renderFootnoteReferencePlainText(note *types.FootnoteRefe
 	return "", fmt.Errorf("unable to render missing footnote")
 }
 
-func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Footnote) (string, error) {
+func (r *sgmlRenderer) renderFootnotes(ctx *context, notes []*types.Footnote) (string, error) {
 	// skip if there's no foot note in the doc
 	if len(notes) == 0 {
 		return "", nil
@@ -86,7 +85,7 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Foo
 		content.WriteString(renderedNote)
 	}
 	return r.execute(r.footnotes, struct {
-		Context   *renderer.Context
+		Context   *context
 		Content   string
 		Footnotes []*types.Footnote
 	}{
@@ -96,7 +95,7 @@ func (r *sgmlRenderer) renderFootnotes(ctx *renderer.Context, notes []*types.Foo
 	})
 }
 
-func (r *sgmlRenderer) renderFootnoteElement(ctx *renderer.Context, note *types.Footnote) (string, error) {
+func (r *sgmlRenderer) renderFootnoteElement(ctx *context, note *types.Footnote) (string, error) {
 	content, err := r.renderInlineElements(ctx, note.Elements)
 	if err != nil {
 		return "", errors.Wrapf(err, "unable to render foot note content")
@@ -105,7 +104,7 @@ func (r *sgmlRenderer) renderFootnoteElement(ctx *renderer.Context, note *types.
 	// Note: Asciidoctor will render the footnote content on a single line
 	content = strings.ReplaceAll(content, "\n", " ")
 	return r.execute(r.footnoteElement, struct {
-		Context *renderer.Context
+		Context *context
 		ID      int
 		Ref     string
 		Content string

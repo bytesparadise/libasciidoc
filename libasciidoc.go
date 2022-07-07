@@ -3,18 +3,14 @@
 package libasciidoc
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/xhtml5"
-
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer/sgml/html5"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/pkg/validator"
 	"github.com/pkg/errors"
@@ -53,18 +49,6 @@ func ConvertFile(output io.Writer, config *configuration.Configuration) (types.M
 // Returns an error if a problem occurred. The default will be HTML5, but depends on the config.BackEnd value.
 func Convert(r io.Reader, output io.Writer, config *configuration.Configuration) (types.Metadata, error) {
 
-	var render func(*renderer.Context, *types.Document, io.Writer) (types.Metadata, error)
-	switch config.BackEnd {
-	case "html", "html5", "":
-		render = html5.Render
-		config.Attributes.Set("basebackend-html", true)
-	case "xhtml", "xhtml5":
-		render = xhtml5.Render
-		config.Attributes.Set("basebackend-html", true)
-	default:
-		return types.Metadata{}, fmt.Errorf("backend '%s' not supported", config.BackEnd)
-	}
-
 	start := time.Now()
 	defer func() {
 		duration := time.Since(start)
@@ -99,8 +83,7 @@ func Convert(r io.Reader, output io.Writer, config *configuration.Configuration)
 		}
 	}
 	// render
-	ctx := renderer.NewContext(doc, config)
-	metadata, err := render(ctx, doc, output)
+	metadata, err := renderer.Render(doc, config, output)
 	if err != nil {
 		return types.Metadata{}, err
 	}

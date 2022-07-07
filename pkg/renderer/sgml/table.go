@@ -5,13 +5,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (string, error) {
+func (r *sgmlRenderer) renderTable(ctx *context, t *types.Table) (string, error) {
 	caption := &strings.Builder{}
 	number := 0
 	fit := "stretch"
@@ -45,7 +44,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 		if err != nil {
 			return "", err
 		} else if !found {
-			c, found, err = ctx.Attributes.GetAsString(types.AttrTableCaption)
+			c, found, err = ctx.attributes.GetAsString(types.AttrTableCaption)
 			if err != nil {
 				return "", errors.Wrap(err, "unable to render table")
 			}
@@ -90,7 +89,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 		return "", errors.Wrap(err, "unable to render table title")
 	}
 	return r.execute(r.table, struct {
-		Context     *renderer.Context
+		Context     *context
 		ID          string
 		Title       string
 		Columns     []*types.TableColumn
@@ -126,7 +125,7 @@ func (r *sgmlRenderer) renderTable(ctx *renderer.Context, t *types.Table) (strin
 	})
 }
 
-func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, h *types.TableRow, cols []*types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableHeader(ctx *context, h *types.TableRow, cols []*types.TableColumn) (string, error) {
 	if h == nil {
 		return "", nil
 	}
@@ -147,7 +146,7 @@ func (r *sgmlRenderer) renderTableHeader(ctx *renderer.Context, h *types.TableRo
 	})
 }
 
-func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, c *types.TableCell, col *types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableHeaderCell(ctx *context, c *types.TableCell, col *types.TableColumn) (string, error) {
 	// assume that elements to render are within the first element of the cell, which should be a paragraph
 	if len(c.Elements) == 1 {
 		if p, ok := c.Elements[0].(*types.Paragraph); ok {
@@ -169,7 +168,7 @@ func (r *sgmlRenderer) renderTableHeaderCell(ctx *renderer.Context, c *types.Tab
 	return "", fmt.Errorf("invalid header content (expected a single paragraph)")
 }
 
-func (r *sgmlRenderer) renderTableFooter(ctx *renderer.Context, f *types.TableRow, cols []*types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableFooter(ctx *context, f *types.TableRow, cols []*types.TableColumn) (string, error) {
 	if f == nil {
 		return "", nil
 	}
@@ -184,7 +183,7 @@ func (r *sgmlRenderer) renderTableFooter(ctx *renderer.Context, f *types.TableRo
 		content.WriteString(c)
 	}
 	return r.execute(r.tableFooter, struct {
-		Context *renderer.Context
+		Context *context
 		Content string
 		Cells   []*types.TableCell
 	}{
@@ -194,7 +193,7 @@ func (r *sgmlRenderer) renderTableFooter(ctx *renderer.Context, f *types.TableRo
 	})
 }
 
-func (r *sgmlRenderer) renderTableFooterCell(ctx *renderer.Context, c *types.TableCell, col *types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableFooterCell(ctx *context, c *types.TableCell, col *types.TableColumn) (string, error) {
 	// assume that elements to render are within the first element of the cell, which should be a paragraph
 	if len(c.Elements) == 1 {
 		if p, ok := c.Elements[0].(*types.Paragraph); ok {
@@ -216,7 +215,7 @@ func (r *sgmlRenderer) renderTableFooterCell(ctx *renderer.Context, c *types.Tab
 	return "", fmt.Errorf("invalid footer content (expected a single paragraph)")
 }
 
-func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.TableRow, columns []*types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableBody(ctx *context, rows []*types.TableRow, columns []*types.TableColumn) (string, error) {
 	content := &strings.Builder{}
 	for _, row := range rows {
 		c, err := r.renderTableRow(ctx, row, columns)
@@ -226,7 +225,7 @@ func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.Tabl
 		content.WriteString(c)
 	}
 	return r.execute(r.tableBody, struct {
-		Context *renderer.Context
+		Context *context
 		Content string
 		Rows    []*types.TableRow
 		Columns []*types.TableColumn
@@ -238,7 +237,7 @@ func (r *sgmlRenderer) renderTableBody(ctx *renderer.Context, rows []*types.Tabl
 	})
 }
 
-func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l *types.TableRow, cols []*types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableRow(ctx *context, l *types.TableRow, cols []*types.TableColumn) (string, error) {
 	content := &strings.Builder{}
 	for i, cell := range l.Cells {
 		c, err := r.renderTableCell(ctx, cell, cols[i])
@@ -248,7 +247,7 @@ func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l *types.TableRow, 
 		content.WriteString(c)
 	}
 	return r.execute(r.tableRow, struct {
-		Context *renderer.Context
+		Context *context
 		Content string
 		Cells   []*types.TableCell
 	}{
@@ -258,7 +257,7 @@ func (r *sgmlRenderer) renderTableRow(ctx *renderer.Context, l *types.TableRow, 
 	})
 }
 
-func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell *types.TableCell, col *types.TableColumn) (string, error) {
+func (r *sgmlRenderer) renderTableCell(ctx *context, cell *types.TableCell, col *types.TableColumn) (string, error) {
 	buff := &strings.Builder{}
 	for _, element := range cell.Elements {
 		renderedElement, err := r.renderTableCellBlock(ctx, element)
@@ -268,7 +267,7 @@ func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell *types.TableC
 		buff.WriteString(renderedElement)
 	}
 	return r.execute(r.tableCell, struct {
-		Context *renderer.Context
+		Context *context
 		Content string
 		Cell    *types.TableCell
 		HAlign  types.HAlign
@@ -282,7 +281,7 @@ func (r *sgmlRenderer) renderTableCell(ctx *renderer.Context, cell *types.TableC
 	})
 }
 
-func (r *sgmlRenderer) renderTableCellBlock(ctx *renderer.Context, element interface{}) (string, error) {
+func (r *sgmlRenderer) renderTableCellBlock(ctx *context, element interface{}) (string, error) {
 	switch e := element.(type) {
 	case *types.Paragraph:
 		log.Debug("rendering paragraph within table cell")
@@ -295,7 +294,7 @@ func (r *sgmlRenderer) renderTableCellBlock(ctx *renderer.Context, element inter
 			return "", errors.Wrap(err, "unable to render table cell paragraph content")
 		}
 		result, err := r.execute(r.embeddedParagraph, struct {
-			Context    *renderer.Context
+			Context    *context
 			ID         string // TODO: not used in template?
 			Title      string // TODO: not used in template?
 			CheckStyle string

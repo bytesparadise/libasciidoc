@@ -3,11 +3,10 @@ package sgml
 import (
 	"fmt"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 )
 
-func (r *sgmlRenderer) renderDelimitedBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderDelimitedBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	switch b.Kind {
 	case types.Example:
 		if b.Attributes.Has(types.AttrStyle) {

@@ -4,12 +4,11 @@ import (
 	htmltemplate "html/template"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) renderPassthroughParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderPassthroughParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	content, err := r.renderPassthroughContent(ctx, p.Elements)
 	if err != nil {
 		return "", err
@@ -17,7 +16,7 @@ func (r *sgmlRenderer) renderPassthroughParagraph(ctx *renderer.Context, p *type
 	return content + "\n", nil
 }
 
-func (r *sgmlRenderer) renderInlinePassthrough(ctx *renderer.Context, p *types.InlinePassthrough) (string, error) {
+func (r *sgmlRenderer) renderInlinePassthrough(ctx *context, p *types.InlinePassthrough) (string, error) {
 	renderedContent, err := r.renderPassthroughContent(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render passthrough")
@@ -34,7 +33,7 @@ func (r *sgmlRenderer) renderInlinePassthrough(ctx *renderer.Context, p *types.I
 }
 
 // renderPassthroughMacro renders the passthrough content in its raw from
-func (r *sgmlRenderer) renderPassthroughContent(ctx *renderer.Context, elements []interface{}) (string, error) {
+func (r *sgmlRenderer) renderPassthroughContent(ctx *context, elements []interface{}) (string, error) {
 	result := &strings.Builder{}
 	for _, element := range elements {
 		switch element := element.(type) {

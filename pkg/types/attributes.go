@@ -435,6 +435,10 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 	return a
 }
 
+func (a Attributes) Unset(key string) {
+	delete(a, key)
+}
+
 // SetAll adds the given attributes to the current ones
 func (a Attributes) SetAll(attr interface{}) Attributes {
 	switch attr := attr.(type) {

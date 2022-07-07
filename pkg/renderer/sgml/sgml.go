@@ -7,7 +7,6 @@ import (
 	texttemplate "text/template"
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
 
@@ -15,22 +14,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Renderer implements the backend render interface by using sgml.
-type Renderer interface {
-
-	// Render renders a document to the given output stream.
-	Render(ctx *renderer.Context, doc *types.Document, output io.Writer) (types.Metadata, error)
-
-	// Templates returns the Templates used by this Renderer.
-	// It cannot be altered on a given Renderer, since the old
-	// templates may have already been parsed.
-	Templates() Templates
-}
-
-// NewRenderer returns a new renderer
-func NewRenderer(t Templates) Renderer {
+func Render(doc *types.Document, config *configuration.Configuration, output io.Writer, tmpls Templates) (types.Metadata, error) {
 	r := &sgmlRenderer{
-		templates: t,
+		templates: tmpls,
 		// Establish some default function handlers.
 		functions: texttemplate.FuncMap{
 			"escape":             EscapeString,
@@ -40,7 +26,101 @@ func NewRenderer(t Templates) Renderer {
 			"trimLineFeedSuffix": trimLineFeedSuffix,
 		},
 	}
-	return r
+	ctx := newContext(doc, config)
+
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("rendering document of type '%s'\n%s", ctx.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"), spew.Sdump(ctx.Attributes))
+	// }
+
+	// metadata to be returned to the caller
+	var metadata types.Metadata
+	// arguably this should be a time.Time for use in Go
+	metadata.LastUpdated = ctx.config.LastUpdated.Format(configuration.LastUpdatedFormat)
+	renderedTitle, exists, err := r.renderDocumentTitle(ctx, doc)
+	if err != nil {
+		return metadata, errors.Wrapf(err, "unable to render full document")
+	}
+	metadata.Title = string(renderedTitle) // retain an empty value if no title was defined in the document
+	if !exists {
+		renderedTitle = DefaultTitle
+	}
+	// process attribute declaration in the header
+	if header, _ := doc.Header(); header != nil {
+		for _, e := range header.Elements {
+			switch e := e.(type) {
+			case *types.AttributeDeclaration:
+				ctx.attributes[e.Name] = e.Value
+			case *types.AttributeReset:
+				delete(ctx.attributes, e.Name)
+			}
+		}
+	}
+	if ctx.sectionNumbering, err = doc.SectionNumbers(); err != nil {
+		return metadata, errors.Wrapf(err, "unable to render full document")
+	}
+
+	// needs to be set before rendering the content elements
+	if err := r.prerenderTableOfContents(ctx, doc.TableOfContents); err != nil {
+		return metadata, errors.Wrapf(err, "unable to render full document")
+	}
+	metadata.TableOfContents = doc.TableOfContents
+	renderedHeader, renderedContent, err := r.splitAndRender(ctx, doc)
+	if err != nil {
+		return metadata, errors.Wrapf(err, "unable to render full document")
+	}
+	roles, err := r.renderDocumentRoles(ctx, doc)
+	if err != nil {
+		return metadata, errors.Wrap(err, "unable to render fenced block content")
+	}
+	if ctx.config.WrapInHTMLBodyElement {
+		log.Debugf("Rendering full document...")
+		tmpl, err := r.article()
+		if err != nil {
+			return metadata, errors.Wrapf(err, "unable to render full document")
+		}
+		err = tmpl.Execute(output, struct {
+			Doctype               string
+			Generator             string
+			Description           string
+			Title                 string
+			Authors               string
+			Header                string
+			ID                    string
+			Roles                 string
+			Content               string
+			RevNumber             string
+			LastUpdated           string
+			CSS                   []string
+			IncludeHTMLBodyHeader bool
+			IncludeHTMLBodyFooter bool
+		}{
+			Doctype:               ctx.attributes.GetAsStringWithDefault(types.AttrDocType, "article"),
+			Generator:             "libasciidoc", // TODO: externalize this value and include the lib version ?
+			Description:           ctx.attributes.GetAsStringWithDefault(types.AttrDescription, ""),
+			Title:                 renderedTitle,
+			Authors:               r.renderAuthors(ctx, doc),
+			Header:                renderedHeader,
+			Roles:                 roles,
+			ID:                    r.renderDocumentID(doc),
+			Content:               string(renderedContent),
+			RevNumber:             ctx.attributes.GetAsStringWithDefault("revnumber", ""),
+			LastUpdated:           ctx.config.LastUpdated.Format(configuration.LastUpdatedFormat),
+			CSS:                   ctx.config.CSS,
+			IncludeHTMLBodyHeader: !ctx.attributes.Has(types.AttrNoHeader),
+			IncludeHTMLBodyFooter: !ctx.attributes.Has(types.AttrNoFooter),
+		})
+		if err != nil {
+			return metadata, errors.Wrapf(err, "unable to render full document")
+		}
+	} else {
+		log.Debugf("Rendering document body...")
+		_, err = output.Write([]byte(renderedContent))
+		if err != nil {
+			return metadata, errors.Wrapf(err, "unable to render full document")
+		}
+	}
+	return metadata, err
+
 }
 
 var predefinedAttributes = map[string]string{
@@ -114,131 +194,18 @@ func trimLineFeedSuffix(content string) string {
 	return strings.TrimSuffix(content, "\n")
 }
 
-// Templates returns the Templates being used by this renderer.
-// A copy is made, as we cannot change the original Templates
-// due to it already being used.
-func (r *sgmlRenderer) Templates() Templates {
-	return r.templates
-}
-
-func (r *sgmlRenderer) newTemplate(name string, tmpl string, err error) (*texttemplate.Template, error) {
-	// NB: if the data is missing below, it will be an empty string.
-	if err != nil {
-		return nil, err
-	}
-	if len(tmpl) == 0 {
-		return nil, fmt.Errorf("empty template for '%s'", name)
-	}
-	t := texttemplate.New(name)
-	t.Funcs(r.functions)
-	if t, err = t.Parse(tmpl); err != nil {
-		log.Errorf("failed to initialize the '%s' template: %v", name, err)
-		return nil, err
-	}
-	return t, nil
-}
-
-// Render renders the given document in HTML and writes the result in the given `writer`
-func (r *sgmlRenderer) Render(ctx *renderer.Context, doc *types.Document, output io.Writer) (types.Metadata, error) {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("rendering document of type '%s'\n%s", ctx.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"), spew.Sdump(ctx.Attributes))
-	// }
-
-	// metadata to be returned to the caller
-	var metadata types.Metadata
-	// arguably this should be a time.Time for use in Go
-	metadata.LastUpdated = ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat)
-	renderedTitle, exists, err := r.renderDocumentTitle(ctx, doc)
-	if err != nil {
-		return metadata, errors.Wrapf(err, "unable to render full document")
-	}
-	metadata.Title = string(renderedTitle) // retain an empty value if no title was defined in the document
-	if !exists {
-		renderedTitle = DefaultTitle
-	}
-	// process attribute declaration in the header
-	if header, _ := doc.Header(); header != nil {
-		for _, e := range header.Elements {
-			switch e := e.(type) {
-			case *types.AttributeDeclaration:
-				ctx.Attributes[e.Name] = e.Value
-			case *types.AttributeReset:
-				delete(ctx.Attributes, e.Name)
-			}
-		}
-	}
-	if ctx.SectionNumbering, err = doc.SectionNumbers(); err != nil {
-		return metadata, errors.Wrapf(err, "unable to render full document")
-	}
-
-	// needs to be set before rendering the content elements
-	if err := r.prerenderTableOfContents(ctx, doc.TableOfContents); err != nil {
-		return metadata, errors.Wrapf(err, "unable to render full document")
-	}
-	metadata.TableOfContents = doc.TableOfContents
-	renderedHeader, renderedContent, err := r.splitAndRender(ctx, doc)
-	if err != nil {
-		return metadata, errors.Wrapf(err, "unable to render full document")
-	}
-	roles, err := r.renderDocumentRoles(ctx, doc)
-	if err != nil {
-		return metadata, errors.Wrap(err, "unable to render fenced block content")
-	}
-	if ctx.Config.WrapInHTMLBodyElement {
-		log.Debugf("Rendering full document...")
-		tmpl, err := r.article()
-		if err != nil {
-			return metadata, errors.Wrapf(err, "unable to render full document")
-		}
-		err = tmpl.Execute(output, struct {
-			Doctype               string
-			Generator             string
-			Description           string
-			Title                 string
-			Authors               string
-			Header                string
-			ID                    string
-			Roles                 string
-			Content               string
-			RevNumber             string
-			LastUpdated           string
-			CSS                   []string
-			IncludeHTMLBodyHeader bool
-			IncludeHTMLBodyFooter bool
-		}{
-			Doctype:               ctx.Attributes.GetAsStringWithDefault(types.AttrDocType, "article"),
-			Generator:             "libasciidoc", // TODO: externalize this value and include the lib version ?
-			Description:           ctx.Attributes.GetAsStringWithDefault(types.AttrDescription, ""),
-			Title:                 renderedTitle,
-			Authors:               r.renderAuthors(ctx, doc),
-			Header:                renderedHeader,
-			Roles:                 roles,
-			ID:                    r.renderDocumentID(doc),
-			Content:               string(renderedContent),
-			RevNumber:             ctx.Attributes.GetAsStringWithDefault("revnumber", ""),
-			LastUpdated:           ctx.Config.LastUpdated.Format(configuration.LastUpdatedFormat),
-			CSS:                   ctx.Config.CSS,
-			IncludeHTMLBodyHeader: !ctx.Attributes.Has(types.AttrNoHeader),
-			IncludeHTMLBodyFooter: !ctx.Attributes.Has(types.AttrNoFooter),
-		})
-		if err != nil {
-			return metadata, errors.Wrapf(err, "unable to render full document")
-		}
-	} else {
-		log.Debugf("Rendering document body...")
-		_, err = output.Write([]byte(renderedContent))
-		if err != nil {
-			return metadata, errors.Wrapf(err, "unable to render full document")
-		}
-	}
-	return metadata, err
-}
+// // Templates returns the Templates being used by this renderer.
+// // A copy is made, as we cannot change the original Templates
+// // due to it already being used.
+// func (r *sgmlRenderer) Templates() Templates {
+// 	return r.templates
+// }
 
 // splitAndRender the document with the header elements on one side
 // and all other elements (table of contents, with preamble, content) on the other side,
 // then renders the header and other elements
-func (r *sgmlRenderer) splitAndRender(ctx *renderer.Context, doc *types.Document) (string, string, error) {
-	switch ctx.Attributes.GetAsStringWithDefault(types.AttrDocType, "article") {
+func (r *sgmlRenderer) splitAndRender(ctx *context, doc *types.Document) (string, string, error) {
+	switch ctx.attributes.GetAsStringWithDefault(types.AttrDocType, "article") {
 	case "manpage":
 		return r.splitAndRenderForManpage(ctx, doc)
 	default:
@@ -248,8 +215,8 @@ func (r *sgmlRenderer) splitAndRender(ctx *renderer.Context, doc *types.Document
 
 // splits the document with the title of the section 0 (if available) on one side
 // and all other elements (table of contents, with preamble, content) on the other side
-func (r *sgmlRenderer) splitAndRenderForArticle(ctx *renderer.Context, doc *types.Document) (string, string, error) {
-	log.Debugf("rendering article (within HTML/Body: %t)", ctx.Config.WrapInHTMLBodyElement)
+func (r *sgmlRenderer) splitAndRenderForArticle(ctx *context, doc *types.Document) (string, string, error) {
+	log.Debugf("rendering article (within HTML/Body: %t)", ctx.config.WrapInHTMLBodyElement)
 
 	header, _ := doc.Header()
 	renderedHeader, err := r.renderDocumentHeader(ctx, header)
@@ -265,11 +232,11 @@ func (r *sgmlRenderer) splitAndRenderForArticle(ctx *renderer.Context, doc *type
 
 // splits the document with the header elements on one side
 // and the other elements (table of contents, with preamble, content) on the other side
-func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *types.Document) (string, string, error) {
-	log.Debugf("rendering manpage (within HTML/Body: %t)", ctx.Config.WrapInHTMLBodyElement)
+func (r *sgmlRenderer) splitAndRenderForManpage(ctx *context, doc *types.Document) (string, string, error) {
+	log.Debugf("rendering manpage (within HTML/Body: %t)", ctx.config.WrapInHTMLBodyElement)
 	elements := doc.BodyElements()
 	nameSection := elements[0].(*types.Section) // TODO: enforce
-	if ctx.Config.WrapInHTMLBodyElement {
+	if ctx.config.WrapInHTMLBodyElement {
 		header, _ := doc.Header()
 		renderedHeader, err := r.renderManpageHeader(ctx, header, nameSection)
 		if err != nil {
@@ -296,7 +263,7 @@ func (r *sgmlRenderer) splitAndRenderForManpage(ctx *renderer.Context, doc *type
 	return "", result.String(), nil
 }
 
-func (r *sgmlRenderer) renderDocumentRoles(ctx *renderer.Context, doc *types.Document) (string, error) {
+func (r *sgmlRenderer) renderDocumentRoles(ctx *context, doc *types.Document) (string, error) {
 	if header, _ := doc.Header(); header != nil {
 		return r.renderElementRoles(ctx, header.Attributes)
 	}
@@ -313,7 +280,7 @@ func (r *sgmlRenderer) renderDocumentID(doc *types.Document) string {
 	return ""
 }
 
-func (r *sgmlRenderer) renderAuthors(_ *renderer.Context, doc *types.Document) string { // TODO: pass header instead of doc
+func (r *sgmlRenderer) renderAuthors(_ *context, doc *types.Document) string { // TODO: pass header instead of doc
 	if header, _ := doc.Header(); header != nil {
 		if a := header.Authors(); a != nil {
 			authorStrs := make([]string, len(a))
@@ -330,7 +297,7 @@ func (r *sgmlRenderer) renderAuthors(_ *renderer.Context, doc *types.Document) s
 // DefaultTitle the default title to render when the document has none
 const DefaultTitle = "Untitled"
 
-func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc *types.Document) (string, bool, error) {
+func (r *sgmlRenderer) renderDocumentTitle(ctx *context, doc *types.Document) (string, bool, error) {
 	if header, _ := doc.Header(); header != nil {
 		// TODO: This feels wrong.  The title should not need markup.
 		title, err := r.renderPlainText(ctx, header.Title)
@@ -342,7 +309,7 @@ func (r *sgmlRenderer) renderDocumentTitle(ctx *renderer.Context, doc *types.Doc
 	return "", false, nil
 }
 
-func (r *sgmlRenderer) renderDocumentHeader(ctx *renderer.Context, header *types.DocumentHeader) (string, error) {
+func (r *sgmlRenderer) renderDocumentHeader(ctx *context, header *types.DocumentHeader) (string, error) {
 	if header == nil {
 		return "", nil
 	}
@@ -363,7 +330,7 @@ func (r *sgmlRenderer) renderDocumentHeader(ctx *renderer.Context, header *types
 	})
 }
 
-func (r *sgmlRenderer) renderDocumentHeaderTitle(ctx *renderer.Context, header *types.DocumentHeader) (string, error) {
+func (r *sgmlRenderer) renderDocumentHeaderTitle(ctx *context, header *types.DocumentHeader) (string, error) {
 	if header == nil {
 		log.Debug("no header to render")
 		return "", nil
@@ -371,7 +338,7 @@ func (r *sgmlRenderer) renderDocumentHeaderTitle(ctx *renderer.Context, header *
 	return r.renderInlineElements(ctx, header.Title)
 }
 
-func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header *types.DocumentHeader, nameSection *types.Section) (string, error) {
+func (r *sgmlRenderer) renderManpageHeader(ctx *context, header *types.DocumentHeader, nameSection *types.Section) (string, error) {
 	renderedHeader, err := r.renderDocumentHeaderTitle(ctx, header)
 	if err != nil {
 		return "", err
@@ -412,9 +379,9 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *renderer.Context, header *types.
 
 // renderDocumentBody renders all document elements, including the footnotes,
 // but not the HEAD and BODY containers
-func (r *sgmlRenderer) renderDocumentBody(ctx *renderer.Context, source []interface{}, toc *types.TableOfContents, footnotes []*types.Footnote) (string, error) {
+func (r *sgmlRenderer) renderDocumentBody(ctx *context, source []interface{}, toc *types.TableOfContents, footnotes []*types.Footnote) (string, error) {
 	var elements []interface{}
-	if placement, found := ctx.Attributes[types.AttrTableOfContents]; found && toc != nil {
+	if placement, found := ctx.attributes[types.AttrTableOfContents]; found && toc != nil {
 		switch placement {
 		case "preamble":
 			log.Debug("inserting ToC in preamble")

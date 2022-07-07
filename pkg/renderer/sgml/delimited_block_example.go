@@ -5,13 +5,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.DelimitedBlock) (string, error) {
+func (r *sgmlRenderer) renderExampleBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
 	// default, example block
 	number := 0
 	content, err := r.renderElements(ctx, b.Elements)
@@ -27,7 +26,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 		return "", errors.Wrap(err, "unable to render example block caption")
 	}
 	if !found {
-		c, found, err = ctx.Attributes.GetAsString(types.AttrExampleCaption)
+		c, found, err = ctx.attributes.GetAsString(types.AttrExampleCaption)
 		if err != nil {
 			return "", errors.Wrap(err, "unable to render example block caption")
 		}
@@ -47,7 +46,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 	caption := &strings.Builder{}
 	caption.WriteString(c)
 	return r.execute(r.exampleBlock, struct {
-		Context       *renderer.Context
+		Context       *context
 		ID            string
 		Title         string
 		Caption       string
@@ -65,7 +64,7 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *renderer.Context, b *types.Delimi
 	})
 }
 
-func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderExampleParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering example paragraph...")
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
@@ -80,7 +79,7 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Pa
 		return "", errors.Wrap(err, "unable to render example paragraph title")
 	}
 	return r.execute(r.exampleBlock, struct {
-		Context       *renderer.Context
+		Context       *context
 		ID            string
 		Title         string
 		Caption       string
@@ -96,7 +95,7 @@ func (r *sgmlRenderer) renderExampleParagraph(ctx *renderer.Context, p *types.Pa
 	})
 }
 
-func (r *sgmlRenderer) renderLiteralParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderLiteralParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debugf("rendering literal paragraph")
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
@@ -115,7 +114,7 @@ func (r *sgmlRenderer) renderLiteralParagraph(ctx *renderer.Context, p *types.Pa
 		return "", errors.Wrap(err, "unable to render literal block roles")
 	}
 	return r.execute(r.literalBlock, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Title   string
 		Roles   string

@@ -3,15 +3,14 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
-	log.Debugf("rendering a regular paragraph with style '%v' and embedded: %t", p.Attributes[types.AttrStyle], (ctx.WithinDelimitedBlock || ctx.WithinList > 0))
-	if ctx.WithinDelimitedBlock || ctx.WithinList > 0 {
+func (r *sgmlRenderer) renderParagraph(ctx *context, p *types.Paragraph) (string, error) {
+	log.Debugf("rendering a regular paragraph with style '%v' and embedded: %t", p.Attributes[types.AttrStyle], (ctx.withinDelimitedBlock || ctx.withinList > 0))
+	if ctx.withinDelimitedBlock || ctx.withinList > 0 {
 		return r.renderEmbeddedParagraph(ctx, p, "")
 	}
 	switch p.Attributes[types.AttrStyle] {
@@ -39,7 +38,7 @@ func (r *sgmlRenderer) renderParagraph(ctx *renderer.Context, p *types.Paragraph
 	}
 }
 
-func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
+func (r *sgmlRenderer) renderRegularParagraph(ctx *context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
 	log.Debug("rendering a regular paragraph")
 	content, err := r.renderParagraphElements(ctx, p, opts...)
 	if err != nil {
@@ -54,7 +53,7 @@ func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Pa
 		return "", errors.Wrap(err, "unable to render paragraph roles")
 	}
 	return r.execute(r.paragraph, struct {
-		Context *renderer.Context
+		Context *context
 		ID      string
 		Roles   string
 		Title   string
@@ -68,14 +67,14 @@ func (r *sgmlRenderer) renderRegularParagraph(ctx *renderer.Context, p *types.Pa
 	})
 }
 
-func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p *types.Paragraph) (string, error) {
+func (r *sgmlRenderer) renderManpageNameParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering name section paragraph in manpage...")
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render manpage 'NAME' paragraph content")
 	}
 	return r.execute(r.manpageNameParagraph, struct {
-		Context *renderer.Context
+		Context *context
 		Content string
 	}{
 		Context: ctx,
@@ -83,13 +82,13 @@ func (r *sgmlRenderer) renderManpageNameParagraph(ctx *renderer.Context, p *type
 	})
 }
 
-func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *renderer.Context, p *types.Paragraph, class string) (string, error) {
+func (r *sgmlRenderer) renderEmbeddedParagraph(ctx *context, p *types.Paragraph, class string) (string, error) {
 	content, err := r.renderElements(ctx, p.Elements)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render embedded paragraph content")
 	}
 	return r.execute(r.embeddedParagraph, struct {
-		Context    *renderer.Context
+		Context    *context
 		CheckStyle string
 		Class      string
 		Content    string
@@ -131,7 +130,7 @@ func renderCheckStyle(style interface{}) string {
 	}
 }
 
-func (r *sgmlRenderer) renderElementTitle(ctx *renderer.Context, attrs types.Attributes) (string, error) {
+func (r *sgmlRenderer) renderElementTitle(ctx *context, attrs types.Attributes) (string, error) {
 	title, found := attrs[types.AttrTitle]
 	if !found {
 		log.Debug("no title to render")
@@ -179,8 +178,8 @@ func withRenderer(f renderFunc) lineRendererOption {
 	}
 }
 
-func (r *sgmlRenderer) renderParagraphElements(ctx *renderer.Context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
-	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) || ctx.Attributes.HasOption(types.AttrHardBreaks)
+func (r *sgmlRenderer) renderParagraphElements(ctx *context, p *types.Paragraph, opts ...lineRendererOption) (string, error) {
+	hardbreaks := p.Attributes.HasOption(types.AttrHardBreaks) || ctx.attributes.HasOption(types.AttrHardBreaks)
 	lr := r.newLineRenderer(append(opts, withHardBreaks(hardbreaks))...)
 	buf := &strings.Builder{}
 	for _, e := range p.Elements {

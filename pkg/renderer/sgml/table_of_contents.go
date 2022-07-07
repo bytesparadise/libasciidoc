@@ -4,12 +4,11 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
-	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
 
-func (r *sgmlRenderer) prerenderTableOfContents(ctx *renderer.Context, toc *types.TableOfContents) error {
+func (r *sgmlRenderer) prerenderTableOfContents(ctx *context, toc *types.TableOfContents) error {
 	if toc == nil || toc.Sections == nil {
 		return nil
 	}
@@ -26,7 +25,7 @@ func (r *sgmlRenderer) prerenderTableOfContents(ctx *renderer.Context, toc *type
 	return nil
 }
 
-func (r *sgmlRenderer) prerenderTableOfContentsSections(ctx *renderer.Context, sections []*types.ToCSection) error {
+func (r *sgmlRenderer) prerenderTableOfContentsSections(ctx *context, sections []*types.ToCSection) error {
 	for _, entry := range sections {
 		if err := r.prerenderTableOfContentsEntry(ctx, entry); err != nil {
 			return errors.Wrap(err, "unable to render table of contents section")
@@ -36,14 +35,14 @@ func (r *sgmlRenderer) prerenderTableOfContentsSections(ctx *renderer.Context, s
 	return nil
 }
 
-func (r *sgmlRenderer) prerenderTableOfContentsEntry(ctx *renderer.Context, entry *types.ToCSection) error {
+func (r *sgmlRenderer) prerenderTableOfContentsEntry(ctx *context, entry *types.ToCSection) error {
 	if err := r.prerenderTableOfContentsSections(ctx, entry.Children); err != nil {
 		return errors.Wrap(err, "unable to render table of contents entry children")
 	}
-	if ctx.SectionNumbering != nil {
-		entry.Number = ctx.SectionNumbering[entry.ID]
+	if ctx.sectionNumbering != nil {
+		entry.Number = ctx.sectionNumbering[entry.ID]
 	}
-	s, found := ctx.ElementReferences[entry.ID]
+	s, found := ctx.elementReferences[entry.ID]
 	if !found {
 		return errors.New("unable to render table of contents entry title (missing element reference")
 	}
@@ -55,7 +54,7 @@ func (r *sgmlRenderer) prerenderTableOfContentsEntry(ctx *renderer.Context, entr
 	return nil
 }
 
-func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc *types.TableOfContents) (string, error) {
+func (r *sgmlRenderer) renderTableOfContents(ctx *context, toc *types.TableOfContents) (string, error) {
 	if toc == nil || toc.Sections == nil {
 		return "", nil
 	}
@@ -85,8 +84,8 @@ func (r *sgmlRenderer) renderTableOfContents(ctx *renderer.Context, toc *types.T
 	})
 }
 
-func (r *sgmlRenderer) renderTableOfContentsTitle(ctx *renderer.Context) (string, error) {
-	title, found, err := ctx.Attributes.GetAsString(types.AttrTableOfContentsTitle)
+func (r *sgmlRenderer) renderTableOfContentsTitle(ctx *context) (string, error) {
+	title, found, err := ctx.attributes.GetAsString(types.AttrTableOfContentsTitle)
 	if err != nil {
 		return "", errors.Wrap(err, "error while rendering table of contents")
 	}
@@ -102,7 +101,7 @@ func (r *sgmlRenderer) renderTableOfContentsTitle(ctx *renderer.Context) (string
 
 }
 
-func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sections []*types.ToCSection) (string, error) {
+func (r *sgmlRenderer) renderTableOfContentsSections(ctx *context, sections []*types.ToCSection) (string, error) {
 	if len(sections) == 0 {
 		return "", nil
 	}
@@ -123,7 +122,7 @@ func (r *sgmlRenderer) renderTableOfContentsSections(ctx *renderer.Context, sect
 	})
 }
 
-func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *renderer.Context, entry *types.ToCSection) (string, error) {
+func (r *sgmlRenderer) renderTableOfContentsEntry(ctx *context, entry *types.ToCSection) (string, error) {
 	content, err := r.renderTableOfContentsSections(ctx, entry.Children)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render table of contents entry children")
