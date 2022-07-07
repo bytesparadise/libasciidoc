@@ -49,7 +49,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *context, b *types.DelimitedBlock) (
 
 func (r *sgmlRenderer) renderVerseParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering verse paragraph...")
-	content, err := r.renderParagraphElements(ctx, p, withRenderer(r.renderPlainText))
+	content, err := RenderParagraphElements(p)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse paragraph lines")
 	}

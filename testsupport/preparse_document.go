@@ -13,7 +13,7 @@ import (
 func PreparseDocument(source string, options ...interface{}) (string, error) {
 	settings := []configuration.Setting{
 		configuration.WithFilename("test.adoc"),
-		configuration.WithAttribute("basebackend-html", true),
+		configuration.WithAttribute("basebackend-html", true), // TODO: still needed?
 	}
 	opts := []parser.Option{}
 	for _, o := range options {

@@ -47,14 +47,14 @@ func ConvertFile(output io.Writer, config *configuration.Configuration) (types.M
 
 // Convert converts the content of the given reader `r` into a full output document, written in the given writer `output`.
 // Returns an error if a problem occurred. The default will be HTML5, but depends on the config.BackEnd value.
-func Convert(r io.Reader, output io.Writer, config *configuration.Configuration) (types.Metadata, error) {
+func Convert(source io.Reader, output io.Writer, config *configuration.Configuration) (types.Metadata, error) {
 
 	start := time.Now()
 	defer func() {
 		duration := time.Since(start)
 		log.Debugf("rendered the output in %v", duration)
 	}()
-	p, err := parser.Preprocess(r, config)
+	p, err := parser.Preprocess(source, config)
 	if err != nil {
 		return types.Metadata{}, err
 	}

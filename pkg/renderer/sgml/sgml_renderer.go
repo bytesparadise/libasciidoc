@@ -67,9 +67,6 @@ type sgmlRenderer struct {
 	footnoteRefOnce sync.Once
 	footnoteRefTmpl *texttemplate.Template
 
-	footnoteRefPlainOnce sync.Once
-	footnoteRefPlainTmpl *texttemplate.Template
-
 	footnotesOnce sync.Once
 	footnotesTmpl *texttemplate.Template
 
@@ -415,14 +412,6 @@ func (r *sgmlRenderer) footnoteRef() (*texttemplate.Template, error) {
 		r.footnoteRefTmpl, err = r.newTemplate("FootnoteRef", r.templates.FootnoteRef, err)
 	})
 	return r.footnoteRefTmpl, err
-}
-
-func (r *sgmlRenderer) footnoteRefPlain() (*texttemplate.Template, error) {
-	var err error
-	r.footnoteRefPlainOnce.Do(func() {
-		r.footnoteRefPlainTmpl, err = r.newTemplate("FootnoteRefPlain", r.templates.FootnoteRefPlain, err)
-	})
-	return r.footnoteRefPlainTmpl, err
 }
 
 func (r *sgmlRenderer) footnotes() (*texttemplate.Template, error) {

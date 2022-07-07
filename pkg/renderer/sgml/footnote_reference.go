@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -55,20 +54,6 @@ func (r *sgmlRenderer) renderFootnoteReference(note *types.FootnoteReference) (s
 		}
 	}
 	return result.String(), nil
-}
-
-func (r *sgmlRenderer) renderFootnoteReferencePlainText(note *types.FootnoteReference) (string, error) {
-	if note.ID != types.InvalidFootnoteReference {
-		// valid case for a footnote with content, with our without an explicit reference
-		return r.execute(r.footnoteRefPlain, struct {
-			ID    int
-			Class string
-		}{
-			ID:    note.ID,
-			Class: "footnote",
-		})
-	}
-	return "", fmt.Errorf("unable to render missing footnote")
 }
 
 func (r *sgmlRenderer) renderFootnotes(ctx *context, notes []*types.Footnote) (string, error) {

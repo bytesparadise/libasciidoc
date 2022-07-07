@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
 )
@@ -114,39 +113,5 @@ func (r *sgmlRenderer) renderElement(ctx *context, element interface{}) (string,
 		return "", nil
 	default:
 		return "", errors.Errorf("unsupported type of element: %T", element)
-	}
-}
-
-func (r *sgmlRenderer) renderPlainText(ctx *context, element interface{}) (string, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("rendering plain string for element of type %T", element)
-	}
-	switch e := element.(type) {
-	case []interface{}:
-		return r.renderInlineElements(ctx, e, withRenderer(r.renderPlainText))
-	case *types.QuotedText:
-		return r.renderPlainText(ctx, e.Elements)
-	case *types.Icon:
-		return e.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
-	case *types.InlineImage:
-		return e.Attributes.GetAsStringWithDefault(types.AttrImageAlt, ""), nil
-	case *types.InlineLink:
-		if alt, ok := e.Attributes[types.AttrInlineLinkText].([]interface{}); ok {
-			return r.renderPlainText(ctx, alt)
-		}
-		return e.Location.ToDisplayString(), nil
-	case *types.BlankLine, types.ThematicBreak:
-		return "\n\n", nil
-	case *types.SpecialCharacter:
-		return e.Name, nil
-	case *types.Symbol:
-		return r.renderSymbol(e)
-	case *types.StringElement:
-		return e.Content, nil
-	case *types.FootnoteReference:
-		// footnotes are rendered in HTML so they can appear as such in the table of contents
-		return r.renderFootnoteReferencePlainText(e)
-	default:
-		return "", errors.Errorf("unable to render plain string for element of type '%T'", e)
 	}
 }

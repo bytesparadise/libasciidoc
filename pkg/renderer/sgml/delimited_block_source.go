@@ -148,7 +148,7 @@ func (r *sgmlRenderer) renderSourceBlockElements(ctx *context, b *types.Delimite
 	return result.String(), highlighter, language, nil
 }
 
-func (r *sgmlRenderer) renderSourceLine(ctx *context, line interface{}) (string, []*types.Callout, error) {
+func (r *sgmlRenderer) renderSourceLine(_ *context, line interface{}) (string, []*types.Callout, error) {
 	elements, ok := line.([]interface{})
 	if !ok {
 		return "", nil, fmt.Errorf("invalid type of line: '%T'", line)
@@ -158,7 +158,7 @@ func (r *sgmlRenderer) renderSourceLine(ctx *context, line interface{}) (string,
 	for _, e := range elements {
 		switch e := e.(type) {
 		case *types.StringElement, *types.SpecialCharacter:
-			s, err := r.renderPlainText(ctx, e)
+			s, err := RenderPlainText(e)
 			if err != nil {
 				return "", nil, err
 			}

@@ -2944,6 +2944,9 @@ var _ ConditionalInclusion = &IfdefCondition{}
 
 func (c *IfdefCondition) Eval(attributes map[string]interface{}) bool {
 	_, found := attributes[c.Name]
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("eval of IfDef::'%s': %t", c.Name, found)
+	}
 	return found
 }
 
