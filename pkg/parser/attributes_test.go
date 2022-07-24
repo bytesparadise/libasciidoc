@@ -338,9 +338,8 @@ var _ = Describe("attributes", func() {
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID:       "custom",
-								types.AttrCustomID: true,
-								types.AttrRoles:    types.Roles{"cookie"},
+								types.AttrID:    "custom",
+								types.AttrRoles: types.Roles{"cookie"},
 							},
 							Title: []interface{}{
 								&types.StringElement{
@@ -371,9 +370,9 @@ var _ = Describe("attributes", func() {
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID:       "custom",
-								types.AttrCustomID: true,
-								types.AttrRoles:    types.Roles{"cookie"},
+								types.AttrID: "custom",
+								// types.AttrCustomID: true,
+								types.AttrRoles: types.Roles{"cookie"},
 							},
 							Title: []interface{}{
 								&types.StringElement{
@@ -479,11 +478,11 @@ var _ = DescribeTable("valid block attributes",
 			types.AttrPositional2: `go`,
 		},
 	),
-	Entry(`[source,go,foo=bar]`, `[source,go,foo=bar]`,
+	Entry(`[source,go,foo=fighters]`, `[source,go,foo=fighters]`,
 		types.Attributes{
 			types.AttrPositional1: `source`,
 			types.AttrPositional2: `go`,
-			`foo`:                 `bar`,
+			`foo`:                 `fighters`,
 		},
 	),
 	Entry(`[quote,an author,a title]`, `[quote,an author,a title]`,

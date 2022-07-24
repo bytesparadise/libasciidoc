@@ -55,20 +55,20 @@ a link to <{example}>.`
 		})
 
 		It("URL with query string", func() {
-			source := `a link to https://example.com?foo=bar&lang=en[].`
+			source := `a link to https://example.com?foo=fighters&lang=en[].`
 			expected := `<div class="paragraph">
-<p>a link to <a href="https://example.com?foo=bar&amp;lang=en" class="bare">https://example.com?foo=bar&amp;lang=en</a>.</p>
+<p>a link to <a href="https://example.com?foo=fighters&amp;lang=en" class="bare">https://example.com?foo=fighters&amp;lang=en</a>.</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
 		It("substituted bare URL with query string", func() {
-			source := `:example: https://example.com?foo=bar&lang=en
+			source := `:example: https://example.com?foo=fighters&lang=en
 
 a link to <{example}>.`
 			expected := `<div class="paragraph">
-<p>a link to <a href="https://example.com?foo=bar&amp;lang=en" class="bare">https://example.com?foo=bar&amp;lang=en</a>.</p>
+<p>a link to <a href="https://example.com?foo=fighters&amp;lang=en" class="bare">https://example.com?foo=fighters&amp;lang=en</a>.</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -156,6 +156,15 @@ a link to <{example}>.`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with symbol in path and text", func() {
+			source := "a link to https://example.com?foo=fighters&lang=en[a&b]."
+			expected := `<div class="paragraph">
+<p>a link to <a href="https://example.com?foo=fighters&amp;lang=en">a&amp;b</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("with unquoted text having comma", func() {
 			source := "https://example.com[A, B, and C]"
 			// here, `B` and `and C` are considered as other positional args,
@@ -185,11 +194,11 @@ a link to <{example}>.`
 		})
 
 		It("inside a multiline paragraph", func() {
-			source := `a http://website.com
+			source := `a https://website.com
 and more text on the
 next lines`
 			expected := `<div class="paragraph">
-<p>a <a href="http://website.com" class="bare">http://website.com</a>
+<p>a <a href="https://website.com" class="bare">https://website.com</a>
 and more text on the
 next lines</p>
 </div>

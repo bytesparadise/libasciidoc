@@ -57,11 +57,11 @@ var _ = Describe("links", func() {
 		})
 
 		It("external link inside a multiline paragraph", func() {
-			source := `a http://website.com
+			source := `a https://website.com
 and more text on the
 next lines`
 			expected := `<div class="paragraph">
-<p>a <a href="http://website.com" class="bare">http://website.com</a>
+<p>a <a href="https://website.com" class="bare">https://website.com</a>
 and more text on the
 next lines</p>
 </div>

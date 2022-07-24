@@ -885,8 +885,8 @@ a paragraph`
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID:       "custom_header",
-								types.AttrCustomID: true,
+								types.AttrID: "custom_header",
+								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -917,8 +917,8 @@ a paragraph`
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID:       "custom_header",
-								types.AttrCustomID: true,
+								types.AttrID: "custom_header",
+								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -990,8 +990,8 @@ a paragraph`
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID:       "custom_header",
-								types.AttrCustomID: true,
+								types.AttrID: "custom_header",
+								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -1027,8 +1027,8 @@ a paragraph`
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID:       "custom_header",
-								types.AttrCustomID: true,
+								types.AttrID: "custom_header",
+								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -1077,22 +1077,22 @@ a paragraph`
 								&types.StringElement{Content: "a header"},
 							},
 							Attributes: types.Attributes{
-								types.AttrID:       "custom_header",
-								types.AttrCustomID: true,
+								types.AttrID: "custom_header",
+								// types.AttrCustomID: true,
 							},
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID:       "foo",
-								types.AttrCustomID: true,
+								types.AttrID: "foo",
+								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: fooTitle,
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID:       "bar",
-								types.AttrCustomID: true,
+								types.AttrID: "bar",
+								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: barTitle,

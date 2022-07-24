@@ -95,7 +95,7 @@ var _ = Describe("root cmd", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(buf.String()).ToNot(BeEmpty())
 		// console output also includes a warning message
-		Expect(buf.String()).To(ContainSubstring(`level=warning msg="unable to find attribute 'foo2'"
+		Expect(buf.String()).To(ContainSubstring(`unable to find entry for attribute with key 'foo2' in context"
 <div class="paragraph">
 <p>bar1 and {foo2}</p>
 </div>

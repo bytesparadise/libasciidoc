@@ -103,11 +103,11 @@ var _ = Describe("images", func() {
 		It("block image with title, alt and dimensions", func() {
 			source := `[#img-foobar]
 .A title to foobar
-[link=http://foo.bar]
+[link=https://foo.bar]
 image::images/foo.png[the foo.png image,600,400]`
 			expected := `<div id="img-foobar" class="imageblock">
 <div class="content">
-<a class="image" href="http://foo.bar"><img src="images/foo.png" alt="the foo.png image" width="600" height="400"/></a>
+<a class="image" href="https://foo.bar"><img src="images/foo.png" alt="the foo.png image" width="600" height="400"/></a>
 </div>
 <div class="title">Figure 1. A title to foobar</div>
 </div>
@@ -202,9 +202,9 @@ image::appa.png[]`
 			})
 
 			It("inline image with link", func() {
-				source := "image:foo.png[foo image, link=http://foo.bar]"
+				source := "image:foo.png[foo image, link=https://foo.bar]"
 				expected := `<div class="paragraph">
-<p><span class="image"><a class="image" href="http://foo.bar"><img src="foo.png" alt="foo image"/></a></span></p>
+<p><span class="image"><a class="image" href="https://foo.bar"><img src="foo.png" alt="foo image"/></a></span></p>
 </div>
 `
 				Expect(RenderXHTML(source)).To(MatchHTML(expected))

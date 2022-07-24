@@ -25,14 +25,10 @@ func (r *sgmlRenderer) renderElementRoles(ctx *context, attrs types.Attributes) 
 // Image roles add float and alignment attributes -- we turn these into roles.
 func (r *sgmlRenderer) renderImageRoles(ctx *context, attrs types.Attributes) (string, error) {
 	var result []string
-	if val, ok, err := attrs.GetAsString(types.AttrFloat); err != nil {
-		return "", err
-	} else if ok {
+	if val, found := attrs.GetAsString(types.AttrFloat); found {
 		result = append(result, val)
 	}
-	if val, ok, err := attrs.GetAsString(types.AttrImageAlign); err != nil {
-		return "", err
-	} else if ok {
+	if val, found := attrs.GetAsString(types.AttrImageAlign); found {
 		result = append(result, "text-"+val)
 	}
 	if roles, ok := attrs[types.AttrRoles].(types.Roles); ok {

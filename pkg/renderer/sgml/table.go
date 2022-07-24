@@ -11,7 +11,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderTable(ctx *context, t *types.Table) (string, error) {
-	caption := &strings.Builder{}
 	number := 0
 	fit := "stretch"
 	frame := t.Attributes.GetAsStringWithDefault(types.AttrFrame, "all")
@@ -39,15 +38,11 @@ func (r *sgmlRenderer) renderTable(ctx *context, t *types.Table) (string, error)
 		fit = ""
 	}
 
+	caption := &strings.Builder{}
 	if t.Attributes.Has(types.AttrTitle) {
-		c, found, err := t.Attributes.GetAsString(types.AttrCaption)
-		if err != nil {
-			return "", err
-		} else if !found {
-			c, found, err = ctx.attributes.GetAsString(types.AttrTableCaption)
-			if err != nil {
-				return "", errors.Wrap(err, "unable to render table")
-			}
+		c, found := t.Attributes.GetAsString(types.AttrCaption)
+		if !found {
+			c, found = ctx.attributes.GetAsString(types.AttrTableCaption)
 			if found && c != "" {
 				// We always append the figure number, unless the caption is disabled.
 				// This is for asciidoctor compatibility.

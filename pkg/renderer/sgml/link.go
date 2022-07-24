@@ -1,7 +1,6 @@
 package sgml
 
 import (
-	"html"
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -9,7 +8,6 @@ import (
 )
 
 func (r *sgmlRenderer) renderLink(ctx *context, l *types.InlineLink) (string, error) {
-	location := l.Location.ToString()
 	text := ""
 	class := ""
 	id := l.Attributes.GetAsStringWithDefault(types.AttrID, "")
@@ -21,7 +19,7 @@ func (r *sgmlRenderer) renderLink(ctx *context, l *types.InlineLink) (string, er
 	if t, exists := l.Attributes[types.AttrInlineLinkText]; exists {
 		switch t := t.(type) {
 		case string:
-			text = t
+			text = htmlEscaper.Replace(t)
 		case []interface{}:
 			var err error
 			if text, err = r.renderInlineElements(ctx, t); err != nil {
@@ -30,7 +28,7 @@ func (r *sgmlRenderer) renderLink(ctx *context, l *types.InlineLink) (string, er
 		}
 		class = roles // can be empty (and it's fine)
 	} else {
-		text = html.EscapeString(l.Location.ToDisplayString())
+		text = htmlEscaper.Replace(l.Location.ToDisplayString())
 		if l.Location != nil && l.Location.Scheme != "mailto:" {
 			class = "bare"
 		}
@@ -49,7 +47,7 @@ func (r *sgmlRenderer) renderLink(ctx *context, l *types.InlineLink) (string, er
 		NoOpener bool
 	}{
 		ID:       id,
-		URL:      location,
+		URL:      htmlEscaper.Replace(l.Location.ToString()),
 		Text:     text,
 		Class:    class,
 		Target:   target,

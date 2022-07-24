@@ -32,8 +32,8 @@ with some content linked to <<thetitle>>!`
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID:       "thetitle",
-								types.AttrCustomID: true,
+								types.AttrID: "thetitle",
+								// // types.AttrCustomID: true,
 							},
 							Title: title,
 							Elements: []interface{}{
@@ -81,8 +81,8 @@ with some content linked to <<thetitle,a label to the title>>!`
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID:       "thetitle",
-								types.AttrCustomID: true,
+								types.AttrID: "thetitle",
+								// types.AttrCustomID: true,
 							},
 							Title: title,
 							Elements: []interface{}{
@@ -151,8 +151,8 @@ some content`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID:       "section",
-								types.AttrCustomID: true,
+								types.AttrID: "section",
+								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: title,

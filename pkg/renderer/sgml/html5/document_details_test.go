@@ -160,7 +160,7 @@ Last updated {{ .LastUpdated }}
 				}))
 		})
 
-		It("header with sotf-wrapped description", func() {
+		It("header with soft-wrapped description", func() {
 			source := `= Document Title
 :author: Xavier
 :description: a long \

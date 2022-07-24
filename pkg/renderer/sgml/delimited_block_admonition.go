@@ -9,10 +9,7 @@ import (
 )
 
 func (r *sgmlRenderer) renderAdmonitionBlock(ctx *context, b *types.DelimitedBlock) (string, error) {
-	kind, _, err := b.Attributes.GetAsString(types.AttrStyle)
-	if err != nil {
-		return "", err
-	}
+	kind, _ := b.Attributes.GetAsString(types.AttrStyle)
 	kind = strings.ToLower(kind)
 	icon, err := r.renderIcon(ctx, types.Icon{Class: strings.ToLower(kind), Attributes: b.Attributes}, true)
 	if err != nil {
@@ -52,11 +49,8 @@ func (r *sgmlRenderer) renderAdmonitionBlock(ctx *context, b *types.DelimitedBlo
 
 func (r *sgmlRenderer) renderAdmonitionParagraph(ctx *context, p *types.Paragraph) (string, error) {
 	log.Debug("rendering admonition paragraph...")
-	kind, ok, err := p.Attributes.GetAsString(types.AttrStyle)
-	if err != nil {
-		return "", err
-	}
-	if !ok {
+	kind, found := p.Attributes.GetAsString(types.AttrStyle)
+	if !found {
 		return "", errors.Errorf("failed to render admonition paragraph with unknown kind: %T", p.Attributes[types.AttrStyle])
 	}
 	kind = strings.ToLower(kind)

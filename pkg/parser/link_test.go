@@ -14,7 +14,7 @@ var _ = Describe("links", func() {
 
 		Context("bare URLs", func() {
 
-			It("should parse standalone URL with scheme ", func() {
+			It("standalone URL with scheme ", func() {
 				source := `<https://example.com>`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -33,7 +33,7 @@ var _ = Describe("links", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("should parse URL with scheme in sentence", func() {
+			It("URL with scheme in sentence", func() {
 				source := `a link to <https://example.com>.`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -58,7 +58,7 @@ var _ = Describe("links", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("should parse substituted URL with scheme", func() {
+			It("substituted URL with scheme", func() {
 				source := `:example: https://example.com
 
 a link to <{example}>.`
@@ -81,6 +81,95 @@ a link to <{example}>.`
 									Location: &types.Location{
 										Scheme: "https://",
 										Path:   "example.com",
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("substituted raw URL with scheme and query string", func() {
+				source := `:example: https://example.com?foo=fighters&lang=en
+	
+a link to <{example}>.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: "example",
+									Value: []interface{}{
+										&types.StringElement{
+											Content: "https://example.com?foo=fighters",
+										},
+										&types.SpecialCharacter{
+											Name: "&",
+										},
+										&types.StringElement{
+											Content: "lang=en",
+										},
+									},
+								},
+							},
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a link to ",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com?foo=fighters&amp;lang=en", // special character `&` is substituted into `&amp;`
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("substituted URL with scheme and query string in passthrough macro", func() {
+				source := `:example: pass:[https://example.com?foo=fighters&lang=en]
+	
+a link to <{example}>.`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DocumentHeader{
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name: "example",
+									Value: []interface{}{
+										&types.InlinePassthrough{
+											Kind: types.PassthroughMacro,
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "https://example.com?foo=fighters&lang=en",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "a link to ",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com?foo=fighters&lang=en",
 									},
 								},
 								&types.StringElement{
@@ -123,7 +212,7 @@ a link to <{example}>.`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("should parse with special character in URL", func() {
+				It("with special character in URL", func() {
 					source := `a link to https://example.com>[].`
 					expected := &types.Document{
 						Elements: []interface{}{
@@ -135,14 +224,7 @@ a link to <{example}>.`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path: []interface{}{
-												&types.StringElement{
-													Content: "example.com",
-												},
-												&types.SpecialCharacter{
-													Name: ">",
-												},
-											},
+											Path:   "example.com>",
 										},
 									},
 									&types.StringElement{
@@ -155,7 +237,7 @@ a link to <{example}>.`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("should parse with opening angle bracket", func() {
+				It("with opening angle bracket", func() {
 					source := `a link to <https://example.com[].`
 					expected := &types.Document{
 						Elements: []interface{}{
@@ -341,7 +423,7 @@ a link to <{example}>.`
 			})
 
 			It("with text and extra attributes", func() {
-				source := "a link to mailto:hello@example.com[the hello@example.com email, foo=bar]"
+				source := "a link to mailto:hello@example.com[the hello@example.com email, foo=fighters]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -354,7 +436,7 @@ a link to <{example}>.`
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "the hello@example.com email",
-										"foo":                    "bar",
+										"foo":                    "fighters",
 									},
 								},
 							},
@@ -365,7 +447,7 @@ a link to <{example}>.`
 			})
 
 			It("inside a multiline paragraph -  without attributes", func() {
-				source := `a http://website.com
+				source := `a https://website.com
 and more text on the
 next lines`
 
@@ -378,7 +460,7 @@ next lines`
 								},
 								&types.InlineLink{
 									Location: &types.Location{
-										Scheme: "http://",
+										Scheme: "https://",
 										Path:   "website.com",
 									},
 								},
@@ -393,7 +475,7 @@ next lines`
 			})
 
 			It("inside a multiline paragraph -  with attributes", func() {
-				source := `a http://website.com[]
+				source := `a https://website.com[]
 and more text on the
 next lines`
 
@@ -406,7 +488,7 @@ next lines`
 								},
 								&types.InlineLink{
 									Location: &types.Location{
-										Scheme: "http://",
+										Scheme: "https://",
 										Path:   "website.com",
 									},
 								},
@@ -541,7 +623,7 @@ next lines`
 			Context("text attribute with comma", func() {
 
 				It("only with text having comma", func() {
-					source := `a link to http://website.com[A, B, and C]`
+					source := `a link to https://website.com[A, B, and C]`
 					expected := &types.Document{
 						Elements: []interface{}{
 							&types.Paragraph{
@@ -549,7 +631,7 @@ next lines`
 									&types.StringElement{Content: "a link to "},
 									&types.InlineLink{
 										Location: &types.Location{
-											Scheme: "http://",
+											Scheme: "https://",
 											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
@@ -566,7 +648,7 @@ next lines`
 				})
 
 				It("only with doublequoted text having comma", func() {
-					source := `a link to http://website.com["A, B, and C"]`
+					source := `a link to https://website.com["A, B, and C"]`
 					expected := &types.Document{
 						Elements: []interface{}{
 							&types.Paragraph{
@@ -574,7 +656,7 @@ next lines`
 									&types.StringElement{Content: "a link to "},
 									&types.InlineLink{
 										Location: &types.Location{
-											Scheme: "http://",
+											Scheme: "https://",
 											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
@@ -589,7 +671,7 @@ next lines`
 				})
 
 				It("with doublequoted text having comma and other attrs", func() {
-					source := `a link to http://website.com["A, B, and C", role=foo]`
+					source := `a link to https://website.com["A, B, and C", role=foo]`
 					expected := &types.Document{
 						Elements: []interface{}{
 							&types.Paragraph{
@@ -597,7 +679,7 @@ next lines`
 									&types.StringElement{Content: "a link to "},
 									&types.InlineLink{
 										Location: &types.Location{
-											Scheme: "http://",
+											Scheme: "https://",
 											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
@@ -613,7 +695,7 @@ next lines`
 				})
 
 				It("with text having comma and other attributes", func() {
-					source := `a link to http://website.com[A, B, and C, role=foo]`
+					source := `a link to https://website.com[A, B, and C, role=foo]`
 					expected := &types.Document{
 						Elements: []interface{}{
 							&types.Paragraph{
@@ -621,7 +703,7 @@ next lines`
 									&types.StringElement{Content: "a link to "},
 									&types.InlineLink{
 										Location: &types.Location{
-											Scheme: "http://",
+											Scheme: "https://",
 											Path:   "website.com",
 										},
 										Attributes: types.Attributes{
@@ -1267,7 +1349,7 @@ a link to {scheme}://{path} and https://foo.com`
 			})
 
 			It("to external URL with text and extra attributes", func() {
-				source := "a link to link:https://example.com[the doc, foo=bar]"
+				source := "a link to link:https://example.com[the doc, foo=fighters]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -1280,7 +1362,7 @@ a link to {scheme}://{path} and https://foo.com`
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "the doc",
-										"foo":                    "bar",
+										"foo":                    "fighters",
 									},
 								},
 							},
@@ -1291,7 +1373,7 @@ a link to {scheme}://{path} and https://foo.com`
 			})
 
 			It("to external URL with extra attributes only", func() {
-				source := "a link to link:https://example.com[foo=bar]"
+				source := "a link to link:https://example.com[foo=fighters]"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -1303,7 +1385,7 @@ a link to {scheme}://{path} and https://foo.com`
 										Path:   "example.com",
 									},
 									Attributes: types.Attributes{
-										"foo": "bar",
+										"foo": "fighters",
 									},
 								},
 							},

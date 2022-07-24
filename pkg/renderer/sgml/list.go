@@ -75,9 +75,7 @@ func (r *sgmlRenderer) renderOrderedList(ctx *context, l *types.List) (string, e
 }
 
 func getNumberingStyle(l *types.List) (string, error) {
-	if s, found, err := l.Attributes.GetAsString(types.AttrStyle); err != nil {
-		return "", err
-	} else if found {
+	if s, found := l.Attributes.GetAsString(types.AttrStyle); found {
 		return s, nil
 	}
 	e, ok := l.Elements[0].(*types.OrderedListElement)

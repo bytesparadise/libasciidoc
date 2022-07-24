@@ -37,7 +37,7 @@ Copyright (C) 2021 {author}. +`
 					&types.DocumentHeader{
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
-								Name:  "author",
+								Name:  types.AttrAuthor,
 								Value: "Xavier",
 							},
 						},

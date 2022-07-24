@@ -60,9 +60,9 @@ ifdef::basebackend-docbook[* to pass through +++<constant>XML</constant>+++ dire
 - claim your copyright (C), registered trademark (R) or trademark (TM)
 - select menu:View[Zoom > Reset] to reset the zoom
 
-You can write text http://example.com[with inline links], optionally{sp}using
-an explicit link:http://example.com[link prefix]. In either case, the link can
-have a http://example.com?foo=bar&lang=en[query string].
+You can write text https://example.com[with inline links], optionally{sp}using
+an explicit link:https://example.com[link prefix]. In either case, the link can
+have a https://example.com?foo=fighters&lang=en[query string].
 
 If you want to break a line +
 just end it in a {plus} sign +
@@ -155,7 +155,7 @@ include::include.adoc[]
 ----
 require 'libasciidoc'
 
-doc = Libasciidoc.load '*This* is http://asciidoc.org[AsciiDoc]!', header_footer: true
+doc = Libasciidoc.load '*This* is https://asciidoc.org[AsciiDoc]!', header_footer: true
 
 puts doc.convert
 ----
@@ -177,7 +177,7 @@ puts doc.convert
 </div>
 <div id="content">
 <div class="paragraph">
-<p><strong>This</strong> is <a href="http://asciidoc.org">AsciiDoc</a>!</p>
+<p><strong>This</strong> is <a href="https://asciidoc.org">AsciiDoc</a>!</p>
 </div>
 </div>
 <div id="footer">
@@ -237,7 +237,7 @@ NOTE: AsciiDoc is quite cool, you should try it!
 =====
 Go to this URL to learn more about it:
 
-* http://asciidoc.org
+* https://asciidoc.org
 
 Or you could return to the xref:first-steps-with-asciidoc[] or <<purpose,Purpose>>.
 =====
@@ -247,4 +247,4 @@ Here's a reference to the definition of <<another_term>>, in case you forgot it.
 [NOTE]
 One more thing. Happy documenting!
 
-[[google]]When all else fails, head over to <http://google.com>.
+[[google]]When all else fails, head over to <https://google.com>.

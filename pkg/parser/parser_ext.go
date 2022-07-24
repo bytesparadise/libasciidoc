@@ -12,6 +12,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func parseContent(content []byte, opts ...Option) ([]interface{}, error) {
+	result, err := Parse("", content, opts...)
+	if err != nil {
+		return nil, err
+	}
+	if result, ok := result.([]interface{}); ok {
+		return result, nil
+	}
+	return nil, fmt.Errorf("unexpected type of result after parsing content: '%T'", result)
+}
+
 // extra methods for the parser
 
 func (p *parser) setup(g *grammar) (err error) {
@@ -68,6 +79,7 @@ func (p *parser) next() (val interface{}, err error) {
 	startRule, ok := p.rules[p.entrypoint]
 	if !ok {
 		log.Errorf("invalid entrypoint: '%s'", p.entrypoint)
+		fmt.Printf("invalid entrypoint: '%s'\n", p.entrypoint)
 		p.addErr(errInvalidEntrypoint)
 		return nil, p.errs.err()
 	}
@@ -206,11 +218,43 @@ func (c *current) matchBlockDelimiterLength(length int) (bool, error) {
 
 const usermacrosKey = "user_macros"
 
-func (c storeDict) hasUserMacro(name string) bool {
-	if macros, exists := c[usermacrosKey].(map[string]configuration.MacroTemplate); exists {
-		_, exists := macros[name]
-		return exists
+func (c *current) hasUserMacro(name string) bool {
+	if macros, ok := c.globalStore[usermacrosKey].(map[string]configuration.MacroTemplate); ok {
+		_, found := macros[name]
+		// log.Debugf("user macro '%s' registered: %t", name, found)
+		return found
 	}
 	// log.Debugf("no user macro registered")
+	return false
+}
+
+// enabledSubstitutions the key in which enabled substitutions are stored in the parser's GlobalStore
+const enabledSubstitutions string = "enabled_substitutions"
+
+func (c *current) withSubstitutions(subs *substitutions) {
+	c.state[enabledSubstitutions] = subs
+}
+
+func (c *current) lookupCurrentSubstitutions() (*substitutions, bool) {
+	if s, found := c.state[enabledSubstitutions].(*substitutions); found {
+		return s, true
+	}
+	s, found := c.globalStore[enabledSubstitutions].(*substitutions)
+	return s, found
+}
+
+func (c *current) isSubstitutionEnabled(k string) bool {
+	subs, found := c.lookupCurrentSubstitutions()
+	if !found {
+		log.Debugf("substitutions not set in globalStore: assuming '%s' not enabled", k)
+		return false // TODO: should return `true`, at least for `attributes`?
+	}
+	for _, s := range subs.sequence {
+		if s == k {
+			// log.Debugf("'%s' is enabled", k)
+			return true
+		}
+	}
+	// log.Debugf("'%s' is not enabled", k)
 	return false
 }

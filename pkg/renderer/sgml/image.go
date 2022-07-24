@@ -25,14 +25,9 @@ func (r *sgmlRenderer) renderImageBlock(ctx *context, img *types.ImageBlock) (st
 	caption := &strings.Builder{}
 	number := 0
 	if title != "" {
-		c, found, err := img.Attributes.GetAsString(types.AttrCaption)
-		if err != nil {
-			return "", errors.Wrap(err, "unable to render image")
-		} else if !found {
-			c, found, err = ctx.attributes.GetAsString(types.AttrFigureCaption)
-			if err != nil {
-				return "", errors.Wrap(err, "unable to render image")
-			}
+		c, found := img.Attributes.GetAsString(types.AttrCaption)
+		if !found {
+			c, found = ctx.attributes.GetAsString(types.AttrFigureCaption)
 			if found && c != "" {
 				// We always append the figure number, unless the caption is disabled.
 				// This is for asciidoctor compatibility.
@@ -115,7 +110,7 @@ func (r *sgmlRenderer) renderInlineImage(ctx *context, img *types.InlineImage) (
 }
 
 func (r *sgmlRenderer) getImageSrc(ctx *context, location *types.Location) string {
-	if imagesdir, found, err := ctx.attributes.GetAsString(types.AttrImagesDir); err == nil && found {
+	if imagesdir, found := ctx.attributes.GetAsString(types.AttrImagesDir); found {
 		location.SetPathPrefix(imagesdir)
 	}
 	src := location.ToString()
@@ -137,9 +132,7 @@ func (r *sgmlRenderer) getImageSrc(ctx *context, location *types.Location) strin
 }
 
 func (r *sgmlRenderer) renderImageAlt(attrs types.Attributes, path string) (string, error) {
-	if alt, found, err := attrs.GetAsString(types.AttrImageAlt); err != nil {
-		return "", errors.Wrap(err, "unable to render image")
-	} else if found {
+	if alt, found := attrs.GetAsString(types.AttrImageAlt); found {
 		return alt, nil
 	}
 	u, err := url.Parse(path)

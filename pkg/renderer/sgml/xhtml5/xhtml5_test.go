@@ -16,7 +16,7 @@ var _ = Describe("document header", func() {
 	It("header with quoted text", func() {
 		source := `= The _Document_ *Title*`
 		expectedTmpl := `<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -55,7 +55,7 @@ Last updated {{ .LastUpdated }}
 		source := `[.my_role]
 = My Title`
 		expectedTmpl := `<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -94,7 +94,7 @@ Last updated {{ .LastUpdated }}
 		source := `[.role1#anchor.role2]
 = My Title`
 		expectedTmpl := `<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -249,7 +249,7 @@ Image is not a picture of a life form.
 
 == Resources
 
-*Project web site:* http://eve.example.com
+*Project web site:* https://eve.example.com
 
 == Copying
 
@@ -257,7 +257,7 @@ Copyright (C) 2008 {author}. +
 Free use of this software is granted under the terms of the MIT License.`
 
 		expectedTmpl := `<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -324,7 +324,7 @@ Image is not a picture of a life form.</p>
 <h2 id="_resources">Resources</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Project web site:</strong> <a href="http://eve.example.com" class="bare">http://eve.example.com</a></p>
+<p><strong>Project web site:</strong> <a href="https://eve.example.com" class="bare">https://eve.example.com</a></p>
 </div>
 </div>
 </div>
@@ -397,7 +397,7 @@ Image is not a picture of a life form.
 
 == Resources
 
-*Project web site:* http://eve.example.com
+*Project web site:* https://eve.example.com
 
 == Copying
 
@@ -456,7 +456,7 @@ Image is not a picture of a life form.</p>
 <h2 id="_resources">Resources</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Project web site:</strong> <a href="http://eve.example.com" class="bare">http://eve.example.com</a></p>
+<p><strong>Project web site:</strong> <a href="https://eve.example.com" class="bare">https://eve.example.com</a></p>
 </div>
 </div>
 </div>

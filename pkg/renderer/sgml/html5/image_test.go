@@ -137,11 +137,11 @@ image::foo.png[foo image, 600, 400]`
 		It("with title, alt and dimensions", func() {
 			source := `[#img-foobar]
 .A title to foobar
-[link=http://foo.bar]
+[link=https://foo.bar]
 image::images/foo.png[the foo.png image,600,400]`
 			expected := `<div id="img-foobar" class="imageblock">
 <div class="content">
-<a class="image" href="http://foo.bar"><img src="images/foo.png" alt="the foo.png image" width="600" height="400"></a>
+<a class="image" href="https://foo.bar"><img src="images/foo.png" alt="the foo.png image" width="600" height="400"></a>
 </div>
 <div class="title">Figure 1. A title to foobar</div>
 </div>
@@ -194,10 +194,10 @@ image::appa.png[]`
 		})
 
 		It("with special characters", func() {
-			source := `image::http://example.com/foo.png?a=1&b=2[]`
+			source := `image::https://example.com/foo.png?a=1&b=2[]`
 			expected := `<div class="imageblock">
 <div class="content">
-<img src="http://example.com/foo.png?a=1&b=2" alt="foo">
+<img src="https://example.com/foo.png?a=1&b=2" alt="foo">
 </div>
 </div>
 `
@@ -247,9 +247,9 @@ image::appa.png[]`
 			})
 
 			It("with link", func() {
-				source := "image:foo.png[foo image, link=http://foo.bar]"
+				source := "image:foo.png[foo image, link=https://foo.bar]"
 				expected := `<div class="paragraph">
-<p><span class="image"><a class="image" href="http://foo.bar"><img src="foo.png" alt="foo image"></a></span></p>
+<p><span class="image"><a class="image" href="https://foo.bar"><img src="foo.png" alt="foo image"></a></span></p>
 </div>
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
@@ -265,9 +265,9 @@ image::appa.png[]`
 			})
 
 			It("with special characters", func() {
-				source := `image:http://example.com/foo.png?a=1&b=2[]`
+				source := `image:https://example.com/foo.png?a=1&b=2[]`
 				expected := `<div class="paragraph">
-<p><span class="image"><img src="http://example.com/foo.png?a=1&b=2" alt="foo"></span></p>
+<p><span class="image"><img src="https://example.com/foo.png?a=1&b=2" alt="foo"></span></p>
 </div>
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))

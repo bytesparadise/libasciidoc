@@ -1304,7 +1304,7 @@ include::{includedir}/include.foo[]`
 					&types.DocumentHeader{
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
-								Name:  "author",
+								Name:  types.AttrAuthor,
 								Value: "Xavier",
 							},
 							&types.AttributeDeclaration{
@@ -1345,7 +1345,7 @@ include::../../test/includes/attributes.adoc[]
 							Kind: types.Example,
 							Elements: []interface{}{
 								&types.AttributeDeclaration{
-									Name:  "author",
+									Name:  types.AttrAuthor,
 									Value: "Xavier",
 								},
 								&types.AttributeDeclaration{

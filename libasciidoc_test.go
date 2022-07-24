@@ -22,7 +22,7 @@ var _ = Describe("documents", func() {
 	BeforeEach(func() {
 		// turn down the logger to `warn` to avoid the noise
 		level = log.GetLevel()
-		log.SetLevel(log.WarnLevel)
+		log.SetLevel(log.InfoLevel)
 	})
 
 	AfterEach(func() {
@@ -106,8 +106,21 @@ var _ = Describe("documents", func() {
 							},
 						},
 					},
-				},
-				))
+				}))
+			})
+
+			It("should render demo-shorter.adoc", func() {
+				// given
+				_, err := os.Stat("test/compat/demo-shorter.adoc")
+				Expect(err).NotTo(HaveOccurred())
+
+				// when
+				_, _, err = RenderHTMLFromFile("test/compat/demo-shorter.adoc",
+					configuration.WithAttribute("libasciidoc-version", "0.7.0"),
+					configuration.WithCSS([]string{"path/to/style.css"}))
+
+				// then
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 
@@ -457,7 +470,7 @@ Last updated {{ .LastUpdated }}
 
 Our story begins.`
 				expectedTmpl := `<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>

@@ -3,10 +3,10 @@ package parser
 import (
 	"io"
 	"io/ioutil"
+	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,6 +31,7 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			// 	log.Debugf("starting new fragment at line %d", p.pt.line)
 			// }
 			// line := p.pt.line
+			start := time.Now()
 			if log.IsLevelEnabled(log.DebugLevel) {
 				log.Debugf("parsing fragment starting at p.pt.line:%d / p.cur.pos.line:%d", p.pt.line, p.cur.pos.line)
 			}
@@ -57,17 +58,10 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			} else {
 				f.Elements = []interface{}{element}
 			}
-			for _, e := range f.Elements { // TODO: change the grammar rules of these delimited blocks to avoid 2nd parsing
-				if err := reparseElement(ctx, e); err != nil {
-					log.WithError(err).Errorf("unable to parse content of element of type '%T'", e)
-					f.Error = err
-					f.Elements = nil
-					break
-				}
-			}
 			if log.IsLevelEnabled(log.DebugLevel) {
 				log.Debugf("parsed fragment:\n%s", spew.Sdump(f))
 			}
+			log.Debugf("time to parse fragment at %d: %d microseconds", f.Position.Start, time.Since(start).Microseconds())
 			select {
 			case <-done:
 				log.Debug("exiting the document parsing routine")
@@ -78,123 +72,6 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 		log.WithField("pipeline_task", "document_parsing").Debug("end of document parsing")
 	}()
 	return resultStream
-}
-
-func reparseElement(ctx *ParseContext, element interface{}) error {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("reparsing element of type '%T'", element)
-	}
-	switch e := element.(type) {
-	case *types.ListElements:
-		for _, e := range e.Elements {
-			if err := reparseElement(ctx, e); err != nil {
-				return err
-			}
-		}
-	case *types.ListContinuation:
-		if err := reparseElement(ctx, e.Element); err != nil {
-			return err
-		}
-	case *types.Table:
-		if err := reparseTable(ctx, e); err != nil {
-			return err
-		}
-	case *types.DelimitedBlock:
-		if err := reparseDelimitedBlock(ctx, e); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func reparseTable(ctx *ParseContext, t *types.Table) error {
-	if t.Header != nil {
-		for _, c := range t.Header.Cells {
-			if err := reparseTableCell(ctx, c); err != nil {
-				return err
-			}
-		}
-	}
-	if t.Rows != nil {
-		for _, r := range t.Rows {
-			for _, c := range r.Cells {
-				if err := reparseTableCell(ctx, c); err != nil {
-					return err
-				}
-			}
-		}
-	}
-	if t.Footer != nil {
-		for _, c := range t.Footer.Cells {
-			if err := reparseTableCell(ctx, c); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func reparseTableCell(ctx *ParseContext, c *types.TableCell) error {
-	log.Debugf("reparsing content of table cell")
-	switch c.Format {
-	case "a":
-		opts := append(ctx.opts, Entrypoint("DelimitedBlockElements"))
-		elements, err := reparseElements(c.Elements, opts...)
-		if err != nil {
-			return err
-		}
-		c.Elements = elements
-	default:
-		// wrap in a paragraph
-		c.Elements = []interface{}{
-			&types.Paragraph{
-				Elements: c.Elements,
-			},
-		}
-	}
-
-	return nil
-}
-
-func reparseDelimitedBlock(ctx *ParseContext, b *types.DelimitedBlock) error {
-	switch b.Kind {
-	case types.Example, types.Quote, types.Sidebar, types.Open:
-		log.Debugf("parsing elements of delimited block of kind '%s'", b.Kind)
-		opts := append(ctx.opts, Entrypoint("DelimitedBlockElements"))
-		elements, err := reparseElements(b.Elements, opts...)
-		if err != nil {
-			return err
-		}
-		b.Elements = elements
-		for _, e := range b.Elements { // TODO: change the grammar rules of these delimited blocks to avoid 2nd parsing
-			if err := reparseElement(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func reparseElements(elements []interface{}, opts ...Option) ([]interface{}, error) {
-	content, placeholders := serialize(elements)
-	elmts, err := Parse("", content, opts...)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to parse elements") // ignore error (malformed content)
-	}
-	switch elmts := elmts.(type) {
-	case []interface{}:
-		// case where last element is `nil` because the parser found a standlone attribute
-		for {
-			if len(elmts) > 0 && elmts[len(elmts)-1] == nil {
-				elmts = elmts[:len(elmts)-1]
-			} else {
-				break
-			}
-		}
-		return placeholders.restore(elmts), nil
-	default:
-		return nil, errors.Errorf("unexpected type of result after parsing elements: '%T'", elmts)
-	}
 }
 
 const documentHeaderKey = "document_header"

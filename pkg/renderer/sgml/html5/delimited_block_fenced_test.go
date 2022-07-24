@@ -51,13 +51,13 @@ here</code></pre>
 
 		It("fenced block with external link inside amd empty end line", func() {
 			source := "```" + "\n" +
-				"a http://website.com" + "\n" +
+				"a https://website.com" + "\n" +
 				"and more text on the" + "\n" +
 				"next lines" + "\n\n" +
 				"```"
 			expected := `<div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>a http://website.com
+<pre class="highlight"><code>a https://website.com
 and more text on the
 next lines</code></pre>
 </div>

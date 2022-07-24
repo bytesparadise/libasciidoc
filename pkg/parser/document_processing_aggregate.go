@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"time"
+
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 
 	log "github.com/sirupsen/logrus"
@@ -36,6 +38,7 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 			log.WithField("start_offset", f.Position.Start).WithField("end_offset", f.Position.End).Error(f.Error)
 			continue
 		}
+		start := time.Now()
 		for _, element := range f.Elements {
 			switch e := element.(type) {
 			case *types.AttributeDeclaration:
@@ -69,7 +72,9 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 			case *types.BlankLine, *types.SinglelineComment:
 				// ignore
 			case *types.Section:
-				e.ResolveID(attrs.allAttributes(), refs)
+				if err := e.ResolveID(attrs.allAttributes(), refs); err != nil {
+					return nil, err
+				}
 				if toc != nil {
 					toc.Add(e)
 				}
@@ -85,13 +90,15 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 				e.Reference(refs)
 			}
 		}
-
+		log.Debugf("time to aggregate fragment at %d: %d microseconds", f.Position.Start, time.Since(start).Microseconds())
 	}
 	if len(refs) > 0 {
 		doc.ElementReferences = refs
 		// also, resolve cross references (only needed if there are referenced elements)
 		for _, e := range doc.Elements {
-			resolveCrossReferences(e, attrs)
+			if err := resolveCrossReferences(e, attrs); err != nil {
+				return nil, err
+			}
 		}
 	}
 	if len(toc.Sections) > 0 {
@@ -101,18 +108,23 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 	return doc, nil
 }
 
-func resolveCrossReferences(element interface{}, attrs *contextAttributes) {
+func resolveCrossReferences(element interface{}, attrs *contextAttributes) error {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("resolving cross references in element of type '%T'", element)
 	}
 	switch e := element.(type) {
 	case types.WithElements:
 		for _, elmt := range e.GetElements() {
-			resolveCrossReferences(elmt, attrs)
+			if err := resolveCrossReferences(elmt, attrs); err != nil {
+				return err
+			}
 		}
 	case *types.InternalCrossReference:
-		e.ResolveID(attrs.allAttributes())
+		if err := e.ResolveID(attrs.allAttributes()); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 type aggregator []types.WithElementAddition

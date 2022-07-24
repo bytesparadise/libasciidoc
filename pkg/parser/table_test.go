@@ -781,7 +781,7 @@ var _ = Describe("tables", func() {
 		})
 
 		It("columns as document attribute", func() {
-			source := `:cols: 2*^.^d,<e,.>s
+			source := `:cols: pass:[2*^.^d,<e,.>s]
 			
 [cols={cols}]
 |===
@@ -791,8 +791,17 @@ var _ = Describe("tables", func() {
 					&types.DocumentHeader{
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
-								Name:  "cols",
-								Value: "2*^.^d,<e,.>s",
+								Name: "cols",
+								Value: []interface{}{
+									&types.InlinePassthrough{
+										Kind: types.PassthroughMacro,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "2*^.^d,<e,.>s",
+											},
+										},
+									},
+								},
 							},
 						},
 					},

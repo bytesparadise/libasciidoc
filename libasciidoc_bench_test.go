@@ -8,10 +8,13 @@ import (
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
+
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 )
 
 func BenchmarkRealDocumentProcessing(b *testing.B) {
+	log.SetLevel(log.ErrorLevel)
 	b.Run("demo.adoc", processDocument("./test/compat/demo.adoc"))
 	b.Run("vertx-examples.adoc", processDocument("./test/bench/vertx-examples.adoc"))
 	b.Run("mocking.adoc", processDocument("./test/bench/mocking.adoc"))

@@ -1,18 +1,28 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 	"unicode"
 )
 
 // ReplaceNonAlphanumerics replace all non alpha numeric characters with the given `replacement`
-func ReplaceNonAlphanumerics(elements []interface{}, prefix, separator string) string {
-	replacement := replaceNonAlphanumericsOnElements(elements, separator)
-	// avoid duplicate prefix
-	if strings.HasPrefix(replacement, prefix) {
-		return replacement
+func ReplaceNonAlphanumerics(content interface{}, prefix, separator string) (string, error) {
+	switch content := content.(type) {
+	case string:
+		return prefix + content, nil
+	case []interface{}:
+		replacement := replaceNonAlphanumericsOnElements(content, separator)
+		replacement = strings.TrimSuffix(replacement, separator)
+
+		// avoid duplicate prefix
+		if strings.HasPrefix(replacement, prefix) {
+			return replacement, nil
+		}
+		return prefix + replacement, nil
+	default:
+		return "", fmt.Errorf("unexpected type of content: '%T'", content)
 	}
-	return prefix + replacement
 }
 
 func replaceNonAlphanumericsOnElements(elements []interface{}, separator string) string {
@@ -59,9 +69,6 @@ func replaceNonAlphanumerics(content, replacement string) string {
 	buf := &strings.Builder{}
 	lastCharIsSeparator := false
 
-	// Drop the :// from links.
-	content = strings.ReplaceAll(content, "://", "")
-
 	for _, r := range content {
 		switch {
 		case unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r):
@@ -72,7 +79,6 @@ func replaceNonAlphanumerics(content, replacement string) string {
 			lastCharIsSeparator = true
 		}
 	}
-	// result := strings.TrimSuffix(buf.String(), replacement)
 	result := buf.String()
 	return result
 }

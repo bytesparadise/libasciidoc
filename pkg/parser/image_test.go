@@ -222,13 +222,13 @@ image::cookie.png[cookie image, 600, 400]`
 		})
 
 		It("with special characters", func() {
-			source := `image::http://example.com/foo.png?a=1&b=2[]`
+			source := `image::https://example.com/foo.png?foo=fighters&lang=en[]`
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.ImageBlock{
 						Location: &types.Location{
-							Scheme: "http://",
-							Path:   "example.com/foo.png?a=1&b=2",
+							Scheme: "https://",
+							Path:   "example.com/foo.png?foo=fighters&lang=en",
 						},
 					},
 				},
