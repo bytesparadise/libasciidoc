@@ -601,7 +601,13 @@ ____
 								},
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "a link to https://example.com[] <1>\nand <more text> on the +\n*next* lines with a link to https://github.com[]\n\n* not a list item",
+										Content: "a link to https://example.com[] <1>\nand <more text> on the +\n*next* lines with a link to ",
+									},
+									&types.StringElement{
+										Content: "https://github.com",
+									},
+									&types.StringElement{
+										Content: "[]\n\n* not a list item",
 									},
 								},
 							},

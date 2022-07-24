@@ -21,8 +21,43 @@ a paragraph written by {author}.`
 					&types.DocumentHeader{
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
-								Name:  "author",
+								Name:  types.AttrAuthor,
 								Value: "Xavier",
+							},
+						},
+					},
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "a paragraph written by Xavier.",
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("paragraph with attribute reference with macro within passthrough", func() {
+			source := `:author: pass:[Xavier]
+
+a paragraph written by {author}.`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.DocumentHeader{
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name: types.AttrAuthor,
+								Value: []interface{}{
+									&types.InlinePassthrough{
+										Kind: types.PassthroughMacro,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "Xavier",
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -49,7 +84,7 @@ a paragraph written by {author}.`
 					&types.DocumentHeader{
 						Elements: []interface{}{
 							&types.AttributeDeclaration{
-								Name:  "author",
+								Name:  types.AttrAuthor,
 								Value: "Xavier",
 							},
 							&types.AttributeReset{

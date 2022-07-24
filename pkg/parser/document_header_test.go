@@ -52,9 +52,9 @@ This journey continues.`
 						&types.DocumentHeader{
 							Title: Title,
 							Attributes: types.Attributes{
-								types.AttrRoles:    types.Roles{"role1", "role2"},
-								types.AttrID:       "anchor",
-								types.AttrCustomID: true,
+								types.AttrRoles: types.Roles{"role1", "role2"},
+								types.AttrID:    "anchor",
+								// types.AttrCustomID: true,
 							},
 						},
 						&types.Paragraph{
@@ -82,14 +82,8 @@ This journey continues.`
 							},
 							Elements: []interface{}{
 								&types.AttributeDeclaration{
-									Name: "authors",
-									Value: types.DocumentAuthors{
-										{
-											DocumentAuthorFullName: &types.DocumentAuthorFullName{
-												FirstName: "Xavier",
-											},
-										},
-									},
+									Name:  types.AttrAuthor,
+									Value: "Xavier",
 								},
 								&types.AttributeReset{
 									Name: "version-label",
@@ -278,16 +272,8 @@ Doe`
 									Title: Title,
 									Elements: []interface{}{
 										&types.AttributeDeclaration{
-											Name: types.AttrAuthors,
-											Value: types.DocumentAuthors{
-												{
-													DocumentAuthorFullName: &types.DocumentAuthorFullName{
-														FirstName:  "John",
-														MiddleName: "Foo",
-														LastName:   "Doe",
-													},
-												},
-											},
+											Name:  types.AttrAuthor,
+											Value: "John Foo Doe",
 										},
 									},
 								},
@@ -1063,12 +1049,12 @@ v1.0:`
 									Name: "a",
 								},
 								&types.AttributeDeclaration{
-									Name:  "author",
+									Name:  types.AttrAuthor, // known attribute
 									Value: "Xavier",
 								},
 								&types.AttributeDeclaration{
 									Name:  "_author",
-									Value: "Xavier",
+									Value: "Xavier", // not converted
 								},
 							},
 						},
@@ -1095,7 +1081,7 @@ a paragraph`
 									Value: "2017-01-01",
 								},
 								&types.AttributeDeclaration{
-									Name:  "author",
+									Name:  types.AttrAuthor, // known attribute
 									Value: "Xavier",
 								},
 								&types.AttributeDeclaration{
@@ -1133,7 +1119,7 @@ a paragraph`
 									Value: "2017-01-01",
 								},
 								&types.AttributeDeclaration{
-									Name:  "author",
+									Name:  types.AttrAuthor, // known attribute
 									Value: "Xavier",
 								},
 							},
@@ -1169,7 +1155,7 @@ a paragraph`
 									Value: "2017-01-01",
 								},
 								&types.AttributeDeclaration{
-									Name:  "author",
+									Name:  types.AttrAuthor, // known attribute
 									Value: "Xavier",
 								},
 								&types.AttributeDeclaration{
@@ -1208,7 +1194,7 @@ a paragraph`
 							Value: "2017-01-01",
 						},
 						&types.AttributeDeclaration{
-							Name:  "author",
+							Name:  types.AttrAuthor, // known attribute
 							Value: "Xavier",
 						},
 					},
@@ -1257,7 +1243,7 @@ lines.
 										Value: "a long description on multiple lines.",
 									},
 									&types.AttributeDeclaration{
-										Name:  "author",
+										Name:  types.AttrAuthor, // known attribute
 										Value: "Xavier",
 									},
 								},
@@ -1286,7 +1272,7 @@ lines.
 										Value: "a long description on multiple lines.",
 									},
 									&types.AttributeDeclaration{
-										Name:  "author",
+										Name:  types.AttrAuthor, // known attribute
 										Value: "Xavier",
 									},
 								},

@@ -480,7 +480,7 @@ var _ = Describe("tag ranges", func() {
 
 var _ = Describe("section id resolution", func() {
 
-	Context("default it", func() {
+	Context("default id", func() {
 
 		It("simple title", func() {
 			// given
@@ -494,8 +494,9 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
 		})
 
@@ -517,8 +518,9 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
 		})
 
@@ -534,8 +536,9 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			section.ResolveID(types.Attributes{}, types.ElementReferences{})
+			err := section.ResolveID(types.Attributes{}, types.ElementReferences{})
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("_foo"))
 		})
 	})
@@ -554,13 +557,14 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			section.ResolveID(
+			err := section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("custom_foo"))
 		})
 
@@ -582,13 +586,14 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			section.ResolveID(
+			err := section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("custom_a_link_to_httpsfoo_com")) // TODO: should be `httpsfoo`
 		})
 	})
@@ -609,13 +614,14 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			section.ResolveID(
+			err := section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
 		})
 
@@ -639,13 +645,14 @@ var _ = Describe("section id resolution", func() {
 				},
 			}
 			// when
-			section.ResolveID(
+			err := section.ResolveID(
 				types.Attributes{
 					types.AttrIDPrefix: "custom_",
 				},
 				types.ElementReferences{},
 			)
 			// then
+			Expect(err).NotTo(HaveOccurred())
 			Expect(section.Attributes[types.AttrID]).To(Equal("bar"))
 		})
 

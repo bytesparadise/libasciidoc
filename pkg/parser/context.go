@@ -26,8 +26,9 @@ func NewParseContext(config *configuration.Configuration, options ...Option) *Pa
 		Entrypoint("DocumentFragment"),
 		GlobalStore(frontMatterKey, true),
 		GlobalStore(documentHeaderKey, true),
-		GlobalStore(enabledSubstitutions, []string{AttributeRefs}),
-		GlobalStore(usermacrosKey, config.Macros)}
+		GlobalStore(usermacrosKey, config.Macros),
+		GlobalStore(enabledSubstitutions, attributeDeclarations()),
+	}
 	opts = append(opts, options...)
 	return &ParseContext{
 		filename:     config.Filename,
@@ -94,11 +95,12 @@ func (a *contextAttributes) allAttributes() map[string]interface{} {
 	return result
 }
 
-func (a *contextAttributes) getAsString(k string) (string, bool, error) {
-	if a.immutableAttributes.Has(k) {
-		return a.immutableAttributes.GetAsString(k)
+func (a *contextAttributes) get(k string) (interface{}, bool) {
+	if v, found := a.immutableAttributes[k]; found {
+		return v, true
 	}
-	return a.attributes.GetAsString(k)
+	v, found := a.attributes[k]
+	return v, found
 }
 
 func (a *contextAttributes) getAsIntWithDefault(k string, defaultValue int) int {
@@ -109,8 +111,11 @@ func (a *contextAttributes) getAsIntWithDefault(k string, defaultValue int) int 
 }
 
 func (a *contextAttributes) set(k string, v interface{}) {
-	a.mutex.RLock()
+	a.mutex.RLock() // TODO: needed? each go routine has its own context
 	defer a.mutex.RUnlock()
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("setting context attribute: %s -> %s", k, spew.Sdump(v))
+	}
 	a.attributes[k] = v
 }
 

@@ -3,7 +3,6 @@ package sgml
 import (
 	"strings"
 
-	"github.com/bytesparadise/libasciidoc/pkg/parser"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/pkg/errors"
 )
@@ -85,19 +84,19 @@ func (r *sgmlRenderer) renderTableOfContents(ctx *context, toc *types.TableOfCon
 }
 
 func (r *sgmlRenderer) renderTableOfContentsTitle(ctx *context) (string, error) {
-	title, found, err := ctx.attributes.GetAsString(types.AttrTableOfContentsTitle)
-	if err != nil {
-		return "", errors.Wrap(err, "error while rendering table of contents")
-	}
+	title, found := ctx.attributes[types.AttrTableOfContentsTitle]
+
 	if !found {
 		return "Table of Contents", nil // default value // TODO: use a constant?
 	}
-	// parse
-	value, err := parser.ReparseAttributeValue(title, parser.HeaderSubstitutions()) // TODO: move this into the process substitution phase of document parsing
-	if err != nil {
-		return "", err
+	switch title := title.(type) {
+	case string:
+		return title, nil
+	case []interface{}:
+		return r.renderElements(ctx, title)
+	default:
+		return r.renderElement(ctx, title)
 	}
-	return r.renderElements(ctx, value)
 
 }
 

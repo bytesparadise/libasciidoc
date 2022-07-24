@@ -21,15 +21,9 @@ func (r *sgmlRenderer) renderExampleBlock(ctx *context, b *types.DelimitedBlock)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render example block roles")
 	}
-	c, found, err := b.Attributes.GetAsString(types.AttrCaption)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render example block caption")
-	}
+	c, found := b.Attributes.GetAsString(types.AttrCaption)
 	if !found {
-		c, found, err = ctx.attributes.GetAsString(types.AttrExampleCaption)
-		if err != nil {
-			return "", errors.Wrap(err, "unable to render example block caption")
-		}
+		c, found = ctx.attributes.GetAsString(types.AttrExampleCaption)
 		if found && c != "" {
 			c += " {counter:example-number}. "
 		}

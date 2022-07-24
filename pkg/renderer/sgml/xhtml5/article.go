@@ -2,7 +2,7 @@ package xhtml5
 
 const (
 	articleTmpl = "<!DOCTYPE html>\n" +
-		"<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\">\n" +
+		"<html xmlns=\"https://www.w3.org/1999/xhtml\" lang=\"en\">\n" +
 		"<head>\n" +
 		"<meta charset=\"UTF-8\"/>\n" +
 		"<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"/>\n" +

@@ -94,9 +94,7 @@ func (r *sgmlRenderer) renderSourceBlockElements(ctx *context, b *types.Delimite
 	}
 	lexer = chroma.Coalesce(lexer)
 	style := styles.Fallback
-	if s, found, err := ctx.attributes.GetAsString(highlighter + "-style"); err != nil {
-		return "", "", "", err
-	} else if found {
+	if s, found := ctx.attributes.GetAsString(highlighter + "-style"); found {
 		style = styles.Get(s)
 	}
 	options := []html.Option{
@@ -158,7 +156,7 @@ func (r *sgmlRenderer) renderSourceLine(_ *context, line interface{}) (string, [
 	for _, e := range elements {
 		switch e := e.(type) {
 		case *types.StringElement, *types.SpecialCharacter:
-			s, err := RenderPlainText(e)
+			s, err := RenderPlainText(e, WithoutEscape())
 			if err != nil {
 				return "", nil, err
 			}

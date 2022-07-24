@@ -179,10 +179,7 @@ func traverseElements(elements []interface{}, enabled bool, prefix string) (map[
 		case *Section:
 			var n string
 			if enabled {
-				id, err := e.GetID()
-				if err != nil {
-					return nil, false, err
-				}
+				id := e.GetID()
 				counter++
 				n = prefix + strconv.Itoa(counter)
 				result[id] = n
@@ -321,14 +318,40 @@ func NewDocumentHeader(info interface{}, extraAttrs []interface{}) (*DocumentHea
 }
 
 func (h *DocumentHeader) Authors() DocumentAuthors {
+	var result DocumentAuthors
+elements:
 	for _, e := range h.Elements {
-		if e, ok := e.(*AttributeDeclaration); ok && e.Name == AttrAuthors {
-			if authors, ok := e.Value.(DocumentAuthors); ok {
-				return authors
+		if e, ok := e.(*AttributeDeclaration); ok {
+			switch e.Name {
+			case AttrAuthors:
+				if authors, ok := e.Value.(DocumentAuthors); ok {
+					result = authors
+					break elements
+				}
+			case AttrEmail:
+				if email, ok := e.Value.(string); ok {
+					if result == nil {
+						result = DocumentAuthors{
+							&DocumentAuthor{},
+						}
+					}
+					result[0].Email = email
+				}
+			case AttrAuthor:
+				if author, ok := e.Value.(string); ok {
+					if result == nil {
+						result = DocumentAuthors{
+							&DocumentAuthor{
+								DocumentAuthorFullName: &DocumentAuthorFullName{},
+							},
+						}
+					}
+					result[0].DocumentAuthorFullName.FirstName = author
+				}
 			}
 		}
 	}
-	return nil
+	return result
 }
 
 func (h *DocumentHeader) Revision() *DocumentRevision {
@@ -345,7 +368,7 @@ func (h *DocumentHeader) Revision() *DocumentRevision {
 var _ Filterable = &DocumentHeader{}
 
 func (h *DocumentHeader) IsEmpty() bool {
-	return len(h.Title) == 0 &&
+	return h.Title == nil &&
 		len(h.Attributes) == 0 &&
 		len(h.Elements) == 0
 }
@@ -383,10 +406,10 @@ func (h *DocumentHeader) AddAttributes(attributes Attributes) {
 // SetAttributes sets the attributes in this element
 func (h *DocumentHeader) SetAttributes(attributes Attributes) {
 	h.Attributes = attributes
-	if _, exists := h.Attributes[AttrID]; exists {
-		// needed to track custom ID during rendering
-		h.Attributes[AttrCustomID] = true
-	}
+	// if _, exists := h.Attributes[AttrID]; exists {
+	// 	// needed to track custom ID during rendering
+	// 	h.Attributes[AttrCustomID] = true
+	// }
 }
 
 type DocumentInformation struct {
@@ -627,9 +650,9 @@ type AttributeDeclaration struct {
 
 // NewAttributeDeclaration initializes a new AttributeDeclaration with the given name and optional value
 func NewAttributeDeclaration(name string, value interface{}, rawText string) (*AttributeDeclaration, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("new attribute declaration: '%s'", spew.Sdump(rawText))
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("new attribute declaration: '%s'", spew.Sdump(rawText))
+	// }
 	return &AttributeDeclaration{
 		Name:    name,
 		Value:   Reduce(value, strings.TrimSpace),
@@ -1891,21 +1914,30 @@ func NewInternalCrossReference(id, label interface{}) (*InternalCrossReference, 
 	}, nil
 }
 
-func (x *InternalCrossReference) ResolveID(attrs Attributes) {
+func (x *InternalCrossReference) ResolveID(attrs Attributes) error {
 	prefix := attrs.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
 	separator := attrs.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
 	switch id := x.ID.(type) {
 	case []interface{}:
-		x.ID = ReplaceNonAlphanumerics(id, prefix, separator)
+		result, err := ReplaceNonAlphanumerics(id, prefix, separator)
+		if err != nil {
+			return errors.Wrap(err, "unable to resolve ID on Internal Cross Reference element")
+		}
+		x.ID = result
 	case string:
 		if strings.Contains(id, " ") || id != strings.ToLower(id) {
-			x.ID = ReplaceNonAlphanumerics([]interface{}{
+			result, err := ReplaceNonAlphanumerics([]interface{}{
 				&StringElement{
 					Content: id,
 				},
 			}, prefix, separator)
+			if err != nil {
+				return errors.Wrap(err, "unable to resolve ID on Internal Cross Reference element")
+			}
+			x.ID = result
 		}
 	}
+	return nil
 }
 
 // ExternalCrossReference the struct for Cross References
@@ -2131,7 +2163,9 @@ type Footnote struct {
 
 // NewFootnote returns a new Footnote with the given content
 func NewFootnote(ref interface{}, elements []interface{}) (*Footnote, error) {
-	log.Debugf("new footnote with elements: '%s'", spew.Sdump(elements))
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new footnote with elements: '%s'", spew.Sdump(elements))
+	}
 	var r string
 	if ref, ok := ref.(string); ok {
 		r = ref
@@ -2316,7 +2350,7 @@ func (b *DelimitedBlock) GetElements() []interface{} {
 	return b.Elements
 }
 
-// SetElements sets this paragraph's elements
+// SetElements sets this block's elements
 func (b *DelimitedBlock) SetElements(elements []interface{}) error {
 	if len(elements) > 0 {
 		switch b.Kind {
@@ -2448,9 +2482,9 @@ func NewSection(level int, title []interface{}) (*Section, error) {
 	return s, nil
 }
 
-func (s *Section) GetID() (string, error) {
-	id, _, err := s.Attributes.GetAsString(AttrID)
-	return id, err
+func (s *Section) GetID() string {
+	id, _ := s.Attributes.GetAsString(AttrID)
+	return id
 }
 
 var _ WithElements = &Section{}
@@ -2482,8 +2516,8 @@ func (s *Section) SetTitle(title []interface{}) {
 	if id, ok := title[len(title)-1].(*Attribute); ok {
 		sectionID := stringify(id.Value)
 		s.AddAttributes(Attributes{
-			AttrID:       sectionID,
-			AttrCustomID: true,
+			AttrID: sectionID,
+			// AttrCustomID: true,
 		})
 		title = title[:len(title)-1]
 	}
@@ -2498,24 +2532,27 @@ func (s *Section) GetAttributes() Attributes {
 // AddAttributes adds the attributes of this element
 func (s *Section) AddAttributes(attributes Attributes) {
 	s.Attributes = s.Attributes.AddAll(attributes)
-	if _, exists := s.Attributes[AttrID]; exists {
-		// needed to track custom ID during rendering
-		s.Attributes[AttrCustomID] = true
-	}
+	// if _, exists := s.Attributes[AttrID]; exists {
+	// 	// needed to track custom ID during rendering
+	// 	s.Attributes[AttrCustomID] = true
+	// }
 }
 
 // SetAttributes sets the attributes in this element
 func (s *Section) SetAttributes(attributes Attributes) {
 	s.Attributes = attributes
-	if _, exists := s.Attributes[AttrID]; exists {
-		// needed to track custom ID during rendering
-		s.Attributes[AttrCustomID] = true
-	}
+	// if _, exists := s.Attributes[AttrID]; exists {
+	// 	// needed to track custom ID during rendering
+	// 	s.Attributes[AttrCustomID] = true
+	// }
 }
 
 // ResolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s *Section) ResolveID(attrs Attributes, refs ElementReferences) {
-	base := s.resolveID(attrs)
+func (s *Section) ResolveID(attrs Attributes, refs ElementReferences) error {
+	base, err := s.resolveID(attrs)
+	if err != nil {
+		return err
+	}
 	for i := 1; ; i++ {
 		var id string
 		if i == 1 {
@@ -2529,24 +2566,28 @@ func (s *Section) ResolveID(attrs Attributes, refs ElementReferences) {
 			break
 		}
 	}
+	return nil
 }
 
 // resolveID resolves/updates the "ID" attribute in the section (in case the title changed after some document attr substitution)
-func (s *Section) resolveID(attrs Attributes) string {
+func (s *Section) resolveID(attrs Attributes) (string, error) {
 	if s.Attributes == nil {
 		s.Attributes = Attributes{}
 	}
 	// block attribute
 	if id := s.Attributes.GetAsStringWithDefault(AttrID, ""); id != "" {
-		return id
+		return id, nil
 	}
 	log.Debugf("resolving section id")
 	prefix := attrs.GetAsStringWithDefault(AttrIDPrefix, DefaultIDPrefix)
 	separator := attrs.GetAsStringWithDefault(AttrIDSeparator, DefaultIDSeparator)
-	id := ReplaceNonAlphanumerics(s.Title, prefix, separator)
+	id, err := ReplaceNonAlphanumerics(s.Title, prefix, separator)
+	if err != nil {
+		return "", err
+	}
 	s.Attributes[AttrID] = id
 	log.Debugf("updated section id to '%s'", s.Attributes[AttrID])
-	return id
+	return id, nil
 }
 
 var _ Referencable = &Section{}
@@ -3489,10 +3530,12 @@ type Location struct {
 
 // NewLocation return a new location with the given elements
 func NewLocation(scheme interface{}, path []interface{}) (*Location, error) {
-	// log.Debugf("new location: scheme='%v' path='%+v", scheme, path)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new location: scheme='%s' path='%s", spew.Sdump(scheme), spew.Sdump(path))
+	}
 	s := ""
-	if scheme, ok := scheme.([]byte); ok {
-		s = string(scheme)
+	if scheme, ok := scheme.(string); ok {
+		s = scheme
 	}
 	return &Location{
 		Scheme: s,
@@ -3535,7 +3578,13 @@ func (l *Location) TrimAngleBracketSuffix() (bool, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("trimming angle bracket suffix in %s", spew.Sdump(l.Path))
 	}
-	if p, ok := l.Path.([]interface{}); ok {
+	switch p := l.Path.(type) {
+	case string:
+		if strings.HasSuffix(p, ">") {
+			l.Path = strings.TrimSuffix(p, ">")
+			return true, nil
+		}
+	case []interface{}:
 		if c, ok := p[len(p)-1].(*SpecialCharacter); ok && c.Name == ">" {
 			l.Path = Reduce(p[:len(p)-1]) // trim last element
 			if log.IsLevelEnabled(log.DebugLevel) {
@@ -3798,33 +3847,26 @@ func (t *Table) reorganizeRows() {
 	}
 }
 
-func (t *Table) SetColumnDefinitions(cols interface{}) error {
-	switch cols := cols.(type) {
-	case []interface{}:
-		t.Attributes[AttrCols] = cols
-		size := 0
-		for _, c := range cols {
-			if c, ok := c.(*TableColumn); ok {
-				size += c.Multiplier
-			}
+func (t *Table) SetColumnDefinitions(cols []interface{}) {
+	size := 0
+	for _, c := range cols {
+		if c, ok := c.(*TableColumn); ok {
+			size += c.Multiplier
 		}
-		log.Debugf("re-organizing table in rows of %d cells", size)
-		// reorganize rows/columns
+	}
+	log.Debugf("re-organizing table in rows of %d cells", size)
+	// reorganize rows/columns
 
-		rows, header, footer := t.rows()
-		t.Rows = organizeTableCells(rows, size)
-		// restore header and footer
-		if header || t.Attributes.HasOption("header") {
-			t.Header = t.Rows[0]
-			t.Rows = t.Rows[1:]
-		}
-		if footer || t.Attributes.HasOption("footer") {
-			t.Footer = t.Rows[len(t.Rows)-1]
-			t.Rows = t.Rows[:len(t.Rows)-1]
-		}
-		return nil
-	default:
-		return fmt.Errorf("unexpected type of column definitions: '%T'", cols)
+	rows, header, footer := t.rows()
+	t.Rows = organizeTableCells(rows, size)
+	// restore header and footer
+	if header || t.Attributes.HasOption("header") {
+		t.Header = t.Rows[0]
+		t.Rows = t.Rows[1:]
+	}
+	if footer || t.Attributes.HasOption("footer") {
+		t.Footer = t.Rows[len(t.Rows)-1]
+		t.Rows = t.Rows[:len(t.Rows)-1]
 	}
 }
 

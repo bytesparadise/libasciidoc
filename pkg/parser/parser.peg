@@ -225,6 +225,7 @@ IncludedFileEndTag <- "end::" tag:(Alphanums {return string(c.text), nil}) "[]" 
 // Document Fragments
 // -------------------------------------------------------------------------------------
 DocumentFragment <-
+    !EOF
     attributes:(BlockAttributes)? 
     #{
         if attributes, ok := attributes.(types.Attributes); ok {
@@ -323,7 +324,7 @@ AttributeDeclarationValue <-
     otherElements:(
         "\\" Newline 
         Space*
-        elements:(AttributeDeclarationValue) {
+        elements:(AttributeDeclarationValueElements) { 
            return elements, nil
         }
     )*
@@ -342,15 +343,17 @@ AttributeDeclarationValueElements <-
 AttributeDeclarationValueElement <- 
     !("\\"? Space* EOL)
     element:(
-        ([^\r\n{ ]+ {
+        InlinePassthrough
+        / ([^\r\n<>&{ ]+ {
                 return types.NewStringElement(string(c.text))
         })
+        / SpecialCharacter
         / Space
         / AttributeReference
-        / ("{" { // standalone '{'
-            return types.NewStringElement(string(c.text))
-        })
     ) { 
+        if log.IsLevelEnabled(log.DebugLevel) {
+            log.Debugf("new AttributeDeclarationValueElement: %s", spew.Sdump(element))
+        }
         return element, nil
     }
 
@@ -615,16 +618,11 @@ UnquotedAttributeValue <-
     !Space // can't start with a space (eg: can't have `[ cookie ]`)
     elements:(
         ("[" UnquotedAttributeValue "]") // recursively within brackets (see comment above)
-        / ([^=,\uFFFD\]{'"` ]+ { // not within brackets and stop on space and quotation marks (`"')
-            return string(c.text), nil
-        }) 
+        / AttributeReference / "{" // standalone, if `AttributeReference` is not enabled
         / Space
-        / AttributeReference
-        / QuotationMark
-        / ("'" / "`" / "\"") { // standalone characters not used in quotation marks
+        / ([^=,\]{ ]+ { // not within brackets and stop on space and quotation marks (`"')
             return string(c.text), nil
-        }
-        / "{"
+        })
     )+ {
         return types.Reduce(elements, strings.TrimSpace), nil
     }
@@ -1104,7 +1102,7 @@ DocumentHeader <-
     }
     extraAttrs:(DocumentHeaderAttributes)
     info:(DocumentInformation)?
-    moreExtraAttrs:(DocumentHeaderAttributes)
+    moreExtraAttrs:(DocumentHeaderAttributes) // TODO: do we need to capture extra attributes in the DocumentHeader?
     &{
         // at least one of title/info/extraArgs must be present
         // log.Debugf("checking document header data: title=%s / info=%s / extraAttrs=%s", title, info, extraAttrs)
@@ -1127,7 +1125,7 @@ DocumentHeaderAttributes <- (AttributeDeclaration / AttributeReset / SinglelineC
 
 DocumentInformation <-
     title:(DocumentTitle)
-    (SinglelineComment / CommentBlock)* // ignored in the returned element
+    (SinglelineComment / CommentBlock)* // ignored in the returned `DocumentInformation` element
     authorsAndRevision:(DocumentAuthorsAndRevision)? 
     {
         return types.NewDocumentInformation(title.([]interface{}), authorsAndRevision)
@@ -1139,23 +1137,21 @@ DocumentTitle <-
     }
 
 DocumentAuthorsAndRevision <- 
+    !":"
     authors:(DocumentAuthors)
     (SinglelineComment / CommentBlock)* // ignored in the returned element
     revision:(DocumentRevision)? {
         return types.NewDocumentAuthorsAndRevision(authors.(types.DocumentAuthors), revision)
     }
 
-DocumentAuthors <- Space* authors:(DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm) EOL {
-    return authors, nil
-}
-
-DocumentAuthorsInlineForm <- !":" authors:(DocumentAuthor+) {
+// DocumentAuthors <- Space* authors:(DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm) EOL {
+DocumentAuthors <- Space* authors:(DocumentAuthor+) EOL {
     return types.NewDocumentAuthors(authors.([]interface{})...)
 }
 
-DocumentAuthorsAttributeForm <- ":author:" Space* author:(DocumentAuthor) {
-    return types.NewDocumentAuthors(author)
-}
+// DocumentAuthorsAttributeForm <- ":author:" Space* author:(DocumentAuthor) {
+//     return types.NewDocumentAuthors(author)
+// }
 
 DocumentAuthor <- 
     fullName:(DocumentAuthorFullName)? email:(DocumentAuthorEmail)? Space* ";"? Space* 
@@ -1448,8 +1444,8 @@ Link <- BareURL / RelativeLink / ExternalLink / EmailAddress
 BareURL <-
     "<" 
     url:(LocationWithScheme) // scheme is required for this syntax
-    ">"?
     &{
+        // expect `>` to be part of `url` and trimmed afterwards
         return url.(*types.Location).TrimAngleBracketSuffix()
     }
     { 
@@ -1551,11 +1547,11 @@ ListElementParagraphLine <-
     }
 
 ListElementContent <- 
-    rawlines:([^\r\n]+ {
+    rawLines:([^\r\n]+ {
         return types.NewRawLine(string(c.text))
     })+
     EOL {
-        return types.NewParagraph(nil, rawlines.([]interface{})...)
+        return types.NewParagraph(nil, rawLines.([]interface{})...)
     }
 
 // ---------------------------
@@ -1720,7 +1716,7 @@ LabeledListElementDescription <-
         }
     ) / (
         // description on the same line as the term
-        Spaces // requires spaces after delimiter (trimmed from content)
+        Spaces // required spaces after delimiter (trimmed from content)
         content:([^\r\n]+ {
             return types.NewRawLine(string(c.text))
         })
@@ -1778,9 +1774,7 @@ ParagraphStyle <-
         }
 
 ShortcutParagraph <- 
-    &(Alphanum) // make sure that the line starts with an alphanum and it's not an ordered list element prefix
-    &(!OrderedListElementPrefix)
-    &(!UnorderedListElementPrefix)
+    &(Alphanum !(("." / ")") Spaces)) // make sure that the line starts with an alphanum and it's not an ordered list element prefix (eg: `1. ` or `a) `)
     style:(ParagraphStyle)?
     firstLine:(ParagraphRawLine) 
     &{
@@ -1846,14 +1840,12 @@ QuotedText <-
         // escaped
         escaped:(EscapedQuotedText) {
             attributes := c.state["attrs_text"]
-            log.Debugf("matched escaped quoted text (attrs='%v')", attributes)
             return append([]interface{}{attributes}, escaped.([]interface{})...), nil
         }
         / 
         // unescaped 
         unescaped:(UnconstrainedQuotedText / ConstrainedQuotedText) {
             attributes := c.state["attrs"]
-            log.Debugf("matched unescaped quoted text (attrs='%v')", attributes)
             return unescaped.(*types.QuotedText).WithAttributes(attributes)
         }
     ) {
@@ -2584,15 +2576,10 @@ Section <-
         return types.NewSection(level.(int), title.([]interface{})) 
     }
 
-// SectionTitle <- [^\r\n]+ { // can't have empty title, that may collide with example block delimiter (`====`)
-//         return []interface{}{
-//             types.RawLine(c.text),
-//         }, nil 
-//     }
 SectionTitle <- 
     #{
         // enable substitutions
-        c.state[enabledSubstitutions] = headerSubstitutions()
+        c.withSubstitutions(headerSubstitutions())
         return nil
     }
     elements:(SectionTitleElement)+ { 
@@ -2625,7 +2612,8 @@ SectionTitleElement <-
 // Substitutions
 // -------------------------------------------------------------------------------------
 
-Substitutions <- // TODO: rename to `NormalGroup`
+// Substitution groups
+NormalGroup <-
     elements:(
         !EOF
         element:(
@@ -2653,7 +2641,7 @@ Substitutions <- // TODO: rename to `NormalGroup`
 // Substitutions for specific attributes whose value allows for quoted content and inline macros
 AttributeStructuredValue <- 
     elements:(
-        InlineMacro
+        InlineMacro // TODO: only check if previous character is a space (or empty). For example in `github-title` the choices are evaluated on each character because `Word` cannot be suffixed with `-`
         / Quote
         / Word
         / Space
@@ -2665,6 +2653,18 @@ AttributeStructuredValue <-
         return types.NewInlineElements(elements)
     }
 
+AttributeDeclarationValueGroup <- 
+    elements:(
+        Word
+        / Space
+        / InlinePassthrough
+        / SpecialCharacter
+        / AttributeReference
+        // / ElementPlaceHolder
+        / AnyChar
+    )* EOF { 
+        return types.NewInlineElements(elements)
+    }
 
 // Default substitutions for Section Titles
 HeaderGroup <- 
@@ -2692,6 +2692,8 @@ HeaderGroupElement <-
             return element, nil
         }
 
+// Substitution types        
+
 InlineMacro <- 
     // check if enabled with the current substitution context
     &{
@@ -2709,8 +2711,7 @@ InlineMacro <-
         / ConcealedIndexTerm
         / IndexTerm
         / InlineButton
-        / InlineMenu
-        / InlineUserMacro) {
+        / InlineMenu) {
             return element, nil
         }
 
@@ -2995,7 +2996,7 @@ UserMacroBlock <-
     name:(UserMacroName) 
     &{
         // skip if no macro was registered under the given name 
-      return c.globalStore.hasUserMacro(name.(string)), nil  
+      return c.hasUserMacro(name.(string)), nil  
     }
     "::" 
     value:(UserMacroValue) 
@@ -3007,7 +3008,7 @@ InlineUserMacro <-
     name:(UserMacroName) 
     &{
         // skip if no macro was registered under the given name 
-      return c.globalStore.hasUserMacro(name.(string)), nil  
+      return c.hasUserMacro(name.(string)), nil  
     }
     ":" 
     value:(UserMacroValue) 
@@ -3034,6 +3035,7 @@ Alphanums <- [\pL0-9]+ {
         return string(c.text), nil
     }
 
+// TODO: clarify/merge `Word` and `InlineWord`
 Word <-
     // very straightforward content: alphanums followed by attached single quote delimiter and more characters 
     // (in this case, the quoted text delimiters are intepreted as regular characters)
@@ -3045,7 +3047,13 @@ Word <-
     }
 
 InlineWord <- 
-    [\pL0-9,;!?]+ // TODO: support `_` and `-` ?
+    [\pL0-9] // start with an alphanum
+    (   [\pL0-9,;!?] // TODO: support `-` ?
+        / ("*" &(!"*")) // accept a single `*`, but not `**` 
+        / ("_" &(!"_")) // accept a single `_`, but not `__` 
+        / ("`" &(!"`")) // accept a single '`', but not '``' 
+    )+ 
+
     (Space / &("." / ElementPlaceHolderDelimiter / EOL)) { // TODO: also allow trailing quotes/quotation marks?
         return types.NewStringElement(string(c.text))
     }
@@ -3087,17 +3095,19 @@ LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename)+ {
         return types.NewLocation(scheme, path.([]interface{}))
     }
 
-Scheme <- "http://" / "https://" / "ftp://" / "irc://" / "mailto:"
+Scheme <- ("http://" / "https://" / "ftp://" / "irc://" / "mailto:") {
+    return string(c.text), nil
+}
 
 Filename <- 
     !"[" // quick escape
     elements:(
-        ([^\r\n[\]\uFFFD{.,;?!<> ])+ { // not supported for now: EOL, space, "{", "[", "]". Also, punctuation chars and `<` and `>` special chars are treated separately below (but `&` is allowed)
+        ([^\r\n[\]\uFFFD{.,;?! ])+ { // not supported for now: EOL, space, "{", "[", "]". Also, punctuation chars and `<` and `>` special chars are treated separately below (but `&` is allowed)
             return types.NewStringElement(string(c.text))
         }
         / PunctuationCharacter &(!(EOF / Space))
         / AttributeReference 
-        / SpecialCharacter
+        // / SpecialCharacter // TODO: needed?
         / "{" {
             return types.NewStringElement(string(c.text))
         })+ {

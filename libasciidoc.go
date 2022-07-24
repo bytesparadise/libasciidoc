@@ -49,26 +49,33 @@ func ConvertFile(output io.Writer, config *configuration.Configuration) (types.M
 // Returns an error if a problem occurred. The default will be HTML5, but depends on the config.BackEnd value.
 func Convert(source io.Reader, output io.Writer, config *configuration.Configuration) (types.Metadata, error) {
 
-	start := time.Now()
+	var start, endOfPreprocess, emdOfParse, endOfValidate, endOfRender time.Time
+	start = time.Now()
 	defer func() {
-		duration := time.Since(start)
-		log.Debugf("rendered the output in %v", duration)
+		log.Debugf("time to preprocess %d microseconds", endOfPreprocess.Sub(start).Microseconds())
+		log.Debugf("time to parse      %d microseconds", emdOfParse.Sub(endOfPreprocess).Microseconds())
+		log.Debugf("time to validate   %d microseconds", endOfValidate.Sub(emdOfParse).Microseconds())
+		log.Debugf("time to render     %d microseconds", endOfRender.Sub(endOfValidate).Microseconds())
+		log.Debugf("total time         %d microseconds", endOfRender.Sub(start).Microseconds())
 	}()
 	p, err := parser.Preprocess(source, config)
 	if err != nil {
 		return types.Metadata{}, err
 	}
+	endOfPreprocess = time.Now()
 	// log.Debugf("parsing the asciidoc source...")
 	doc, err := parser.ParseDocument(strings.NewReader(p), config)
 	if err != nil {
 		return types.Metadata{}, err
 	}
+	emdOfParse = time.Now()
 	// validate the document
 	doctype := config.Attributes.GetAsStringWithDefault(types.AttrDocType, "article")
 	problems, err := validator.Validate(doc, doctype)
 	if err != nil {
 		return types.Metadata{}, err
 	}
+	endOfValidate = time.Now()
 	if len(problems) > 0 {
 		// if any problem found, change the doctype to render the document as a regular article
 		log.Warnf("changing doctype to 'article' because problems were found in the document: %v", problems)
@@ -87,6 +94,7 @@ func Convert(source io.Reader, output io.Writer, config *configuration.Configura
 	if err != nil {
 		return types.Metadata{}, err
 	}
+	endOfRender = time.Now()
 	// log.Debugf("Done processing document")
 	return metadata, nil
 

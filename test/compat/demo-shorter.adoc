@@ -1,0 +1,5 @@
+[[purpose]]
+.Purpose
+****
+This document exercises many of the features of AsciiDoc to test the {library} implementation.
+****

@@ -8,21 +8,15 @@ type Attribution struct { // TODO: unexport this type?
 	Second string
 }
 
-func newAttribution(b types.WithAttributes) (Attribution, error) {
+func newAttribution(b types.WithAttributes) Attribution {
 	result := Attribution{}
-	if author, found, err := b.GetAttributes().GetAsString(types.AttrQuoteAuthor); err != nil {
-		return Attribution{}, err
-	} else if found {
+	if author, found := b.GetAttributes().GetAsString(types.AttrQuoteAuthor); found {
 		result.First = author
-		if title, found, err := b.GetAttributes().GetAsString(types.AttrQuoteTitle); err != nil {
-			return Attribution{}, err
-		} else if found {
+		if title, found := b.GetAttributes().GetAsString(types.AttrQuoteTitle); found {
 			result.Second = title
 		}
-	} else if title, found, err := b.GetAttributes().GetAsString(types.AttrQuoteTitle); err != nil {
-		return Attribution{}, err
-	} else if found {
+	} else if title, found := b.GetAttributes().GetAsString(types.AttrQuoteTitle); found {
 		result.First = title
 	}
-	return result, nil
+	return result
 }

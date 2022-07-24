@@ -3,6 +3,8 @@ package types
 import (
 	"fmt"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // merge merge string elements together, keeping
@@ -163,13 +165,16 @@ func stringify(element interface{}) string {
 }
 
 // TrimTrailingSpaces trims trailing spaces on the last element (if applicable)
-func TrimTrailingSpaces(elements []interface{}) []interface{} {
-	if len(elements) > 0 {
-		if s, ok := elements[len(elements)-1].(*StringElement); ok {
+func TrimTrailingSpaces(content []interface{}) []interface{} {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("trimming trailing spaces on content of type '%T'", content)
+	}
+	if len(content) > 0 {
+		if s, ok := content[len(content)-1].(*StringElement); ok {
 			s.Content = strings.TrimRight(s.Content, " ")
 		}
 	}
-	return elements
+	return content
 }
 
 // Append appends all given elements. If an element is an `[]interface{}`, then it appends its content

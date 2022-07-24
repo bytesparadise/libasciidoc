@@ -291,7 +291,7 @@ func (r *sgmlRenderer) renderAuthors(_ *context, doc *types.Document) string { /
 const DefaultTitle = "Untitled"
 
 func (r *sgmlRenderer) renderDocumentTitle(_ *context, doc *types.Document) (string, bool, error) {
-	if header, _ := doc.Header(); header != nil {
+	if header, _ := doc.Header(); header != nil && header.Title != nil {
 		// TODO: This feels wrong.  The title should not need markup.
 		title, err := RenderPlainText(header.Title)
 		if err != nil {
@@ -324,11 +324,11 @@ func (r *sgmlRenderer) renderDocumentHeader(ctx *context, header *types.Document
 }
 
 func (r *sgmlRenderer) renderDocumentHeaderTitle(ctx *context, header *types.DocumentHeader) (string, error) {
-	if header == nil {
+	if header == nil || header.Title == nil {
 		log.Debug("no header to render")
 		return "", nil
 	}
-	return r.renderInlineElements(ctx, header.Title)
+	return r.renderElements(ctx, header.Title)
 }
 
 func (r *sgmlRenderer) renderManpageHeader(ctx *context, header *types.DocumentHeader, nameSection *types.Section) (string, error) {
@@ -336,7 +336,7 @@ func (r *sgmlRenderer) renderManpageHeader(ctx *context, header *types.DocumentH
 	if err != nil {
 		return "", err
 	}
-	renderedName, err := r.renderInlineElements(ctx, nameSection.Title)
+	renderedName, err := r.renderElements(ctx, nameSection.Title)
 	if err != nil {
 		return "", err
 	}

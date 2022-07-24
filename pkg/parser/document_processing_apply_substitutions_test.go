@@ -50,20 +50,8 @@ var _ = Describe("apply substitutions", func() {
 						&types.StringElement{
 							Content: "Document ",
 						},
-						&types.QuotedText{
-							Kind: "*",
-							Attributes: types.Attributes{
-								types.AttrRoles: types.Roles{
-									&types.AttributeReference{
-										Name: "role1",
-									},
-								},
-							},
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "Title",
-								},
-							},
+						&types.AttributeReference{
+							Name: "title",
 						},
 					},
 					Elements: []interface{}{
@@ -93,18 +81,7 @@ var _ = Describe("apply substitutions", func() {
 					},
 					Title: []interface{}{
 						&types.StringElement{
-							Content: "Document ",
-						},
-						&types.QuotedText{
-							Kind: types.SingleQuoteBold,
-							Attributes: types.Attributes{
-								types.AttrRoles: types.Roles{"role_1"},
-							},
-							Elements: []interface{}{
-								&types.StringElement{
-									Content: "Title",
-								},
-							},
+							Content: "Document Title",
 						},
 					},
 					Elements: []interface{}{
@@ -125,7 +102,7 @@ var _ = Describe("apply substitutions", func() {
 		}))
 	})
 
-	It("should process substitutions in section title", func() {
+	It("should process substitutions in section title attribute", func() {
 		// given
 		c <- types.DocumentFragment{
 			Elements: []interface{}{
@@ -523,7 +500,7 @@ var _ = Describe("apply substitutions", func() {
 											Elements: []interface{}{
 												&types.InlineImage{
 													Attributes: types.Attributes{
-														types.AttrImageAlt: "[.role_1]_yummy row!_",
+														types.AttrImageAlt: "[.role_1]_yummy row!_", // "alt" attribute is not parsed for rich content such as quotes, etc.
 													},
 													Location: &types.Location{
 														Path: "yummy.png",

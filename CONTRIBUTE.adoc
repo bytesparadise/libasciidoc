@@ -46,7 +46,7 @@ Then you can go build as per normal:
 
 == Benchmarking
 
-This project uses http://onsi.github.io/ginkgo/[Ginkgo] as the main testing framework but uses the standard Go toolchain for benchmarking and performance comparisons.
+This project uses https://onsi.github.io/ginkgo/[Ginkgo] as the main testing framework but uses the standard Go toolchain for benchmarking and performance comparisons.
 
 Since we use Ginkgo, it's generally a good idea to skip the normal tests when running benchmarks.
 To do that, use something like `go test -run=XXX` to skip normal tests (assuming no test contains "XXX").

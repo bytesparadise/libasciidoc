@@ -23,6 +23,7 @@ linters:
     - prealloc
     - scopelint
     - golint
+    - asasalint
   presets:
     - bugs
     - unused

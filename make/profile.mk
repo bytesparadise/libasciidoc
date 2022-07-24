@@ -1,6 +1,6 @@
 .PHONY: profile
 ## run the profilers on the parser
-profile: generate-optimized
+profile: clean generate-optimized
 	@mkdir -p ./tmp/bench/reports
 	@go test -cpuprofile=tmp/bench/reports/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).cpu.prof \
 		-memprofile tmp/bench/reports/$(GITHUB_SHA)-$(GIT_COMMIT_ID_SHORT).mem.prof \

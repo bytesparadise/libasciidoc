@@ -67,7 +67,7 @@ var _ = Describe("user macros", func() {
 				Expect(ParseDocument(source, configuration.WithMacroTemplate("hello", userTmpl))).To(MatchDocument(expected))
 			})
 
-			It("with value", func() {
+			It("with value only", func() {
 				source := `AAA hello:JohnDoe[]`
 				expected := &types.Document{
 					Elements: []interface{}{

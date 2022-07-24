@@ -22,10 +22,7 @@ func (r *sgmlRenderer) renderVerseBlock(ctx *context, b *types.DelimitedBlock) (
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse block content")
 	}
-	attribution, err := newAttribution(b)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render verse block attribution")
-	}
+	attribution := newAttribution(b)
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse block title")
@@ -53,10 +50,7 @@ func (r *sgmlRenderer) renderVerseParagraph(ctx *context, p *types.Paragraph) (s
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render verse paragraph lines")
 	}
-	attribution, err := newAttribution(p)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render verse block")
-	}
+	attribution := newAttribution(p)
 	title, err := r.renderElementTitle(ctx, p.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render callout list roles")

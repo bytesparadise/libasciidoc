@@ -121,7 +121,7 @@ _foo_
 
 			It("with inline link", func() {
 				source := `++++
-http://example.com[]
+https://example.com[]
 ++++`
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -129,7 +129,7 @@ http://example.com[]
 							Kind: types.Passthrough,
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "http://example.com[]",
+									Content: "https://example.com[]",
 								},
 							},
 						},

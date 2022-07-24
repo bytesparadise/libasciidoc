@@ -16,10 +16,7 @@ func (r *sgmlRenderer) renderMarkdownQuoteBlock(ctx *context, b *types.Delimited
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render markdown quote block roles")
 	}
-	attribution, err := newAttribution(b)
-	if err != nil {
-		return "", errors.Wrap(err, "unable to render markdown quote block attribution")
-	}
+	attribution := newAttribution(b)
 	title, err := r.renderElementTitle(ctx, b.Attributes)
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render markdown quote block title")

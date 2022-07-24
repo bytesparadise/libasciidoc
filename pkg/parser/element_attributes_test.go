@@ -18,13 +18,13 @@ var _ = Describe("element attributes", func() {
 			Context("with valid syntax", func() {
 
 				It("element link alone", func() {
-					source := `[link=http://foo.bar]
+					source := `[link=https://foo.bar]
 a paragraph`
 					expected := &types.Document{
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
-									"link": "http://foo.bar",
+									"link": "https://foo.bar",
 								},
 								Elements: []interface{}{
 									&types.StringElement{
@@ -37,13 +37,13 @@ a paragraph`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 				It("spaces in link", func() {
-					source := `[link= http://foo.bar  ]
+					source := `[link= https://foo.bar  ]
 a paragraph`
 					expected := &types.Document{
 						Elements: []interface{}{
 							&types.Paragraph{
 								Attributes: types.Attributes{
-									"link": "http://foo.bar",
+									"link": "https://foo.bar",
 								},
 								Elements: []interface{}{
 									&types.StringElement{
@@ -61,7 +61,7 @@ a paragraph`
 
 				It("spaces before keyword", func() {
 					// Note: Asciidoctor will produce a different output in this case
-					source := `[ link=http://foo.bar]
+					source := `[ link=https://foo.bar]
 a paragraph`
 					expected := &types.Document{
 						Elements: []interface{}{
@@ -72,7 +72,7 @@ a paragraph`
 									},
 									&types.InlineLink{
 										Location: &types.Location{
-											Scheme: "http://",
+											Scheme: "https://",
 											Path:   "foo.bar",
 										},
 									},
@@ -88,7 +88,7 @@ a paragraph`
 
 				It("unbalanced brackets", func() {
 					// Note: Asciidoctor will produce a different output in this case
-					source := `[link=http://foo.bar
+					source := `[link=https://foo.bar
 a paragraph`
 					expected := &types.Document{
 						Elements: []interface{}{
@@ -99,7 +99,7 @@ a paragraph`
 									},
 									&types.InlineLink{
 										Location: &types.Location{
-											Scheme: "http://",
+											Scheme: "https://",
 											Path:   "foo.bar",
 										},
 									},

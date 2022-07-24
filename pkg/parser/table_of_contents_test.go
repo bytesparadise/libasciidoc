@@ -644,8 +644,30 @@ a preamble
 								Name: types.AttrTableOfContents,
 							},
 							&types.AttributeDeclaration{
-								Name:  types.AttrTableOfContentsTitle,
-								Value: "<h3>Table of Contents</h3>",
+								Name: types.AttrTableOfContentsTitle,
+								Value: []interface{}{
+									&types.SpecialCharacter{
+										Name: "<",
+									},
+									&types.StringElement{
+										Content: "h3",
+									},
+									&types.SpecialCharacter{
+										Name: ">",
+									},
+									&types.StringElement{
+										Content: "Table of Contents",
+									},
+									&types.SpecialCharacter{
+										Name: "<",
+									},
+									&types.StringElement{
+										Content: "/h3",
+									},
+									&types.SpecialCharacter{
+										Name: ">",
+									},
+								},
 							},
 						},
 					},
@@ -707,8 +729,17 @@ a preamble
 								Name: types.AttrTableOfContents,
 							},
 							&types.AttributeDeclaration{
-								Name:  types.AttrTableOfContentsTitle,
-								Value: "pass:[<h3>Table of Contents</h3>]",
+								Name: types.AttrTableOfContentsTitle,
+								Value: []interface{}{
+									&types.InlinePassthrough{
+										Kind: types.PassthroughMacro,
+										Elements: []interface{}{
+											&types.StringElement{
+												Content: "<h3>Table of Contents</h3>",
+											},
+										},
+									},
+								},
 							},
 						},
 					},

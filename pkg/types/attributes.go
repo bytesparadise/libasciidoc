@@ -47,12 +47,17 @@ const (
 	// AttrNoFooter attribute to disable the rendering of document footer
 	AttrNoFooter = "nofooter"
 	// AttrCustomID the key to retrieve the flag that indicates if the element ID is custom or generated
-	AttrCustomID = "@customID"
+	// AttrCustomID = "@customID"
 	// AttrTitle the key to retrieve the title
 	AttrTitle = "title"
 	// AttrAuthors the key to the authors declared after the section level 0 (at the beginning of the doc)
 	AttrAuthors = "authors"
+	// AttrAuthor the key to the author's full name declared as a standalone attribute
+	AttrAuthor = "author"
+	// AttrAuthor the key to the author's email address declared as a standalone attribute
+	AttrEmail = "email"
 	// AttrRevision the key to the revision declared after the section level 0 (at the beginning of the doc)
+	// or as a standalone attribute
 	AttrRevision = "revision"
 	// AttrRole the key for a single role attribute
 	AttrRole = "role"
@@ -391,21 +396,20 @@ func (a Attributes) Set(key string, value interface{}) Attributes {
 		a = Attributes{}
 	}
 	switch key {
+	// case AttrID:
+	// 	a[key] = value
+	// 	a[AttrCustomID] = true
 	case AttrRole:
 		if roles, ok := a[AttrRoles].(Roles); ok {
-			log.Debugf("appending role to existing ones: %v", value)
 			a[AttrRoles] = append(roles, value)
 		} else {
-			log.Debugf("setting first role: %v", value)
 			a[AttrRoles] = Roles{value}
 		}
 	case AttrRoles:
 		if r, ok := value.(Roles); ok {
 			if roles, ok := a[AttrRoles].(Roles); ok {
-				log.Debugf("appending role to existing ones: %v", value)
 				a[AttrRoles] = append(roles, r...)
 			} else {
-				log.Debugf("overridding roles: %v -> %v", a[AttrRoles], r)
 				a[AttrRoles] = Roles(r)
 			}
 		}
@@ -491,12 +495,12 @@ func (a Attributes) HasOption(key string) bool {
 
 // GetAsString gets the string value for the given key (+ `true`),
 // or empty string (+ `false`) if none was found
-func (a Attributes) GetAsString(key string) (string, bool, error) {
-	if value, found := a[key]; found {
-		result, err := asString(value)
-		return result, true, err
+func (a Attributes) GetAsString(k string) (string, bool) {
+	if value, ok := a[k].(string); ok {
+		return value, true
 	}
-	return "", false, nil
+	// log.Warnf("no entry for key '%s' in attributes, or value is not a string: '%T'", k, a[k])
+	return "", false
 }
 
 // GetAsIntWithDefault gets the int value for the given key ,
@@ -525,26 +529,6 @@ func (a Attributes) GetAsBoolWithDefault(key string, defaultValue bool) bool {
 		}
 	}
 	return defaultValue
-}
-
-func asString(v interface{}) (string, error) {
-	switch v := v.(type) {
-	case string:
-		return v, nil
-	case []interface{}: // complex attributes are wrapped in an []interface{}
-		result := strings.Builder{}
-		for _, value := range v {
-			s, err := asString(value)
-			if err != nil {
-				return "", err
-			}
-			result.WriteString(s)
-		}
-		return result.String(), nil
-	default:
-		return fmt.Sprintf("%v", v), nil
-	}
-
 }
 
 // GetAsStringWithDefault gets the string value for the given key,

@@ -51,10 +51,7 @@ func (r *sgmlRenderer) renderSectionTitle(ctx *context, s *types.Section) (strin
 	renderedContentStr := strings.TrimSpace(renderedContent)
 	var number string
 	if ctx.sectionNumbering != nil {
-		id, err := s.GetID()
-		if err != nil {
-			return "", errors.Wrap(err, "error while rendering section title")
-		}
+		id := s.GetID()
 		log.Debugf("number for section '%s': '%s'", id, number)
 		number = ctx.sectionNumbering[id]
 	}

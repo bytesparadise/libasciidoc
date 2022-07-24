@@ -627,7 +627,7 @@ cookie`
 			It("with block attributes splitting 2 paragraphs", func() {
 				source := `a paragraph
 [.left.text-center]
-another paragraph with an image image:cookie.jpg[cookie]
+another paragraph with an image of a image:cookie.jpg[cookie]
 `
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -647,7 +647,7 @@ another paragraph with an image image:cookie.jpg[cookie]
 							},
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "another paragraph with an image ",
+									Content: "another paragraph with an image of a ",
 								},
 								&types.InlineImage{
 									Attributes: types.Attributes{
@@ -1272,9 +1272,43 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 									types.AttrSubstitutions: "attributes",
 								},
 								Elements: []interface{}{
+									// &types.StringElement{
+									// 		Content: "links to GitHub: https://github.com[GitHub] and *<https://github.com[_GitHub_]>*" +
+									// 		"\nand another one using attribute substitution: https://github.com[GitHub]...\n",
+									// },
+									// TODO: merge StringElements
 									&types.StringElement{
-										Content: "links to GitHub: https://github.com[GitHub] and *<https://github.com[_GitHub_]>*" +
-											"\nand another one using attribute substitution: https://github.com[GitHub]...\n",
+										Content: "links to ",
+									},
+									&types.StringElement{
+										Content: "GitHub",
+									},
+									&types.StringElement{
+										Content: ": https://github.com[",
+									},
+									&types.StringElement{
+										Content: "GitHub",
+									},
+									&types.StringElement{
+										Content: "] and *<https://github.com[_",
+									},
+									&types.StringElement{
+										Content: "GitHub",
+									},
+									&types.StringElement{
+										Content: "_]>*\nand another one using attribute substitution: ",
+									},
+									&types.StringElement{
+										Content: "https://github.com",
+									},
+									&types.StringElement{
+										Content: "[",
+									},
+									&types.StringElement{
+										Content: "GitHub",
+									},
+									&types.StringElement{
+										Content: "]...\n",
 									},
 								},
 							},
@@ -1615,7 +1649,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 								},
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "links to GitHub: ",
+										Content: "links to ",
+									},
+									&types.StringElement{
+										Content: "GitHub",
+									},
+									&types.StringElement{
+										Content: ": ",
 									},
 									&types.InlineLink{
 										Attributes: types.Attributes{
@@ -1639,7 +1679,19 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 										},
 									},
 									&types.StringElement{
-										Content: ">*\nand another one using attribute substitution: https://github.com[GitHub]...\n",
+										Content: ">*\nand another one using attribute substitution: ",
+									},
+									&types.StringElement{
+										Content: "https://github.com",
+									},
+									&types.StringElement{
+										Content: "[",
+									},
+									&types.StringElement{
+										Content: "GitHub",
+									},
+									&types.StringElement{
+										Content: "]...\n",
 									},
 								},
 							},

@@ -726,21 +726,41 @@ The double brackets around it are preserved.`,
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("should parse typographic quote", func() {
-			source := `Here's`
+		It("should escape typographic quote in paragraph", func() {
+			source := `Here\'s`
 			expected := &types.Document{
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
 							&types.StringElement{
-								Content: "Her",
+								Content: "Here's",
 							},
-							&types.Symbol{
-								Prefix: "e",
-								Name:   "'",
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
+
+		It("should parse typographic quote in italic text", func() {
+			source := `I swear I left it in _Guy\'s_ car. Let\'s go look for it.`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Paragraph{
+						Elements: []interface{}{
+							&types.StringElement{
+								Content: "I swear I left it in ",
+							},
+							&types.QuotedText{
+								Kind: types.SingleQuoteItalic,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "Guy's",
+									},
+								},
 							},
 							&types.StringElement{
-								Content: "s",
+								Content: " car. Let's go look for it.",
 							},
 						},
 					},

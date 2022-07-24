@@ -526,6 +526,111 @@ var _ = Describe("quoted texts", func() {
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
+
+			It("valid bold text with marker within", func() {
+				source := "*some*content*"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.SingleQuoteBold,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some*content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("invalid bold text with marker within", func() {
+				source := "some*content*"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some*content*",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("valid italic text with marker within", func() {
+				source := "_some_content_"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.SingleQuoteItalic,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some_content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("invalid italic text with marker within", func() {
+				source := "some_content_"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some_content_",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("valid monospace text with marker within", func() {
+				source := "`some`content`"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.SingleQuoteMonospace,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some`content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("invalid monospace text with marker within", func() {
+				source := "some`content`"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "some`content`",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
 		})
 
 		Context("with double punctuation", func() {

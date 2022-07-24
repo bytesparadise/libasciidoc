@@ -11,6 +11,7 @@ import (
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 
+	pkgprofile "github.com/pkg/profile"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -24,6 +25,7 @@ func NewRootCmd() *cobra.Command {
 	var css []string
 	var backend string
 	var attributes []string
+	var profile string
 
 	rootCmd := &cobra.Command{
 		Use:   "libasciidoc [flags] FILE",
@@ -47,6 +49,9 @@ func NewRootCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return helpCommand.RunE(cmd, args)
+			}
+			if profile == "cpu" {
+				defer pkgprofile.Start(pkgprofile.CPUProfile).Stop()
 			}
 			attrs := parseAttributes(attributes)
 			for _, sourcePath := range args {
@@ -77,6 +82,7 @@ func NewRootCmd() *cobra.Command {
 	flags.StringArrayVarP(&css, "css", "", []string{}, "the paths to the CSS files to link to the document")
 	flags.StringArrayVarP(&attributes, "attribute", "a", []string{}, "a document attribute to set in the form of name, name!, or name=value pair")
 	flags.StringVarP(&backend, "backend", "b", "html5", "backend to format the file")
+	flags.StringVar(&profile, "profile", "", "enable profiling")
 	return rootCmd
 }
 
