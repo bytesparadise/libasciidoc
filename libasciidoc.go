@@ -52,11 +52,11 @@ func Convert(source io.Reader, output io.Writer, config *configuration.Configura
 	var start, endOfPreprocess, emdOfParse, endOfValidate, endOfRender time.Time
 	start = time.Now()
 	defer func() {
-		log.Debugf("time to preprocess %d microseconds", endOfPreprocess.Sub(start).Microseconds())
-		log.Debugf("time to parse      %d microseconds", emdOfParse.Sub(endOfPreprocess).Microseconds())
-		log.Debugf("time to validate   %d microseconds", endOfValidate.Sub(emdOfParse).Microseconds())
-		log.Debugf("time to render     %d microseconds", endOfRender.Sub(endOfValidate).Microseconds())
-		log.Debugf("total time         %d microseconds", endOfRender.Sub(start).Microseconds())
+		log.Infof("time to preprocess %d microseconds", endOfPreprocess.Sub(start).Microseconds())
+		log.Infof("time to parse      %d microseconds", emdOfParse.Sub(endOfPreprocess).Microseconds())
+		log.Infof("time to validate   %d microseconds", endOfValidate.Sub(emdOfParse).Microseconds())
+		log.Infof("time to render     %d microseconds", endOfRender.Sub(endOfValidate).Microseconds())
+		log.Infof("total time         %d microseconds", endOfRender.Sub(start).Microseconds())
 	}()
 	p, err := parser.Preprocess(source, config)
 	if err != nil {
