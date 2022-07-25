@@ -301,7 +301,16 @@ a link to <{example}>.`
 						&types.Paragraph{
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "write to contact.@example.com.",
+									Content: "write to ",
+								},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "mailto:",
+										Path:   "contact.@example.com",
+									},
+								},
+								&types.StringElement{
+									Content: ".",
 								},
 							},
 						},

@@ -2622,7 +2622,6 @@ NormalGroup <-
             / Newline
             / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
             / LineBreak 
-            / Punctuation
             / Quote
             / InlinePassthrough
             / InlineMacro // must be before SpecialCharacter (because of CrossReference)
@@ -2836,6 +2835,7 @@ Mdash <-
     }
     
 
+
 SingleRightArrow <- "->" {
         return types.NewSymbol("->")
     }
@@ -3047,25 +3047,28 @@ Word <-
     }
 
 InlineWord <- 
-    [\pL0-9] // start with an alphanum
-    (   [\pL0-9,;!?] // TODO: support `-` ?
-        / ("*" &(!"*")) // accept a single `*`, but not `**` 
-        / ("_" &(!"_")) // accept a single `_`, but not `__` 
-        / ("`" &(!"`")) // accept a single '`', but not '``' 
+    [\pL0-9] // start with an alphanum {
+    #{
+        // because 'Mdash' symbol relies on tracking
+        c.globalStore[suffixTrackingKey] = alphanumSuffix
+        return nil
+    }
+    (   !Symbol
+        !UnconstrainedQuotedTextPrefix
+        ([\pL0-9.*_`,;!?()] 
+            / "-"
+            // / "."
+            // / "*"
+            // / "_" 
+            // / "`" 
+        )
     )+ 
 
-    (Space / &("." / ElementPlaceHolderDelimiter / EOL)) { // TODO: also allow trailing quotes/quotation marks?
+    (Space / &(ElementPlaceHolderDelimiter / EOL)) { 
         return types.NewStringElement(string(c.text))
     }
 
 
-Punctuation <- char:(PunctuationCharacter) &(Space / EOL) {
-    return char, nil
-}
-
-// PunctuationCharacter <- ("." / "," / ";" / "!" / "?") {
-//     return string(c.text), nil
-// }
 PunctuationCharacter <- [.,;?!] {
     return string(c.text), nil
 }
@@ -3107,7 +3110,6 @@ Filename <-
         }
         / PunctuationCharacter &(!(EOF / Space))
         / AttributeReference 
-        // / SpecialCharacter // TODO: needed?
         / "{" {
             return types.NewStringElement(string(c.text))
         })+ {
