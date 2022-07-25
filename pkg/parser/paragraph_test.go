@@ -703,9 +703,14 @@ image::cookie.jpg[cookie]
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
-									&types.StringElement{
-										Content: "cookie1 chocolate pasta3 bob1",
-									},
+									&types.StringElement{Content: "cookie"},
+									&types.StringElement{Content: "1"},
+									&types.StringElement{Content: " chocolate"},
+									&types.StringElement{}, // replaced by nothing
+									&types.StringElement{Content: " pasta"},
+									&types.StringElement{Content: "3"},
+									&types.StringElement{Content: " bob"},
+									&types.StringElement{Content: "1"},
 								},
 							},
 						},
@@ -719,9 +724,14 @@ image::cookie.jpg[cookie]
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
-									&types.StringElement{
-										Content: "cookie2 chocolate pasta4 bob10",
-									},
+									&types.StringElement{Content: "cookie"},
+									&types.StringElement{Content: "2"},
+									&types.StringElement{Content: " chocolate"},
+									&types.StringElement{},
+									&types.StringElement{Content: " pasta"},
+									&types.StringElement{Content: "4"},
+									&types.StringElement{Content: " bob"},
+									&types.StringElement{Content: "10"},
 								},
 							},
 						},
@@ -735,9 +745,14 @@ image::cookie.jpg[cookie]
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
-									&types.StringElement{
-										Content: "cookieb chocolate pastad bobz",
-									},
+									&types.StringElement{Content: "cookie"},
+									&types.StringElement{Content: "b"},
+									&types.StringElement{Content: " chocolate"},
+									&types.StringElement{},
+									&types.StringElement{Content: " pasta"},
+									&types.StringElement{Content: "d"},
+									&types.StringElement{Content: " bob"},
+									&types.StringElement{Content: "z"},
 								},
 							},
 						},

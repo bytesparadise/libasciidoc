@@ -1315,9 +1315,9 @@ lines.
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								&types.StringElement{
-									Content: ":@date: 2017-01-01\n:{author}: Xavier", // attribute susbtitution "failed"
-								},
+								&types.StringElement{Content: ":@date: 2017-01-01\n:"},
+								&types.StringElement{Content: "{author}"},
+								&types.StringElement{Content: ": Xavier"},
 							},
 						},
 					},

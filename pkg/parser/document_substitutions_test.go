@@ -116,7 +116,7 @@ var _ = DescribeTable("new substitutions",
 )
 
 var _ = DescribeTable("split substitutions",
-	func(actual string, expected []*substitutions) {
+	func(actual string, expectedPhase1, expectedPhase2 *substitutions) {
 		b := &types.DelimitedBlock{
 			Attributes: types.Attributes{
 				types.AttrSubstitutions: actual,
@@ -124,47 +124,51 @@ var _ = DescribeTable("split substitutions",
 		}
 		s, err := newSubstitutions(b)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(s.split()).To(Equal(expected))
+		phase1, phase2 := s.split()
+		Expect(phase1).To(Equal(expectedPhase1))
+		Expect(phase2).To(Equal(expectedPhase2))
 	},
 	// default/built-in subs groups
 	Entry("normal", "normal",
-		[]*substitutions{
-			{
-				sequence: []string{
-					InlinePassthroughs,
-					AttributeRefs,
-				},
+		&substitutions{
+			sequence: []string{
+				InlinePassthroughs,
+				AttributeRefs,
+				SpecialCharacters,
+				Quotes,
+				Replacements,
+				Macros,
+				PostReplacements,
 			},
-			{
-				sequence: []string{
-					SpecialCharacters,
-					Quotes,
-					Replacements,
-					Macros,
-					PostReplacements,
-				},
+		},
+		&substitutions{
+			sequence: []string{
+				SpecialCharacters,
+				Quotes,
+				Replacements,
+				Macros,
+				PostReplacements,
 			},
 		}),
 	Entry("attributes,macros", "attributes,macros",
-		[]*substitutions{
-			{
-				sequence: []string{
-					AttributeRefs,
-				},
+		&substitutions{
+			sequence: []string{
+				AttributeRefs,
+				Macros,
 			},
-			{
-				sequence: []string{
-					Macros,
-				},
+		},
+		&substitutions{
+			sequence: []string{
+				Macros,
 			},
 		}),
 	Entry("macros,attributes", "macros,attributes",
-		[]*substitutions{
-			{
-				sequence: []string{
-					Macros,
-					AttributeRefs,
-				},
+		&substitutions{
+			sequence: []string{
+				Macros,
+				AttributeRefs,
 			},
-		}),
+		},
+		nil,
+	),
 )
