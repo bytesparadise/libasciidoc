@@ -180,33 +180,30 @@ func allIncremental(subs []string) bool {
 	return true
 }
 
+func (s *substitutions) empty() bool {
+	return len(s.sequence) == 0
+}
+
 func (s *substitutions) toString() string {
 	return strings.Join(s.sequence, ",")
 }
 
 // split the actual substitutions in 2 parts, the first one containing
-// `inline_passthrough` and `attributes` only, the second part with the other subs
-// returns a slice with the single `substitutions` if neither `inline_passthrough` nor `attributes`
-// were found
-func (s *substitutions) split() []*substitutions {
-	result := make([]*substitutions, 2)
-	result[0] = &substitutions{
+// all substitutions, the second part all substitutions except `inline_passthrough` and `attributes`
+// (or nil if there were no other substitutions)
+func (s *substitutions) split() (*substitutions, *substitutions) {
+	phase1 := &substitutions{
 		sequence: s.sequence, // all by default (in case not split needed)
 	}
-	result[1] = &substitutions{
-		sequence: []string{}, // empty by default (in case not split needed)
-	}
+	var phase2 *substitutions
 	for i, sub := range s.sequence {
-		if sub == AttributeRefs {
-			result[0].sequence = s.sequence[:i+1]
-			result[1].sequence = s.sequence[i+1:]
+		if sub == AttributeRefs && i < len(s.sequence)-1 {
+			phase2 = &substitutions{
+				sequence: s.sequence[i+1:],
+			}
 		}
 	}
-	if len(result[1].sequence) == 0 {
-		// remove
-		result = result[:1]
-	}
-	return result
+	return phase1, phase2
 }
 
 func (s *substitutions) contains(expected string) bool {

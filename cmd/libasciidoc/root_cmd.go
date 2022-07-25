@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
-
 	"path/filepath"
+	"strings"
 
 	"github.com/bytesparadise/libasciidoc"
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"

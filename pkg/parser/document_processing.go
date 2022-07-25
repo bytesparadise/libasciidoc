@@ -17,16 +17,15 @@ func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Opt
 	done := make(chan interface{})
 	defer close(done)
 
-	ctx := NewParseContext(config, opts...) // each pipeline step will have its own clone of `ctx`
 	footnotes := types.NewFootnotes()
-	doc, err := Aggregate(ctx.Clone(),
+	doc, err := Aggregate(NewParseContext(config, opts...),
 		// SplitHeader(done,
 		FilterOut(done,
 			ArrangeLists(done,
 				CollectFootnotes(footnotes, done,
-					ApplySubstitutions(ctx.Clone(), done, // needs to be before 'ArrangeLists'
-						RefineFragments(ctx.Clone(), r, done,
-							ParseFragments(ctx.Clone(), r, done),
+					ApplySubstitutions(NewParseContext(config, opts...), done, // needs to be before 'ArrangeLists'
+						RefineFragments(NewParseContext(config, opts...), r, done,
+							ParseFragments(NewParseContext(config, opts...), r, done),
 						),
 					),
 				),

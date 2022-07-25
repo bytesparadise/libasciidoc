@@ -122,7 +122,7 @@ func applySubstitutionsOnAttributeReset(ctx *ParseContext, b *types.AttributeRes
 	return nil
 }
 
-func applySubstitutionsOnWithTitle(ctx *ParseContext, b types.WithTitle, opts ...Option) error {
+func applySubstitutionsOnWithTitle(ctx *ParseContext, b types.WithTitle, _ ...Option) error {
 	log.Debugf("processing element with title of type '%T'", b)
 	// attributes
 	if err := replaceAttributeRefsInAttributeValues(ctx, b.GetAttributes()); err != nil {
@@ -131,13 +131,14 @@ func applySubstitutionsOnWithTitle(ctx *ParseContext, b types.WithTitle, opts ..
 	if err := reparseAttributes(ctx, b); err != nil {
 		return err
 	}
-	// elements
-	opts = append(opts, Entrypoint("NormalGroup")) // TODO: move this into NewParseContext ?
-	title, err := applySubstitutionsOnSlice(ctx, b.GetTitle(), headerSubstitutions(), opts...)
-	if err != nil {
-		return err
+	phase1, phase2 := headerSubstitutions().split()
+	if phase1.contains(AttributeRefs) {
+		title, err := replaceAttributeRefsInElementsAndReparse(ctx, b.GetTitle(), phase2)
+		if err != nil {
+			return err
+		}
+		b.SetTitle(title)
 	}
-	b.SetTitle(title)
 	return nil
 }
 
@@ -202,7 +203,7 @@ func applySubstitutionsOnWithLocation(ctx *ParseContext, b types.WithLocation, o
 	// location
 	if b.GetLocation() != nil {
 		if p, ok := b.GetLocation().Path.([]interface{}); ok {
-			p, err := replaceAttributeRefsInElements(ctx, p)
+			p, err := replaceAttributeRefsInElements(ctx, p) // no need to reparse the location's path
 			if err != nil {
 				return err
 			}
@@ -268,7 +269,7 @@ func reparseAttributes(ctx *ParseContext, element types.WithAttributes, opts ...
 	for k, v := range attrs {
 		switch k {
 		case types.AttrTitle, types.AttrXRefLabel:
-			v, err := parseElementsWithSubstitutions(v, attributeSubstitutions(), append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
+			v, err := parseContentWithSubstitutions(v, attributeSubstitutions(), append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
 			if err != nil {
 				return err
 			}
@@ -279,7 +280,7 @@ func reparseAttributes(ctx *ParseContext, element types.WithAttributes, opts ...
 			if err := subs.remove(Macros); err != nil {
 				return err
 			}
-			v, err := parseElementsWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
+			v, err := parseContentWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
 			if err != nil {
 				return err
 			}
@@ -289,7 +290,7 @@ func reparseAttributes(ctx *ParseContext, element types.WithAttributes, opts ...
 			if err != nil {
 				return err
 			}
-			v, err := parseElementsWithSubstitutions(s, attributeSubstitutions(), append(append(ctx.opts, Entrypoint("TableColumnsAttribute")), opts...)...)
+			v, err := parseContentWithSubstitutions(s, attributeSubstitutions(), append(append(ctx.opts, Entrypoint("TableColumnsAttribute")), opts...)...)
 			if err != nil {
 				return err
 			}
@@ -307,7 +308,7 @@ func reparseInlineAttributes(ctx *ParseContext, element types.WithAttributes, su
 	for k, v := range attrs {
 		switch k {
 		case types.AttrTitle, types.AttrXRefLabel:
-			v, err := parseElementsWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
+			v, err := parseContentWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
 			if err != nil {
 				return err
 			}
@@ -317,7 +318,7 @@ func reparseInlineAttributes(ctx *ParseContext, element types.WithAttributes, su
 			if err := subs.remove(Macros); err != nil {
 				return err
 			}
-			v, err := parseElementsWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
+			v, err := parseContentWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
 			if err != nil {
 				return err
 			}
@@ -381,7 +382,7 @@ func replaceAttributeRefsInSlicedValue(ctx *ParseContext, elements []interface{}
 		case *types.StringElement:
 			result = append(result, e.Content)
 		case *types.AttributeReference:
-			v, err := valueForAttributeRef(ctx, e)
+			v, _, err := valueForAttributeRef(ctx, e)
 			if err != nil {
 				return nil, err
 			}
@@ -408,20 +409,20 @@ func applySubstitutionsOnSlice(ctx *ParseContext, elements []interface{}, subs *
 		return nil, nil
 	}
 	// TODO: no need to parse with `inline_passthrough,attributes` substitutions if the elements do not contain `{` or `pass:` ?
-	plan := subs.split()
-	for _, subs := range plan {
-		// parse
-		var err error
-		elements, err = parseElementsWithSubstitutions(elements, subs, append(ctx.opts, opts...)...)
-		if err != nil {
+	phase1, phase2 := subs.split()
+	// if len(plan) == 0 {
+	// 	return nil, fmt.Errorf("unable to apply substitutions: empty plan")
+	// }
+	// parse
+	var err error
+	elements, err = parseElementsWithSubstitutions(elements, phase1, append(ctx.opts, opts...)...)
+	if err != nil {
+		return nil, err
+	}
+	// replace attribute references if applicable
+	if phase1.contains(AttributeRefs) {
+		if elements, err = replaceAttributeRefsInElementsAndReparse(ctx, elements, phase2); err != nil {
 			return nil, err
-		}
-		// replace attribute references if applicable
-		if subs.contains(AttributeRefs) {
-			elements, err = replaceAttributeRefsInElements(ctx, elements)
-			if err != nil {
-				return nil, err
-			}
 		}
 	}
 	return elements, nil
@@ -448,11 +449,12 @@ func extractMarkdownQuoteAttribution(elements []interface{}) ([]interface{}, str
 	return elements, ""
 }
 
-func replaceAttributeRefsInElements(ctx *ParseContext, elements []interface{}) ([]interface{}, error) {
+func replaceAttributeRefsInElementsAndReparse(ctx *ParseContext, elements []interface{}, subs *substitutions, opts ...Option) ([]interface{}, error) {
+	replaced := false
 	for i, e := range elements {
 		switch e := e.(type) {
 		case *types.AttributeReference:
-			v, err := valueForAttributeRef(ctx, e)
+			v, r, err := valueForAttributeRef(ctx, e)
 			if err != nil {
 				return nil, err
 			}
@@ -464,7 +466,7 @@ func replaceAttributeRefsInElements(ctx *ParseContext, elements []interface{}) (
 			default:
 				elements[i] = v
 			}
-
+			replaced = replaced || r
 		case *types.CounterSubstitution:
 			v, err := valueForCounter(ctx, e)
 			if err != nil {
@@ -473,14 +475,13 @@ func replaceAttributeRefsInElements(ctx *ParseContext, elements []interface{}) (
 			elements[i] = &types.StringElement{
 				Content: v,
 			}
-
 		case types.WithElements: // if `subs=macros,attributes`, then replace within inline macros
 			// in attributes
 			if err := replaceAttributeRefsInAttributeValues(ctx, e.GetAttributes()); err != nil {
 				return nil, err
 			}
 			// in elements
-			elmts, err := replaceAttributeRefsInElements(ctx, e.GetElements())
+			elmts, err := replaceAttributeRefsInElementsAndReparse(ctx, e.GetElements(), subs, opts...)
 			if err != nil {
 				return nil, err
 			}
@@ -495,7 +496,7 @@ func replaceAttributeRefsInElements(ctx *ParseContext, elements []interface{}) (
 			// in location
 			if e.GetLocation() != nil {
 				if p, ok := e.GetLocation().Path.([]interface{}); ok {
-					p, err := replaceAttributeRefsInElements(ctx, p)
+					p, err := replaceAttributeRefsInElements(ctx, p) // no need to reparse the location's path
 					if err != nil {
 						return nil, err
 					}
@@ -504,22 +505,61 @@ func replaceAttributeRefsInElements(ctx *ParseContext, elements []interface{}) (
 			}
 		}
 	}
+	// if attribute ref was found, reparse content (if subs)
+	if replaced && subs != nil {
+		if log.IsLevelEnabled(log.DebugLevel) {
+			log.Debugf("reparsing (phase2) %s", spew.Sdump(elements))
+		}
+		return parseElementsWithSubstitutions(elements, subs, append(opts, Entrypoint("NormalGroup"))...)
+	}
 	return elements, nil
 }
 
-func valueForAttributeRef(ctx *ParseContext, a *types.AttributeReference) (interface{}, error) {
+func replaceAttributeRefsInElements(ctx *ParseContext, elements []interface{}) ([]interface{}, error) {
+	for i, e := range elements {
+		switch e := e.(type) {
+		case *types.AttributeReference:
+			v, _, err := valueForAttributeRef(ctx, e)
+			if err != nil {
+				return nil, err
+			}
+			switch v := v.(type) {
+			case string:
+				elements[i] = &types.StringElement{
+					Content: v,
+				}
+			default:
+				elements[i] = v
+			}
+		case *types.CounterSubstitution:
+			v, err := valueForCounter(ctx, e)
+			if err != nil {
+				return nil, err
+			}
+			elements[i] = &types.StringElement{
+				Content: v,
+			}
+		default:
+			// do nothing, keep as-is
+		}
+	}
+	return elements, nil
+}
+
+func valueForAttributeRef(ctx *ParseContext, a *types.AttributeReference) (interface{}, bool, error) {
 	v, found := ctx.attributes.get(a.Name)
 	if !found {
 		log.Warnf("unable to find entry for attribute with key '%s' in context", a.Name)
-		return "{" + a.Name + "}", nil
+		return "{" + a.Name + "}", false, nil
 	}
 	switch v := v.(type) {
 	case []interface{}:
-		return sgml.RenderPlainText(v)
+		s, err := sgml.RenderPlainText(v)
+		return s, true, err
 	case *types.DocumentAuthorFullName:
-		return v.FullName(), nil
+		return v.FullName(), true, nil
 	default:
-		return v, nil
+		return v, true, nil
 	}
 }
 
@@ -562,7 +602,41 @@ func valueForCounter(ctx *ParseContext, c *types.CounterSubstitution) (string, e
 
 // parseElementsWithSubstitutions parse the elements, using placeholders for existing "structured" elements (ie, not RawLine or StringElements)
 // Also, does not parse the content of the placeholders, but restores them at the end.
-func parseElementsWithSubstitutions(content interface{}, subs *substitutions, opts ...Option) ([]interface{}, error) {
+func parseContentWithSubstitutions(content interface{}, subs *substitutions, opts ...Option) (interface{}, error) {
+	if subs.empty() {
+		return content, nil
+	}
+	serialized, placeholders, err := serialize(content)
+	if err != nil {
+		return nil, err
+	}
+	if len(serialized) == 0 {
+		return nil, nil
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("parsing '%s' with '%s' substitutions", serialized, subs.toString())
+	}
+	elements, err := parseContent(serialized, append(opts, GlobalStore(enabledSubstitutions, subs))...)
+	if err != nil {
+		return nil, err
+	}
+	elements, err = placeholders.restore(elements)
+	if err != nil {
+		return nil, err
+	}
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("parsed content:\n%s", spew.Sdump(elements))
+	}
+	return elements, nil
+}
+
+// parseElementsWithSubstitutions parse the elements, using placeholders for existing "structured" elements (ie, not RawLine or StringElements)
+// Also, does not parse the content of the placeholders, but restores them at the end.
+func parseElementsWithSubstitutions(content []interface{}, subs *substitutions, opts ...Option) ([]interface{}, error) {
+	// TODO: if subs.empty(), simply convert RawLine to StringElement? Or just keep as-is and support in rendering?
+	// if subs.empty() {
+	// 	return content, nil
+	// }
 	serialized, placeholders, err := serialize(content)
 	if err != nil {
 		return nil, err

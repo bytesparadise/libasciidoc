@@ -503,6 +503,47 @@ var _ = Describe("symbols", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 		})
+
+		Context("trademark symbol", func() {
+
+			It("should detect after space", func() {
+				source := "registered (TM)"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "registered ",
+								},
+								&types.Symbol{
+									Name: "(TM)",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("should detect within word", func() {
+				source := "registered(TM)"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{
+									Content: "registered",
+								},
+								&types.Symbol{
+									Name: "(TM)",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
 	})
 
 })

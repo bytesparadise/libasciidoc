@@ -13,8 +13,8 @@ import (
 	"github.com/bytesparadise/libasciidoc/pkg/renderer"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/bytesparadise/libasciidoc/pkg/validator"
-	"github.com/pkg/errors"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
