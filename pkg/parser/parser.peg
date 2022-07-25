@@ -2225,7 +2225,6 @@ DoubleQuoteMonospaceTextElement <-
         / InlineMacro
         / Symbol
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
-        / RawApostrophe // must be before SingleQuoteMonospaceText
         / QuotedTextInDoubleQuoteMonospaceText
         / ElementPlaceHolder
         / DoubleQuoteMonospaceTextFallbackCharacter) {
@@ -2297,7 +2296,6 @@ SingleQuoteMonospaceTextElement <-
     / Symbol
     / SpecialCharacter // must be after InlineMacro (because of BareURL)
     / QuotedTextInSingleQuoteMonospaceText
-    / RawApostrophe
     / ElementPlaceHolder
     / SingleQuoteMonospaceTextFallbackCharacter
 
@@ -2797,8 +2795,6 @@ QuotationMark <-
     / "`'" {
         return types.NewSymbol("`'")
     } 
-
-RawApostrophe <- "`'" // no conversion // TODO: needed?
 
 Copyright <- "(C)" {
         return types.NewSymbol("(C)")
