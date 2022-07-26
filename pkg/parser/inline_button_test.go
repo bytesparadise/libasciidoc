@@ -18,12 +18,8 @@ var _ = Describe("inline buttons", func() {
 Click on btn:[OK].`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: "experimental",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name: "experimental",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{

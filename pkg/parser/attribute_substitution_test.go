@@ -18,13 +18,9 @@ var _ = Describe("attribute substitutions", func() {
 a paragraph written by {author}.`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  types.AttrAuthor,
-								Value: "Xavier",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name:  types.AttrAuthor,
+						Value: "Xavier",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -44,18 +40,14 @@ a paragraph written by {author}.`
 a paragraph written by {author}.`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: types.AttrAuthor,
-								Value: []interface{}{
-									&types.InlinePassthrough{
-										Kind: types.PassthroughMacro,
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "Xavier",
-											},
-										},
+					&types.AttributeDeclaration{
+						Name: types.AttrAuthor,
+						Value: []interface{}{
+							&types.InlinePassthrough{
+								Kind: types.PassthroughMacro,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "Xavier",
 									},
 								},
 							},
@@ -81,19 +73,15 @@ a paragraph written by {author}.`
 a paragraph written by {author}.`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  types.AttrAuthor,
-								Value: "Xavier",
-							},
-							&types.AttributeReset{
-								Name: "author1",
-							},
-							&types.AttributeReset{
-								Name: "author2",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name:  types.AttrAuthor,
+						Value: "Xavier",
+					},
+					&types.AttributeReset{
+						Name: "author1",
+					},
+					&types.AttributeReset{
+						Name: "author2",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -203,13 +191,9 @@ a link to https://example.com/version/v{download-version}[here]`
 
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "download-version",
-								Value: "1.0.0",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name:  "download-version",
+						Value: "1.0.0",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -239,13 +223,9 @@ a link to https://example.com/version/v{unknown}[here]`
 
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "version",
-								Value: "1.0.0",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name:  "version",
+						Value: "1.0.0",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{

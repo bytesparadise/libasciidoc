@@ -73,6 +73,15 @@ Garrett D'Amore
 				{
 					Position: types.Position{
 						Start: 0,
+						End:   1,
+					},
+					Elements: []interface{}{
+						&types.BlankLine{},
+					},
+				},
+				{
+					Position: types.Position{
+						Start: 1,
 						End:   45,
 					},
 					Elements: []interface{}{
@@ -101,7 +110,6 @@ Garrett D'Amore
 										Revdate:   "July 4, 2020",
 									},
 								},
-								&types.BlankLine{}, // will be filtered out
 							},
 						},
 					},

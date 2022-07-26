@@ -104,18 +104,22 @@ pasta`
 					{
 						Position: types.Position{
 							Start: 0,
+							End:   16,
+						},
+						Elements: []interface{}{
+							&types.AttributeDeclaration{
+								Name:  "title",
+								Value: "cookies",
+							},
+						},
+					},
+					{
+						Position: types.Position{
+							Start: 16,
 							End:   21,
 						},
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "title",
-										Value: "cookies",
-									},
-									&types.BlankLine{},
-								},
-							},
+							&types.BlankLine{},
 						},
 					},
 					{
@@ -279,22 +283,34 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 						{
 							Position: types.Position{
 								Start: 0,
+								End:   32,
+							},
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "github-url",
+									Value: "https://github.com",
+								},
+							},
+						},
+						{
+							Position: types.Position{
+								Start: 32,
+								End:   54,
+							},
+							Elements: []interface{}{
+								&types.AttributeDeclaration{
+									Name:  "github-title",
+									Value: "GitHub",
+								},
+							},
+						},
+						{
+							Position: types.Position{
+								Start: 54,
 								End:   55,
 							},
 							Elements: []interface{}{
-								&types.DocumentHeader{
-									Elements: []interface{}{
-										&types.AttributeDeclaration{
-											Name:  "github-url",
-											Value: "https://github.com",
-										},
-										&types.AttributeDeclaration{
-											Name:  "github-title",
-											Value: "GitHub",
-										},
-										&types.BlankLine{},
-									},
-								},
+								&types.BlankLine{},
 							},
 						},
 						{
@@ -396,13 +412,9 @@ cookie
 pasta`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "title",
-									Value: "cookies",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
@@ -427,13 +439,9 @@ cookie
 pasta`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "title",
-									Value: "cookies",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
@@ -458,13 +466,9 @@ cookie
 pasta`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "title",
-									Value: "cookies",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
@@ -489,13 +493,9 @@ cookie
 pasta`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "title",
-									Value: "cookies",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "title",
+							Value: "cookies",
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
@@ -768,13 +768,9 @@ image::cookie.jpg[cookie]
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "idprefix",
-									Value: "bar_",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "idprefix",
+							Value: "bar_",
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
@@ -891,25 +887,21 @@ a line
 another line`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "title",
-									Value: "Title",
-								},
-								&types.AttributeDeclaration{
-									Name:  "role1",
-									Value: "role_1",
-								},
-								&types.AttributeDeclaration{
-									Name:  "role2",
-									Value: "role_2",
-								},
-								&types.AttributeDeclaration{
-									Name:  "option1",
-									Value: "hardbreaks",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "title",
+							Value: "Title",
+						},
+						&types.AttributeDeclaration{
+							Name:  "role1",
+							Value: "role_1",
+						},
+						&types.AttributeDeclaration{
+							Name:  "role2",
+							Value: "role_2",
+						},
+						&types.AttributeDeclaration{
+							Name:  "option1",
+							Value: "hardbreaks",
 						},
 						&types.Paragraph{
 							Attributes: types.Attributes{
@@ -949,17 +941,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "[subs=\"$SUBS\"]\n", "")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Elements: []interface{}{
@@ -1037,17 +1025,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "normal")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1127,17 +1111,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "none")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1160,17 +1140,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1214,17 +1190,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1270,17 +1242,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "attributes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1337,17 +1305,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "specialchars")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1382,17 +1346,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "replacements")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1424,17 +1384,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "quotes,macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1501,17 +1457,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "macros,quotes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1577,17 +1529,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "attributes,macros")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
@@ -1646,17 +1594,13 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 					s := strings.ReplaceAll(source, "$SUBS", "macros,attributes")
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "github-url",
-										Value: "https://github.com",
-									},
-									&types.AttributeDeclaration{
-										Name:  "github-title",
-										Value: "GitHub",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "github-url",
+								Value: "https://github.com",
+							},
+							&types.AttributeDeclaration{
+								Name:  "github-title",
+								Value: "GitHub",
 							},
 							&types.Paragraph{
 								Attributes: types.Attributes{
