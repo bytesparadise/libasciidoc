@@ -14,12 +14,21 @@ var _ = Describe("insert preambles", func() {
 			"draft": true,
 		},
 	}
-	header := &types.DocumentHeader{
+	headerWithTitle := &types.DocumentHeader{
 		Title: []interface{}{
 			&types.StringElement{
 				Content: "title",
 			},
 		},
+		Elements: []interface{}{
+			&types.AttributeDeclaration{
+				Name:  "biscuits",
+				Value: "cookies",
+			},
+		},
+	}
+
+	headerWithoutTitle := &types.DocumentHeader{
 		Elements: []interface{}{
 			&types.AttributeDeclaration{
 				Name:  "biscuits",
@@ -67,7 +76,7 @@ var _ = Describe("insert preambles", func() {
 			// given
 			doc := &types.Document{
 				Elements: []interface{}{
-					header,
+					headerWithTitle,
 					paragraph,
 					blankline,
 					paragraph,
@@ -75,7 +84,7 @@ var _ = Describe("insert preambles", func() {
 			}
 			expected := &types.Document{
 				Elements: []interface{}{
-					header,
+					headerWithTitle,
 					paragraph,
 					blankline,
 					paragraph,
@@ -108,13 +117,37 @@ var _ = Describe("insert preambles", func() {
 			// then
 			Expect(doc).To(Equal(expected))
 		})
+
+		It("should not insert when header has no title", func() {
+			// given
+			doc := &types.Document{
+				Elements: []interface{}{
+					headerWithoutTitle,
+					paragraph,
+					sectionA,
+					sectionB,
+				},
+			}
+			expected := &types.Document{
+				Elements: []interface{}{
+					headerWithoutTitle,
+					paragraph,
+					sectionA,
+					sectionB,
+				},
+			}
+			// when
+			insertPreamble(doc)
+			// then
+			Expect(doc).To(Equal(expected))
+		})
 	})
 
 	It("should insert preamble with 1 paragraph and blankline", func() {
 		// given
 		doc := &types.Document{
 			Elements: []interface{}{
-				header,
+				headerWithTitle,
 				paragraph,
 				blankline,
 				sectionA,
@@ -123,7 +156,7 @@ var _ = Describe("insert preambles", func() {
 		}
 		expected := &types.Document{
 			Elements: []interface{}{
-				header,
+				headerWithTitle,
 				&types.Preamble{
 					Elements: []interface{}{
 						paragraph,
@@ -144,7 +177,7 @@ var _ = Describe("insert preambles", func() {
 		// given
 		doc := &types.Document{
 			Elements: []interface{}{
-				header,
+				headerWithTitle,
 				paragraph,
 				blankline,
 				anotherParagraph,
@@ -155,7 +188,7 @@ var _ = Describe("insert preambles", func() {
 		}
 		expected := &types.Document{
 			Elements: []interface{}{
-				header,
+				headerWithTitle,
 				&types.Preamble{
 					Elements: []interface{}{
 						paragraph,
@@ -179,7 +212,7 @@ var _ = Describe("insert preambles", func() {
 		doc := &types.Document{
 			Elements: []interface{}{
 				frontmatter,
-				header,
+				headerWithTitle,
 				paragraph,
 				blankline,
 				sectionA,
@@ -189,7 +222,7 @@ var _ = Describe("insert preambles", func() {
 		expected := &types.Document{
 			Elements: []interface{}{
 				frontmatter,
-				header,
+				headerWithTitle,
 				&types.Preamble{
 					Elements: []interface{}{
 						paragraph,

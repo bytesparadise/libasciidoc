@@ -201,7 +201,7 @@ func insertPreamble(doc *types.Document) {
 }
 
 func newPreamble(doc *types.Document) *types.Preamble {
-	if header, _ := doc.Header(); header == nil {
+	if header, _ := doc.Header(); header == nil || header.Title == nil {
 		log.Debug("skipping preamble: no header in doc")
 		return nil
 	}

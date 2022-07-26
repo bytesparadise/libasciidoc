@@ -22,7 +22,7 @@ var _ = Describe("documents", func() {
 	BeforeEach(func() {
 		// turn down the logger to `warn` to avoid the noise
 		level = log.GetLevel()
-		log.SetLevel(log.InfoLevel)
+		log.SetLevel(log.WarnLevel)
 	})
 
 	AfterEach(func() {
