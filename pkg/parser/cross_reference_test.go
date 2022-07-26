@@ -33,7 +33,6 @@ with some content linked to <<thetitle>>!`
 							Level: 1,
 							Attributes: types.Attributes{
 								types.AttrID: "thetitle",
-								// // types.AttrCustomID: true,
 							},
 							Title: title,
 							Elements: []interface{}{
@@ -82,7 +81,6 @@ with some content linked to <<thetitle,a label to the title>>!`
 							Level: 1,
 							Attributes: types.Attributes{
 								types.AttrID: "thetitle",
-								// types.AttrCustomID: true,
 							},
 							Title: title,
 							Elements: []interface{}{
@@ -152,7 +150,6 @@ some content`
 						&types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "section",
-								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: title,
@@ -823,13 +820,9 @@ term:: see <<Somewhere Else>>.
 some content linked to xref:{foo}[another_doc()]!`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "foo",
-									Value: "another-doc.adoc",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "foo",
+							Value: "another-doc.adoc",
 						},
 						&types.Paragraph{
 							Elements: []interface{}{

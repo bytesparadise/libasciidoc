@@ -788,18 +788,14 @@ var _ = Describe("tables", func() {
 |===`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: "cols",
-								Value: []interface{}{
-									&types.InlinePassthrough{
-										Kind: types.PassthroughMacro,
-										Elements: []interface{}{
-											&types.StringElement{
-												Content: "2*^.^d,<e,.>s",
-											},
-										},
+					&types.AttributeDeclaration{
+						Name: "cols",
+						Value: []interface{}{
+							&types.InlinePassthrough{
+								Kind: types.PassthroughMacro,
+								Elements: []interface{}{
+									&types.StringElement{
+										Content: "2*^.^d,<e,.>s",
 									},
 								},
 							},

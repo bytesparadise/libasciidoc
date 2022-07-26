@@ -886,7 +886,6 @@ a paragraph`
 						&types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "custom_header",
-								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -918,7 +917,6 @@ a paragraph`
 						&types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "custom_header",
-								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -991,7 +989,6 @@ a paragraph`
 						&types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "custom_header",
-								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -1028,7 +1025,6 @@ a paragraph`
 						&types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "custom_header",
-								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: sectionTitle,
@@ -1078,13 +1074,11 @@ a paragraph`
 							},
 							Attributes: types.Attributes{
 								types.AttrID: "custom_header",
-								// types.AttrCustomID: true,
 							},
 						},
 						&types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "foo",
-								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: fooTitle,
@@ -1092,7 +1086,6 @@ a paragraph`
 						&types.Section{
 							Attributes: types.Attributes{
 								types.AttrID: "bar",
-								// types.AttrCustomID: true,
 							},
 							Level: 1,
 							Title: barTitle,
@@ -1312,12 +1305,10 @@ a paragraph`
 							Title: []interface{}{
 								&types.StringElement{Content: "a header"},
 							},
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "idprefix",
-									Value: "custom1a_",
-								},
-							},
+						},
+						&types.AttributeDeclaration{ // not in the DocumentHeader because of the blankline in-between
+							Name:  "idprefix",
+							Value: "custom1a_",
 						},
 						&types.Section{
 							Attributes: types.Attributes{

@@ -844,16 +844,14 @@ package includes
 include::{includedir}/chapter-a.adoc[]`
 			expected := &types.Document{
 				Elements: []interface{}{
+					&types.AttributeDeclaration{
+						Name:  "includedir",
+						Value: "../../test/includes",
+					},
 					&types.DocumentHeader{
 						Title: []interface{}{
 							&types.StringElement{
 								Content: "Chapter A",
-							},
-						},
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "includedir",
-								Value: "../../test/includes",
 							},
 						},
 					},
@@ -875,13 +873,9 @@ include::{includedir}/chapter-a.adoc[]`
 include::{includedir}/include.foo[]`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  "includedir",
-								Value: "../../test/includes",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name:  "includedir",
+						Value: "../../test/includes",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -1301,17 +1295,13 @@ include::{includedir}/include.foo[]`
 			source := `include::../../test/includes/attributes.adoc[]`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name:  types.AttrAuthor,
-								Value: "Xavier",
-							},
-							&types.AttributeDeclaration{
-								Name:  "leveloffset",
-								Value: "+1",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name:  types.AttrAuthor,
+						Value: "Xavier",
+					},
+					&types.AttributeDeclaration{
+						Name:  "leveloffset",
+						Value: "+1",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -2287,13 +2277,9 @@ include::{includedir}/grandchild-include.adoc[]`
 				}
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "includedir",
-									Value: "../../test/includes",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "includedir",
+							Value: "../../test/includes",
 						},
 						&types.Section{
 							Attributes: types.Attributes{
@@ -2344,13 +2330,9 @@ include::{includedir}/grandchild-include.adoc[]
 ----`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name:  "includedir",
-									Value: "../../test/includes",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name:  "includedir",
+							Value: "../../test/includes",
 						},
 						&types.DelimitedBlock{
 							Kind: types.Listing,

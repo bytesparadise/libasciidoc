@@ -4,7 +4,9 @@ import (
 	"strings"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 func (r *sgmlRenderer) prerenderTableOfContents(ctx *context, toc *types.TableOfContents) error {
@@ -12,9 +14,9 @@ func (r *sgmlRenderer) prerenderTableOfContents(ctx *context, toc *types.TableOf
 		return nil
 	}
 
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("pre-rendering table of contents: %s", spew.Sdump(toc))
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("pre-rendering table of contents: %s", spew.Sdump(toc))
+	}
 	if err := r.prerenderTableOfContentsSections(ctx, toc.Sections); err != nil {
 		return errors.Wrap(err, "error while rendering table of contents")
 	}

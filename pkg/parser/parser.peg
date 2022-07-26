@@ -237,10 +237,10 @@ DocumentFragment <-
         ImageBlock // must appear before ShortcutParagraph
         / UserMacroBlock // must appear before ShortcutParagraph
         / ShortcutParagraph
-        / DocumentHeader // must appear before Section and AttributeDeclaration
         / AttributeDeclaration
         / AttributeReset
-        / BlankLine // must appear after DocumentHeader // TODO: refactor `isDocumentHeaderAllowed` so this rule can be moved at first position
+        / BlankLine
+        / DocumentHeader 
         / Section 
         / DelimitedBlock
         / ThematicBreak // must appear before ListElement :/
@@ -1100,37 +1100,14 @@ DocumentHeader <-
     &{
         return c.isDocumentHeaderAllowed(), nil
     }
-    extraAttrs:(DocumentHeaderAttributes)
-    info:(DocumentInformation)?
-    moreExtraAttrs:(DocumentHeaderAttributes) // TODO: do we need to capture extra attributes in the DocumentHeader?
-    &{
-        // at least one of title/info/extraArgs must be present
-        // log.Debugf("checking document header data: title=%s / info=%s / extraAttrs=%s", title, info, extraAttrs)
-        return info != nil ||
-            len(extraAttrs.([]interface{})) > 0 ||
-            len(moreExtraAttrs.([]interface{})) > 0, nil
-    }
-    {
-        attrs := []interface{}{}
-        if a, ok := extraAttrs.([]interface{}); ok {
-            attrs = append(attrs, a...)
-        }
-        if a, ok := moreExtraAttrs.([]interface{}); ok {
-            attrs = append(attrs, a...)
-        }
-        return types.NewDocumentHeader(info, attrs)
-    }
-
-DocumentHeaderAttributes <- (AttributeDeclaration / AttributeReset / SinglelineComment / CommentBlock / BlankLine)* 
-
-DocumentInformation <-
+    (SinglelineComment / CommentBlock)* // ignored in the returned `DocumentInformation` element
     title:(DocumentTitle)
     (SinglelineComment / CommentBlock)* // ignored in the returned `DocumentInformation` element
     authorsAndRevision:(DocumentAuthorsAndRevision)? 
-    {
-        return types.NewDocumentInformation(title.([]interface{}), authorsAndRevision)
+    extraElements:(AttributeDeclaration / AttributeReset / SinglelineComment / CommentBlock)* {
+        return types.NewDocumentHeader(title.([]interface{}), authorsAndRevision, extraElements.([]interface{}))
     }
-        
+
 DocumentTitle <- 
     "=" Spaces title:(SectionTitle) EOL {
         return title, nil
@@ -1144,14 +1121,9 @@ DocumentAuthorsAndRevision <-
         return types.NewDocumentAuthorsAndRevision(authors.(types.DocumentAuthors), revision)
     }
 
-// DocumentAuthors <- Space* authors:(DocumentAuthorsInlineForm / DocumentAuthorsAttributeForm) EOL {
 DocumentAuthors <- Space* authors:(DocumentAuthor+) EOL {
     return types.NewDocumentAuthors(authors.([]interface{})...)
 }
-
-// DocumentAuthorsAttributeForm <- ":author:" Space* author:(DocumentAuthor) {
-//     return types.NewDocumentAuthors(author)
-// }
 
 DocumentAuthor <- 
     fullName:(DocumentAuthorFullName)? email:(DocumentAuthorEmail)? Space* ";"? Space* 

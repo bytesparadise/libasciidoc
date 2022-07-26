@@ -100,7 +100,7 @@ func (c *current) isDocumentHeaderAllowed() bool {
 // disables the `DocumentHeader` grammar rule if the element is anything but a BlankLine or a FrontMatter
 func (c *current) disableDocumentHeaderRule(element interface{}) {
 	switch element.(type) {
-	case *types.BlankLine, *types.FrontMatter:
+	case *types.BlankLine, *types.FrontMatter, *types.AttributeDeclaration:
 		return
 	default:
 		c.globalStore[documentHeaderKey] = false

@@ -55,6 +55,18 @@ func Render(doc *types.Document, config *configuration.Configuration, output io.
 			}
 		}
 	}
+	// also, process standalone attriute declaration before the first section
+elements:
+	for _, e := range doc.Elements {
+		switch e := e.(type) {
+		case *types.AttributeDeclaration:
+			ctx.attributes[e.Name] = e.Value
+		case *types.AttributeReset:
+			delete(ctx.attributes, e.Name)
+		default:
+			break elements
+		}
+	}
 	if ctx.sectionNumbering, err = doc.SectionNumbers(); err != nil {
 		return metadata, errors.Wrapf(err, "unable to render full document")
 	}

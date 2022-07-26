@@ -18,12 +18,8 @@ var _ = Describe("inline menus", func() {
 Select menu:File[].`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: "experimental",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name: "experimental",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -51,12 +47,8 @@ Select menu:File[].`
 Select menu:File[Save].`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: "experimental",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name: "experimental",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{
@@ -85,12 +77,8 @@ Select menu:File[Save].`
 Select menu:File[Zoom > Reset].`
 			expected := &types.Document{
 				Elements: []interface{}{
-					&types.DocumentHeader{
-						Elements: []interface{}{
-							&types.AttributeDeclaration{
-								Name: "experimental",
-							},
-						},
+					&types.AttributeDeclaration{
+						Name: "experimental",
 					},
 					&types.Paragraph{
 						Elements: []interface{}{

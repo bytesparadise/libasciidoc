@@ -370,8 +370,7 @@ var _ = Describe("attributes", func() {
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID: "custom",
-								// types.AttrCustomID: true,
+								types.AttrID:    "custom",
 								types.AttrRoles: types.Roles{"cookie"},
 							},
 							Title: []interface{}{

@@ -38,6 +38,56 @@ This journey continues.`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("header after single-line comment", func() {
+				source := `// single-line comment
+= Title
+			
+This journey continues.`
+
+				Title := []interface{}{
+					&types.StringElement{Content: "Title"},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DocumentHeader{
+							Title: Title,
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "This journey continues."},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("header after block comment", func() {
+				source := `//// 
+block comment
+////
+= Title
+			
+This journey continues.`
+
+				Title := []interface{}{
+					&types.StringElement{Content: "Title"},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.DocumentHeader{
+							Title: Title,
+						},
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "This journey continues."},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("header with attributes", func() {
 				source := `[.role1#anchor.role2]
 = Title
@@ -54,7 +104,6 @@ This journey continues.`
 							Attributes: types.Attributes{
 								types.AttrRoles: types.Roles{"role1", "role2"},
 								types.AttrID:    "anchor",
-								// types.AttrCustomID: true,
 							},
 						},
 						&types.Paragraph{
@@ -1043,20 +1092,16 @@ v1.0:`
 :_author: Xavier`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name: "a",
-								},
-								&types.AttributeDeclaration{
-									Name:  types.AttrAuthor, // known attribute
-									Value: "Xavier",
-								},
-								&types.AttributeDeclaration{
-									Name:  "_author",
-									Value: "Xavier", // not converted
-								},
-							},
+						&types.AttributeDeclaration{
+							Name: "a",
+						},
+						&types.AttributeDeclaration{
+							Name:  types.AttrAuthor, // known attribute
+							Value: "Xavier",
+						},
+						&types.AttributeDeclaration{
+							Name:  "_author",
+							Value: "Xavier", // not converted
 						},
 					},
 				}
@@ -1071,23 +1116,19 @@ v1.0:`
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name: "toc",
-								},
-								&types.AttributeDeclaration{
-									Name:  "date",
-									Value: "2017-01-01",
-								},
-								&types.AttributeDeclaration{
-									Name:  types.AttrAuthor, // known attribute
-									Value: "Xavier",
-								},
-								&types.AttributeDeclaration{
-									Name: "hardbreaks",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name: "toc",
+						},
+						&types.AttributeDeclaration{
+							Name:  "date",
+							Value: "2017-01-01",
+						},
+						&types.AttributeDeclaration{
+							Name:  types.AttrAuthor, // known attribute
+							Value: "Xavier",
+						},
+						&types.AttributeDeclaration{
+							Name: "hardbreaks",
 						},
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -1109,20 +1150,16 @@ a paragraph`
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name: "toc",
-								},
-								&types.AttributeDeclaration{
-									Name:  "date",
-									Value: "2017-01-01",
-								},
-								&types.AttributeDeclaration{
-									Name:  types.AttrAuthor, // known attribute
-									Value: "Xavier",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name: "toc",
+						},
+						&types.AttributeDeclaration{
+							Name:  "date",
+							Value: "2017-01-01",
+						},
+						&types.AttributeDeclaration{
+							Name:  types.AttrAuthor, // known attribute
+							Value: "Xavier",
 						},
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -1145,23 +1182,19 @@ a paragraph`
 a paragraph`
 				expected := &types.Document{
 					Elements: []interface{}{
-						&types.DocumentHeader{
-							Elements: []interface{}{
-								&types.AttributeDeclaration{
-									Name: "toc",
-								},
-								&types.AttributeDeclaration{
-									Name:  "date",
-									Value: "2017-01-01",
-								},
-								&types.AttributeDeclaration{
-									Name:  types.AttrAuthor, // known attribute
-									Value: "Xavier",
-								},
-								&types.AttributeDeclaration{
-									Name: "hardbreaks",
-								},
-							},
+						&types.AttributeDeclaration{
+							Name: "toc",
+						},
+						&types.AttributeDeclaration{
+							Name:  "date",
+							Value: "2017-01-01",
+						},
+						&types.AttributeDeclaration{
+							Name:  types.AttrAuthor, // known attribute
+							Value: "Xavier",
+						},
+						&types.AttributeDeclaration{
+							Name: "hardbreaks",
 						},
 						&types.Paragraph{
 							Elements: []interface{}{
@@ -1211,13 +1244,9 @@ multiple \
 lines.`
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name:  "description",
-										Value: "a long description on multiple lines.",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name:  "description",
+								Value: "a long description on multiple lines.",
 							},
 						},
 					}
@@ -1233,20 +1262,16 @@ lines.
 :author: Xavier`
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name: "hardbreaks",
-									},
-									&types.AttributeDeclaration{
-										Name:  "description",
-										Value: "a long description on multiple lines.",
-									},
-									&types.AttributeDeclaration{
-										Name:  types.AttrAuthor, // known attribute
-										Value: "Xavier",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name: "hardbreaks",
+							},
+							&types.AttributeDeclaration{
+								Name:  "description",
+								Value: "a long description on multiple lines.",
+							},
+							&types.AttributeDeclaration{
+								Name:  types.AttrAuthor, // known attribute
+								Value: "Xavier",
 							},
 						},
 					}
@@ -1262,20 +1287,16 @@ lines.
 :author: Xavier`
 					expected := &types.Document{
 						Elements: []interface{}{
-							&types.DocumentHeader{
-								Elements: []interface{}{
-									&types.AttributeDeclaration{
-										Name: "hardbreaks",
-									},
-									&types.AttributeDeclaration{
-										Name:  "description",
-										Value: "a long description on multiple lines.",
-									},
-									&types.AttributeDeclaration{
-										Name:  types.AttrAuthor, // known attribute
-										Value: "Xavier",
-									},
-								},
+							&types.AttributeDeclaration{
+								Name: "hardbreaks",
+							},
+							&types.AttributeDeclaration{
+								Name:  "description",
+								Value: "a long description on multiple lines.",
+							},
+							&types.AttributeDeclaration{
+								Name:  types.AttrAuthor, // known attribute
+								Value: "Xavier",
 							},
 						},
 					}

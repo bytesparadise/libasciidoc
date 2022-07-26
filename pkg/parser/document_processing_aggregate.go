@@ -43,11 +43,13 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 			switch e := element.(type) {
 			case *types.AttributeDeclaration:
 				attrs.set(e.Name, e.Value)
-				if e.Name == types.AttrTableOfContentsLevels {
+				switch e.Name {
+				case types.AttrTableOfContentsLevels:
 					// TODO: raise a warning if value is invalid
 					maxDepth := attrs.getAsIntWithDefault(types.AttrTableOfContentsLevels, 2)
 					log.Debugf("setting ToC.MaxDepth to %d", maxDepth)
 					toc.MaxDepth = maxDepth
+
 				}
 			case *types.FrontMatter:
 				attrs.setAll(e.Attributes)
@@ -75,9 +77,7 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 				if err := e.ResolveID(attrs.allAttributes(), refs); err != nil {
 					return nil, err
 				}
-				if toc != nil {
-					toc.Add(e)
-				}
+				toc.Add(e)
 			}
 
 			// also, retain the element

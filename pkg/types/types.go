@@ -286,26 +286,25 @@ type DocumentHeader struct {
 	Elements   []interface{}
 }
 
-func NewDocumentHeader(info interface{}, extraAttrs []interface{}) (*DocumentHeader, error) {
+func NewDocumentHeader(title []interface{}, ar interface{}, extraAttrs []interface{}) (*DocumentHeader, error) {
 	header := &DocumentHeader{}
 	elements := make([]interface{}, 0, 2+len(extraAttrs)) // estimated max capacity
-	if info, ok := info.(*DocumentInformation); ok {
-		header.Title = TrimTrailingSpaces(info.Title)
-		if len(info.Authors) > 0 {
+	header.Title = TrimTrailingSpaces(title)
+	if ar, ok := ar.(*DocumentAuthorsAndRevision); ok {
+		if len(ar.Authors) > 0 {
 			// header.Authors = info.Authors
 			elements = append(elements, &AttributeDeclaration{
 				Name:  AttrAuthors,
-				Value: info.Authors,
+				Value: ar.Authors,
 			})
 		}
-		if info.Revision != nil {
+		if ar.Revision != nil {
 			// header.Elements = append(header.Elements, info.Revision.Expand()...)
 			elements = append(elements, &AttributeDeclaration{
 				Name:  AttrRevision,
-				Value: info.Revision,
+				Value: ar.Revision,
 			})
 		}
-
 	}
 	elements = append(elements, extraAttrs...)
 	if len(elements) > 0 {
@@ -406,29 +405,6 @@ func (h *DocumentHeader) AddAttributes(attributes Attributes) {
 // SetAttributes sets the attributes in this element
 func (h *DocumentHeader) SetAttributes(attributes Attributes) {
 	h.Attributes = attributes
-	// if _, exists := h.Attributes[AttrID]; exists {
-	// 	// needed to track custom ID during rendering
-	// 	h.Attributes[AttrCustomID] = true
-	// }
-}
-
-type DocumentInformation struct {
-	Title []interface{}
-	DocumentAuthorsAndRevision
-}
-
-func NewDocumentInformation(title []interface{}, ar interface{}) (*DocumentInformation, error) {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debug("new document info")
-		log.Debugf("authors and revision: %s", spew.Sdump(ar))
-	}
-	info := &DocumentInformation{
-		Title: title,
-	}
-	if ar, ok := ar.(*DocumentAuthorsAndRevision); ok {
-		info.DocumentAuthorsAndRevision = *ar
-	}
-	return info, nil
 }
 
 type DocumentAuthorsAndRevision struct {
