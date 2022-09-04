@@ -1260,8 +1260,8 @@ FrontMatterLine <- (.)* {
 InlineElement <-  
     element:(
         Spaces 
+        / InlineWord 
         / InlineMacro
-        / InlineWord // more permissive than the 'Word' rule
         / LineBreak
         / Symbol // TODO: use `Replacement`?
         / Quote
@@ -1317,7 +1317,7 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
     }
 
-IndexTermContent <- elements:(Word / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
+IndexTermContent <- elements:(InlineWord / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
     return string(c.text), nil
 })+ {
     return types.NewInlineElements(elements.([]interface{}))
@@ -2419,7 +2419,7 @@ SectionTitle <-
 SectionTitleElement <-
     !EOL
     element:(
-        Word
+        InlineWord
         / (Space+ id:(LegacyElementID) Space* &EOL { return id, nil}) // (legacy) element ID
         / Space
         / InlinePassthrough
@@ -2478,7 +2478,7 @@ AttributeStructuredValueElement <-
     element:(
         InlineWord
         / Space 
-        / InlineMacro // TODO: needed here? // TODO: only check if previous character is a space (or empty). For example in `github-title` the choices are evaluated on each character because `Word` cannot be suffixed with `-`
+        / InlineMacro
         / Quote
         / SpecialCharacter
         / Symbol // TODO: use `Replacement`?
@@ -2834,17 +2834,6 @@ Parenthesis <- "(" / ")" / "[" / "]" / "{" / "}"
 
 Alphanums <- [\pL\pN]+ {
         return string(c.text), nil
-    }
-
-// TODO: clarify/merge `Word` and `InlineWord`
-Word <-
-    // very straightforward content: alphanums followed by attached single quote delimiter and more characters 
-    // (in this case, the quoted text delimiters are intepreted as regular characters)
-    // then followed by spaces but not the "+" signs because it needs a leading space to become a LineBreak element
-    [\pL\pN]+ &([\r\n ,\]] / EOF) {
-        return types.NewStringElement(string(c.text))
-    } / [\pL\pN]+ ([=*_`] [\pL\pN]+)+ {  // allow `
-        return types.NewStringElement(string(c.text))
     }
 
 InlineWord <- 

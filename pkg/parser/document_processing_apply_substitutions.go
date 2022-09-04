@@ -269,17 +269,18 @@ func reparseAttributes(ctx *ParseContext, element types.WithAttributes, opts ...
 	for k, v := range attrs {
 		switch k {
 		case types.AttrTitle, types.AttrXRefLabel:
-			v, err := parseWithSubstitutions(v, attributeSubstitutions(), append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
+			subs := attributeSubstitutions()
+			// same as above, but do not allow for inline macros (eg: links)
+			if err := subs.append(Macros); err != nil {
+				return err
+			}
+			v, err := parseWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
 			if err != nil {
 				return err
 			}
 			attrs[k] = types.Reduce(v)
 		case types.AttrInlineLinkText:
 			subs := attributeSubstitutions()
-			// same as above, but do not allow for inline macros (eg: links)
-			if err := subs.remove(Macros); err != nil {
-				return err
-			}
 			v, err := parseWithSubstitutions(v, subs, append(append(ctx.opts, Entrypoint("AttributeStructuredValue")), opts...)...)
 			if err != nil {
 				return err

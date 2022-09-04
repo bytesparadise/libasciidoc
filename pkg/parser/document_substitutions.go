@@ -64,7 +64,7 @@ func attributeSubstitutions() *substitutions {
 			AttributeRefs,
 			SpecialCharacters,
 			Quotes,
-			Macros,
+			// Macros,
 			Replacements,
 		},
 	}
