@@ -12,6 +12,34 @@ var _ = Describe("symbols", func() {
 
 	Context("in final documents", func() {
 
+		Context("apostrophes", func() {
+
+			It("single line with ellipsis and apostrophe", func() {
+				source := `...and we're back!`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.Symbol{
+									Name: "...",
+								},
+								&types.StringElement{
+									Content: "and we",
+								},
+								&types.Symbol{
+									Name: "'",
+								},
+								&types.StringElement{
+									Content: "re back!",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+		})
+
 		Context("m-dashes", func() {
 
 			It("should detect between word characters", func() {

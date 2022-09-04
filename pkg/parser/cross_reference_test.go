@@ -485,11 +485,10 @@ Here's a reference to the definition of <<a_term>>.`
 						&types.Paragraph{
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "Her",
+									Content: "Here",
 								},
 								&types.Symbol{
-									Prefix: "e",
-									Name:   "'",
+									Name: "'",
 								},
 								&types.StringElement{
 									Content: "s a reference to the definition of ",

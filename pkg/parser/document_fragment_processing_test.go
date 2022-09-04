@@ -223,11 +223,10 @@ eve - analyzes an image to determine if it's a picture of a life form
 							&types.Paragraph{
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "eve - analyzes an image to determine if i",
+										Content: "eve - analyzes an image to determine if it",
 									},
 									&types.Symbol{
-										Prefix: "t",
-										Name:   "'",
+										Name: "'",
 									},
 									&types.StringElement{
 										Content: "s a picture of a life form",

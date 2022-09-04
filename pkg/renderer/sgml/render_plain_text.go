@@ -112,9 +112,9 @@ func (r *plaintextRenderer) renderInlinePassthrough(p *types.InlinePassthrough) 
 
 func (r *plaintextRenderer) renderSymbol(s *types.Symbol) (string, error) {
 	if v, found := symbols[s.Name]; found {
-		return s.Prefix + v, nil
+		return v, nil
 	}
-	return s.Prefix + s.Name, nil
+	return s.Name, nil
 }
 
 func (r *plaintextRenderer) renderInlineLink(l *types.InlineLink) (string, error) {

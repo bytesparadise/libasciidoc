@@ -180,10 +180,6 @@ func allIncremental(subs []string) bool {
 	return true
 }
 
-func (s *substitutions) empty() bool {
-	return len(s.sequence) == 0
-}
-
 func (s *substitutions) toString() string {
 	return strings.Join(s.sequence, ",")
 }

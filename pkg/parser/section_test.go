@@ -1046,6 +1046,48 @@ a paragraph`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("single line with apostrophe", func() {
+				source := `== ...and we're back!`
+				sectionTitle := []interface{}{
+					&types.Symbol{
+						Name: "...",
+					},
+					&types.StringElement{
+						Content: "and we",
+					},
+					&types.Symbol{
+						Name: "'",
+					},
+					&types.StringElement{
+						Content: "re back!",
+					},
+				}
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Section{
+							Attributes: types.Attributes{
+								types.AttrID: "_and_were_back",
+							},
+							Level: 1,
+							Title: sectionTitle,
+						},
+					},
+					ElementReferences: types.ElementReferences{
+						"_and_were_back": sectionTitle,
+					},
+					TableOfContents: &types.TableOfContents{
+						MaxDepth: 2,
+						Sections: []*types.ToCSection{
+							{
+								ID:    "_and_were_back",
+								Level: 1,
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("multiple sections with multiple inline custom IDs", func() {
 				source := `[[custom_header]]
 = a header

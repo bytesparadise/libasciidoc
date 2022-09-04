@@ -2763,6 +2763,9 @@ const (
 
 // NewQuotedText initializes a new `QuotedText` from the given kind and content
 func NewQuotedText(kind QuotedTextKind, elements ...interface{}) (*QuotedText, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new quoted text: %v %s", kind, spew.Sdump(elements...))
+	}
 	return &QuotedText{
 		Kind:     kind,
 		Elements: merge(elements),
@@ -2814,7 +2817,9 @@ func (t *QuotedText) WithAttributes(attributes interface{}) (*QuotedText, error)
 
 // NewEscapedQuotedText returns a new []interface{} where the nested elements are preserved (ie, substituted as expected)
 func NewEscapedQuotedText(backslashes string, marker string, content interface{}) ([]interface{}, error) {
-	// log.Debugf("new escaped quoted text: %s %s %v", backslashes, punctuation, content)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new escaped quoted text: %s %s %s", backslashes, marker, spew.Sdump(content))
+	}
 	backslashesStr := Apply(backslashes,
 		func(s string) string {
 			// remove the number of back-slashes that match the length of the punctuation. Eg: `\*` or `\\**`, but keep extra back-slashes
@@ -3653,22 +3658,13 @@ func NewSpecialCharacter(name string) (*SpecialCharacter, error) {
 // Symbol a sequence of characters, which may get a special treatment later during rendering
 // Eg: `(C)`, `(TM)`, `...`, etc.
 type Symbol struct {
-	Prefix string // optional
-	Name   string
+	Name string
 }
 
 // NewSymbol return a new Symbol
 func NewSymbol(name string) (*Symbol, error) {
 	return &Symbol{
 		Name: name,
-	}, nil
-}
-
-// NewSymbolWithForeword return a new Symbol prefixed with a foreword
-func NewSymbolWithForeword(name, foreword string) (*Symbol, error) {
-	return &Symbol{
-		Name:   name,
-		Prefix: foreword,
 	}, nil
 }
 
