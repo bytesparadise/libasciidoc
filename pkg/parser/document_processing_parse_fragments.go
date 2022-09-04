@@ -30,7 +30,6 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 			// if log.IsLevelEnabled(log.DebugLevel) {
 			// 	log.Debugf("starting new fragment at line %d", p.pt.line)
 			// }
-			// line := p.pt.line
 			start := time.Now()
 			if log.IsLevelEnabled(log.DebugLevel) {
 				log.Debugf("parsing fragment starting at p.pt.line:%d / p.cur.pos.line:%d", p.pt.line, p.cur.pos.line)

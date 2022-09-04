@@ -153,11 +153,10 @@ var _ = DescribeTable("replace non-alphanumeric chars",
 		// here's a cookie
 		[]interface{}{
 			&types.StringElement{
-				Content: "Her",
+				Content: "Here",
 			},
 			&types.Symbol{
-				Prefix: "e",
-				Name:   "'",
+				Name: "'",
 			},
 			&types.StringElement{
 				Content: "s a cookie",

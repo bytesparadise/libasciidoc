@@ -1134,11 +1134,10 @@ The {plus} symbol is on a new line.
 																				},
 																				&types.LineBreak{},
 																				&types.StringElement{
-																					Content: "\nAmazing, is",
+																					Content: "\nAmazing, isn",
 																				},
 																				&types.Symbol{
-																					Prefix: "n",
-																					Name:   "'",
+																					Name: "'",
 																				},
 																				&types.StringElement{
 																					Content: "t it?",

@@ -92,8 +92,8 @@ IfevalExpressionMember <-
     ("\"" s:(AttributeReferenceValue) "\"" { return s, nil })
     / ("'" s:(AttributeReferenceValue) "'" { return s, nil })
     / (s:(AttributeReferenceValue) { return s, nil })
-    / ("\"" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "\"" { return w, nil })
-    / ("'" w:([\pL0-9,?!;_-]+ { return string(c.text), nil}) "'" { return w, nil })
+    / ("\"" w:([\pL\pN,?!;_-]+ { return string(c.text), nil}) "\"" { return w, nil })
+    / ("'" w:([\pL\pN,?!;_-]+ { return string(c.text), nil}) "'" { return w, nil })
     / Integer
 
 IfevalExpressionOperand <-
@@ -315,7 +315,7 @@ AttributeDeclaration <-
 // AttributeName must be at least one character long, 
 // must begin with a word character (A-Z, a-z, 0-9) or an underscore ("_") 
 // and must only contain word characters (A-Z, a-z, 0-9) and hyphens ("-").
-AttributeName <- [\pL0-9_] ([\pL0-9-])* {
+AttributeName <- [\pL\pN_] ([\pL\pN-])* {
         return string(c.text), nil
     }
 
@@ -693,7 +693,7 @@ ExternalCrossReference <- "xref:" url:(FileLocation) attributes:(InlineAttribute
     }
 
 CrossReferenceLabel <- (
-    ([\pL0-9][^\r\n{<>]+ { // `{`, `>` and `>` characters are not allowed as they are used for attribute substitutions and cross-references 
+    ([\pL\pN][^\r\n{<>]+ { // `{`, `>` and `>` characters are not allowed as they are used for attribute substitutions and cross-references 
         return types.NewStringElement(string(c.text))
     })
     / AttributeReferenceValue
@@ -1203,9 +1203,14 @@ ElementPlaceHolder <- ElementPlaceHolderDelimiter ref:([0-9]+ { return string(c.
 // -----------------------------------------------------------------------------------------------------------------------
 LineBreak <- 
     &{ 
-        return c.isSubstitutionEnabled(PostReplacements) && c.isPreceededBySpace(), nil
+        return c.isSubstitutionEnabled(PostReplacements), nil
     }
-    "+" Space* &(EOL) {
+    "+"
+    &{ 
+        log.Debug("LineBreak")
+        return c.isPrecededBySpace(), nil
+    }
+    Space* &(EOL) {
         return types.NewLineBreak()    
     }
 
@@ -1254,17 +1259,17 @@ FrontMatterLine <- (.)* {
 // "post_replacements",
 InlineElement <-  
     element:(
-        InlineWord // more permissive than the 'Word' rule
-        / Spaces 
+        Spaces 
+        / InlineMacro
+        / InlineWord // more permissive than the 'Word' rule
         / LineBreak
-        / Symbol
+        / Symbol // TODO: use `Replacement`?
         / Quote
         / AttributeReference 
-        / InlineMacro
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
         // if anything above did not match...
         / AnyChar) {
-    c.trackSuffix(element)
+    c.trackElement(element)
     return element, nil
 }
 
@@ -1345,7 +1350,7 @@ InlineImage <- "image:" !":" path:(Location) attributes:(InlineAttributes) {
 // -------------------------------------------------------------------------------------------------------------------------------
 // Inline Icons
 // -------------------------------------------------------------------------------------------------------------------------------
-InlineIcon <- "icon:" icon:([\pL0-9_-]+ { return string(c.text), nil }) attributes:(InlineAttributes) {
+InlineIcon <- "icon:" icon:([\pL\pN_-]+ { return string(c.text), nil }) attributes:(InlineAttributes) {
         return types.NewIcon(icon.(string), attributes)
     }
 
@@ -1746,6 +1751,7 @@ ParagraphStyle <-
         }
 
 ShortcutParagraph <- 
+    // TODO: also allow quoted text delimiters?
     &(Alphanum !(("." / ")") Spaces)) // make sure that the line starts with an alphanum and it's not an ordered list element prefix (eg: `1. ` or `a) `)
     style:(ParagraphStyle)?
     firstLine:(ParagraphRawLine) 
@@ -1795,65 +1801,47 @@ ParagraphRawLine <-
 // -----------------------------------------------------------------------------------------------------------------------
 // Quoted Texts (bold, italic, monospace, marked, superscript and subscript)
 // -----------------------------------------------------------------------------------------------------------------------
-QuotedText <- 
-    attributes:(LongHandAttributes)?
-    #{
-        if attributes != nil { // otherwise, `c.text` matches the current character read by the parser
-            c.state["attrs"] = attributes
-            c.state["attrs_text"] = string(c.text)
-        } else {
-            // make sure that current state does not contain attributes of parent/surrounding quoted text
-            delete(c.state, "attrs")
-            delete(c.state, "attrs_text")
-        }
-        return nil
-    }
-    element:(
-        // escaped
-        escaped:(EscapedQuotedText) {
-            attributes := c.state["attrs_text"]
-            return append([]interface{}{attributes}, escaped.([]interface{})...), nil
-        }
-        / 
-        // unescaped 
-        unescaped:(UnconstrainedQuotedText / ConstrainedQuotedText) {
-            attributes := c.state["attrs"]
-            return unescaped.(*types.QuotedText).WithAttributes(attributes)
-        }
-    ) {
-        return element, nil
-    }
-
-ConstrainedQuotedTextMarker <- "*" !"*" / "_" !"_" / "#" !"#" / "`" !"`"
-
-UnconstrainedQuotedTextPrefix <- "**" / "__" / "``" / DoubleQuoteMarkedTextDelimiter / "^" / "~"
-
-ConstrainedQuotedText <- 
-    SingleQuoteBoldText 
-    / SingleQuoteItalicText
-    / SingleQuoteMarkedText
-    / SingleQuoteMonospaceText 
-    / SubscriptText 
-    / SuperscriptText 
-
-UnconstrainedQuotedText <- 
-    DoubleQuoteBoldText
-    / DoubleQuoteItalicText
-    / DoubleQuoteMarkedText
-    / DoubleQuoteMonospaceText
+QuotedText <- EscapedQuotedText / UnescapedQuotedText
 
 EscapedQuotedText <-
+    attributes:(LongHandAttributes {
+        return string(c.text), nil
+    })?
     &(`\`)
     element:(
         EscapedBoldText 
         / EscapedItalicText
-        / EscapedMarkedText
         / EscapedMonospaceText
+        / EscapedMarkedText
         / EscapedSubscriptText
         / EscapedSuperscriptText
     ) {
-        return element, nil
+        return append([]interface{}{attributes}, element.([]interface{})...), nil
     }
+
+UnescapedQuotedText <-  // unescaped 
+    attributes:(LongHandAttributes)?
+    element:(DoubleQuotedText / SingleQuotedText) {
+        return element.(*types.QuotedText).WithAttributes(attributes)
+    }
+
+SingleQuotedTextMarker <- "*" !"*" / "_" !"_" / "#" !"#" / "`" !"`"
+
+DoubleQuotedTextPrefix <- "**" / "__" / "``" / "##" / "^" / "~"
+
+SingleQuotedText <- 
+    SingleQuoteBoldText 
+    / SingleQuoteItalicText
+    / SingleQuoteMonospaceText 
+    / SingleQuoteMarkedText
+    / SubscriptText 
+    / SuperscriptText 
+
+DoubleQuotedText <- 
+    DoubleQuoteBoldText
+    / DoubleQuoteItalicText
+    / DoubleQuoteMonospaceText
+    / DoubleQuoteMarkedText
 
 SubscriptOrSuperscriptPrefix <- "^" / "~" { // rule used within `words` to detect superscript or subscript portions, eg in math formulae.
         return string(c.text), nil
@@ -1870,79 +1858,80 @@ TwoOrMoreBackslashes <- `\\` `\`* {
 // ---------------------------------------------------
 // Quoted Bold Text
 // ---------------------------------------------------
-BoldText <- DoubleQuoteBoldText / SingleQuoteBoldText // double punctuation must be evaluated first
 
 BoldTextDelimiter <- "*"
 
 BoldTextWord <- 
-    [\pL0-9,?!;]+ &(Space / BoldTextDelimiter) {
+    ([\pL\pN]) // start with letter or number
+    ([\pL\pN,;?!])*
+    &(Space / BoldTextDelimiter) {
         return types.NewStringElement(string(c.text))
     }
 
 // -------------------------------
 // Bold text within double quotes
 // -------------------------------
-DoubleQuoteBoldTextDelimiter <- "**"
+DoubleQuoteBoldTextStartDelimiter <- "**"
+
+DoubleQuoteBoldTextEndDelimiter <- "**"
 
 DoubleQuoteBoldText <- 
-    DoubleQuoteBoldTextDelimiter 
+    DoubleQuoteBoldTextStartDelimiter 
     elements:(DoubleQuoteBoldTextElements) 
-    DoubleQuoteBoldTextDelimiter {
+    DoubleQuoteBoldTextEndDelimiter {
         return types.NewQuotedText(types.DoubleQuoteBold, elements.([]interface{}))
     } 
 
 DoubleQuoteBoldTextElements <- DoubleQuoteBoldTextElement+  
 
 DoubleQuoteBoldTextElement <- 
-    !DoubleQuoteBoldTextDelimiter
+    !EOF
+    !DoubleQuoteBoldTextEndDelimiter
     element:(
         BoldTextWord
         / Spaces // may start and end with spaces
-        / Newline !Newline // 2 newlines split the paragraph
+        / SingleNewline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / Symbol
+        / Replacement
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
-        / QuotedTextInDoubleQuoteBoldText
+        / QuotedText
         / ElementPlaceHolder
-        / DoubleQuoteBoldTextFallbackCharacter) {
-            return element, nil
-        }
-
-QuotedTextInDoubleQuoteBoldText <- 
-    attributes:(LongHandAttributes)? 
-    text:(
-        SingleQuoteBoldText
-        / ItalicText
-        / MarkedText
-        / MonospaceText
-        / SubscriptText
-        / SuperscriptText) {
-            return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-DoubleQuoteBoldTextFallbackCharacter <-
-    [^\r\n*] // anything except EOL and bold delimiter (fallback in case nothing else matched)
-    / DoubleQuoteBoldTextDelimiter Alphanums {  // or a bold delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
+        / AnyChar
+    ) {
+        c.trackElement(element)
+        return element, nil
     }
 
 // -------------------------------
 // Bold text within single quotes
 // -------------------------------
-SingleQuoteBoldTextStartDelimiter <- "*"
+SingleQuoteBoldTextStartDelimiter <- 
+    "*" 
+    &{
+        log.Debug("SingleQuoteBoldTextStartDelimiter")
+        return c.isSingleQuotedTextAllowed(), nil
+    }
+    &(!"*") // not to be confused with double quoted start delimiter
 
-SingleQuoteBoldTextEndDelimiter <- "*" 
+SingleQuoteBoldTextEndDelimiter <- 
+    "*" 
+    !"*" // do not collide with nested double quoted bold text
+    &{
+        log.Debug("SingleQuoteBoldTextEndDelimiter")
+        return !c.isPrecededBySpace(), nil
+    }
+    &(!Alphanum)
 
 SingleQuoteBoldText <- 
-   SingleQuoteBoldTextStartDelimiter
+    SingleQuoteBoldTextStartDelimiter
     elements:(SingleQuoteBoldTextElements) 
     SingleQuoteBoldTextEndDelimiter {
         return types.NewQuotedText(types.SingleQuoteBold, elements.([]interface{}))
     } 
 
 SingleQuoteBoldTextElements <-  
-    !EOF !Space // cannot start with spaces
+    !Space // cannot start with spaces
     elements:(SingleQuoteBoldTextElement)+ 
     &{
         return validateSingleQuoteElements(elements.([]interface{})) // cannot end with spaces
@@ -1951,46 +1940,22 @@ SingleQuoteBoldTextElements <-
     }
 
 SingleQuoteBoldTextElement <- 
-    BoldTextWord
-    / Spaces
-    / Newline !Newline // 2 newlines split the paragraph
-    / AttributeReference
-    / InlineMacro
-    / Symbol
-    / SpecialCharacter // must be after InlineMacro (because of BareURL)
-    / QuotedTextInSingleQuoteBoldText
-    / ElementPlaceHolder
-    / SingleQuoteBoldTextFallbackCharacter
-
-QuotedTextInSingleQuoteBoldText <- 
-    // escaped content
-    &(`\`)
-    element:(
-        EscapedItalicText
-        / EscapedMarkedText
-        / EscapedMonospaceText
-        / EscapedSubscriptText
-        / EscapedSuperscriptText
+    !EOF // TODO: needed?
+    !SingleQuoteBoldTextEndDelimiter
+    element:( // TODO: same rule in other kinds of quoted text -> new rule to regroup
+        BoldTextWord
+        / Spaces
+        / SingleNewline // 2 newlines split the paragraph
+        / InlineMacro
+        / AttributeReference
+        / Replacement
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / QuotedText
+        / ElementPlaceHolder
+        / AnyChar
     ) {
+        c.trackElement(element)
         return element, nil
-    }
-    /
-    // unescaped content
-    attributes:(LongHandAttributes)? 
-    text:(
-        DoubleQuoteBoldText
-        / ItalicText
-        / MonospaceText
-        / MarkedText
-        / SubscriptText
-        / SuperscriptText) {
-            return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-SingleQuoteBoldTextFallbackCharacter <-
-    [^\r\n *] // anything except EOL, space and bold delimiter (fallback in case nothing else matched)
-    / "*" Alphanums {  // or a bold delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
     }
 
 EscapedBoldText <- 
@@ -2012,81 +1977,70 @@ EscapedBoldText <-
 // Quoted Italic Text
 // ---------------------------------------------------------
 
-ItalicText <- DoubleQuoteItalicText / SingleQuoteItalicText
-
 ItalicTextDelimiter <- "_"
 
 ItalicTextWord <- 
-    [\pL0-9]+ &(Space / ItalicTextDelimiter) {
+    ([\pL\pN]) // start with letter or number
+    ([\pL\pN,;?!])*
+    &(Space / ItalicTextDelimiter) {
         return types.NewStringElement(string(c.text))
     }
 
 // ---------------------------------
 // Italic text within double quotes
 // ---------------------------------
-DoubleQuoteItalicTextDelimiter <- "__"
+DoubleQuoteItalicTextStartDelimiter <- "__"
+
+DoubleQuoteItalicTextEndDelimiter <- "__"
 
 DoubleQuoteItalicText <- 
-    DoubleQuoteItalicTextDelimiter 
+    DoubleQuoteItalicTextStartDelimiter 
     elements:(DoubleQuoteItalicTextElements) 
-    DoubleQuoteItalicTextDelimiter { // double punctuation must be evaluated first
+    DoubleQuoteItalicTextEndDelimiter {
         return types.NewQuotedText(types.DoubleQuoteItalic, elements.([]interface{}))
     }
 
 DoubleQuoteItalicTextElements <- DoubleQuoteItalicTextElement+ 
 
 DoubleQuoteItalicTextElement <- 
-    !DoubleQuoteItalicTextDelimiter
+    !EOF
+    !DoubleQuoteItalicTextEndDelimiter
     element:(
         ItalicTextWord
         / Spaces // may start and end with spaces
-        / Newline !Newline // 2 newlines split the paragraph
+        / SingleNewline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / Symbol
+        / Replacement
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
-        / QuotedTextInDoubleQuoteItalicText
+        / QuotedText
         / ElementPlaceHolder
-        / DoubleQuoteItalicTextFallbackCharacter) {
-            return element, nil
-        }
-
-QuotedTextInDoubleQuoteItalicText <- 
-    // escaped content
-    &(`\`)
-    element:(
-        EscapedBoldText 
-        / EscapedMarkedText
-        / EscapedMonospaceText
-        / EscapedSubscriptText
-        / EscapedSuperscriptText
+        / AnyChar
     ) {
+        c.trackElement(element)
         return element, nil
-    }
-    /
-    // unescaped content
-    attributes:(LongHandAttributes)? 
-    text:(SingleQuoteItalicText
-        / BoldText
-        / MarkedText
-        / MonospaceText
-        / SubscriptText
-        / SuperscriptText) {
-            return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-DoubleQuoteItalicTextFallbackCharacter <-
-    [^\r\n_] // anything except EOL and italic delimiter (fallback in case nothing else matched)
-    / "__" Alphanums {  // or a italic delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
     }
 
 // ---------------------------------
 // Italic text within single quotes
 // ---------------------------------
-SingleQuoteItalicTextStartDelimiter <- "_" 
+SingleQuoteItalicTextStartDelimiter <- 
+    "_" 
+    &{
+        log.Debug("SingleQuoteItalicTextStartDelimiter")
+        return c.isSingleQuotedTextAllowed(), nil
+    }
+    &(!"_") // not to be confused with double quoted start delimiter
+    
 
-SingleQuoteItalicTextEndDelimiter <- "_" 
+SingleQuoteItalicTextEndDelimiter <- 
+    "_" 
+    !"_" // do not collide with nested double quoted italic text
+    &{
+        log.Debug("SingleQuoteItalicTextEndDelimiter")
+        return !c.isPrecededBySpace(), nil
+    }
+    &(!Alphanum)
 
 SingleQuoteItalicText <- 
     SingleQuoteItalicTextStartDelimiter
@@ -2096,7 +2050,7 @@ SingleQuoteItalicText <-
     } 
 
 SingleQuoteItalicTextElements <- 
-    !EOF !Space // cannot start with spaces
+    !Space // cannot start with spaces
     elements:(SingleQuoteItalicTextElement)+
     &{
         return validateSingleQuoteElements(elements.([]interface{})) // cannot end with spaces
@@ -2105,45 +2059,22 @@ SingleQuoteItalicTextElements <-
     }
 
 SingleQuoteItalicTextElement <- 
-    ItalicTextWord
-    / Spaces
-    / Newline !Newline // 2 newlines split the paragraph
-    / AttributeReference
-    / InlineMacro // must be after InlineMacro (because of BareURL)
-    / Symbol
-    / SpecialCharacter
-    / QuotedTextInSingleQuoteItalicText
-    / ElementPlaceHolder
-    / SingleQuoteItalicTextFallbackCharacter
-
-QuotedTextInSingleQuoteItalicText <-
-    // escaped content
-    &(`\`)
+    !EOF
+    !SingleQuoteItalicTextEndDelimiter
     element:(
-        EscapedBoldText 
-        / EscapedMarkedText
-        / EscapedMonospaceText
-        / EscapedSubscriptText
-        / EscapedSuperscriptText
+        ItalicTextWord
+        / Spaces
+        / SingleNewline // 2 newlines split the paragraph // TODO: is `!NewLine` really needed??
+        / AttributeReference
+        / InlineMacro 
+        / Replacement
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / QuotedText
+        / ElementPlaceHolder
+        / AnyChar
     ) {
+        c.trackElement(element)
         return element, nil
-    }
-    /
-    // unescaped content
-    attributes:(LongHandAttributes)? 
-    text:(BoldText
-        / DoubleQuoteItalicText
-        / MarkedText
-        / MonospaceText
-        / SubscriptText
-        / SuperscriptText) {
-            return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-SingleQuoteItalicTextFallbackCharacter <-
-    [^\r\n _] // anything except EOL, space and italic delimiter (fallback in case nothing else matched)
-    / "_" Alphanums {  // or an italic delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
     }
 
 EscapedItalicText <- 
@@ -2164,74 +2095,49 @@ EscapedItalicText <-
 // ------------------------------------------------------------------
 // Quoted Monospace Text
 // ------------------------------------------------------------------
-MonospaceText <- DoubleQuoteMonospaceText / SingleQuoteMonospaceText
 
 MonospaceTextDelimiter <- "`"
 
 MonospaceTextWord <- 
-    [\pL0-9]+ &(Space / MonospaceTextDelimiter) {
+    ([\pL\pN]) // start with letter or number
+    ([\pL\pN,;?!])*
+    &(Space / MonospaceTextDelimiter) {
         return types.NewStringElement(string(c.text))
     }
 
 // ------------------------------------
 // Monospace text within double quotes
 // ------------------------------------
-DoubleQuoteMonospaceTextDelimiter <- "``"
+DoubleQuoteMonospaceTextStartDelimiter <- "``"
+
+DoubleQuoteMonospaceTextEndDelimiter <- "``"
 
 DoubleQuoteMonospaceText <- 
-    DoubleQuoteMonospaceTextDelimiter 
+    DoubleQuoteMonospaceTextStartDelimiter 
     elements:(DoubleQuoteMonospaceTextElements) 
-    DoubleQuoteMonospaceTextDelimiter { 
+    DoubleQuoteMonospaceTextEndDelimiter { 
         return types.NewQuotedText(types.DoubleQuoteMonospace, elements.([]interface{}))
     }
 
 DoubleQuoteMonospaceTextElements <- DoubleQuoteMonospaceTextElement+ // may start and end with spaces
 
 DoubleQuoteMonospaceTextElement <- 
-    !DoubleQuoteMonospaceTextDelimiter
+    !EOF
+    !DoubleQuoteMonospaceTextEndDelimiter
     element:(
         MonospaceTextWord
         / Spaces // may start and end with spaces
-        / Newline !Newline // 2 newlines split the paragraph
+        / SingleNewline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / Symbol
+        / Replacement
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
-        / QuotedTextInDoubleQuoteMonospaceText
+        / QuotedText
         / ElementPlaceHolder
-        / DoubleQuoteMonospaceTextFallbackCharacter) {
-            return element, nil
-        }
-
-QuotedTextInDoubleQuoteMonospaceText <-
-    // escaped content
-    &(`\`)
-    element:(
-        EscapedBoldText 
-        / EscapedItalicText
-        / EscapedMarkedText
-        / EscapedSubscriptText
-        / EscapedSuperscriptText
+        / AnyChar
     ) {
+        c.trackElement(element)
         return element, nil
-    }
-    /
-    // unescaped content
-    attributes:(LongHandAttributes)? 
-    text:(
-        SingleQuoteMonospaceText
-        / BoldText
-        / ItalicText
-        / MarkedText
-        / SubscriptText
-        / SuperscriptText) {
-             return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-DoubleQuoteMonospaceTextFallbackCharacter <-
-    [^\r\n`] // anything except EOL and monospace delimiter (fallback in case nothing else matched)
-    / "``" Alphanums {  // ` or a monospace delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
     }
 
 // ------------------------------------
@@ -2239,9 +2145,24 @@ DoubleQuoteMonospaceTextFallbackCharacter <-
 // ------------------------------------
 
 // need to distinguish start vs end because of quoted string which also use the same "`"
-SingleQuoteMonospaceTextStartDelimiter <- "`" 
+SingleQuoteMonospaceTextStartDelimiter <- 
+    "`" 
+    &{
+        log.Debug("SingleQuoteMonospaceTextStartDelimiter")
+        return c.isSingleQuotedTextAllowed(), nil
+    }
+    &(!"`") // not to be confused with double quoted start delimiter
 
-SingleQuoteMonospaceTextEndDelimiter <- "`" 
+SingleQuoteMonospaceTextEndDelimiter <- 
+    !QuotationMark 
+    "`"
+    // !"`" // do not collide with nested double quoted monospace text
+    &{
+        log.Debug("SingleQuoteMonospaceTextEndDelimiter")
+        return !c.isPrecededBySpace(), nil
+    }
+    &(!Alphanum)
+    
 
 SingleQuoteMonospaceText <- 
     SingleQuoteMonospaceTextStartDelimiter 
@@ -2251,7 +2172,7 @@ SingleQuoteMonospaceText <-
     } 
 
 SingleQuoteMonospaceTextElements <- 
-    !EOF !Space // cannot start with spaces
+    !Space // cannot start with spaces
     elements:(SingleQuoteMonospaceTextElement)+
     &{
         return validateSingleQuoteElements(elements.([]interface{})) // cannot end with spaces
@@ -2259,47 +2180,23 @@ SingleQuoteMonospaceTextElements <-
         return elements, nil
     }
 
-SingleQuoteMonospaceTextElement <-  
-    Word
-    / Spaces 
-    / Newline !Newline // 2 newlines split the paragraph
-    / AttributeReference
-    / InlineMacro 
-    / Symbol
-    / SpecialCharacter // must be after InlineMacro (because of BareURL)
-    / QuotedTextInSingleQuoteMonospaceText
-    / ElementPlaceHolder
-    / SingleQuoteMonospaceTextFallbackCharacter
-
-QuotedTextInSingleQuoteMonospaceText <-
-    // escaped content
-    &(`\`)
+SingleQuoteMonospaceTextElement <- 
+    !EOF
+    !SingleQuoteMonospaceTextEndDelimiter
     element:(
-        EscapedBoldText 
-        / EscapedItalicText
-        / EscapedMarkedText
-        / EscapedSubscriptText
-        / EscapedSuperscriptText
+        MonospaceTextWord
+        / Spaces
+        / SingleNewline // 2 newlines split the paragraph
+        / AttributeReference
+        / InlineMacro
+        / Replacement
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / QuotedText
+        / ElementPlaceHolder
+        / AnyChar
     ) {
+        c.trackElement(element)
         return element, nil
-    }
-    /
-    // unescaped content
-    attributes:(LongHandAttributes)? 
-    text:(
-        DoubleQuoteMonospaceText
-        / BoldText
-        / ItalicText
-        / MarkedText
-        / SubscriptText
-        / SuperscriptText) {
-             return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-SingleQuoteMonospaceTextFallbackCharacter <-
-    ([^\r\n` ] // ` anything except EOL, space and monospace delimiter (fallback in case nothing else matched)
-    / MonospaceTextDelimiter Alphanums) {  // or an monospace delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
     }
 
 EscapedMonospaceText <- 
@@ -2320,83 +2217,70 @@ EscapedMonospaceText <-
 // ---------------------------------------------------------
 // Quoted Marked Text
 // ---------------------------------------------------------
-MarkedText <- DoubleQuoteMarkedText / SingleQuoteMarkedText
 
 MarkedTextDelimiter <- "#"
 
 MarkedTextWord <- 
-    [\pL0-9,?!;]+ &(Space / MarkedTextDelimiter) {
+    ([\pL\pN]) // start with letter or number
+    ([\pL\pN,;?!])*
+    &(Space / MarkedTextDelimiter) {
         return types.NewStringElement(string(c.text))
     }
 
 // ------------------------------------
 // Marked text within double quotes
 // ------------------------------------
-DoubleQuoteMarkedTextDelimiter <- "##"
+DoubleQuoteMarkedTextStartDelimiter <- "##"
+
+DoubleQuoteMarkedTextEndDelimiter <- "##"
 
 DoubleQuoteMarkedText <- 
-    DoubleQuoteMarkedTextDelimiter 
+    DoubleQuoteMarkedTextStartDelimiter 
     elements:(DoubleQuoteMarkedTextElements) 
-    DoubleQuoteMarkedTextDelimiter { 
+    DoubleQuoteMarkedTextEndDelimiter { 
         return types.NewQuotedText(types.DoubleQuoteMarked, elements.([]interface{}))
     }
 
 DoubleQuoteMarkedTextElements <- DoubleQuoteMarkedTextElement*
 
 DoubleQuoteMarkedTextElement <- // may start and end with spaces
-    !DoubleQuoteMarkedTextDelimiter
+    !EOF
+    !DoubleQuoteMarkedTextEndDelimiter
     element:(
         MarkedTextWord
         / Spaces // may start and end with spaces
-        / Newline !Newline // 2 newlines split the paragraph
+        / SingleNewline // 2 newlines split the paragraph
         / AttributeReference
         / InlineMacro
-        / Symbol
+        / Replacement
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
-        / QuotedTextInDoubleMarkedBoldText
+        / QuotedText
         / ElementPlaceHolder
-        / DoubleQuoteMarkedTextFallbackCharacter
+        / AnyChar
     ) {
+        c.trackElement(element)
         return element, nil
-    }
-
-QuotedTextInDoubleMarkedBoldText <-
-    // escaped content
-    &(`\`)
-    element:(
-        EscapedBoldText 
-        / EscapedItalicText
-        / EscapedMonospaceText
-        / EscapedSubscriptText
-        / EscapedSuperscriptText
-    ) {
-        return element, nil
-    }
-    /
-    // unescaped content
-    attributes:(LongHandAttributes)? 
-    text:(
-        SingleQuoteMarkedText
-        / BoldText
-        / ItalicText
-        / MonospaceText
-        / SubscriptText
-        / SuperscriptText) {
-             return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-DoubleQuoteMarkedTextFallbackCharacter <-
-    [^\r\n#] // anything except EOL and marked delimiter (fallback in case nothing else matched)
-    / DoubleQuoteMarkedTextDelimiter Alphanums {  // or a marked delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
     }
 
 // ------------------------------------
 // Marked text within single quotes
 // ------------------------------------
-SingleQuoteMarkedTextStartDelimiter <- "#"
+SingleQuoteMarkedTextStartDelimiter <- 
+    "#" 
+    &{
+        log.Debug("SingleQuoteMarkedTextStartDelimiter")
+        return c.isSingleQuotedTextAllowed(), nil
+    }
+    &(!"#") // not to be confused with double quoted start delimiter
 
-SingleQuoteMarkedTextEndDelimiter <- "#" 
+SingleQuoteMarkedTextEndDelimiter <- 
+    "#"
+    !"#" // do not collide with nested double quoted bold text
+    &{
+        log.Debug("SingleQuoteMarkedTextEndDelimiter")
+        return !c.isPrecededBySpace(), nil
+    }
+    &(!Alphanum)
 
 SingleQuoteMarkedText <- 
     SingleQuoteMarkedTextStartDelimiter
@@ -2406,7 +2290,7 @@ SingleQuoteMarkedText <-
     } 
 
 SingleQuoteMarkedTextElements <- 
-    !EOF !Space // cannot start with spaces
+    !Space // cannot start with spaces
     elements:(SingleQuoteMarkedTextElement)+ 
     &{
         return validateSingleQuoteElements(elements.([]interface{})) // cannot end with spaces
@@ -2415,46 +2299,22 @@ SingleQuoteMarkedTextElements <-
     }
 
 SingleQuoteMarkedTextElement <- 
-    MarkedTextWord
-    / Spaces
-    / Newline !Newline // 2 newlines split the paragraph
-    / AttributeReference
-    / InlineMacro
-    / Symbol
-    / SpecialCharacter // must be after InlineMacro (because of BareURL)
-    / QuotedTextInSingleQuoteMarkedText
-    / ElementPlaceHolder
-    / SingleQuoteMarkedTextFallbackCharacter
-
-QuotedTextInSingleQuoteMarkedText <-
-    // escaped content
-    &(`\`)
+    !EOF
+    !SingleQuoteMarkedTextEndDelimiter
     element:(
-        EscapedBoldText 
-        / EscapedItalicText
-        / EscapedMonospaceText
-        / EscapedSubscriptText
-        / EscapedSuperscriptText
+        MarkedTextWord
+        / Spaces
+        / SingleNewline // 2 newlines split the paragraph
+        / AttributeReference
+        / InlineMacro
+        / Replacement
+        / SpecialCharacter // must be after InlineMacro (because of BareURL)
+        / QuotedText
+        / ElementPlaceHolder
+        / AnyChar
     ) {
+        c.trackElement(element)
         return element, nil
-    }
-    /
-    // unescaped content
-    attributes:(LongHandAttributes)? 
-    text:(
-        DoubleQuoteMarkedText
-        / BoldText
-        / ItalicText
-        / MonospaceText
-        / SubscriptText
-        / SuperscriptText) {
-             return text.(*types.QuotedText).WithAttributes(attributes)
-        }
-
-SingleQuoteMarkedTextFallbackCharacter <-
-    [^\r\n #] // anything except EOL, space and mark delimiter (fallback in case nothing else matched)
-    / "#" Alphanums {  // or a mark delimiter when immediately followed by an alphanum (ie, in the middle of some text)
-        return types.NewStringElement(string(c.text))
     }
 
 EscapedMarkedText <-
@@ -2567,13 +2427,13 @@ SectionTitleElement <-
         / Link
         / Replacement
         / SpecialCharacter // must be after Link (because of BareURL)
-        / Symbol
         / InlineIcon
         / AttributeReference
         / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
         / InlineAnchor // must be after LegacyElementID
         / InlineFootnote
         / AnyChar) {
+            c.trackElement(element)
             return element, nil
         }
 
@@ -2583,24 +2443,24 @@ SectionTitleElement <-
 // -------------------------------------------------------------------------------------
 
 // Substitution groups
-NormalGroup <-
+NormalGroup <- // TODO: verify same order of rules as in AttributeStructuredValue?
     elements:(
         !EOF
         element:(
             InlineWord
             / Space
             / Newline
-            / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-            / LineBreak 
-            / Quote
-            / InlinePassthrough
             / InlineMacro // must be before SpecialCharacter (because of CrossReference)
-            / Callout // must be placed before SpecialCharacter
+            / Quote // must be before Symbol // TODO: move before InlineMacro?
+            / ElementPlaceHolder // TODO: needed when parsing a second time? after first pass returned attribute substitutions
             / Replacement
+            / LineBreak 
+            / InlinePassthrough
+            / Callout // must be placed before SpecialCharacter
             / SpecialCharacter // must be after InlineMacro (because of BareURL)
             / AttributeReference
             / AnyChar) {
-                c.trackSuffix(element)
+                c.trackElement(element)
                 return element, nil
             }
         )+ EOF {
@@ -2609,58 +2469,25 @@ NormalGroup <-
 
 // Substitutions for specific attributes whose value allows for quoted content and inline macros
 AttributeStructuredValue <- 
-    elements:(
-        InlineMacro // TODO: only check if previous character is a space (or empty). For example in `github-title` the choices are evaluated on each character because `Word` cannot be suffixed with `-`
-        / Quote
-        / Word
-        / Space
-        / SpecialCharacter
-        / Symbol
-        / ElementPlaceHolder
-        / AnyChar
-    )+ EOF { 
+    elements:(AttributeStructuredValueElement)+ EOF { 
         return types.NewInlineElements(elements)
     }
 
-AttributeDeclarationValueGroup <- 
-    elements:(
-        Word
-        / Space
-        / InlinePassthrough
-        / SpecialCharacter
-        / AttributeReference
-        // / ElementPlaceHolder
-        / AnyChar
-    )* EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-// Default substitutions for Section Titles
-HeaderGroup <- 
-    elements:(HeaderGroupElement)+ EOF { 
-        return types.NewInlineElements(elements)
-    }
-
-HeaderGroupElement <-
+AttributeStructuredValueElement <- 
     !EOF
     element:(
-        Word
-        / (Space+ id:(LegacyElementID) Space* &EOF { return id, nil}) // (legacy) element ID
-        / Space
-        / InlinePassthrough
+        InlineWord
+        / Space 
+        / InlineMacro // TODO: needed here? // TODO: only check if previous character is a space (or empty). For example in `github-title` the choices are evaluated on each character because `Word` cannot be suffixed with `-`
         / Quote
-        / Link
-        / Replacement
-        / SpecialCharacter // must be after Link (because of BareURL)
-        / InlineIcon
-        / AttributeReference
-        / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
-        / InlineAnchor // must be after LegacyElementID
-        / InlineFootnote
+        / SpecialCharacter
+        / Symbol // TODO: use `Replacement`?
+        / ElementPlaceHolder
         / AnyChar) {
+            c.trackElement(element)
             return element, nil
         }
-
+    
 // Substitution types        
 
 InlineMacro <- 
@@ -2742,7 +2569,7 @@ SinglelineCommentDelimiter <- "//" !"//"
 SinglelineCommentContent <- AnyChars
 
 // -------------------------------------------------------------------------------------
-// Symbols
+// Symbol // TODO: use `Replacement`?s
 // -------------------------------------------------------------------------------------
 Symbol <- 
     // escaped
@@ -2786,19 +2613,23 @@ Ellipsis <- "..." {
 
 Mdash <- 
     // 2 flavours: 
-    // a. preceeded by a space character and followed by space or EOL
+    // a. preceded by a space character and followed by space or EOL
+    "--" 
     &{
-        return c.isPreceededBySpace(), nil
+        log.Debug("Mdash (a)")
+        return c.isPrecededBySpace(), nil
     }
-    "--" (Space / &EOL) {
+    (Space / &EOL) {
         return types.NewSymbol(" -- ")
     }
     /
-    // b. preceeded and followed by an alphanum character
+    // b. preceded and followed by an alphanum character
+    "--" 
     &{
-        return c.isPreceededByAlphanum(), nil
+        log.Debug("Mdash (b)")
+        return c.isPrecededByAlphanum(), nil
     }
-    "--" &(Alphanum / EOL) {
+    &(Alphanum / EOL) {
         return types.NewSymbol("--")
     }
     
@@ -2820,21 +2651,23 @@ DoubleLeftArrow <- "<=" {
         return types.NewSymbol("<=")
     }
 
-
-
 // The implied apostrophe is used in interior words, and intended to help
 // cases like "mother's day".  Asciidoctor requires that it be followed by
 // a letter (not a digit) but it can have a digit just before it.
 TypographicQuote <- 
     // escaped
-    Alphanum `\'` &[\pL] {
+    `\'` &[\pL] {
         log.Debug("matched escaped apostrophe")
-        return types.NewStringElement(strings.TrimSuffix(string(c.text), `\'`)+`'`) // retain the apostrophe, but discard the `\` escape char
+        return types.NewStringElement(`'`) // retain the apostrophe, but discard the `\` escape char
     }
     /
     // unescaped
-    Alphanum `'` &[\pL] {
-        return types.NewSymbolWithForeword("'", strings.TrimSuffix(string(c.text), `'`)) 
+     &{
+        log.Debugf("TypographicQuote at pos %s", c.pos.String())
+        return c.isPrecededByAlphanum(), nil
+    }
+     `'` &[\pL] {
+        return types.NewSymbol("'") 
     }
 
 // -------------------------------------------------------------------------------------
@@ -2984,7 +2817,7 @@ InlineUserMacro <-
         return types.NewInlineUserMacro(name.(string), value.(string), attributes.(types.Attributes), string(c.text))
     }
 
-UserMacroName <- ([\pL0-9_-]+) {
+UserMacroName <- ([\pL\pN_-]+) {
         return string(c.text), nil
     }
 
@@ -2995,11 +2828,11 @@ UserMacroValue <- [^:[ \r\n]* {
 // -------------------------------------------------------------------------------------
 // Base Types
 // -------------------------------------------------------------------------------------
-Alphanum <- [\pL0-9]
+Alphanum <- [\pL\pN]
 
 Parenthesis <- "(" / ")" / "[" / "]" / "{" / "}" 
 
-Alphanums <- [\pL0-9]+ {
+Alphanums <- [\pL\pN]+ {
         return string(c.text), nil
     }
 
@@ -3008,31 +2841,17 @@ Word <-
     // very straightforward content: alphanums followed by attached single quote delimiter and more characters 
     // (in this case, the quoted text delimiters are intepreted as regular characters)
     // then followed by spaces but not the "+" signs because it needs a leading space to become a LineBreak element
-    [\pL0-9]+ &([\r\n ,\]] / EOF) {
+    [\pL\pN]+ &([\r\n ,\]] / EOF) {
         return types.NewStringElement(string(c.text))
-    } / [\pL0-9]+ ([=*_`] [\pL0-9]+)+ {  // allow `
+    } / [\pL\pN]+ ([=*_`] [\pL\pN]+)+ {  // allow `
         return types.NewStringElement(string(c.text))
     }
 
 InlineWord <- 
-    [\pL0-9] // start with an alphanum {
-    #{
-        // because 'Mdash' symbol relies on tracking
-        c.globalStore[suffixTrackingKey] = alphanumSuffix
-        return nil
-    }
-    (   !Symbol
-        !UnconstrainedQuotedTextPrefix
-        ([\pL0-9.*_`,;!?()] 
-            / "-"
-            // / "."
-            // / "*"
-            // / "_" 
-            // / "`" 
-        )
-    )+ 
-
-    (Space / &(ElementPlaceHolderDelimiter / EOL)) { 
+    ([\pL\pN]) // start with letter or number
+    ([\pL\pN,;?!])* // then other letter, number of punctuation
+    &(Space / ElementPlaceHolderDelimiter / EOL)
+    {
         return types.NewStringElement(string(c.text))
     }
 
@@ -3109,6 +2928,10 @@ Spaces <- (" " / "\t")+ {
     }
 
 Newline <- ("\n" / "\r\n" / "\r") { // TODO: just use "\n" 
+    return string(c.text), nil
+}
+
+SingleNewline <- Newline !Newline {
     return string(c.text), nil
 }
 

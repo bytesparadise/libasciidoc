@@ -33,8 +33,8 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("bold text with 2 words", func() {
-				source := "*bold    content*"
+			It("bold text with 2 words - case 1", func() {
+				source := "*bold content*"
 				expected := &types.Document{
 					Elements: []interface{}{
 						&types.Paragraph{
@@ -42,7 +42,28 @@ var _ = Describe("quoted texts", func() {
 								&types.QuotedText{
 									Kind: types.SingleQuoteBold,
 									Elements: []interface{}{
-										&types.StringElement{Content: "bold    content"},
+										&types.StringElement{Content: "bold content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("bold text with 2 words - case 2", func() {
+				// NOTE: Asciidoctor as a different way of interpreting the content: `<strong>bold</strong>*content*`  ¯\_(ツ)_/¯
+				source := "*bold**content*"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "*bold*"},
+								&types.QuotedText{
+									Kind: types.SingleQuoteBold,
+									Elements: []interface{}{
+										&types.StringElement{Content: "content"},
 									},
 								},
 							},
@@ -654,7 +675,45 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("italic text with 3 words in double quote", func() {
+			It("bold text with 3 words in double quote - case 1", func() {
+				source := "**some bold content**"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.DoubleQuoteBold,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some bold content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("bold text with 3 words in double quote - case 2", func() {
+				source := "**some*bold*content**"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.DoubleQuoteBold,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some*bold*content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("italic text with 3 words in double quote - case 1", func() {
 				source := "__some italic content__"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -664,6 +723,100 @@ var _ = Describe("quoted texts", func() {
 									Kind: types.DoubleQuoteItalic,
 									Elements: []interface{}{
 										&types.StringElement{Content: "some italic content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("italic text with 3 words in double quote - case 2", func() {
+				source := "__some_italic_content__"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.DoubleQuoteItalic,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some_italic_content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+			It("monospace text with 3 words in double quote - case 1", func() {
+				source := "``some monospace content``"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.DoubleQuoteMonospace,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some monospace content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("monospace text with 3 words in double quote - case 2", func() {
+				source := "``some`monospace`content``"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.DoubleQuoteMonospace,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some`monospace`content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("marked text with 3 words in double quote - case 1", func() {
+				source := "##some marked content##"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.DoubleQuoteMarked,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some marked content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("marked text with 3 words in double quote - case 2", func() {
+				source := "##some#marked#content##"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.DoubleQuoteMarked,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some#marked#content"},
 									},
 								},
 							},
@@ -1081,7 +1234,6 @@ var _ = Describe("quoted texts", func() {
 			})
 
 			It("single-quote bold within single-quote bold text", func() {
-				// kinda invalid content, and Asciidoc has the same way of parsing this content
 				source := "*some *nested bold* content*"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1090,10 +1242,16 @@ var _ = Describe("quoted texts", func() {
 								&types.QuotedText{
 									Kind: types.SingleQuoteBold,
 									Elements: []interface{}{
-										&types.StringElement{Content: "some *nested bold"},
+										&types.StringElement{Content: "some "},
+										&types.QuotedText{
+											Kind: types.SingleQuoteBold,
+											Elements: []interface{}{
+												&types.StringElement{Content: "nested bold"},
+											},
+										},
+										&types.StringElement{Content: " content"},
 									},
 								},
-								&types.StringElement{Content: " content*"},
 							},
 						},
 					},
@@ -1129,7 +1287,7 @@ var _ = Describe("quoted texts", func() {
 			})
 
 			It("single-quote bold within double-quote bold text", func() {
-				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
+				// here we do allow for bold text within bold text
 				source := "**some *nested bold* content**"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1155,8 +1313,8 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("double-quote bold within single-quote bold text", func() {
-				// here we don't allow for bold text within bold text, to comply with the existing implementations (asciidoc and asciidoctor)
+			It("double-quote bold within single-quote bold text - case 1", func() {
+				// here we do allow for bold text within bold text
 				source := "*some **nested bold** content*"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1182,8 +1340,34 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("double-quote bold within single-quote bold text - case 2", func() {
+				// here we do allow for bold text within bold text
+				source := "*some**nested bold**content*"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.SingleQuoteBold,
+									Elements: []interface{}{
+										&types.StringElement{Content: "some"},
+										&types.QuotedText{
+											Kind: types.DoubleQuoteBold,
+											Elements: []interface{}{
+												&types.StringElement{Content: "nested bold"},
+											},
+										},
+										&types.StringElement{Content: "content"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("single-quote italic within single-quote italic text", func() {
-				// kinda invalid content, and Asciidoc has the same way of parsing this content
 				source := "_some _nested italic_ content_"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1192,10 +1376,16 @@ var _ = Describe("quoted texts", func() {
 								&types.QuotedText{
 									Kind: types.SingleQuoteItalic,
 									Elements: []interface{}{
-										&types.StringElement{Content: "some _nested italic"},
+										&types.StringElement{Content: "some "},
+										&types.QuotedText{
+											Kind: types.SingleQuoteItalic,
+											Elements: []interface{}{
+												&types.StringElement{Content: "nested italic"},
+											},
+										},
+										&types.StringElement{Content: " content"},
 									},
 								},
-								&types.StringElement{Content: " content_"},
 							},
 						},
 					},
@@ -1285,7 +1475,6 @@ var _ = Describe("quoted texts", func() {
 			})
 
 			It("single-quote monospace within single-quote monospace text", func() {
-				// kinda invalid content, and Asciidoc has the same way of parsing this content
 				source := "`some `nested monospace` content`"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1294,10 +1483,16 @@ var _ = Describe("quoted texts", func() {
 								&types.QuotedText{
 									Kind: types.SingleQuoteMonospace,
 									Elements: []interface{}{
-										&types.StringElement{Content: "some `nested monospace"},
+										&types.StringElement{Content: "some "},
+										&types.QuotedText{
+											Kind: types.SingleQuoteMonospace,
+											Elements: []interface{}{
+												&types.StringElement{Content: "nested monospace"},
+											},
+										},
+										&types.StringElement{Content: " content"},
 									},
 								},
-								&types.StringElement{Content: " content`"},
 							},
 						},
 					},
@@ -1916,10 +2111,11 @@ var _ = Describe("quoted texts", func() {
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
+									&types.StringElement{Content: "*"},
 									&types.QuotedText{
 										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
-											&types.StringElement{Content: "*some bold content"},
+											&types.StringElement{Content: "some bold content"},
 										},
 									},
 								},
@@ -1938,10 +2134,10 @@ var _ = Describe("quoted texts", func() {
 									&types.QuotedText{
 										Kind: types.SingleQuoteBold,
 										Elements: []interface{}{
-											&types.StringElement{Content: "some bold content"},
+											&types.StringElement{Content: "some bold content*"},
 										},
 									},
-									&types.StringElement{Content: "*"},
+									// &types.StringElement{Content: "*"},
 								},
 							},
 						},
@@ -1972,10 +2168,11 @@ var _ = Describe("quoted texts", func() {
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
+									&types.StringElement{Content: "_"},
 									&types.QuotedText{
 										Kind: types.SingleQuoteItalic,
 										Elements: []interface{}{
-											&types.StringElement{Content: "_some italic content"},
+											&types.StringElement{Content: "some italic content"},
 										},
 									},
 								},
@@ -1994,10 +2191,10 @@ var _ = Describe("quoted texts", func() {
 									&types.QuotedText{
 										Kind: types.SingleQuoteItalic,
 										Elements: []interface{}{
-											&types.StringElement{Content: "some italic content"},
+											&types.StringElement{Content: "some italic content_"},
 										},
 									},
-									&types.StringElement{Content: "_"},
+									// &types.StringElement{Content: "_"},
 								},
 							},
 						},
@@ -2028,10 +2225,11 @@ var _ = Describe("quoted texts", func() {
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
+									&types.StringElement{Content: "`"},
 									&types.QuotedText{
 										Kind: types.SingleQuoteMonospace,
 										Elements: []interface{}{
-											&types.StringElement{Content: "`some monospace content"},
+											&types.StringElement{Content: "some monospace content"},
 										},
 									},
 								},
@@ -2084,10 +2282,11 @@ var _ = Describe("quoted texts", func() {
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
+									&types.StringElement{Content: "#"},
 									&types.QuotedText{
 										Kind: types.SingleQuoteMarked,
 										Elements: []interface{}{
-											&types.StringElement{Content: "#some marked content"},
+											&types.StringElement{Content: "some marked content"},
 										},
 									},
 								},
@@ -2106,10 +2305,10 @@ var _ = Describe("quoted texts", func() {
 									&types.QuotedText{
 										Kind: types.SingleQuoteMarked,
 										Elements: []interface{}{
-											&types.StringElement{Content: "some marked content"},
+											&types.StringElement{Content: "some marked content#"},
 										},
 									},
-									&types.StringElement{Content: "#"},
+									// &types.StringElement{Content: "#"},
 								},
 							},
 						},

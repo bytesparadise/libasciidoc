@@ -892,7 +892,7 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("in bold text", func() {
+			It("in bold text with empty attributes", func() {
 				source := `a link to *https://example.com[]*`
 
 				expected := &types.Document{
@@ -918,7 +918,7 @@ next lines`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
-			It("with special characters", func() {
+			It("with special characters without attributes", func() {
 				source := "a link to https://foo*_.com"
 				expected := &types.Document{
 					Elements: []interface{}{
@@ -1316,6 +1316,38 @@ a link to {scheme}://{path} and https://foo.com`
 									},
 									Attributes: types.Attributes{
 										types.AttrInlineLinkText: "the doc",
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
+			It("to external URL with italic text only", func() {
+				source := "a link to link:https://example.com[__the_doc__]"
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "https://",
+										Path:   "example.com",
+									},
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText: []interface{}{
+											&types.QuotedText{
+												Kind: types.DoubleQuoteItalic,
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "the_doc",
+													},
+												},
+											},
+										},
 									},
 								},
 							},

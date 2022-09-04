@@ -481,7 +481,7 @@ content</mark>.</p>
 			// kinda invalid content, and Asciidoc has the same way of parsing this content
 			source := "*some *nested bold* content*."
 			expected := `<div class="paragraph">
-<p><strong>some *nested bold</strong> content*.</p>
+<p><strong>some <strong>nested bold</strong> content</strong>.</p>
 </div>
 `
 			Expect(RenderHTML(source)).To(MatchHTML(expected))

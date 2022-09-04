@@ -557,6 +557,12 @@ var _ = DescribeTable("valid block attributes",
 			types.AttrPositional2: nil,
 		},
 	),
+	Entry(`[__a_b__]`, `[__a_b__]`, // with italic content
+		types.Attributes{
+			types.AttrPositional1: "__a_b__",
+		},
+	),
+
 	// quoted values
 	Entry(`.a "title"`, ".a \"title\"",
 		types.Attributes{

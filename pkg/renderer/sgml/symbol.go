@@ -26,9 +26,9 @@ var symbols = map[string]string{
 
 func (r *sgmlRenderer) renderSymbol(s *types.Symbol) (string, error) {
 	if str, found := symbols[s.Name]; found {
-		if s.Prefix != "" {
-			return s.Prefix + str, nil
-		}
+		// if s.Prefix != "" {
+		// 	return s.Prefix + str, nil
+		// }
 		return str, nil
 	}
 	return "", fmt.Errorf("symbol '%s' is not defined", s.Name)

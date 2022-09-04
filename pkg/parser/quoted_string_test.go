@@ -140,11 +140,10 @@ var _ = Describe("quoted strings", func() {
 								Kind: types.SingleQuoteBold,
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "mothe",
+										Content: "mother",
 									},
 									&types.Symbol{
-										Prefix: "r",
-										Name:   "'",
+										Name: "'",
 									},
 									&types.StringElement{
 										Content: "s brothers' sisters",
@@ -174,11 +173,10 @@ var _ = Describe("quoted strings", func() {
 								Kind: types.DoubleQuoteBold,
 								Elements: []interface{}{
 									&types.StringElement{
-										Content: "mothe",
+										Content: "mother",
 									},
 									&types.Symbol{
-										Prefix: "r",
-										Name:   "'",
+										Name: "'",
 									},
 									&types.StringElement{
 										Content: "s brothers' sisters",
@@ -344,7 +342,7 @@ var _ = Describe("quoted strings", func() {
 				Elements: []interface{}{
 					&types.Paragraph{
 						Elements: []interface{}{
-							&types.Symbol{
+							&types.Symbol{ // quotation mark
 								Name: "'`",
 							},
 							&types.QuotedText{
@@ -355,7 +353,7 @@ var _ = Describe("quoted strings", func() {
 									},
 								},
 							},
-							&types.Symbol{
+							&types.Symbol{ // quotation mark
 								Name: "`'",
 							},
 						},
@@ -396,7 +394,7 @@ var _ = Describe("quoted strings", func() {
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
 
-		It("curly in monospace string", func() {
+		It("curly in monospace", func() {
 			source := "`'`curly`'`"
 			expected := &types.Document{
 				Elements: []interface{}{

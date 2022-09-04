@@ -41,10 +41,6 @@ func replaceNonAlphanumericsOnElements(elements []interface{}, separator string)
 			}
 			r := replaceNonAlphanumerics(content, separator)
 			result.WriteString(r)
-		case *Symbol:
-			if e.Prefix != "" {
-				result.WriteString(e.Prefix)
-			}
 		case *InlineLink:
 			if e.Location != nil {
 				r := replaceNonAlphanumerics(e.Location.ToDisplayString(), separator)

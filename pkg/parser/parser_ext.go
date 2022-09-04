@@ -9,11 +9,16 @@ import (
 
 	"github.com/bytesparadise/libasciidoc/pkg/configuration"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
+	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
 )
 
 func parseContent(content []byte, opts ...Option) ([]interface{}, error) {
-	result, err := Parse("", content, opts...)
+	p := newParser("", content, opts...)
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("parsing content from '%s' entrypoint", p.entrypoint)
+	}
+	result, err := p.parse(g)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +84,6 @@ func (p *parser) next() (val interface{}, err error) {
 	startRule, ok := p.rules[p.entrypoint]
 	if !ok {
 		log.Errorf("invalid entrypoint: '%s'", p.entrypoint)
-		fmt.Printf("invalid entrypoint: '%s'\n", p.entrypoint)
 		p.addErr(errInvalidEntrypoint)
 		return nil, p.errs.err()
 	}
@@ -114,53 +118,58 @@ func (p *parser) next() (val interface{}, err error) {
 	return val, p.errs.err()
 }
 
-const suffixTrackingKey = "space_suffix_tracking"
-const spaceSuffix = "space_suffix"
-const alphanumSuffix = "alphanum_suffix"
+const suffixTrackingKey = "element_suffix_tracking"
 
-func (c *current) trackSuffix(element interface{}) {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("tracking space at the end of:\n%s", spew.Sdump(element))
-	// }
-	switch e := element.(type) {
-	case string:
-		doTrackSuffix(c, e)
-	case *types.StringElement:
-		doTrackSuffix(c, e.Content)
+func (c *current) trackElement(element interface{}) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("---tracking element of type '%T' at pos=%s text='%s'", element, c.pos.String(), string(c.text))
 	}
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("space suffix detected: %t", c.globalStore[spaceSuffixTrackingKey])
-	// }
+	c.globalStore[suffixTrackingKey] = rune(c.text[len(c.text)-1])
 }
 
-func doTrackSuffix(c *current, content string) {
-	r := []rune(content)
-	suffix := r[len(r)-1]
-	switch {
-	case suffix == ' ': // strict space, not `\n`, `\r`, etc.
-		c.globalStore[suffixTrackingKey] = spaceSuffix
-	case unicode.IsLetter(suffix) || unicode.IsNumber(suffix):
-		c.globalStore[suffixTrackingKey] = alphanumSuffix
-	default:
-		delete(c.globalStore, suffixTrackingKey)
+func (c *current) isPrecededBySpace() bool {
+	if r, ok := c.globalStore[suffixTrackingKey].(rune); ok {
+		log.Debugf("---checking if preceded by space (tracked='%s')", string(r))
+		result := unicode.IsSpace(r) || unicode.IsControl(r)
+		return result
 	}
+	log.Debugf("---is not preceded by space (no previous character)")
+	return false
 }
 
-func (c *current) isPreceededBySpace() bool {
-	k, found := c.globalStore[suffixTrackingKey]
-	return found && k == spaceSuffix
+// verifies that previous last character of previous match is neither a
+// letter, number, underscore, colon, semicolon, or closing curly bracket
+func (c *current) isSingleQuotedTextAllowed() bool {
+	if r, ok := c.globalStore[suffixTrackingKey].(rune); ok {
+		log.Debugf("---checking if single quoted text is allowed (tracked='%s')", string(r))
+		// r := rune(d[c.pos.offset])
+		result := !unicode.IsLetter(r) &&
+			!unicode.IsNumber(r) &&
+			// r != '_' &&
+			r != ',' &&
+			r != ';' &&
+			r != '}'
+		return result
+	}
+	log.Debugf("---single quoted text is allowed (no previous character)")
+	return true
 }
 
-func (c *current) isPreceededByAlphanum() bool {
-	k, found := c.globalStore[suffixTrackingKey]
-	return found && k == alphanumSuffix
+func (c *current) isPrecededByAlphanum() bool {
+	if r, ok := c.globalStore[suffixTrackingKey].(rune); ok {
+		log.Debugf("---checking if preceded by alphanum before (tracked='%s')", string(r))
+		result := unicode.IsLetter(r) || unicode.IsNumber(r)
+		return result
+	}
+	log.Debugf("---is not preceded by alphanum (no previous character)")
+	return false
 }
 
 // verifies that the content does not end with a space
 func validateSingleQuoteElements(elements []interface{}) (bool, error) {
-	// if log.IsLevelEnabled(log.DebugLevel) {
-	// 	log.Debugf("checking that there is no space at the end of:\n%s", spew.Sdump(elements))
-	// }
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("checking that there is no space at the end of:\n%s", spew.Sdump(elements))
+	}
 	if len(elements) == 0 {
 		return true, nil
 	}
@@ -228,18 +237,18 @@ func (c *current) hasUserMacro(name string) bool {
 	return false
 }
 
-// enabledSubstitutions the key in which enabled substitutions are stored in the parser's GlobalStore
-const enabledSubstitutions string = "enabled_substitutions"
+// enabledSubstitutionsKey the key in which enabled substitutions are stored in the parser's GlobalStore
+const enabledSubstitutionsKey string = "enabled_substitutions"
 
 func (c *current) withSubstitutions(subs *substitutions) {
-	c.state[enabledSubstitutions] = subs
+	c.state[enabledSubstitutionsKey] = subs
 }
 
 func (c *current) lookupCurrentSubstitutions() (*substitutions, bool) {
-	if s, found := c.state[enabledSubstitutions].(*substitutions); found {
+	if s, found := c.state[enabledSubstitutionsKey].(*substitutions); found {
 		return s, true
 	}
-	s, found := c.globalStore[enabledSubstitutions].(*substitutions)
+	s, found := c.globalStore[enabledSubstitutionsKey].(*substitutions)
 	return s, found
 }
 
