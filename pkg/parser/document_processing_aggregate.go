@@ -109,9 +109,9 @@ func aggregate(ctx *ParseContext, fragmentStream <-chan types.DocumentFragment) 
 }
 
 func resolveCrossReferences(element interface{}, attrs *contextAttributes) error {
-	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("resolving cross references in element of type '%T'", element)
-	}
+	// if log.IsLevelEnabled(log.DebugLevel) {
+	// 	log.Debugf("resolving cross references in element of type '%T'", element)
+	// }
 	switch e := element.(type) {
 	case types.WithElements:
 		for _, elmt := range e.GetElements() {

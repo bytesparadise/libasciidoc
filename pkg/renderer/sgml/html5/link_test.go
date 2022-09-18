@@ -85,10 +85,10 @@ a link to <{example}>.`
 				Expect(RenderHTML(source)).To(MatchHTML(expected))
 			})
 
-			It("with special character in URL", func() {
+			It("with invalid special character in URL", func() {
 				source := `a link to https://example.com>[].`
 				expected := `<div class="paragraph">
-<p>a link to <a href="https://example.com&gt;" class="bare">https://example.com&gt;</a>.</p>
+<p>a link to <a href="https://example.com" class="bare">https://example.com</a>&gt;[].</p>
 </div>
 `
 				Expect(RenderHTML(source)).To(MatchHTML(expected))

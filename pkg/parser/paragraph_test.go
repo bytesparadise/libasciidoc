@@ -345,6 +345,33 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 
 		Context("regular paragraphs", func() {
 
+			It("2 inlinewords and a punctuation", func() {
+				source := "\"`Get moving!`\" he shouted."
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.Symbol{
+									Name: "\"`",
+								},
+								&types.StringElement{
+									Content: "Get moving!",
+								},
+								&types.Symbol{
+									Name: "`\"",
+								},
+								&types.StringElement{
+									Content: " he shouted.",
+								},
+							},
+						},
+					},
+				}
+				result, err := ParseDocument(source)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result).To(MatchDocument(expected))
+			})
+
 			It("3 with basic content", func() {
 				source := `cookie
 

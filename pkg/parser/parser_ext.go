@@ -138,14 +138,14 @@ func (c *current) isPrecededBySpace() bool {
 }
 
 // verifies that previous last character of previous match is neither a
-// letter, number, underscore, colon, semicolon, or closing curly bracket
+// letter, number, exclamation point, colon, semicolon, or closing curly bracket
 func (c *current) isSingleQuotedTextAllowed() bool {
 	if r, ok := c.globalStore[suffixTrackingKey].(rune); ok {
 		log.Debugf("---checking if single quoted text is allowed (tracked='%s')", string(r))
 		// r := rune(d[c.pos.offset])
 		result := !unicode.IsLetter(r) &&
 			!unicode.IsNumber(r) &&
-			// r != '_' &&
+			r != '!' &&
 			r != ',' &&
 			r != ';' &&
 			r != '}'
@@ -252,18 +252,37 @@ func (c *current) lookupCurrentSubstitutions() (*substitutions, bool) {
 	return s, found
 }
 
-func (c *current) isSubstitutionEnabled(k string) bool {
+func (c *current) isSubstitutionEnabled(k string) (bool, error) {
 	subs, found := c.lookupCurrentSubstitutions()
 	if !found {
 		log.Debugf("substitutions not set in globalStore: assuming '%s' not enabled", k)
-		return false // TODO: should return `true`, at least for `attributes`?
+		return false, nil // TODO: should return `true`, at least for `attributes`?
 	}
 	for _, s := range subs.sequence {
 		if s == k {
 			// log.Debugf("'%s' is enabled", k)
-			return true
+			return true, nil
 		}
 	}
 	// log.Debugf("'%s' is not enabled", k)
-	return false
+	return false, nil
+}
+
+func (c *current) isSubstitutionDisabled(k string) (bool, error) {
+	e, err := c.isSubstitutionEnabled(k)
+	return !e, err
+}
+
+// verifies that ALL substitutions with the given keys are disabled
+func (c *current) allSubstitutionsDisabled(keys ...string) (bool, error) {
+	result := true
+	for _, k := range keys {
+		e, err := c.isSubstitutionEnabled(k)
+		if err != nil {
+			return false, err
+		}
+		result = result && !e
+
+	}
+	return result, nil
 }

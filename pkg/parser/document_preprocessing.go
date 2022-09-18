@@ -24,7 +24,7 @@ func Preprocess(source io.Reader, config *configuration.Configuration, opts ...O
 
 func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 	if log.IsLevelEnabled(log.DebugLevel) {
-		log.Debugf("processing file inclusions in %s with leveloffset=%s", ctx.filename, spew.Sdump(ctx.levelOffsets))
+		log.Debugf("preprocessing file inclusions in %s with leveloffset=%s", ctx.filename, spew.Sdump(ctx.levelOffsets))
 	}
 	b := &builder{
 		enabled: true,
@@ -40,9 +40,9 @@ func preprocess(ctx *ParseContext, source io.Reader) (string, error) {
 			// content of line was not relevant in the context of preparsing (ie, it's a regular line), so let's keep it as-is
 			b.Write(line)
 		} else {
-			if log.IsLevelEnabled(log.DebugLevel) {
-				log.Debugf("checking element of type '%T'", element)
-			}
+			// if log.IsLevelEnabled(log.DebugLevel) {
+			// 	log.Debugf("checking element of type '%T'", element)
+			// }
 			switch e := element.(type) {
 			case *types.AttributeDeclaration:
 				ctx.attributes.set(e.Name, e.Value)
