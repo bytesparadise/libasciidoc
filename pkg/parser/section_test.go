@@ -910,7 +910,9 @@ a paragraph`
 			It("single with custom inline ID", func() {
 				source := `== a header [[custom_header]]`
 				sectionTitle := []interface{}{
-					&types.StringElement{Content: "a header"},
+					&types.StringElement{
+						Content: "a header",
+					},
 				}
 				expected := &types.Document{
 					Elements: []interface{}{

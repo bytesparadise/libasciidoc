@@ -200,7 +200,7 @@ a link to <{example}>.`
 					Expect(ParseDocument(source)).To(MatchDocument(expected))
 				})
 
-				It("with special character in URL", func() {
+				It("with invalid special character in URL", func() {
 					source := `a link to https://example.com>[].`
 					expected := &types.Document{
 						Elements: []interface{}{
@@ -212,11 +212,14 @@ a link to <{example}>.`
 									&types.InlineLink{
 										Location: &types.Location{
 											Scheme: "https://",
-											Path:   "example.com>",
+											Path:   "example.com",
 										},
 									},
+									&types.SpecialCharacter{
+										Name: ">",
+									},
 									&types.StringElement{
-										Content: ".",
+										Content: "[].",
 									},
 								},
 							},
@@ -289,16 +292,7 @@ a link to <{example}>.`
 						&types.Paragraph{
 							Elements: []interface{}{
 								&types.StringElement{
-									Content: "write to ",
-								},
-								&types.InlineLink{
-									Location: &types.Location{
-										Scheme: "mailto:",
-										Path:   "contact.@example.com",
-									},
-								},
-								&types.StringElement{
-									Content: ".",
+									Content: "write to contact.@example.com.", // local part must not end with `.`
 								},
 							},
 						},

@@ -70,16 +70,6 @@ func attributeSubstitutions() *substitutions {
 	}
 }
 
-func attributeDeclarations() *substitutions {
-	return &substitutions{
-		sequence: []string{
-			InlinePassthroughs,
-			AttributeRefs,
-			SpecialCharacters,
-		},
-	}
-}
-
 func noneSubstitutions() *substitutions {
 	return &substitutions{}
 }

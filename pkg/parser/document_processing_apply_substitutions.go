@@ -3,6 +3,7 @@ package parser
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -29,7 +30,7 @@ func ApplySubstitutions(ctx *ParseContext, done <-chan interface{}, fragmentStre
 				return
 			}
 		}
-		log.WithField("pipeline_stage", "apply_substitutions").Debug("done")
+		log.WithField("pipeline_stage", "apply_substitutions").Info("done")
 	}()
 	return processedFragmentStream
 }
@@ -614,7 +615,8 @@ func parseWithSubstitutions(content interface{}, subs *substitutions, opts ...Op
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("parsing '%s' with '%s' substitutions", serialized, subs.toString())
 	}
-	elements, err := parseContent(serialized, append(opts, GlobalStore(enabledSubstitutionsKey, subs))...)
+	stats := Stats{}
+	elements, err := parseContent(serialized, append(opts, GlobalStore(enabledSubstitutionsKey, subs))...) // , Statistics(&stats, "no match"), Debug(true)
 	if err != nil {
 		return nil, err
 	}
@@ -624,6 +626,28 @@ func parseWithSubstitutions(content interface{}, subs *substitutions, opts ...Op
 	}
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("parsed content:\n%s", spew.Sdump(elements))
+	}
+	if log.IsLevelEnabled(log.InfoLevel) {
+		log.Infof("parsed '%s' with '%s' substitutions", serialized, subs.toString())
+		log.Infof("stats:")
+		log.Infof(" expr count: %v", stats.ExprCnt)
+		rules := make([]string, 0, len(stats.ChoiceAltCnt))
+		for rule := range stats.ChoiceAltCnt {
+			rules = append(rules, rule)
+		}
+		sort.Strings(rules)
+		for _, rule := range rules {
+			log.Infof("  %s:", rule)
+			matchs := make([]string, 0, len(stats.ChoiceAltCnt[rule]))
+			for match := range stats.ChoiceAltCnt[rule] {
+				matchs = append(matchs, match)
+			}
+			sort.Strings(matchs)
+			for _, match := range matchs {
+				log.Infof("   - case %s: %d", match, stats.ChoiceAltCnt[rule][match])
+
+			}
+		}
 	}
 	return elements, nil
 }

@@ -52,7 +52,7 @@ var _ = DescribeTable("TrimTrailingSpaces",
 			},
 		}),
 
-	Entry("multiple elements with trailing spaces",
+	Entry("multiple elements with trailing spaces - case 1",
 		[]interface{}{
 			&types.StringElement{
 				Content: "cookies",
@@ -70,6 +70,22 @@ var _ = DescribeTable("TrimTrailingSpaces",
 			&types.StringElement{
 				Content: "pasta", // timmed
 			},
+		}),
+	Entry("multiple elements with trailing spaces - case 2",
+		[]interface{}{
+			&types.StringElement{
+				Content: "cookies",
+			},
+			&types.InlineLink{},
+			&types.StringElement{
+				Content: " ", // isolated trailing space
+			},
+		},
+		[]interface{}{
+			&types.StringElement{
+				Content: "cookies",
+			},
+			&types.InlineLink{},
 		}),
 
 	Entry("multiple elements without trailing spaces",

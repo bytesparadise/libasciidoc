@@ -3650,6 +3650,9 @@ type SpecialCharacter struct {
 
 // NewSpecialCharacter return a new SpecialCharacter
 func NewSpecialCharacter(name string) (*SpecialCharacter, error) {
+	if log.IsLevelEnabled(log.DebugLevel) {
+		log.Debugf("new SpecialCharacter: '%s'", name)
+	}
 	return &SpecialCharacter{
 		Name: name,
 	}, nil

@@ -90,5 +90,29 @@ var _ = Describe("block delimiter tracker", func() {
 		// then
 		Expect(t.stack).To(BeEmpty())
 	})
-
 })
+
+var _ = DescribeTable("all substitutions disabled",
+	func(keys []string, expected bool) {
+		c := &current{
+			state: storeDict{
+				enabledSubstitutionsKey: &substitutions{
+					sequence: []string{
+						InlinePassthroughs,
+						AttributeRefs,
+						SpecialCharacters,
+						// Quotes, // disabled
+						Replacements,
+						// Macros, // disabled
+						PostReplacements,
+					},
+				},
+			},
+		}
+		Expect(c.allSubstitutionsDisabled(keys...)).To(Equal(expected))
+	},
+	// default/built-in subs groups
+	Entry("none disabled", []string{InlinePassthroughs, AttributeRefs}, false),
+	Entry("some disabled", []string{InlinePassthroughs, Quotes}, false),
+	Entry("all disabled", []string{Quotes, Macros}, true),
+)

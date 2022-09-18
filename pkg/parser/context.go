@@ -27,7 +27,7 @@ func NewParseContext(config *configuration.Configuration, options ...Option) *Pa
 		GlobalStore(frontMatterKey, true),
 		GlobalStore(documentHeaderKey, true),
 		GlobalStore(usermacrosKey, config.Macros),
-		GlobalStore(enabledSubstitutionsKey, attributeDeclarations()),
+		GlobalStore(enabledSubstitutionsKey, normalSubstitutions()),
 	}
 	opts = append(opts, options...)
 	return &ParseContext{

@@ -172,6 +172,10 @@ func TrimTrailingSpaces(content []interface{}) []interface{} {
 	if len(content) > 0 {
 		if s, ok := content[len(content)-1].(*StringElement); ok {
 			s.Content = strings.TrimRight(s.Content, " ")
+			// if last item was an empty isolated trailing space, then remove it
+			if len(s.Content) == 0 {
+				content = content[:len(content)-1]
+			}
 		}
 	}
 	return content
