@@ -598,6 +598,15 @@ content</mark>.</p>
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("unbalanced italic in bold", func() {
+			source := `*a_b* _c_`
+			expected := `<div class="paragraph">
+<p><strong>a_b</strong> <em>c</em></p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("unparsed bold in monospace", func() {
 			source := "`a*b*`"
 			expected := `<div class="paragraph">
