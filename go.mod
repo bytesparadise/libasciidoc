@@ -15,9 +15,10 @@ require (
 	github.com/pkg/profile v1.6.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/cobra v1.1.1
+	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
-	gopkg.in/yaml.v2 v2.4.0 
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 // include support for disabling unexported fields

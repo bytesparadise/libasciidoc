@@ -6,17 +6,16 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/pflag"
 )
 
 func init() {
-	log.SetLevel(log.ErrorLevel)
-	if debugMode() {
-		log.SetLevel(log.DebugLevel)
-		log.Info("Running test with logs in DEBUG level")
-		log.SetFormatter(&log.TextFormatter{
-			DisableQuote: true, // see https://github.com/sirupsen/logrus/issues/608#issuecomment-745137306
-		})
-	}
+	lvl := parseLogLevel()
+	log.SetLevel(lvl)
+	log.Warnf("Running test with logs in '%s' level", lvl.String())
+	log.SetFormatter(&log.TextFormatter{
+		DisableQuote: true, // see https://github.com/sirupsen/logrus/issues/608#issuecomment-745137306
+	})
 
 	// also, configuration for spew (when dumping structures to compare results)
 	spew.Config.DisableCapacities = true
@@ -25,20 +24,20 @@ func init() {
 	spew.Config.DisableUnexported = true
 }
 
-func debugMode() bool {
-	debugMode := false
-	flag.BoolVar(&debugMode, "debug", false, "when set, enables debug log messages")
-	// if the `-debug` flag was passed and captured by the `flag.Parse`
-	if debugMode {
-		log.Info("`debug` flag found")
-		return debugMode
+func parseLogLevel() log.Level {
+	var logLevel string
+	// needed to let ginkgo parse the flag, otherwise, `ginkgo -- --loglevel=...` will fail with `flag provided but not defined: -loglevel`
+	flag.StringVar(&logLevel, "loglevel", "warn", "log level to set [debug|info|warn|error|fatal|panic]")
+	// parse with a custom flagset in which all other flags (ginkgo's) are ignored
+	f := pflag.NewFlagSet("passthroughs", pflag.ContinueOnError)
+	f.ParseErrorsWhitelist.UnknownFlags = true
+	f.StringVarP(&logLevel, "loglevel", "l", "warn", "log level to set [debug|info|warn|error|fatal|panic]")
+	if err := f.Parse(os.Args[1:]); err != nil {
+		panic(err)
 	}
-	// otherwise, check the OS args
-	for _, arg := range os.Args {
-		if arg == "-debug" {
-			log.Info("`-debug` os env found")
-			return true
-		}
+	lvl, err := log.ParseLevel(logLevel)
+	if err != nil {
+		panic(err)
 	}
-	return false
+	return lvl
 }
