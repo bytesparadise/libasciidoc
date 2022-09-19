@@ -1662,6 +1662,34 @@ var _ = Describe("quoted texts", func() {
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("unbalanced italic in bold", func() {
+				source := `*a_b* _c_`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.QuotedText{
+									Kind: types.SingleQuoteBold,
+									Elements: []interface{}{
+										&types.StringElement{Content: "a_b"},
+									},
+								},
+								&types.StringElement{
+									Content: " ",
+								},
+								&types.QuotedText{
+									Kind: types.SingleQuoteItalic,
+									Elements: []interface{}{
+										&types.StringElement{Content: "c"},
+									},
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("unparsed bold in monospace", func() {
 				source := "`a*b*`"
 				expected := &types.Document{
