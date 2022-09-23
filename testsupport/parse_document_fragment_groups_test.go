@@ -19,7 +19,9 @@ var _ = Describe("parse document fragment groups", func() {
 			Elements: []interface{}{
 				&types.Paragraph{
 					Elements: []interface{}{
-						types.RawLine("hello, world!"),
+						&types.RawLine{
+							Content: "hello, world!",
+						},
 					},
 				},
 			},

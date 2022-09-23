@@ -402,7 +402,9 @@ var _ = Describe("attributes", func() {
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine(`image::foo.png[ "This \Backslash  2Spaced End Space " ]`),
+								&types.RawLine{
+									Content: `image::foo.png[ "This \Backslash  2Spaced End Space " ]`,
+								},
 							},
 						},
 					},

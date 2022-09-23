@@ -29,9 +29,15 @@ pasta`
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
-									types.RawLine("cookie\n"),
-									types.RawLine("chocolate\n"),
-									types.RawLine("pasta"),
+									&types.RawLine{
+										Content: "cookie\n",
+									},
+									&types.RawLine{
+										Content: "chocolate\n",
+									},
+									&types.RawLine{
+										Content: "pasta",
+									},
 								},
 							},
 						},
@@ -57,9 +63,15 @@ pasta`
 									types.AttrOptions: types.Options{"hardbreaks"},
 								},
 								Elements: []interface{}{
-									types.RawLine("cookie\n"),
-									types.RawLine("chocolate\n"),
-									types.RawLine("pasta"),
+									&types.RawLine{
+										Content: "cookie\n",
+									},
+									&types.RawLine{
+										Content: "chocolate\n",
+									},
+									&types.RawLine{
+										Content: "pasta",
+									},
 								},
 							},
 						},
@@ -84,8 +96,12 @@ pasta`
 									types.AttrTitle: "my title",
 								},
 								Elements: []interface{}{
-									types.RawLine("cookie\n"),
-									types.RawLine("pasta"),
+									&types.RawLine{
+										Content: "cookie\n",
+									},
+									&types.RawLine{
+										Content: "pasta",
+									},
 								},
 							},
 						},
@@ -140,8 +156,12 @@ pasta`
 									},
 								},
 								Elements: []interface{}{
-									types.RawLine("cookie\n"),
-									types.RawLine("pasta"),
+									&types.RawLine{
+										Content: "cookie\n",
+									},
+									&types.RawLine{
+										Content: "pasta",
+									},
 								},
 							},
 						},
@@ -171,8 +191,12 @@ pasta`
 									types.AttrID:      "anchor",
 								},
 								Elements: []interface{}{
-									types.RawLine("cookie\n"),
-									types.RawLine("pasta"),
+									&types.RawLine{
+										Content: "cookie\n",
+									},
+									&types.RawLine{
+										Content: "pasta",
+									},
 								},
 							},
 						},
@@ -195,7 +219,9 @@ another paragraph with an image image:cookie.jpg[cookie]
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
-									types.RawLine("a paragraph"),
+									&types.RawLine{
+										Content: "a paragraph",
+									},
 								},
 							},
 						},
@@ -214,7 +240,9 @@ another paragraph with an image image:cookie.jpg[cookie]
 									},
 								},
 								Elements: []interface{}{
-									types.RawLine("another paragraph with an image image:cookie.jpg[cookie]"),
+									&types.RawLine{
+										Content: "another paragraph with an image image:cookie.jpg[cookie]",
+									},
 								},
 							},
 						},
@@ -237,7 +265,9 @@ image::cookie.jpg[cookie]
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
-									types.RawLine("a paragraph"),
+									&types.RawLine{
+										Content: "a paragraph",
+									},
 								},
 							},
 						},
@@ -324,8 +354,12 @@ and another one using attribute substitution: {github-url}[{github-title}]...
 										types.AttrSubstitutions: "normal",
 									},
 									Elements: []interface{}{
-										types.RawLine("links to {github-title}: https://github.com[{github-title}] and *<https://github.com[{github-title}]>*\n"),
-										types.RawLine("and another one using attribute substitution: {github-url}[{github-title}]...\n"),
+										&types.RawLine{
+											Content: "links to {github-title}: https://github.com[{github-title}] and *<https://github.com[{github-title}]>*\n",
+										},
+										&types.RawLine{
+											Content: "and another one using attribute substitution: {github-url}[{github-title}]...\n",
+										},
 										&types.SinglelineComment{
 											Content: " a single-line comment.",
 										},

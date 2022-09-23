@@ -38,12 +38,12 @@ func arrangeLists(f types.DocumentFragment) types.DocumentFragment {
 	if err != nil {
 		return types.NewErrorFragment(f.Position, err)
 	}
-	result := types.NewDocumentFragment(f.Position, elements...)
+	// result := types.NewDocumentFragment(f.Position, elements...)
 	// if log.IsLevelEnabled(log.DebugLevel) {
 	// 	log.WithField("pipeline_task", "arrange_lists").Debugf("arranged lists: %s", spew.Sdump(result))
 	// }
-
-	return result
+	f.Elements = elements
+	return f
 }
 
 func arrangeListElements(elements []interface{}) ([]interface{}, error) {

@@ -435,8 +435,8 @@ func extractMarkdownQuoteAttribution(elements []interface{}) ([]interface{}, str
 		return elements, ""
 	}
 	log.Debugf("attempting to extract markdown-style quote block author")
-	if l, ok := elements[len(elements)-1].(types.RawLine); ok {
-		a, err := ParseReader("", strings.NewReader(string(l)), Entrypoint("MarkdownQuoteAttribution"))
+	if l, ok := elements[len(elements)-1].(*types.RawLine); ok {
+		a, err := ParseReader("", strings.NewReader(l.Content), Entrypoint("MarkdownQuoteAttribution"))
 		// assume that the last line is not an author attribution if an error occurred
 		if err != nil {
 			log.Debugf("failed to extract markdown-style quote block author: %v", err)
@@ -663,8 +663,8 @@ func serialize(content interface{}) ([]byte, *placeholders, error) {
 		result := bytes.NewBuffer(nil)
 		for _, element := range content {
 			switch element := element.(type) {
-			case types.RawLine:
-				result.WriteString(string(element))
+			case *types.RawLine:
+				result.WriteString(element.Content)
 			case string:
 				result.WriteString(string(element))
 			case *types.StringElement:
@@ -703,8 +703,8 @@ func serializePlainText(content interface{}) (string, error) {
 					return "", err
 				}
 				result.WriteString(s)
-			case types.RawLine:
-				result.WriteString(string(element))
+			case *types.RawLine:
+				result.WriteString(element.Content)
 			case *types.StringElement:
 				result.WriteString(element.Content)
 			case *types.SpecialCharacter:

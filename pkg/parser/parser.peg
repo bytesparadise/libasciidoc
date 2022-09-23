@@ -1750,8 +1750,8 @@ ShortcutParagraph <-
         // also, make sure that there is no LabeledListElement delimiter (`::` - `::::`) 
         //   in the middle of the line (with space afterwards)
         //   or at the end of the line 
-        return !strings.Contains(string(firstLine.(types.RawLine)), ":: ") && 
-            !strings.HasSuffix(string(firstLine.(types.RawLine)), "::"), nil
+        return !firstLine.(*types.RawLine).Contains(":: ") && 
+            !firstLine.(*types.RawLine).HasSuffix("::"), nil
     }
     otherLines:(
         NotEOF 
@@ -2614,7 +2614,7 @@ InlineTableCells <- cells:(InlineTableCell)+ EOL {
 InlineTableCell <- 
     "|" Space* content:(InlineTableCellContent) // no format specifier supported when cells are "inline"
     {
-        return types.NewInlineTableCell(content.(types.RawLine))
+        return types.NewInlineTableCell(content.(*types.RawLine))
     }
 
 InlineTableCellContent <- 

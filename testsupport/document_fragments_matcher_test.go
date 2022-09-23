@@ -18,7 +18,9 @@ var _ = Describe("document fragments matcher", func() {
 	expected := []types.DocumentFragment{
 		{
 			Elements: []interface{}{
-				types.RawLine("a paragraph."),
+				&types.RawLine{
+					Content: "a paragraph.",
+				},
 			},
 		},
 	}
@@ -29,7 +31,9 @@ var _ = Describe("document fragments matcher", func() {
 		actual := []types.DocumentFragment{
 			{
 				Elements: []interface{}{
-					types.RawLine("a paragraph."),
+					&types.RawLine{
+						Content: "a paragraph.",
+					},
 				},
 			},
 		}
@@ -45,7 +49,9 @@ var _ = Describe("document fragments matcher", func() {
 		actual := []types.DocumentFragment{
 			{
 				Elements: []interface{}{
-					types.RawLine("something else"),
+					&types.RawLine{
+						Content: "something else",
+					},
 				},
 			},
 		}
