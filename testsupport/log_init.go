@@ -27,11 +27,11 @@ func init() {
 func parseLogLevel() log.Level {
 	var logLevel string
 	// needed to let ginkgo parse the flag, otherwise, `ginkgo -- --loglevel=...` will fail with `flag provided but not defined: -loglevel`
-	flag.StringVar(&logLevel, "loglevel", "warn", "log level to set [debug|info|warn|error|fatal|panic]")
+	flag.StringVar(&logLevel, "loglevel", "error", "log level to set [debug|info|warn|error|fatal|panic]")
 	// parse with a custom flagset in which all other flags (ginkgo's) are ignored
 	f := pflag.NewFlagSet("passthroughs", pflag.ContinueOnError)
 	f.ParseErrorsWhitelist.UnknownFlags = true
-	f.StringVarP(&logLevel, "loglevel", "l", "warn", "log level to set [debug|info|warn|error|fatal|panic]")
+	f.StringVarP(&logLevel, "loglevel", "l", "error", "log level to set [debug|info|warn|error|fatal|panic]")
 	if err := f.Parse(os.Args[1:]); err != nil {
 		panic(err)
 	}
