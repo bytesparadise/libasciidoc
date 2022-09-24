@@ -111,6 +111,7 @@ var _ = Describe("documents", func() {
 
 			It("should render demo-shorter.adoc", func() {
 				// given
+				// log.SetLevel(log.InfoLevel)
 				_, err := os.Stat("test/compat/demo-shorter.adoc")
 				Expect(err).NotTo(HaveOccurred())
 

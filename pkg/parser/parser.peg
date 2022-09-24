@@ -118,7 +118,7 @@ IfevalExpressionOperand <-
 
 IfevalExpressionValue <- 
     Number
-    / InlineWord
+    / Alphanums
 
 EndIf <- "endif::" name:(ConditionalVariableName)? "[" attr:(ConditionalInclusionAttribute)? "]" Space* EOF {
          return types.NewEndOfCondition() // name and attributes are parsed but ignored
@@ -423,7 +423,7 @@ LegacyElementID <-
 ShortHandTitle <- `.` 
     ![. ] // may not start with a dot or a space, to avoid confusion with list items or literal block delimiters
     elements:(
-        InlineWord
+        Alphanums
         / Space
         / Punctuation
         / AttributeReferenceValue
@@ -634,7 +634,7 @@ UnquotedAttributeValue <-
 AttributeReference <-
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(AttributeRefs)
+        return c.isSubstitutionEnabled(AttributeRefs), nil
     }
     element:(AttributeReferenceValue / CounterReference) {
         return element, nil
@@ -1204,7 +1204,7 @@ ElementPlaceHolder <- ElementPlaceHolderDelimiter ref:([0-9]+ { return string(c.
 // -----------------------------------------------------------------------------------------------------------------------
 LineBreak <- 
     &{ 
-        return c.isSubstitutionEnabled(PostReplacements)
+        return c.isSubstitutionEnabled(PostReplacements), nil
     }
     "+"
     &{ 
@@ -1288,7 +1288,7 @@ IndexTerm <- "((" term:(IndexTermContent) "))" {
        return types.NewIndexTerm(term.([]interface{}))
     }
 
-IndexTermContent <- elements:(InlineWord / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
+IndexTermContent <- elements:(Alphanums / QuotedText / Space / SpecialCharacter / ElementPlaceHolder / (!"))" .) {
     return string(c.text), nil
 })+ {
     return types.NewInlineElements(elements.([]interface{}))
@@ -1341,14 +1341,13 @@ FootnoteElements <- elements:(FootnoteElement)* {
 FootnoteElement <- 
     !"]" 
     element:(
-        InlineWord 
+        InlineText 
         / Spaces 
-        / Dot
         / TypographicQuote
         / Quote
         / Replacement
-        / InlineMacro
         / Punctuation // must be after Replacement
+        / InlineMacro
         / LineBreak
         / AttributeReference 
         / SpecialCharacter // must be after InlineMacro (because of BareURL)
@@ -1701,7 +1700,7 @@ LabeledListElementDescription <-
 Callout <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Callouts)
+        return c.isSubstitutionEnabled(Callouts), nil
     }
     "<" ref:([0-9]+ { return strconv.Atoi(string(c.text)) }) ">" Space* &(EOL / Callout) {
         return types.NewCallout(ref.(int))
@@ -1848,12 +1847,11 @@ TwoOrMoreBackslashes <- `\\` `\`* {
     }
 
 QuotedTextElement <- 
-    InlineWord
+    InlineText
     / Spaces // may start and end with spaces
-    / Dot
     / Replacement
-    / Punctuation // must be after Replacement
     / TypographicQuote
+    / Punctuation // must be after Replacement
     / AttributeReference
     / SingleNewline // 2 newlines split the paragraph
     / QuotedText // must be before Replacement
@@ -2309,10 +2307,8 @@ SectionTitle <-
 SectionTitleElement <-
     !EOL
     element:(
-        InlineWord
-        / SectionTitleLegacyID
-        / Space
-        / Dot
+        InlineText
+        / Spaces
         / TypographicQuote
         / Replacement
         / Punctuation // must be after Replacement
@@ -2323,6 +2319,7 @@ SectionTitleElement <-
         / InlineIcon
         / AttributeReference
         / ElementPlaceHolder // needed when parsing a second time, after first pass returned attribute substitutions
+        / SectionTitleLegacyID
         / InlineAnchor // must be after LegacyElementID
         / InlineFootnote
         / AnyChar) {
@@ -2350,14 +2347,13 @@ NormalGroup <- // TODO: verify same order of rules as in AttributeStructuredValu
         // !EOF
         NotEOF
         element:(
-            InlineWord
+            InlineText
+            / Spaces
             / Replacement
+            / TypographicQuote
             / Punctuation // must be after Replacement
-            / Space
-            / Dot
             / Newline
             / AttributeReference
-            / TypographicQuote
             / Quote
             / InlineMacro // must be before SpecialCharacter (because of CrossReference)
             / Callout // must be placed before SpecialCharacter
@@ -2382,9 +2378,8 @@ AttributeStructuredValue <-
 AttributeStructuredValueElement <- 
     NotEOF
     element:(
-        InlineWord
+        InlineText
         / Space 
-        / Dot
         / Replacement
         / Punctuation // must be after Replacement
         / Quote
@@ -2401,7 +2396,7 @@ AttributeStructuredValueElement <-
 InlineMacro <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Macros)
+        return c.isSubstitutionEnabled(Macros), nil
     }
     element:(
         InlineIcon
@@ -2422,7 +2417,7 @@ InlineMacro <-
 InlinePassthrough <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(InlinePassthroughs)
+        return c.isSubstitutionEnabled(InlinePassthroughs), nil
     }
     element:(
         TriplePlusPassthrough / SinglePlusPassthrough / PassthroughMacro
@@ -2433,14 +2428,14 @@ InlinePassthrough <-
 Quote <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Quotes)
+        return c.isSubstitutionEnabled(Quotes), nil
     }
     QuotedText 
 
 Replacement <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(Replacements)
+        return c.isSubstitutionEnabled(Replacements), nil
     }
     element:(
         Symbol
@@ -2451,7 +2446,7 @@ Replacement <-
 SpecialCharacter <- 
     // check if enabled with the current substitution context
     &{
-        return c.isSubstitutionEnabled(SpecialCharacters)
+        return c.isSubstitutionEnabled(SpecialCharacters), nil
     }
     element:(
         ("<" / ">" / "&" ) {
@@ -2488,7 +2483,7 @@ TypographicQuote <-
     /
     // unescaped
     &{
-        return c.isSubstitutionEnabled(Replacements)
+        return c.isSubstitutionEnabled(Replacements), nil
     }
     &{
         //log.Debugf("TypographicQuote at pos %s", c.pos.String())
@@ -2751,86 +2746,40 @@ Alphanums <- [\pL\pN]+ {
         return string(c.text), nil
     }
 
-InlineWord <- 
-    [\pL\pN]+
-    // option 1
-    // &(
-    //     Space 
-    //     / Punctuation 
-    //     / ConditionalPunctuation
-    //     / ElementPlaceHolderDelimiter 
-    //     / EOL
-    //     / ( `<` / `>` / `&` / `*` / `_` / '`' / '#' / `"` / `'` / "{" / "\\" / ")")
-    // )
-
-    // option 2
-    // Punctuation?
-
-    // option 3
-    (
-        Space
-        / Dot
-        / &{ 
-            return c.isSubstitutionDisabled(Macros) 
-        } 
-        / &(
-            !(`:` !(Space / EOL))
-            !`@`
-        )
-    ) 
-    // !(
-    //     &{ return c.isSubstitutionEnabled(Macros) } 
-    //     &(`@`)
-    // )
-
-    // option 4
-    // (   Space 
-    //     / Punctuation 
-    //     / ConditionalPunctuation
-    //     / &(
-    //         EOL
-    //         /ElementPlaceHolderDelimiter 
-    //         / ( `<` / `>` / `&` / `*` / `_` / '`' / '#' / `"` / `'` / "{" / "\\" / ")")
-    //     )
-    // )
-    {
-        log.Debugf("new inlineword: '%v'", string(c.text))
-        return types.NewStringElement(string(c.text))
-    }
-
-Dot <- (`.` &(!`..`)) { // avoid conflict with ellipsis (`...`)
-        log.Debugf("new dot at position '%v'", c.pos.String())
+InlineText <- 
+    text:([\pL\pN]+ {
         return string(c.text), nil
+    })
+    !(
+        ":" // avoid conflict with inline macros
+        &{
+            return c.isInlineMacro(string(c.text)), nil
+        } 
+    )
+    !(
+        "@" [\pL\pN] // avoid conflict with email address
+    ) 
+    {
+        log.Debugf("new text: '%v'", string(c.text))
+        return types.NewStringElement(string(c.text))
     }
 
 Punctuation <- 
     (
-        ([,;?)!/=-]) // warning: keep `-` in last position in the range!
-        / (`:` &(Space / EOL)) // ':' at the end of the line
+        ([.,;?)!/:"'@=-]) // warning: keep `-` in last position in the range! '"
         / ( 
             &{ 
-                return c.isSubstitutionDisabled(Replacements) // only if 'replacements' sub is disabled
-            } 
-            (`"` / `'` / `(` / ')')
+                return c.allSubstitutionsDisabled(Macros,Quotes), nil
+            }
+            "[" / "]"
         )
         / (
             &{ 
-                return c.isSubstitutionDisabled(Macros) 
-            } 
-            (`:` / `@`)
-        )
-        / (
-            &{ 
-                return c.isSubstitutionDisabled(Quotes) 
+                return c.isSubstitutionDisabled(Quotes), nil
             } 
             ('*' / '_' / '`' / '#')
         )
-        / (
-            &{ 
-                return c.allSubstitutionsDisabled(Macros,Quotes) // all substitutions involving attributes must be disabled
-            } 
-            (`[` / `]`)
-        )
+        / ("(" !"(") // avoid conflict with index terms
     )
     { 
         log.Debugf("new punctuation: '%v'", string(c.text))
@@ -2853,15 +2802,15 @@ ManyChars <- [^\r\n]+ {
         return string(c.text), nil
     }
 
-FileLocation <- path:(Filename / ElementPlaceHolder)+ {
+FileLocation <- path:(Filename) {
         return types.NewLocation("", path.([]interface{}))
     }
 
-Location <- scheme:(Scheme)? path:(Filename / ElementPlaceHolder)+ {
+Location <- scheme:(Scheme)? path:(Filename) {
         return types.NewLocation(scheme, path.([]interface{}))
     }
 
-LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename)+ {
+LocationWithScheme <- !"[" scheme:(Scheme) path:(Filename) {
         return types.NewLocation(scheme, path.([]interface{}))
     }
 
@@ -2870,16 +2819,16 @@ Scheme <- ("http://" / "https://" / "ftp://" / "irc://" / "mailto:") {
 }
 
 Filename <- 
-    !"[" // quick escape
     elements:(
-        ([^\r\n[\]\uFFFD{,;?!>. ])+ { // excluding EOL, space, "{", "[", "]". Also, punctuation chars and `<` and `>` special chars are treated separately below (but `&` is allowed)
-            return types.NewStringElement(string(c.text))
+        !"[" // quick escape
+        ([^\r\n[\]\uFFFD{,;?!.<> ])+ { // excluding EOL, space, "{", "[", "]". Also, punctuation chars and `<` and `>` special chars are treated separately below
+            return string(c.text), nil
         }
-        / Dot &(!(EOF / Space))
-        / Punctuation &(!(EOF / Space)) // TODO: needed?
+        / [,;?!.] &(!Space !EOF) // filename cannot end with those characters
         / AttributeReference 
+        / ElementPlaceHolder
         / "{" {
-            return types.NewStringElement(string(c.text))
+            return string(c.text), nil
         })+ {
         return types.NewInlineElements(elements.([]interface{}))
     }
