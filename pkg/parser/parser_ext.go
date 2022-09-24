@@ -137,6 +137,29 @@ func (c *current) isPrecededBySpace() bool {
 	return false
 }
 
+func (c *current) isInlineMacro(text string) bool {
+	log.Debugf("checking if inline text '%s' is valid", text)
+	if c.isSubstitutionDisabled(Macros) {
+		return false
+	}
+	switch {
+	case strings.HasSuffix(text, "footnote"):
+		log.Debugf("invalid inline text: '%s' (conflicts with footnote)", text)
+		return true
+	case c.hasUserMacro(text):
+		log.Debugf("invalid inline text: '%s' (conflicts with user-defined macro)", text)
+		return true
+	default:
+		switch text {
+		// TODO: refine by checking is associated substitution is enabled?
+		case "http", "https", "mailto", "image", "link", "icon", "pass", "menu", "xref", "btn":
+			log.Debugf("invalid inline text: '%s' (conflicts with inline macro)", text)
+			return true
+		}
+	}
+	return false
+}
+
 // verifies that previous last character of previous match is neither a
 // letter, number, exclamation point, colon, semicolon, or closing curly bracket
 func (c *current) isSingleQuotedTextAllowed() bool {
@@ -252,37 +275,31 @@ func (c *current) lookupCurrentSubstitutions() (*substitutions, bool) {
 	return s, found
 }
 
-func (c *current) isSubstitutionEnabled(k string) (bool, error) {
+func (c *current) isSubstitutionEnabled(k string) bool {
 	subs, found := c.lookupCurrentSubstitutions()
 	if !found {
 		log.Debugf("substitutions not set in globalStore: assuming '%s' not enabled", k)
-		return false, nil // TODO: should return `true`, at least for `attributes`?
+		return false // TODO: should return `true`, at least for `attributes`?
 	}
 	for _, s := range subs.sequence {
 		if s == k {
 			// log.Debugf("'%s' is enabled", k)
-			return true, nil
+			return true
 		}
 	}
 	// log.Debugf("'%s' is not enabled", k)
-	return false, nil
+	return false
 }
 
-func (c *current) isSubstitutionDisabled(k string) (bool, error) {
-	e, err := c.isSubstitutionEnabled(k)
-	return !e, err
+func (c *current) isSubstitutionDisabled(k string) bool {
+	return !c.isSubstitutionEnabled(k)
 }
 
 // verifies that ALL substitutions with the given keys are disabled
-func (c *current) allSubstitutionsDisabled(keys ...string) (bool, error) {
+func (c *current) allSubstitutionsDisabled(keys ...string) bool {
 	result := true
 	for _, k := range keys {
-		e, err := c.isSubstitutionEnabled(k)
-		if err != nil {
-			return false, err
-		}
-		result = result && !e
-
+		result = result && !c.isSubstitutionEnabled(k)
 	}
-	return result, nil
+	return result
 }

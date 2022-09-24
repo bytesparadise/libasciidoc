@@ -77,7 +77,7 @@ func NewRootCmd() *cobra.Command {
 	flags := rootCmd.Flags()
 	flags.BoolVarP(&noHeaderFooter, "no-header-footer", "s", false, "do not render header/footer (default: false)")
 	flags.StringVarP(&outputName, "out-file", "o", "", "output file (default: based on path of input file); use - to output to STDOUT")
-	flags.StringVar(&logLevel, "log", "warning", "log level to set [debug|info|warning|error|fatal|panic]")
+	flags.StringVar(&logLevel, "log", "warn", "log level to set [debug|info|warn|error|fatal|panic]")
 	flags.StringArrayVarP(&css, "css", "", []string{}, "the paths to the CSS files to link to the document")
 	flags.StringArrayVarP(&attributes, "attribute", "a", []string{}, "a document attribute to set in the form of name, name!, or name=value pair")
 	flags.StringVarP(&backend, "backend", "b", "html5", "backend to format the file")
