@@ -25,7 +25,9 @@ second paragraph`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("first paragraph"),
+								&types.RawLine{
+									Content: "first paragraph",
+								},
 							},
 						},
 					},
@@ -47,7 +49,9 @@ second paragraph`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("second paragraph"),
+								&types.RawLine{
+									Content: "second paragraph",
+								},
 							},
 						},
 					},
@@ -72,7 +76,9 @@ second paragraph
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("first paragraph"),
+								&types.RawLine{
+									Content: "first paragraph",
+								},
 							},
 						},
 					},
@@ -112,7 +118,9 @@ second paragraph
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("second paragraph"),
+								&types.RawLine{
+									Content: "second paragraph",
+								},
 							},
 						},
 					},

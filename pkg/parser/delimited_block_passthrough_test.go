@@ -32,8 +32,12 @@ another paragraph`
 									types.AttrStyle: types.Passthrough,
 								},
 								Elements: []interface{}{
-									types.RawLine("_foo_\n"),
-									types.RawLine("*bar*"),
+									&types.RawLine{
+										Content: "_foo_\n",
+									},
+									&types.RawLine{
+										Content: "*bar*",
+									},
 								},
 							},
 						},
@@ -55,7 +59,9 @@ another paragraph`
 						Elements: []interface{}{
 							&types.Paragraph{
 								Elements: []interface{}{
-									types.RawLine("another paragraph"),
+									&types.RawLine{
+										Content: "another paragraph",
+									},
 								},
 							},
 						},

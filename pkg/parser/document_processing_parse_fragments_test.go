@@ -23,7 +23,9 @@ var _ = Describe("document fragment parsing", func() {
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("a line"),
+								&types.RawLine{
+									Content: "a line",
+								},
 							},
 						},
 					},
@@ -45,7 +47,9 @@ another line`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("a line"),
+								&types.RawLine{
+									Content: "a line",
+								},
 							},
 						},
 					},
@@ -67,7 +71,9 @@ another line`
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("another line"),
+								&types.RawLine{
+									Content: "another line",
+								},
 							},
 						},
 					},
@@ -90,8 +96,12 @@ on *multiple lines*`
 						&types.DelimitedBlock{
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
-								types.RawLine("some text\n"),
-								types.RawLine("on *multiple lines*"),
+								&types.RawLine{
+									Content: "some text\n",
+								},
+								&types.RawLine{
+									Content: "on *multiple lines*",
+								},
 							},
 						},
 					},
@@ -114,8 +124,12 @@ on *multiple lines*`
 						&types.DelimitedBlock{
 							Kind: types.MarkdownQuote,
 							Elements: []interface{}{
-								types.RawLine("some text\n"),
-								types.RawLine("on *multiple lines*"),
+								&types.RawLine{
+									Content: "some text\n",
+								},
+								&types.RawLine{
+									Content: "on *multiple lines*",
+								},
 							},
 						},
 					},
@@ -141,7 +155,9 @@ a line
 						&types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.RawLine("a line"),
+								&types.RawLine{
+									Content: "a line",
+								},
 							},
 						},
 					},
@@ -169,11 +185,21 @@ not a sidebar block
 						&types.DelimitedBlock{
 							Kind: types.Listing,
 							Elements: []interface{}{
-								types.RawLine("a line\n"),
-								types.RawLine("\n"),
-								types.RawLine("****\n"),
-								types.RawLine("not a sidebar block\n"),
-								types.RawLine("****"),
+								&types.RawLine{
+									Content: "a line\n",
+								},
+								&types.RawLine{
+									Content: "\n",
+								},
+								&types.RawLine{
+									Content: "****\n",
+								},
+								&types.RawLine{
+									Content: "not a sidebar block\n",
+								},
+								&types.RawLine{
+									Content: "****",
+								},
 							},
 						},
 					},
@@ -210,9 +236,15 @@ on
 								types.AttrLanguage: "text",
 							},
 							Elements: []interface{}{
-								types.RawLine("a line\n"),
-								types.RawLine("\n"),
-								types.RawLine("another line"),
+								&types.RawLine{
+									Content: "a line\n",
+								},
+								&types.RawLine{
+									Content: "\n",
+								},
+								&types.RawLine{
+									Content: "another line",
+								},
 							},
 						},
 					},
@@ -243,9 +275,15 @@ on
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("a paragraph\n"),
-								types.RawLine("on\n"),
-								types.RawLine("3 lines."),
+								&types.RawLine{
+									Content: "a paragraph\n",
+								},
+								&types.RawLine{
+									Content: "on\n",
+								},
+								&types.RawLine{
+									Content: "3 lines.",
+								},
 							},
 						},
 					},
@@ -318,9 +356,15 @@ on
 					Elements: []interface{}{
 						&types.Paragraph{
 							Elements: []interface{}{
-								types.RawLine("a paragraph\n"),
-								types.RawLine("on\n"),
-								types.RawLine("3 lines."),
+								&types.RawLine{
+									Content: "a paragraph\n",
+								},
+								&types.RawLine{
+									Content: "on\n",
+								},
+								&types.RawLine{
+									Content: "3 lines.",
+								},
 							},
 						},
 					},
@@ -359,7 +403,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("first element"),
+												&types.RawLine{
+													Content: "first element",
+												},
 											},
 										},
 									},
@@ -369,7 +415,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("second element"),
+												&types.RawLine{
+													Content: "second element",
+												},
 											},
 										},
 									},
@@ -402,7 +450,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("first element"),
+												&types.RawLine{
+													Content: "first element",
+												},
 											},
 										},
 									},
@@ -412,7 +462,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("second element"),
+												&types.RawLine{
+													Content: "second element",
+												},
 											},
 										},
 									},
@@ -443,7 +495,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("first element"),
+												&types.RawLine{
+													Content: "first element",
+												},
 											},
 										},
 									},
@@ -453,7 +507,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("second element"),
+												&types.RawLine{
+													Content: "second element",
+												},
 											},
 										},
 									},
@@ -486,7 +542,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("first element"),
+												&types.RawLine{
+													Content: "first element",
+												},
 											},
 										},
 									},
@@ -496,7 +554,9 @@ on
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("second element"),
+												&types.RawLine{
+													Content: "second element",
+												},
 											},
 										},
 									},
@@ -530,10 +590,18 @@ lines
 										&types.Paragraph{
 											Elements: []interface{}{
 												// suffix spaces are trimmed
-												types.RawLine("element\n"),
-												types.RawLine("on\n"),
-												types.RawLine("multiple\n"),
-												types.RawLine("lines"),
+												&types.RawLine{
+													Content: "element\n",
+												},
+												&types.RawLine{
+													Content: "on\n",
+												},
+												&types.RawLine{
+													Content: "multiple\n",
+												},
+												&types.RawLine{
+													Content: "lines",
+												},
 											},
 										},
 									},
@@ -571,10 +639,18 @@ lines
 										&types.Paragraph{
 											Elements: []interface{}{
 												// suffix spaces are trimmed on each line
-												types.RawLine("first element\n"),
-												types.RawLine("on\n"),
-												types.RawLine("multiple\n"),
-												types.RawLine("lines"),
+												&types.RawLine{
+													Content: "first element\n",
+												},
+												&types.RawLine{
+													Content: "on\n",
+												},
+												&types.RawLine{
+													Content: "multiple\n",
+												},
+												&types.RawLine{
+													Content: "lines",
+												},
 											},
 										},
 									},
@@ -585,10 +661,18 @@ lines
 										&types.Paragraph{
 											Elements: []interface{}{
 												// suffix spaces are trimmed on each line
-												types.RawLine("second element\n"),
-												types.RawLine("on\n"),
-												types.RawLine("multiple\n"),
-												types.RawLine("lines"),
+												&types.RawLine{
+													Content: "second element\n",
+												},
+												&types.RawLine{
+													Content: "on\n",
+												},
+												&types.RawLine{
+													Content: "multiple\n",
+												},
+												&types.RawLine{
+													Content: "lines",
+												},
 											},
 										},
 									},

@@ -772,7 +772,7 @@ func addToListElement(e ListElement, element interface{}) error {
 		log.Debugf("adding element of type '%T' to '%T'", element, e)
 	}
 	switch element := element.(type) {
-	case RawLine:
+	case *RawLine:
 		// append to last element of this OrderedListElement if it's a Paragraph,
 		// otherwise, append a new Paragraph with this RawLine
 		if p, ok := e.LastElement().(*Paragraph); ok {
@@ -907,7 +907,7 @@ func NewListElements(elements []interface{}) (*ListElements, error) {
 				attrs = nil
 			}
 			elmts = append(elmts, e)
-		case RawLine, *SinglelineComment:
+		case *RawLine, *SinglelineComment:
 			// append to last element
 			if len(elmts) > 0 {
 				switch elmt := elmts[len(elmts)-1].(type) {
@@ -1736,11 +1736,9 @@ type Paragraph struct {
 func NewParagraph(style interface{}, elements ...interface{}) (*Paragraph, error) {
 	// log.Debugf("new paragraph with attributes: '%v'", attributes)
 	for i, l := range elements {
-		if l, ok := l.(RawLine); ok {
-			// add `\n` unless the we're on the last element
-			if i < len(elements)-1 {
-				elements[i] = RawLine(l + "\n") // TODO: add `NewRawlines()` func which takes care of appending with "\n"
-			}
+		// append `\n` unless the we're on the last element
+		if l, ok := l.(*RawLine); ok && i < len(elements)-1 {
+			l.Append("\n")
 		}
 	}
 	p := &Paragraph{
@@ -1770,8 +1768,8 @@ func (p *Paragraph) SetElements(elements []interface{}) error {
 var _ WithElementAddition = &Paragraph{}
 
 func (p *Paragraph) AddElement(e interface{}) error {
-	if r, ok := p.Elements[len(p.Elements)-1].(RawLine); ok {
-		p.Elements[len(p.Elements)-1] = RawLine(r + "\n")
+	if r, ok := p.Elements[len(p.Elements)-1].(*RawLine); ok {
+		r.Append("\n")
 	}
 	p.Elements = append(p.Elements, e)
 	return nil
@@ -2306,11 +2304,9 @@ type DelimitedBlock struct {
 
 func NewDelimitedBlock(kind string, elements []interface{}) (*DelimitedBlock, error) {
 	for i, l := range elements {
-		if l, ok := l.(RawLine); ok {
-			// add `\n` unless the we're on the last element
-			if i < len(elements)-1 {
-				elements[i] = RawLine(l + "\n")
-			}
+		// append `\n` unless the we're on the last element
+		if l, ok := l.(*RawLine); ok && i < len(elements)-1 {
+			l.Append("\n")
 		}
 	}
 	return &DelimitedBlock{
@@ -3278,11 +3274,27 @@ func (f *FileInclusion) SetAttributes(attributes Attributes) {
 // -------------------------------------------------------------------------------------
 // Raw Line
 // -------------------------------------------------------------------------------------
-type RawLine string // TODO: convert to struct with `Content` field, or alias to StringElement
+type RawLine struct {
+	Content string
+}
 
 // NewRawLine returns a new RawLine wrapper for the given string
-func NewRawLine(content string) (RawLine, error) {
-	return RawLine(strings.TrimRight(content, " \t")), nil
+func NewRawLine(content string) (*RawLine, error) {
+	return &RawLine{
+		Content: strings.TrimRight(content, " \t"),
+	}, nil
+}
+
+func (r *RawLine) Contains(substr string) bool {
+	return strings.Contains(r.Content, substr)
+}
+
+func (r *RawLine) HasSuffix(suffix string) bool {
+	return strings.HasSuffix(r.Content, suffix)
+}
+
+func (r *RawLine) Append(s string) {
+	r.Content = r.Content + s
 }
 
 // -------------------------------------------------------------------------------------
@@ -4101,7 +4113,7 @@ type TableCell struct {
 	Elements []interface{}
 }
 
-func NewInlineTableCell(content RawLine) (*TableCell, error) {
+func NewInlineTableCell(content *RawLine) (*TableCell, error) {
 	return &TableCell{
 		Elements: []interface{}{
 			content,
@@ -4111,11 +4123,9 @@ func NewInlineTableCell(content RawLine) (*TableCell, error) {
 
 func NewMultilineTableCell(elements []interface{}, format interface{}) (*TableCell, error) {
 	for i, l := range elements {
-		if l, ok := l.(RawLine); ok {
-			// add `\n` unless the we're on the last element
-			if i < len(elements)-1 {
-				elements[i] = RawLine(l + "\n")
-			}
+		// append `\n` unless the we're on the last element
+		if l, ok := l.(*RawLine); ok && i < len(elements)-1 {
+			l.Append("\n")
 		}
 	}
 	c := &TableCell{

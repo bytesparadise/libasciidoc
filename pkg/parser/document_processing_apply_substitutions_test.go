@@ -174,8 +174,12 @@ var _ = Describe("apply substitutions", func() {
 						types.AttrTitle: "The Title",
 					},
 					Elements: []interface{}{
-						types.RawLine("a paragraph called\n"),
-						types.RawLine("the {title}."),
+						&types.RawLine{
+							Content: "a paragraph called\n",
+						},
+						&types.RawLine{
+							Content: "the {title}.",
+						},
 					},
 				},
 			},
@@ -245,7 +249,9 @@ var _ = Describe("apply substitutions", func() {
 						},
 					},
 					Elements: []interface{}{
-						types.RawLine("a line"),
+						&types.RawLine{
+							Content: "a line",
+						},
 					},
 				},
 			},
@@ -283,7 +289,9 @@ var _ = Describe("apply substitutions", func() {
 			Elements: []interface{}{
 				&types.Paragraph{
 					Elements: []interface{}{
-						types.RawLine("quoted text [.{role1}]*here*."),
+						&types.RawLine{
+							Content: "quoted text [.{role1}]*here*.",
+						},
 					},
 				},
 			},
@@ -326,7 +334,9 @@ var _ = Describe("apply substitutions", func() {
 			Elements: []interface{}{
 				&types.Paragraph{
 					Elements: []interface{}{
-						types.RawLine("image:{cookie}.png[[.{role1}]_yummy!_]"),
+						&types.RawLine{
+							Content: "image:{cookie}.png[[.{role1}]_yummy!_]",
+						},
 					},
 				},
 			},
@@ -421,7 +431,9 @@ var _ = Describe("apply substitutions", func() {
 									// element of header cells are wrapped in a paragraph until substitutions are applied
 									&types.Paragraph{
 										Elements: []interface{}{
-											types.RawLine("[.{role1}]_yummy header!_"),
+											&types.RawLine{
+												Content: "[.{role1}]_yummy header!_",
+											},
 										},
 									},
 								},
@@ -435,7 +447,9 @@ var _ = Describe("apply substitutions", func() {
 									Elements: []interface{}{
 										&types.Paragraph{
 											Elements: []interface{}{
-												types.RawLine("image:{cookie}.png[[.{role1}]_yummy row!_]"),
+												&types.RawLine{
+													Content: "image:{cookie}.png[[.{role1}]_yummy row!_]",
+												},
 											},
 										},
 									},
@@ -449,7 +463,9 @@ var _ = Describe("apply substitutions", func() {
 								Elements: []interface{}{
 									&types.Paragraph{
 										Elements: []interface{}{
-											types.RawLine("[.{role1}]_yummy footer!_"),
+											&types.RawLine{
+												Content: "[.{role1}]_yummy footer!_",
+											},
 										},
 									},
 								},
