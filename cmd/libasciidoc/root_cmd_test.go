@@ -2,7 +2,7 @@ package main_test
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 
 	main "github.com/bytesparadise/libasciidoc/cmd/libasciidoc"
 
@@ -35,7 +35,7 @@ var _ = Describe("root cmd", func() {
 		err := root.Execute()
 		// then
 		Expect(err).ToNot(HaveOccurred())
-		content, err := ioutil.ReadFile("test/test.html")
+		content, err := os.ReadFile("test/test.html")
 		Expect(err).ToNot(HaveOccurred())
 		Expect(content).ToNot(BeEmpty())
 	})

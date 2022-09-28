@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -53,7 +52,7 @@ func ConfigureLogger(level log.Level, opts ...TeeOption) (*ConsoleOutput, func()
 func NewConsoleOutput() *ConsoleOutput {
 	return &ConsoleOutput{
 		buf: &strings.Builder{},
-		out: ioutil.Discard,
+		out: io.Discard,
 	}
 }
 
