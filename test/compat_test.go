@@ -2,7 +2,7 @@ package test_test
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -62,7 +62,7 @@ func compare(filename string) {
 	Expect(err).NotTo(HaveOccurred())
 	// retrieve the reference document
 	path := strings.TrimSuffix(filename, ".adoc") + ".html"
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	Expect(err).NotTo(HaveOccurred())
 	expected := string(content)
 	// if tests are executed on windows platform and git 'autocrlf' is set to 'true',

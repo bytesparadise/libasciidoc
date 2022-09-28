@@ -1,3 +1,4 @@
+//go:build bench
 // +build bench
 
 package parser_test
@@ -5,7 +6,6 @@ package parser_test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/bytesparadise/libasciidoc/pkg/parser"
@@ -106,5 +106,5 @@ func load(filename string) ([]byte, error) {
 	defer func() {
 		f.Close()
 	}()
-	return ioutil.ReadAll(f)
+	return io.ReadAll(f)
 }

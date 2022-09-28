@@ -2,8 +2,8 @@ package sgml
 
 import (
 	"encoding/base64"
-	"io/ioutil"
 	"net/url"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -122,7 +122,7 @@ func (r *sgmlRenderer) getImageSrc(ctx *context, location *types.Location) strin
 	dir := filepath.Dir(ctx.config.Filename)
 	src = filepath.Join(dir, src)
 	result := "data:image/" + strings.TrimPrefix(filepath.Ext(src), ".") + ";base64,"
-	data, err := ioutil.ReadFile(src)
+	data, err := os.ReadFile(src)
 	if err != nil {
 		log.Warnf("image to embed not found or not readable: %s", src)
 		return result

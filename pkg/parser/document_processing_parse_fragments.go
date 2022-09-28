@@ -2,7 +2,6 @@ package parser
 
 import (
 	"io"
-	"io/ioutil"
 	"time"
 
 	"github.com/bytesparadise/libasciidoc/pkg/types"
@@ -14,7 +13,7 @@ func ParseFragments(ctx *ParseContext, source io.Reader, done <-chan interface{}
 	resultStream := make(chan types.DocumentFragment, bufferSize)
 	go func() {
 		defer close(resultStream)
-		b, err := ioutil.ReadAll(source)
+		b, err := io.ReadAll(source)
 		if err != nil {
 			resultStream <- types.NewErrorFragment(types.Position{}, err)
 			return

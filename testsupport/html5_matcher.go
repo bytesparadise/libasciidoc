@@ -3,7 +3,7 @@ package testsupport
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"os"
 	texttemplate "text/template"
 
 	"github.com/google/go-cmp/cmp"
@@ -68,7 +68,7 @@ type htmlFileMatcher struct {
 }
 
 func (m *htmlFileMatcher) Match(actual interface{}) (success bool, err error) {
-	expected, err := ioutil.ReadFile(m.filename)
+	expected, err := os.ReadFile(m.filename)
 	if err != nil {
 		return false, err
 	}
@@ -166,7 +166,7 @@ func (m *htmlTemplateFileMatcher) Match(actual interface{}) (success bool, err e
 		return false, errors.Errorf("MatchHTMLTemplate matcher expects a string (actual: %T)", actual)
 	}
 
-	expected, err := ioutil.ReadFile(m.filename)
+	expected, err := os.ReadFile(m.filename)
 	if err != nil {
 		return false, err
 	}
