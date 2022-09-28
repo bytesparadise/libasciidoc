@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alecthomas/chroma"
-	"github.com/alecthomas/chroma/formatters/html"
-	"github.com/alecthomas/chroma/lexers"
-	"github.com/alecthomas/chroma/styles"
+	"github.com/alecthomas/chroma/v2"
+	"github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/alecthomas/chroma/v2/lexers"
+	"github.com/alecthomas/chroma/v2/styles"
 	"github.com/bytesparadise/libasciidoc/pkg/types"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
@@ -87,7 +87,7 @@ func (r *sgmlRenderer) renderSourceBlockElements(ctx *context, b *types.Delimite
 	if log.IsLevelEnabled(log.DebugLevel) {
 		log.Debugf("splitted lines:\n%s", spew.Sdump(lines))
 	}
-	// using github.com/alecthomas/chroma to highlight the content
+	// using github.com/alecthomas/v2 to highlight the content
 	lexer := lexers.Get(language)
 	if lexer == nil {
 		lexer = lexers.Fallback

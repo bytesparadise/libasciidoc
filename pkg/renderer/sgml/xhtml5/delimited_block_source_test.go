@@ -151,11 +151,11 @@ printf("Hello world!\n"); // <1>
 `
 			expected := `<div class="listingblock">
 <div class="content">
-<pre class="chroma highlight"><code data-lang="c"><span class="tok-line"><span class="tok-cl"><span class="tok-cp">#include</span> <span class="tok-cpf">&lt;stdio.h&gt;</span></span></span>
+<pre class="chroma highlight"><code data-lang="c"><span class="tok-cp">#include</span> <span class="tok-cpf">&lt;stdio.h&gt;</span>
 
-<span class="tok-line"><span class="tok-cl"><span class="tok-n">printf</span><span class="tok-p">(</span><span class="tok-s">&#34;Hello world!</span><span class="tok-se">\n</span><span class="tok-s">&#34;</span><span class="tok-p">);</span> <span class="tok-c1">// 
-</span></span></span><b class="conum">(1)</b>
-<span class="tok-line"><span class="tok-cl"><span class="tok-o">&lt;</span><span class="tok-n">a</span><span class="tok-o">&gt;</span><span class="tok-n">link</span><span class="tok-o">&lt;/</span><span class="tok-n">a</span><span class="tok-o">&gt;</span></span></span></code></pre>
+<span class="tok-n">printf</span><span class="tok-p">(</span><span class="tok-s">&#34;Hello world!</span><span class="tok-se">\n</span><span class="tok-s">&#34;</span><span class="tok-p">);</span> <span class="tok-c1">// 
+</span><b class="conum">(1)</b>
+<span class="tok-o">&lt;</span><span class="tok-n">a</span><span class="tok-o">&gt;</span><span class="tok-n">link</span><span class="tok-o">&lt;/</span><span class="tok-n">a</span><span class="tok-o">&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -253,9 +253,9 @@ type Foo struct{
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span class="tok-line"><span class="tok-cl"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span></span></span>
-<span class="tok-line"><span class="tok-cl">    <span class="tok-nx">Field</span> <span class="tok-kt">string</span></span></span>
-<span class="tok-line"><span class="tok-cl"><span class="tok-p">}</span></span></span></code></pre>
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-p">}</span></code></pre>
 </div>
 </div>
 `
@@ -314,9 +314,9 @@ type Foo struct{
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span class="tok-line"><span class="tok-cl"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span></span></span>
-<span class="tok-line"><span class="tok-cl">    <span class="tok-nx">Field</span> <span class="tok-kt">string</span></span></span>
-<span class="tok-line"><span class="tok-cl"><span class="tok-p">}</span></span></span></code></pre>
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-p">}</span></code></pre>
 </div>
 </div>
 `
@@ -336,9 +336,9 @@ type Foo struct{
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span class="tok-line"><span class="tok-ln">1</span><span class="tok-cl"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span></span></span>
-<span class="tok-line"><span class="tok-ln">2</span><span class="tok-cl">    <span class="tok-nx">Field</span> <span class="tok-kt">string</span></span></span>
-<span class="tok-line"><span class="tok-ln">3</span><span class="tok-cl"><span class="tok-p">}</span></span></span></code></pre>
+<pre class="pygments highlight"><code data-lang="go"><span class="tok-kd">type</span> <span class="tok-nx">Foo</span> <span class="tok-kd">struct</span><span class="tok-p">{</span>
+    <span class="tok-nx">Field</span> <span class="tok-kt">string</span>
+<span class="tok-p">}</span></code></pre>
 </div>
 </div>
 ` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
@@ -359,9 +359,9 @@ type Foo struct{
 ----`
 				expected := `<div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="go"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#069;font-weight:bold">type</span> Foo <span style="color:#069;font-weight:bold">struct</span>{</span></span>
-<span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    Field <span style="color:#078;font-weight:bold">string</span></span></span>
-<span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>}</span></span></code></pre>
+<pre class="pygments highlight"><code data-lang="go"><span style="color:#069;font-weight:bold">type</span> Foo <span style="color:#069;font-weight:bold">struct</span>{
+    Field <span style="color:#078;font-weight:bold">string</span>
+}</code></pre>
 </div>
 </div>
 ` // the pygment.py sets the line number class to `tok-ln` but here we expect `tok-ln`
