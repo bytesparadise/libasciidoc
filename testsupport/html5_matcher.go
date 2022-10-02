@@ -163,7 +163,7 @@ type htmlTemplateFileMatcher struct {
 
 func (m *htmlTemplateFileMatcher) Match(actual interface{}) (success bool, err error) {
 	if _, ok := actual.(string); !ok {
-		return false, errors.Errorf("MatchHTMLTemplate matcher expects a string (actual: %T)", actual)
+		return false, errors.Errorf("MatchHTMLTemplate matcher expects a 'string' (actual: %T)", actual)
 	}
 
 	expected, err := os.ReadFile(m.filename)

@@ -75,7 +75,7 @@ var _ = Describe("document matcher", func() {
 		result, err := matcher.Match(1)
 		// then
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(Equal("MatchDocument matcher expects a Document (actual: int)"))
+		Expect(err.Error()).To(Equal("MatchDocument matcher expects a 'types.Document' (actual: int)"))
 		Expect(result).To(BeFalse())
 	})
 

@@ -64,7 +64,7 @@ var _ = Describe("document fragments matcher", func() {
 		result, err := matcher.Match(1)
 		// then
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(Equal("MatchDocumentFragment matcher expects a *types.TableOfContents (actual: int)"))
+		Expect(err.Error()).To(Equal("MatchDocumentFragment matcher expects a '*types.TableOfContents' (actual: int)"))
 		Expect(result).To(BeFalse())
 	})
 

@@ -34,7 +34,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with empty alt and extra whitespace", func() {
@@ -54,7 +54,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with empty positional parameters", func() {
@@ -74,7 +74,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with empty first parameter, non-empty width", func() {
@@ -97,7 +97,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with double quoted alt", func() {
@@ -120,7 +120,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with double quoted alt and escaped double quotes", func() {
@@ -143,7 +143,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with single quoted alt and escaped single quotes", func() {
@@ -166,7 +166,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with double quoted alt and standalone backslash", func() {
@@ -189,7 +189,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image with single quoted alt and standalone backslash", func() {
@@ -212,7 +212,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image alt and named pair", func() {
@@ -238,7 +238,7 @@ var _ = Describe("attributes", func() {
 			}
 			result, err := ParseDocumentFragments(source)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(MatchDocumentFragmentGroups(expected))
+			Expect(result).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image alt, width, height, and named pair", func() {
@@ -263,7 +263,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image alt, width, height, and named pair (spacing)", func() {
@@ -290,7 +290,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("block image alt, width, height, and named pair embedded quote", func() {
@@ -317,7 +317,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 	})
 
@@ -350,7 +350,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 
 		It("section with attributes detached", func() {
@@ -382,7 +382,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 	})
 
@@ -410,7 +410,7 @@ var _ = Describe("attributes", func() {
 					},
 				},
 			}
-			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+			Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 		})
 	})
 })

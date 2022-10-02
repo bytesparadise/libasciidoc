@@ -67,7 +67,7 @@ another paragraph`
 						},
 					},
 				}
-				Expect(ParseDocumentFragments(source)).To(MatchDocumentFragmentGroups(expected))
+				Expect(ParseDocumentFragments(source)).To(MatchDocumentFragments(expected))
 			})
 		})
 

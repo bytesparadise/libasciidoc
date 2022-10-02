@@ -15,7 +15,7 @@ func ParseDocumentFragments(actual string, options ...parser.Option) ([]types.Do
 	done := make(chan interface{})
 	defer close(done)
 	// ctx.Opts = append(ctx.Opts, parser.Debug(true))
-	fragmentStream := parser.ParseFragments(ctx, r, done)
+	fragmentStream := parser.ParseDocumentFragments(ctx, r, done)
 	result := []types.DocumentFragment{}
 	for f := range fragmentStream {
 		result = append(result, f)
