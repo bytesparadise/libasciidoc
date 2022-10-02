@@ -26,7 +26,7 @@ type tableOfContentsMatcher struct {
 
 func (m *tableOfContentsMatcher) Match(actual interface{}) (success bool, err error) {
 	if _, ok := actual.(*types.TableOfContents); !ok {
-		return false, errors.Errorf("MatchDocumentFragment matcher expects a *types.TableOfContents (actual: %T)", actual)
+		return false, errors.Errorf("MatchDocumentFragment matcher expects a '*types.TableOfContents' (actual: %T)", actual)
 	}
 	if diff := cmp.Diff(m.expected, actual, opts...); diff != "" {
 		if log.IsLevelEnabled(log.DebugLevel) {

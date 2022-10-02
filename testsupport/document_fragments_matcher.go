@@ -26,14 +26,14 @@ type documentFragmentsMatcher struct {
 
 func (m *documentFragmentsMatcher) Match(actual interface{}) (success bool, err error) {
 	if _, ok := actual.([]types.DocumentFragment); !ok {
-		return false, errors.Errorf("MatchDocumentFragments matcher expects an array of types.DocumentFragment (actual: %T)", actual)
+		return false, errors.Errorf("MatchDocumentFragments matcher expects a '[]types.DocumentFragment' (actual: %T)", actual)
 	}
 	if diff := cmp.Diff(m.expected, actual, opts...); diff != "" {
 		if log.IsLevelEnabled(log.DebugLevel) {
-			log.Debugf("actual raw document:\n%s", spew.Sdump(actual))
-			log.Debugf("expected raw document:\n%s", spew.Sdump(m.expected))
+			log.Debugf("actual document fragments:\n%s", spew.Sdump(actual))
+			log.Debugf("expected document fragments:\n%s", spew.Sdump(m.expected))
 		}
-		m.diffs = cmp.Diff(spew.Sdump(m.expected), spew.Sdump(actual))
+		m.diffs = diff
 		return false, nil
 	}
 	return true, nil

@@ -58,7 +58,7 @@ var _ = Describe("inline elements matcher", func() {
 		result, err := matcher.Match(1)
 		// then
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(Equal("MatchInlineElements matcher expects a []interface{} (actual: int)"))
+		Expect(err.Error()).To(Equal("MatchInlineElements matcher expects a '[]interface{}' (actual: int)"))
 		Expect(result).To(BeFalse())
 	})
 

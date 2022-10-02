@@ -25,7 +25,7 @@ func ParseDocument(r io.Reader, config *configuration.Configuration, opts ...Opt
 				CollectFootnotes(footnotes, done,
 					ApplySubstitutions(NewParseContext(config, opts...), done, // needs to be before 'ArrangeLists'
 						RefineFragments(NewParseContext(config, opts...), r, done,
-							ParseFragments(NewParseContext(config, opts...), r, done),
+							ParseDocumentFragments(NewParseContext(config, opts...), r, done),
 						),
 					),
 				),

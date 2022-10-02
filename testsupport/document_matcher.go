@@ -40,7 +40,7 @@ var opts = []cmp.Option{cmpopts.IgnoreUnexported(
 
 func (m *documentMatcher) Match(actual interface{}) (success bool, err error) {
 	if _, ok := actual.(*types.Document); !ok {
-		return false, errors.Errorf("MatchDocument matcher expects a Document (actual: %T)", actual)
+		return false, errors.Errorf("MatchDocument matcher expects a 'types.Document' (actual: %T)", actual)
 	}
 	if diff := cmp.Diff(m.expected, actual, opts...); diff != "" {
 		if log.IsLevelEnabled(log.DebugLevel) {

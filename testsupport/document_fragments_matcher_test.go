@@ -7,12 +7,11 @@ import (
 	"github.com/bytesparadise/libasciidoc/testsupport"
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("document fragments matcher", func() {
+var _ = Describe("document fragment matcher", func() {
 
 	// given
 	expected := []types.DocumentFragment{
@@ -60,7 +59,7 @@ var _ = Describe("document fragments matcher", func() {
 		// then
 		Expect(err).ToNot(HaveOccurred())
 		Expect(result).To(BeFalse())
-		diffs := cmp.Diff(spew.Sdump(expected), spew.Sdump(actual))
+		diffs := cmp.Diff(expected, actual)
 		Expect(matcher.FailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments to match:\n%s", diffs)))
 		Expect(matcher.NegatedFailureMessage(actual)).To(Equal(fmt.Sprintf("expected document fragments not to match:\n%s", diffs)))
 	})
@@ -70,7 +69,7 @@ var _ = Describe("document fragments matcher", func() {
 		result, err := matcher.Match(1)
 		// then
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(Equal("MatchDocumentFragments matcher expects an array of types.DocumentFragment (actual: int)"))
+		Expect(err.Error()).To(Equal("MatchDocumentFragments matcher expects a '[]types.DocumentFragment' (actual: int)"))
 		Expect(result).To(BeFalse())
 	})
 
