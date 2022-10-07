@@ -2386,6 +2386,7 @@ AttributeStructuredValueElement <-
         / InlineMacro
         / SpecialCharacter // must be after InlineMacro (before of BareURL)
         / ElementPlaceHolder
+        / Newline
         / AnyChar) {
             c.trackElement(element)
             return element, nil
