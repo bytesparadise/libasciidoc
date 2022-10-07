@@ -413,6 +413,33 @@ a link to <{example}>.`
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
 			})
 
+			It("with text with newline", func() {
+				source := `a link to mailto:hello@example.com[the
+email].`
+				expected := &types.Document{
+					Elements: []interface{}{
+						&types.Paragraph{
+							Elements: []interface{}{
+								&types.StringElement{Content: "a link to "},
+								&types.InlineLink{
+									Location: &types.Location{
+										Scheme: "mailto:",
+										Path:   "hello@example.com",
+									},
+									Attributes: types.Attributes{
+										types.AttrInlineLinkText: "the\nemail",
+									},
+								},
+								&types.StringElement{
+									Content: ".",
+								},
+							},
+						},
+					},
+				}
+				Expect(ParseDocument(source)).To(MatchDocument(expected))
+			})
+
 			It("with text and extra attributes", func() {
 				source := "a link to mailto:hello@example.com[the hello@example.com email, foo=fighters]"
 				expected := &types.Document{

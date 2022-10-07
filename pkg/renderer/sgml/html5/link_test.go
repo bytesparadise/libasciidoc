@@ -156,6 +156,17 @@ a link to <{example}>.`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 		})
 
+		It("with text with newline", func() {
+			source := `a link to mailto:hello@example.com[the
+email].`
+			expected := `<div class="paragraph">
+<p>a link to <a href="mailto:hello@example.com">the
+email</a>.</p>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
+
 		It("with symbol in path and text", func() {
 			source := "a link to https://example.com?foo=fighters&lang=en[a&b]."
 			expected := `<div class="paragraph">
