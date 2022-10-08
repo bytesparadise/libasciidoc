@@ -595,6 +595,48 @@ var _ = Describe("tables", func() {
 `
 		Expect(RenderHTML(source)).To(MatchHTML(expected))
 	})
+	It("with header col option", func() {
+		source := `[cols="h,>,>",options="header"]
+|===
+|Dir (X,Y,Z) |Num Cells |Size
+|X |10 |0.1
+|Y |5  |0.2
+|Z |10 |0.1
+|===`
+		expected := `<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dir (X,Y,Z)</th>
+<th class="tableblock halign-right valign-top">Num Cells</th>
+<th class="tableblock halign-right valign-top">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">X</p></th>
+<td class="tableblock halign-right valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Y</p></th>
+<td class="tableblock halign-right valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">0.2</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Z</p></th>
+<td class="tableblock halign-right valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">0.1</p></td>
+</tr>
+</tbody>
+</table>
+`
+		Expect(RenderHTML(source)).To(MatchHTML(expected))
+	})
 
 	It("with header and footer options", func() {
 		source := `[%header%footer,cols="2,2,1"] 

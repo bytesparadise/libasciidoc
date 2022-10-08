@@ -261,7 +261,11 @@ func (r *sgmlRenderer) renderTableCell(ctx *context, cell *types.TableCell, col 
 		}
 		buff.WriteString(renderedElement)
 	}
-	return r.execute(r.tableCell, struct {
+	tmpl := r.tableCell
+	if col.Style == types.HeaderStyle {
+		tmpl = r.tableHeaderCell
+	}
+	return r.execute(tmpl, struct {
 		Context *context
 		Content string
 		Cell    *types.TableCell
