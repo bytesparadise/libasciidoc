@@ -1010,6 +1010,199 @@ var _ = Describe("tables", func() {
 			}
 			Expect(ParseDocument(source)).To(MatchDocument(expected))
 		})
+		It("with header col option", func() {
+			source := `[cols="h,>,>",options="header"]
+|===
+|Dir (X,Y,Z) |Num Cells |Size
+|X |10 |0.1
+|Y |5  |0.2
+|Z |10 |0.1
+|===`
+			expected := &types.Document{
+				Elements: []interface{}{
+					&types.Table{
+						Attributes: types.Attributes{
+							types.AttrCols: []interface{}{
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignDefault,
+									VAlign:     types.VAlignDefault,
+									Weight:     1,
+									Style:      types.HeaderStyle,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignRight,
+									VAlign:     types.VAlignDefault,
+									Weight:     1,
+								},
+								&types.TableColumn{
+									Multiplier: 1,
+									HAlign:     types.HAlignRight,
+									VAlign:     types.VAlignDefault,
+									Weight:     1,
+								},
+							},
+							types.AttrOptions: types.Options{"header"},
+						},
+						Header: &types.TableRow{
+							Cells: []*types.TableCell{
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Dir (X,Y,Z)",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Num Cells",
+												},
+											},
+										},
+									},
+								},
+								{
+									Elements: []interface{}{
+										&types.Paragraph{
+											Elements: []interface{}{
+												&types.StringElement{
+													Content: "Size",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						Rows: []*types.TableRow{
+							{
+								Cells: []*types.TableCell{
+									{
+										// Format: string(types.HeaderStyle),
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "X",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "10",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "0.1",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										// Format: string(types.HeaderStyle),
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "Y",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "5",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "0.2",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								Cells: []*types.TableCell{
+									{
+										// Format: string(types.HeaderStyle),
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "Z",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "10",
+													},
+												},
+											},
+										},
+									},
+									{
+										Elements: []interface{}{
+											&types.Paragraph{
+												Elements: []interface{}{
+													&types.StringElement{
+														Content: "0.1",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(ParseDocument(source)).To(MatchDocument(expected))
+		})
 
 		It("with header and footer options", func() {
 			source := `[%header%footer,cols="2,2,1"] 

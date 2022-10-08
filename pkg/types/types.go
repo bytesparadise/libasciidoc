@@ -3915,17 +3915,19 @@ func (t *Table) Reference(refs ElementReferences) {
 type HAlign string
 
 const (
-	HAlignLeft   HAlign = "<"
-	HAlignRight  HAlign = ">"
-	HAlignCenter HAlign = "^"
+	HAlignDefault HAlign = HAlignLeft
+	HAlignLeft    HAlign = "<" // default
+	HAlignRight   HAlign = ">"
+	HAlignCenter  HAlign = "^"
 )
 
 type VAlign string
 
 const (
-	VAlignTop    VAlign = "<"
-	VAlignBottom VAlign = ">"
-	VAlignMiddle VAlign = "^"
+	VAlignDefault VAlign = VAlignTop
+	VAlignTop     VAlign = "<" // default
+	VAlignBottom  VAlign = ">"
+	VAlignMiddle  VAlign = "^"
 )
 
 type ContentStyle string
