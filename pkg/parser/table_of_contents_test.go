@@ -383,7 +383,15 @@ var _ = Describe("tables of contents", func() {
 		// same titles for all tests in this context
 		section1Title := []interface{}{
 			&types.StringElement{
-				Content: "Section 1",
+				Content: "Section ",
+			},
+			&types.QuotedText{
+				Kind: types.SingleQuoteBold,
+				Elements: []interface{}{
+					&types.StringElement{
+						Content: "1",
+					},
+				},
 			},
 		}
 		section2Title := []interface{}{
@@ -398,7 +406,7 @@ var _ = Describe("tables of contents", func() {
 
 a preamble 
 
-== Section 1
+== Section *1*
 
 == Section 2`
 			expected := &types.Document{
@@ -472,7 +480,7 @@ a preamble
 
 a preamble 
 
-== Section 1
+== Section *1*
 
 == Section 2`
 			expected := &types.Document{
@@ -555,7 +563,7 @@ block
 
 a preamble 
 
-== Section 1
+== Section *1*
 
 == Section 2`
 			expected := &types.Document{
@@ -627,7 +635,7 @@ a preamble
 :toc:
 :toc-title: <h3>Table of Contents</h3>
 
-== Section 1
+== Section *1*
 
 == Section 2
 `
@@ -712,7 +720,7 @@ a preamble
 :toc:
 :toc-title: pass:[<h3>Table of Contents</h3>]
 
-== Section 1
+== Section *1*
 
 == Section 2
 `

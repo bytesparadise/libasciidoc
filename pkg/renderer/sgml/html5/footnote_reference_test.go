@@ -128,10 +128,11 @@ a preamble with a footnote:[foo]
 a paragraph with another footnote:[baz]`
 
 		// NOTE: differs from asciidoc in the section and footnote numbering (which also impacts the 'footnotes' portion at the end of the doc)
+		// also, differs in the rendering of the footnote reference in the table of contents
 		expected := `<div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_section_1">section 1 <sup class="footnote">[2]</sup></a></li>
+<li><a href="#_section_1">section 1 <sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></a></li>
 </ul>
 </div>
 <div id="preamble">
