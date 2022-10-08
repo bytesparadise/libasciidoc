@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("table of contents", func() {
+var _ = Describe("tables of contents", func() {
 
 	Context("in document with header", func() {
 
@@ -21,9 +21,9 @@ A preamble...
 
 == Section A
 
-=== Section A.a
+=== Section *A.a*
 
-=== Section A.b
+=== Section _A.b_
 
 ==== Section that shall not be in ToC
 
@@ -38,8 +38,8 @@ A preamble...
 <ul class="sectlevel1">
 <li><a href="#_section_a">Section A</a>
 <ul class="sectlevel2">
-<li><a href="#_section_a_a">Section A.a</a></li>
-<li><a href="#_section_a_b">Section A.b</a></li>
+<li><a href="#_section_a_a">Section <strong>A.a</strong></a></li>
+<li><a href="#_section_a_b">Section <em>A.b</em></a></li>
 </ul>
 </li>
 <li><a href="#_section_b">Section B</a>
@@ -61,10 +61,10 @@ A preamble...
 <h2 id="_section_a">Section A</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_section_a_a">Section A.a</h3>
+<h3 id="_section_a_a">Section <strong>A.a</strong></h3>
 </div>
 <div class="sect2">
-<h3 id="_section_a_b">Section A.b</h3>
+<h3 id="_section_a_b">Section <em>A.b</em></h3>
 <div class="sect3">
 <h4 id="_section_that_shall_not_be_in_toc">Section that shall not be in ToC</h4>
 </div>

@@ -47,11 +47,20 @@ func (r *sgmlRenderer) prerenderTableOfContentsEntry(ctx *context, entry *types.
 	if !found {
 		return errors.New("unable to render table of contents entry title (missing element reference")
 	}
-	title, err := RenderPlainText(s)
-	if err != nil {
-		return errors.Wrap(err, "unable to render table of contents entry title (missing element reference")
+	switch s := s.(type) {
+	case []interface{}:
+		title, err := r.renderElements(ctx, s)
+		if err != nil {
+			return errors.Wrap(err, "unable to render table of contents entry title (missing element reference")
+		}
+		entry.Title = title
+	default:
+		title, err := r.renderElement(ctx, s)
+		if err != nil {
+			return errors.Wrap(err, "unable to render table of contents entry title (missing element reference")
+		}
+		entry.Title = title
 	}
-	entry.Title = title
 	return nil
 }
 
