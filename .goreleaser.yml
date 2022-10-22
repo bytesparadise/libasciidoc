@@ -38,11 +38,14 @@ changelog:
   sort: asc
   groups:
     - title: Features
-      regexp: "^.*feat[(\\w)]*:+.*$"
+      regexp: "^.*feat[(\\w)(/(\\w))?]*:+.*$"
       order: 0
-    - title: 'Bug fixes'
-      regexp: "^.*fix[(\\w)]*:+.*$"
+    - title: Refactoring
+      regexp: "^.*refactor[(\\w)(/(\\w))?]*:+.*$"
       order: 1
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)(/(\\w))?]*:+.*$"
+      order: 2
     - title: Others
       order: 999
   filters:
