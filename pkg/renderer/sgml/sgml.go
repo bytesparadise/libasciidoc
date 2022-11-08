@@ -19,6 +19,7 @@ func Render(doc *types.Document, config *configuration.Configuration, output io.
 		templates: tmpls,
 		// Establish some default function handlers.
 		functions: texttemplate.FuncMap{
+			"toLower":            strings.ToLower,
 			"escape":             escapeString,
 			"halign":             halign,
 			"valign":             valign,

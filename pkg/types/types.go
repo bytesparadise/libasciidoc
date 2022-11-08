@@ -1899,7 +1899,7 @@ func (x *InternalCrossReference) ResolveID(attrs Attributes) error {
 		}
 		x.ID = result
 	case string:
-		if strings.Contains(id, " ") || id != strings.ToLower(id) {
+		if strings.Contains(id, " ") {
 			result, err := ReplaceNonAlphanumerics([]interface{}{
 				&StringElement{
 					Content: id,

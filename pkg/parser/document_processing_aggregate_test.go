@@ -27,7 +27,7 @@ var _ = Describe("aggregate fragments", func() {
 	section1 := &types.Section{
 		Level: 1,
 		Attributes: types.Attributes{
-			types.AttrID: "_section_1",
+			types.AttrID: "_Section_1",
 		},
 		Title: section1Title,
 	}
@@ -62,13 +62,13 @@ var _ = Describe("aggregate fragments", func() {
 				section1,
 			},
 			ElementReferences: types.ElementReferences{
-				"_section_1": section1Title,
+				"_Section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
 				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
-						ID:    "_section_1",
+						ID:    "_Section_1",
 						Level: 1,
 					},
 				},
@@ -123,13 +123,13 @@ var _ = Describe("aggregate fragments", func() {
 				section1,
 			},
 			ElementReferences: types.ElementReferences{
-				"_section_1": section1Title,
+				"_Section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
 				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
-						ID:    "_section_1",
+						ID:    "_Section_1",
 						Level: 1,
 					},
 				},
@@ -211,13 +211,13 @@ var _ = Describe("aggregate fragments", func() {
 				section1,
 			},
 			ElementReferences: types.ElementReferences{
-				"_section_1": section1Title,
+				"_Section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
 				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
-						ID:    "_section_1",
+						ID:    "_Section_1",
 						Level: 1,
 					},
 				},
@@ -274,13 +274,13 @@ var _ = Describe("aggregate fragments", func() {
 				section1,
 			},
 			ElementReferences: types.ElementReferences{
-				"_section_1": section1Title,
+				"_Section_1": section1Title,
 			},
 			TableOfContents: &types.TableOfContents{
 				MaxDepth: 2,
 				Sections: []*types.ToCSection{
 					{
-						ID:    "_section_1",
+						ID:    "_Section_1",
 						Level: 1,
 					},
 				},

@@ -530,7 +530,7 @@ Here's a reference to the definition of <<a_term>>.`
 									Content: "see ",
 								},
 								&types.InternalCrossReference{
-									ID: "_section_1",
+									ID: "_Section_1",
 								},
 								&types.StringElement{
 									Content: ".",
@@ -540,7 +540,7 @@ Here's a reference to the definition of <<a_term>>.`
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID: "_section_1",
+								types.AttrID: "_Section_1",
 							},
 							Title: sectionTitle,
 						},
@@ -549,13 +549,13 @@ Here's a reference to the definition of <<a_term>>.`
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_1",
+								ID:    "_Section_1",
 								Level: 1,
 							},
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_1": sectionTitle,
+						"_Section_1": sectionTitle,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -586,7 +586,7 @@ Here's a reference to the definition of <<a_term>>.`
 									Content: "see ",
 								},
 								&types.InternalCrossReference{
-									ID: "_section_1",
+									ID: "_Section_1",
 								},
 								&types.StringElement{
 									Content: ".",
@@ -596,7 +596,7 @@ Here's a reference to the definition of <<a_term>>.`
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID: "_section_1",
+								types.AttrID: "_Section_1",
 							},
 							Title: sectionTitle,
 						},
@@ -605,13 +605,13 @@ Here's a reference to the definition of <<a_term>>.`
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_1",
+								ID:    "_Section_1",
 								Level: 1,
 							},
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_1": sectionTitle,
+						"_Section_1": sectionTitle,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -632,7 +632,7 @@ term:: see <<Somewhere Else>>.
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID: "_somewhere_else",
+								types.AttrID: "_Somewhere_Else",
 							},
 							Title: sectionTitle,
 							Elements: []interface{}{
@@ -653,7 +653,7 @@ term:: see <<Somewhere Else>>.
 															Content: "see ",
 														},
 														&types.InternalCrossReference{
-															ID: "_somewhere_else",
+															ID: "_Somewhere_Else",
 														},
 														&types.StringElement{
 															Content: ".",
@@ -671,13 +671,13 @@ term:: see <<Somewhere Else>>.
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_somewhere_else",
+								ID:    "_Somewhere_Else",
 								Level: 1,
 							},
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_somewhere_else": sectionTitle,
+						"_Somewhere_Else": sectionTitle,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))
@@ -711,7 +711,7 @@ term:: see <<Somewhere Else>>.
 													Content: "see ",
 												},
 												&types.InternalCrossReference{
-													ID: "_somewhere_else",
+													ID: "_Somewhere_Else",
 												},
 												&types.StringElement{
 													Content: ".",
@@ -725,7 +725,7 @@ term:: see <<Somewhere Else>>.
 						&types.Section{
 							Level: 1,
 							Attributes: types.Attributes{
-								types.AttrID: "_somewhere_else",
+								types.AttrID: "_Somewhere_Else",
 							},
 							Title: sectionTitle,
 						},
@@ -734,13 +734,13 @@ term:: see <<Somewhere Else>>.
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_somewhere_else",
+								ID:    "_Somewhere_Else",
 								Level: 1,
 							},
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_somewhere_else": sectionTitle,
+						"_Somewhere_Else": sectionTitle,
 					},
 				}
 				Expect(ParseDocument(source)).To(MatchDocument(expected))

@@ -524,7 +524,7 @@ a paragraph`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_a",
+								types.AttrID: "_Section_A",
 							},
 							Level: 1,
 							Title: sectionATitle,
@@ -536,7 +536,7 @@ a paragraph`
 								},
 								&types.Section{
 									Attributes: types.Attributes{
-										types.AttrID: "_section_a_a",
+										types.AttrID: "_Section_A_a",
 									},
 									Level: 2,
 									Title: sectionAaTitle,
@@ -552,7 +552,7 @@ a paragraph`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_b",
+								types.AttrID: "_Section_B",
 							},
 							Level: 1,
 							Title: sectionBTitle,
@@ -566,25 +566,25 @@ a paragraph`
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_a":   sectionATitle,
-						"_section_a_a": sectionAaTitle,
-						"_section_b":   sectionBTitle,
+						"_Section_A":   sectionATitle,
+						"_Section_A_a": sectionAaTitle,
+						"_Section_B":   sectionBTitle,
 					},
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_a",
+								ID:    "_Section_A",
 								Level: 1,
 								Children: []*types.ToCSection{
 									{
-										ID:    "_section_a_a",
+										ID:    "_Section_A_a",
 										Level: 2,
 									},
 								},
 							},
 							{
-								ID:    "_section_b",
+								ID:    "_Section_B",
 								Level: 1,
 							},
 						},
@@ -622,7 +622,7 @@ a paragraph`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_a",
+								types.AttrID: "_Section_A",
 							},
 							Level: 1,
 							Title: sectionATitle,
@@ -634,7 +634,7 @@ a paragraph`
 								},
 								&types.Section{
 									Attributes: types.Attributes{
-										types.AttrID: "_section_a_a",
+										types.AttrID: "_Section_A_a",
 									},
 									Level: 2,
 									Title: sectionAaTitle,
@@ -648,7 +648,7 @@ a paragraph`
 								},
 								&types.Section{
 									Attributes: types.Attributes{
-										types.AttrID: "_section_a_b",
+										types.AttrID: "_Section_A_b",
 									},
 									Level: 2,
 									Title: sectionBTitle,
@@ -664,23 +664,23 @@ a paragraph`
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_a":   sectionATitle,
-						"_section_a_a": sectionAaTitle,
-						"_section_a_b": sectionBTitle,
+						"_Section_A":   sectionATitle,
+						"_Section_A_a": sectionAaTitle,
+						"_Section_A_b": sectionBTitle,
 					},
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_a",
+								ID:    "_Section_A",
 								Level: 1,
 								Children: []*types.ToCSection{
 									{
-										ID:    "_section_a_a",
+										ID:    "_Section_A_a",
 										Level: 2,
 									},
 									{
-										ID:    "_section_a_b",
+										ID:    "_Section_A_b",
 										Level: 2,
 									},
 								},
@@ -720,7 +720,7 @@ a paragraph`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_a",
+								types.AttrID: "_Section_A",
 							},
 							Level: 2,
 							Title: sectionATitle,
@@ -732,7 +732,7 @@ a paragraph`
 								},
 								&types.Section{
 									Attributes: types.Attributes{
-										types.AttrID: "_section_a_a",
+										types.AttrID: "_Section_A_a",
 									},
 									Level: 3,
 									Title: sectionAaTitle,
@@ -746,7 +746,7 @@ a paragraph`
 								},
 								&types.Section{
 									Attributes: types.Attributes{
-										types.AttrID: "_section_a_b",
+										types.AttrID: "_Section_A_b",
 									},
 									Level: 3, // level is adjusted
 									Title: sectionAbTitle,
@@ -762,15 +762,15 @@ a paragraph`
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_a":   sectionATitle,
-						"_section_a_a": sectionAaTitle,
-						"_section_a_b": sectionAbTitle,
+						"_Section_A":   sectionATitle,
+						"_Section_A_a": sectionAaTitle,
+						"_Section_A_b": sectionAbTitle,
 					},
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_a",
+								ID:    "_Section_A",
 								Level: 2,
 							},
 						},
@@ -808,7 +808,7 @@ a paragraph`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_a",
+								types.AttrID: "_Section_A",
 							},
 							Level: 2,
 							Title: sectionATitle,
@@ -822,7 +822,7 @@ a paragraph`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_b",
+								types.AttrID: "_Section_B",
 							},
 							Level: 2,
 							Title: sectionBTitle,
@@ -836,7 +836,7 @@ a paragraph`
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_c",
+								types.AttrID: "_Section_C",
 							},
 							Level: 2,
 							Title: sectionCTitle,
@@ -850,23 +850,23 @@ a paragraph`
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_a": sectionATitle,
-						"_section_b": sectionBTitle,
-						"_section_c": sectionCTitle,
+						"_Section_A": sectionATitle,
+						"_Section_B": sectionBTitle,
+						"_Section_C": sectionCTitle,
 					},
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_a",
+								ID:    "_Section_A",
 								Level: 2,
 							},
 							{
-								ID:    "_section_b",
+								ID:    "_Section_B",
 								Level: 2,
 							},
 							{
-								ID:    "_section_c",
+								ID:    "_Section_C",
 								Level: 2,
 							},
 						},
@@ -1420,7 +1420,7 @@ a short preamble
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_1",
+								types.AttrID: "_Section_1",
 							},
 							Level: 1,
 							Title: []interface{}{
@@ -1429,7 +1429,7 @@ a short preamble
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_1": []interface{}{
+						"_Section_1": []interface{}{
 							&types.StringElement{Content: "Section 1"},
 						},
 					},
@@ -1437,7 +1437,7 @@ a short preamble
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_1",
+								ID:    "_Section_1",
 								Level: 1,
 							},
 						},
@@ -1479,7 +1479,7 @@ a short preamble
 						},
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_1",
+								types.AttrID: "_Section_1",
 							},
 							Level: 1,
 							Title: []interface{}{
@@ -1488,7 +1488,7 @@ a short preamble
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_1": []interface{}{
+						"_Section_1": []interface{}{
 							&types.StringElement{Content: "Section 1"},
 						},
 					},
@@ -1496,7 +1496,7 @@ a short preamble
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_1",
+								ID:    "_Section_1",
 								Level: 1,
 							},
 						},
