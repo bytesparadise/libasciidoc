@@ -68,7 +68,7 @@ func replaceNonAlphanumerics(content, replacement string) string {
 	for _, r := range content {
 		switch {
 		case unicode.Is(unicode.Letter, r) || unicode.Is(unicode.Number, r):
-			buf.WriteString(strings.ToLower(string(r)))
+			buf.WriteString(string(r))
 			lastCharIsSeparator = false
 		case !lastCharIsSeparator && (string(r) == " " || string(r) == "-" || string(r) == "."):
 			buf.WriteString(replacement)

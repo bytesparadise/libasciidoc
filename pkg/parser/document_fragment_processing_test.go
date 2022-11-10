@@ -99,14 +99,14 @@ Preamble comes here
 					&types.Section{
 						Level: 1,
 						Attributes: types.Attributes{
-							types.AttrID: "_section_a",
+							types.AttrID: "_Section_A",
 						},
 						Title: titleSectionA,
 						Elements: []interface{}{
 							&types.Section{
 								Level: 2,
 								Attributes: types.Attributes{
-									types.AttrID: "_section_a_a",
+									types.AttrID: "_Section_A_a",
 								},
 								Title: titleSectionAa,
 							},
@@ -115,43 +115,43 @@ Preamble comes here
 					&types.Section{
 						Level: 1,
 						Attributes: types.Attributes{
-							types.AttrID: "_section_b",
+							types.AttrID: "_Section_B",
 						},
 						Title: titleSectionB,
 					},
 					&types.Section{
 						Level: 1,
 						Attributes: types.Attributes{
-							types.AttrID: "_section_c",
+							types.AttrID: "_Section_C",
 						},
 						Title: titleSectionC,
 					},
 				},
 				ElementReferences: types.ElementReferences{
-					"_section_a":   titleSectionA,
-					"_section_a_a": titleSectionAa,
-					"_section_b":   titleSectionB,
-					"_section_c":   titleSectionC,
+					"_Section_A":   titleSectionA,
+					"_Section_A_a": titleSectionAa,
+					"_Section_B":   titleSectionB,
+					"_Section_C":   titleSectionC,
 				},
 				TableOfContents: &types.TableOfContents{
 					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
-							ID:    "_section_a",
+							ID:    "_Section_A",
 							Level: 1,
 							Children: []*types.ToCSection{
 								{
-									ID:    "_section_a_a",
+									ID:    "_Section_A_a",
 									Level: 2,
 								},
 							},
 						},
 						{
-							ID:    "_section_b",
+							ID:    "_Section_B",
 							Level: 1,
 						},
 						{
-							ID:    "_section_c",
+							ID:    "_Section_C",
 							Level: 1,
 						},
 					},
@@ -216,7 +216,7 @@ eve - analyzes an image to determine if it's a picture of a life form
 					&types.Section{
 						Level: 1,
 						Attributes: types.Attributes{
-							types.AttrID: "_name",
+							types.AttrID: "_Name",
 						},
 						Title: nameSectionTitle,
 						Elements: []interface{}{
@@ -238,24 +238,24 @@ eve - analyzes an image to determine if it's a picture of a life form
 					&types.Section{
 						Level: 1,
 						Attributes: types.Attributes{
-							types.AttrID: "_synopsis",
+							types.AttrID: "_Synopsis",
 						},
 						Title: synopisSectionTitle,
 					},
 				},
 				ElementReferences: types.ElementReferences{
-					"_name":     nameSectionTitle,
-					"_synopsis": synopisSectionTitle,
+					"_Name":     nameSectionTitle,
+					"_Synopsis": synopisSectionTitle,
 				},
 				TableOfContents: &types.TableOfContents{
 					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
-							ID:    "_name",
+							ID:    "_Name",
 							Level: 1,
 						},
 						{
-							ID:    "_synopsis",
+							ID:    "_Synopsis",
 							Level: 1,
 						},
 					},

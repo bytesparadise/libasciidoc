@@ -66,13 +66,13 @@ var _ = Describe("documents", func() {
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:     "first_steps_with_asciidoc",
+								ID:     "First_Steps_with_AsciiDoc",
 								Level:  1,
 								Title:  "First Steps with AsciiDoc",
 								Number: "1",
 								Children: []*types.ToCSection{
 									{
-										ID:     "lists_upon_lists",
+										ID:     "Lists_Upon_Lists",
 										Level:  2,
 										Title:  "Lists Upon Lists",
 										Number: "1.1",
@@ -86,7 +86,7 @@ var _ = Describe("documents", func() {
 								Number: "2",
 								Children: []*types.ToCSection{
 									{
-										ID:     "block_quotes_and_smart_ones",
+										ID:     "Block_Quotes_and_Smart_Ones",
 										Level:  2,
 										Title:  "Block Quotes and &#8220;Smart&#8221; Ones",
 										Number: "2.1",

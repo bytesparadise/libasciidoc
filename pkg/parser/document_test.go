@@ -147,7 +147,7 @@ Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit *am
 					&types.Section{
 						Level: 1,
 						Attributes: types.Attributes{
-							types.AttrID: "_lorem_ipsum",
+							types.AttrID: "_Lorem_Ipsum",
 						},
 						Title: []interface{}{
 							&types.StringElement{
@@ -187,7 +187,7 @@ Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit `,
 					},
 				},
 				ElementReferences: types.ElementReferences{
-					"_lorem_ipsum": []interface{}{
+					"_Lorem_Ipsum": []interface{}{
 						&types.StringElement{Content: "Lorem Ipsum"},
 					},
 				},
@@ -195,7 +195,7 @@ Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit `,
 					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
-							ID:    "_lorem_ipsum",
+							ID:    "_Lorem_Ipsum",
 							Level: 1,
 						},
 					},

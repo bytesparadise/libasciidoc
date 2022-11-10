@@ -805,7 +805,7 @@ package includes
 				Elements: []interface{}{
 					&types.Section{
 						Attributes: types.Attributes{
-							types.AttrID: "_chapter_a",
+							types.AttrID: "_Chapter_A",
 						},
 						Level: 1, // offset by +1
 						Title: title,
@@ -821,13 +821,13 @@ package includes
 					},
 				},
 				ElementReferences: types.ElementReferences{
-					"_chapter_a": title,
+					"_Chapter_A": title,
 				},
 				TableOfContents: &types.TableOfContents{
 					MaxDepth: 2,
 					Sections: []*types.ToCSection{
 						{
-							ID:    "_chapter_a",
+							ID:    "_Chapter_A",
 							Level: 1,
 						},
 					},
@@ -1747,20 +1747,20 @@ ____`
 						Elements: []interface{}{
 							&types.Section{
 								Attributes: types.Attributes{
-									types.AttrID: "_section_1",
+									types.AttrID: "_Section_1",
 								},
 								Level: 1,
 								Title: title,
 							},
 						},
 						ElementReferences: types.ElementReferences{
-							"_section_1": title,
+							"_Section_1": title,
 						},
 						TableOfContents: &types.TableOfContents{
 							MaxDepth: 2,
 							Sections: []*types.ToCSection{
 								{
-									ID:    "_section_1",
+									ID:    "_Section_1",
 									Level: 1,
 								},
 							},
@@ -1786,20 +1786,20 @@ ____`
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_1",
+								types.AttrID: "_Section_1",
 							},
 							Level: 1,
 							Title: title,
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_1": title,
+						"_Section_1": title,
 					},
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_1",
+								ID:    "_Section_1",
 								Level: 1,
 							},
 						},
@@ -1823,7 +1823,7 @@ ____`
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_1",
+								types.AttrID: "_Section_1",
 							},
 							Level: 1,
 							Title: title,
@@ -1839,13 +1839,13 @@ ____`
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_1": title,
+						"_Section_1": title,
 					},
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_1",
+								ID:    "_Section_1",
 								Level: 1,
 							},
 						},
@@ -1904,7 +1904,7 @@ ____`
 					Elements: []interface{}{
 						&types.Section{
 							Attributes: types.Attributes{
-								types.AttrID: "_section_1",
+								types.AttrID: "_Section_1",
 							},
 							Level: 1,
 							Title: title,
@@ -1927,13 +1927,13 @@ ____`
 						},
 					},
 					ElementReferences: types.ElementReferences{
-						"_section_1": title,
+						"_Section_1": title,
 					},
 					TableOfContents: &types.TableOfContents{
 						MaxDepth: 2,
 						Sections: []*types.ToCSection{
 							{
-								ID:    "_section_1",
+								ID:    "_Section_1",
 								Level: 1,
 							},
 						},
@@ -1955,7 +1955,7 @@ ____`
 						Elements: []interface{}{
 							&types.Section{
 								Attributes: types.Attributes{
-									types.AttrID: "_section_1",
+									types.AttrID: "_Section_1",
 								},
 								Level: 1,
 								Title: title,
@@ -1978,13 +1978,13 @@ ____`
 							},
 						},
 						ElementReferences: types.ElementReferences{
-							"_section_1": title,
+							"_Section_1": title,
 						},
 						TableOfContents: &types.TableOfContents{
 							MaxDepth: 2,
 							Sections: []*types.ToCSection{
 								{
-									ID:    "_section_1",
+									ID:    "_Section_1",
 									Level: 1,
 								},
 							},
@@ -2004,7 +2004,7 @@ ____`
 						Elements: []interface{}{
 							&types.Section{
 								Attributes: types.Attributes{
-									types.AttrID: "_section_1",
+									types.AttrID: "_Section_1",
 								},
 								Level: 1,
 								Title: title,
@@ -2020,13 +2020,13 @@ ____`
 							},
 						},
 						ElementReferences: types.ElementReferences{
-							"_section_1": title,
+							"_Section_1": title,
 						},
 						TableOfContents: &types.TableOfContents{
 							MaxDepth: 2,
 							Sections: []*types.ToCSection{
 								{
-									ID:    "_section_1",
+									ID:    "_Section_1",
 									Level: 1,
 								},
 							},
@@ -2046,7 +2046,7 @@ ____`
 						Elements: []interface{}{
 							&types.Section{
 								Attributes: types.Attributes{
-									types.AttrID: "_section_1",
+									types.AttrID: "_Section_1",
 								},
 								Level: 1,
 								Title: title,
@@ -2069,13 +2069,13 @@ ____`
 							},
 						},
 						ElementReferences: types.ElementReferences{
-							"_section_1": title,
+							"_Section_1": title,
 						},
 						TableOfContents: &types.TableOfContents{
 							MaxDepth: 2,
 							Sections: []*types.ToCSection{
 								{
-									ID:    "_section_1",
+									ID:    "_Section_1",
 									Level: 1,
 								},
 							},
@@ -2095,20 +2095,20 @@ ____`
 						Elements: []interface{}{
 							&types.Section{
 								Attributes: types.Attributes{
-									types.AttrID: "_section_1",
+									types.AttrID: "_Section_1",
 								},
 								Level: 1,
 								Title: title,
 							},
 						},
 						ElementReferences: types.ElementReferences{
-							"_section_1": title,
+							"_Section_1": title,
 						},
 						TableOfContents: &types.TableOfContents{
 							MaxDepth: 2,
 							Sections: []*types.ToCSection{
 								{
-									ID:    "_section_1",
+									ID:    "_Section_1",
 									Level: 1,
 								},
 							},
@@ -2128,20 +2128,20 @@ ____`
 						Elements: []interface{}{
 							&types.Section{
 								Attributes: types.Attributes{
-									types.AttrID: "_section_1",
+									types.AttrID: "_Section_1",
 								},
 								Level: 1,
 								Title: title,
 							},
 						},
 						ElementReferences: types.ElementReferences{
-							"_section_1": title,
+							"_Section_1": title,
 						},
 						TableOfContents: &types.TableOfContents{
 							MaxDepth: 2,
 							Sections: []*types.ToCSection{
 								{
-									ID:    "_section_1",
+									ID:    "_Section_1",
 									Level: 1,
 								},
 							},
@@ -2161,7 +2161,7 @@ ____`
 						Elements: []interface{}{
 							&types.Section{
 								Attributes: types.Attributes{
-									types.AttrID: "_section_1",
+									types.AttrID: "_Section_1",
 								},
 								Level: 1,
 								Title: title,
@@ -2177,13 +2177,13 @@ ____`
 							},
 						},
 						ElementReferences: types.ElementReferences{
-							"_section_1": title,
+							"_Section_1": title,
 						},
 						TableOfContents: &types.TableOfContents{
 							MaxDepth: 2,
 							Sections: []*types.ToCSection{
 								{
-									ID:    "_section_1",
+									ID:    "_Section_1",
 									Level: 1,
 								},
 							},
