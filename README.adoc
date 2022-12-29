@@ -61,6 +61,11 @@ The defaut class prefix is `tok-`, and it can be overridden at the document leve
 $ libasciidoc -o - -a chroma-class-prefix=myprefix- mydoc.adoc
 ```
 
+You can also use the `chroma` CLI (see https://github.com/alecthomas/chroma/releases[the release page to download the binary]) to generate your CSS with the default prefix or the one of your choice:
+
+```
+$ chroma -s lovelace --html --html-prefix=tok- --html-styles
+```
 
 == Output Formats (backend)
 
