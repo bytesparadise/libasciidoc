@@ -3,6 +3,7 @@ package sgml
 import (
 	"fmt"
 	"io"
+	"path/filepath"
 	"strings"
 	texttemplate "text/template"
 
@@ -19,6 +20,7 @@ func Render(doc *types.Document, config *configuration.Configuration, output io.
 		templates: tmpls,
 		// Establish some default function handlers.
 		functions: texttemplate.FuncMap{
+			"basename":           filepath.Base,
 			"escape":             escapeString,
 			"halign":             halign,
 			"lastInStrings":      lastInStrings,
