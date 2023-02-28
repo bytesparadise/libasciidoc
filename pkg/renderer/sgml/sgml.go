@@ -19,12 +19,13 @@ func Render(doc *types.Document, config *configuration.Configuration, output io.
 		templates: tmpls,
 		// Establish some default function handlers.
 		functions: texttemplate.FuncMap{
-			"toLower":            strings.ToLower,
 			"escape":             escapeString,
 			"halign":             halign,
-			"valign":             valign,
 			"lastInStrings":      lastInStrings,
+			"toLower":            strings.ToLower,
 			"trimLineFeedSuffix": trimLineFeedSuffix,
+			"unescape":           unescapeString,
+			"valign":             valign,
 		},
 	}
 	ctx := newContext(doc, config)
