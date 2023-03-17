@@ -208,6 +208,7 @@ type Metadata struct {
 	TableOfContents *TableOfContents
 	Authors         []*DocumentAuthor
 	Revision        DocumentRevision
+	Attributes      Attributes
 }
 
 func NewTableOfContents(maxDepth int) *TableOfContents {
