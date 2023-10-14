@@ -71,6 +71,7 @@ elements:
 			break elements
 		}
 	}
+	metadata.Attributes = ctx.attributes
 	if ctx.sectionNumbering, err = doc.SectionNumbers(); err != nil {
 		return metadata, errors.Wrapf(err, "unable to render full document")
 	}
