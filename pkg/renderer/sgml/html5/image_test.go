@@ -427,5 +427,21 @@ image::favicon-glasses-16x16.png[Glasses]`
 			Expect(RenderHTML(source)).To(MatchHTML(expected))
 			// TODO: check that the log/output contains a WARNING message (`image to embed not found or not readable`)
 		})
+
+		It("missing alt text", func() {
+			source := `
+:imagesdir: ../../../../test/images
+:data-uri:
+
+image::favicon-glasses-16x16.png[]`
+
+			expected := `<div class="imageblock">
+<div class="content">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABSklEQVQ4je2Rz0oCURSHT7ipd5ByExGmc28zc++M946OIrhxGgxHqE2N7XJVy8I3cCO4dB2hLnwC+4MY+A6CLgUV3BrObVFOYZugrR+c1fdbnPM7ABt+sgUAgT/kAl/ZTxBhL5jwuZw6WWq261G7uJCT1hhR3pUIr0uE1xHlXTlpjaldXGi268kpa4kJnyPCn0FS2SM7vxX55lQ4rZlwWjORb0yEcXEnEOVDRPnQuLwX+cbk2zengp3dCET4Axwd06jhln25GrNUERLhOUllp2ap8ssbbllEZD0CwaC+o9lX7+sB3bn2wrK8e4hjezGn5K17zS4uQqHQNgAAYJp4tWp9f71stSewZr6tesK62c9We/6ZVq0vkJZ48ouUFB0jGu+omcJISecGiLA2QnR/5aMKO0CEtZV0bqBmCiNE452wGkP/f/wGAAD4AGCWrt/5+Pc0AAAAAElFTkSuQmCC" alt="favicon glasses 16x16">
+</div>
+</div>
+`
+			Expect(RenderHTML(source)).To(MatchHTML(expected))
+		})
 	})
 })

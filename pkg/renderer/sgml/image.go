@@ -46,7 +46,7 @@ func (r *sgmlRenderer) renderImageBlock(ctx *context, img *types.ImageBlock) (st
 		return "", errors.Wrap(err, "unable to render image")
 	}
 	src := r.getImageSrc(ctx, img.Location)
-	alt, err := r.renderImageAlt(img.Attributes, src)
+	alt, err := r.renderImageAlt(img.Attributes, img.Location.ToString())
 	if err != nil {
 		return "", errors.Wrap(err, "unable to render image")
 	}
