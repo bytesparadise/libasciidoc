@@ -48,7 +48,7 @@ const (
 // Setting a setting to customize the configuration used during parsing and rendering of a document
 type Setting func(config *Configuration)
 
-// WithFigureCaption function to set the `fogure-caption` attribute
+// WithFigureCaption function to set the `figure-caption` attribute
 func WithFigureCaption(caption string) Setting {
 	return func(config *Configuration) {
 		config.Attributes[types.AttrFigureCaption] = caption
